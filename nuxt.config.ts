@@ -28,6 +28,17 @@ export default defineNuxtConfig({
     databaseUrl: '',
     notifyEmail: '',
     quoteRateLimitPerHour: '10',
+    /**
+     * En-têtes de sécurité — cf. `server/utils/securityHeaders.ts`.
+     * `cspMode` : `report-only` (défaut) ou `enforce`.
+     * `cspScriptHashes` : empreintes des scripts en ligne des pages
+     * pré-rendues, à relever avec `npm run security:csp-hashes` avant de
+     * passer en `enforce`.
+     */
+    security: {
+      cspMode: 'report-only',
+      cspScriptHashes: '',
+    },
     public: {
       siteUrl: 'https://www.tbs-distribution.tg',
       siteName: 'TBS Distribution S.A.R.L',
