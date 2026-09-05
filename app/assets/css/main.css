@@ -1,0 +1,287 @@
+@import 'tailwindcss';
+
+/* ==========================================================================
+   TBS Distribution — design tokens
+   Palette héritée du template : brun-olive profond, or, pêche, crème, olive.
+   ========================================================================== */
+@theme {
+  /* -- Couleurs de marque -------------------------------------------------- */
+  --color-ink: #3e3524; /* brun profond — texte fort, fonds sombres */
+  --color-ink-soft: #6b5f45; /* texte courant */
+  --color-ink-mute: #8b8069; /* texte tertiaire */
+  --color-gold: #827148; /* accent principal / branche Équipements */
+  --color-gold-deep: #6d5e3a;
+  --color-peach: #e8a07c; /* branche Events */
+  --color-olive: #a5af79; /* branche Agro */
+  --color-cream: #ffeed6; /* crème claire (titres sur sombre) */
+  --color-sand: #fff8ec; /* fond de section alterné */
+  --color-shell: #f6e7cf; /* placeholder image */
+  --color-bone: #e8e5df; /* fond hors-cadre */
+
+  /* -- Typographie --------------------------------------------------------- */
+  --font-display: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+  --font-sans: 'Jost', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Échelle fluide : min 360px → max 1440px */
+  --text-eyebrow: 0.6875rem;
+  --text-eyebrow--line-height: 1.4;
+  --text-eyebrow--letter-spacing: 0.28em;
+
+  --text-display: clamp(2.375rem, 1.2rem + 5.2vw, 6.75rem);
+  --text-display--line-height: 1;
+  --text-display--letter-spacing: -0.015em;
+
+  --text-h1: clamp(2rem, 1.1rem + 4vw, 4.5rem);
+  --text-h1--line-height: 1.04;
+  --text-h1--letter-spacing: -0.015em;
+
+  --text-h2: clamp(1.875rem, 1.2rem + 2.6vw, 4rem);
+  --text-h2--line-height: 1.06;
+  --text-h2--letter-spacing: -0.015em;
+
+  --text-h3: clamp(1.5rem, 1.15rem + 1.4vw, 2.25rem);
+  --text-h3--line-height: 1.1;
+
+  /* -- Rythme -------------------------------------------------------------- */
+  --spacing-gutter: clamp(1.25rem, 5.5vw, 5rem);
+  --spacing-section: clamp(3.5rem, 8vw, 8.125rem);
+
+  /* -- Mouvement ----------------------------------------------------------- */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* -- Ombres -------------------------------------------------------------- */
+  --shadow-lift: 0 24px 60px -32px rgb(62 53 36 / 0.45);
+  --shadow-panel: 0 40px 90px -40px rgb(62 53 36 / 0.45);
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+@layer base {
+  :root {
+    --header-h: 76px;
+    color-scheme: light;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Les ancres ne passent plus sous le header collant. */
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-bone);
+    color: var(--color-ink-soft);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-wrap: break-word;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 300;
+    color: var(--color-ink);
+    text-wrap: pretty;
+  }
+
+  h1,
+  h2 {
+    text-wrap: balance;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  /* Un anneau de focus unique, visible sur clair comme sur sombre.
+     :focus-visible seulement — pas d'anneau au clic souris. */
+  :where(a, button, input, textarea, select, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-cream);
+  }
+
+  img,
+  svg,
+  video {
+    display: block;
+    max-width: 100%;
+  }
+
+  input,
+  textarea,
+  select,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  /* Scrollbar discrète, accordée à la palette (WebKit). */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-bone);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(130 113 72 / 0.4);
+    border-radius: 100px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(130 113 72 / 0.65);
+  }
+}
+
+/* ==========================================================================
+   Composants utilitaires maison
+   ========================================================================== */
+@layer components {
+  /* Gouttière horizontale unique pour toutes les sections. */
+  .u-gutter {
+    padding-inline: var(--spacing-gutter);
+  }
+
+  .u-section {
+    padding-block: var(--spacing-section);
+  }
+
+  /* Surtitre : petites capitales espacées, présent sur toutes les sections. */
+  .u-eyebrow {
+    font-size: var(--text-eyebrow);
+    letter-spacing: var(--text-eyebrow--letter-spacing);
+    text-transform: uppercase;
+    color: var(--color-gold);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5625rem;
+  }
+
+  /* Lien souligné qui s'anime de gauche à droite. */
+  .u-link-underline {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 0.375rem;
+    font-size: var(--text-eyebrow);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-ink);
+  }
+  .u-link-underline::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 1px;
+    background: currentColor;
+    transform-origin: right;
+    transition: transform 0.5s var(--ease-out-expo);
+  }
+  .u-link-underline:hover::after,
+  .u-link-underline:focus-visible::after {
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  /* Étiquette de catégorie. */
+  .u-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 0.875rem;
+    background: var(--color-sand);
+    border: 1px solid rgb(62 53 36 / 0.1);
+    font-size: var(--text-eyebrow);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+  }
+
+  /* Filet décoratif avant un surtitre. */
+  .u-rule {
+    display: block;
+    width: clamp(1.625rem, 5vw, 3.75rem);
+    height: 1px;
+    background: currentColor;
+    opacity: 0.5;
+  }
+}
+
+/* ==========================================================================
+   Animations
+   ========================================================================== */
+@layer utilities {
+  /* Apparition au défilement, pilotée par la directive v-reveal. */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 0.95s var(--ease-out-expo),
+      transform 0.95s var(--ease-out-expo);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+  [data-reveal].is-revealed {
+    opacity: 1;
+    transform: none;
+  }
+
+  @keyframes tbs-zoom {
+    from {
+      transform: scale(1.08);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+
+  .animate-ken-burns {
+    animation: tbs-zoom 2.6s var(--ease-out-expo) both;
+  }
+
+  /* Transition de page Nuxt */
+  .page-enter-active,
+  .page-leave-active {
+    transition:
+      opacity 0.32s var(--ease-out-expo),
+      transform 0.32s var(--ease-out-expo);
+  }
+  .page-enter-from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .page-leave-to {
+    opacity: 0;
+  }
+
+  /* Respect strict de prefers-reduced-motion : plus aucune translation
+     ni zoom, mais le contenu reste visible (pas d'opacity 0 bloquée). */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    [data-reveal] {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
