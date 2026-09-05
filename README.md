@@ -124,7 +124,10 @@ server/
   api/                     site-content, branches, gallery, faq (GET) · quotes (POST)
   data/content.ts          Contenu de référence — seed + repli
   database/                schema.ts, client.ts, seed.ts
+  plugins/security-headers.ts  En-têtes de sécurité HTTP sur toutes les réponses
   utils/repository.ts      Accès base avec repli statique
+  utils/securityHeaders.ts Politique CSP et en-têtes — source unique de vérité
+scripts/csp-hashes.mjs     Relève les empreintes CSP des scripts en ligne
 shared/
   types.ts                 Types partagés client / serveur
   utils/siteData.ts        Contenu de présentation statique (process, formules, stats)
@@ -141,6 +144,7 @@ design/                    Maquette source + plaquettes commerciales (documentat
 | `app/` | Interface Nuxt — pages, composants, styles, composables |
 | `server/` | API Nitro, schéma et accès base, contenu de référence |
 | `shared/` | Types et données partagés client / serveur |
+| `scripts/` | Outillage hors build — relevé des empreintes CSP |
 | `public/images/` | Les 34 photographies extraites de la maquette |
 | `design/` | Maquette d’origine et plaquettes commerciales TBS — voir [design/README.md](design/README.md) |
 
@@ -244,6 +248,70 @@ seule `DATABASE_URL` change le comportement (base au lieu de contenu statique).
 
 ---
 
+## Sécurité
+
+`server/plugins/security-headers.ts` pose les en-têtes de protection sur
+**toutes** les réponses : pages pré-rendues, assets et routes `/api`. La
+politique elle-même vit dans `server/utils/securityHeaders.ts`.
+
+> Un plugin Nitro, et non un middleware `server/middleware/` : Nitro enregistre
+> le gestionnaire d'assets publics comme premier middleware, si bien qu'un
+> middleware applicatif n'est jamais atteint pour `/`, `/contact` ou tout autre
+> document pré-rendu. Le hook `request` du plugin, lui, court avant toute la
+> pile.
+
+| En-tête | Valeur | Ce qu'il empêche |
+| --- | --- | --- |
+| `Content-Security-Policy` | voir ci-dessous | Exécution de code injecté |
+| `Strict-Transport-Security` | `max-age=31536000; includeSubDomains; preload` | Rétrogradation en HTTP |
+| `X-Frame-Options` + `frame-ancestors 'none'` | `DENY` | Clickjacking sur le formulaire de devis |
+| `X-Content-Type-Options` | `nosniff` | Réinterprétation d'un fichier de `/images/` |
+| `Referrer-Policy` | `strict-origin-when-cross-origin` | Fuite d'URL vers les tiers |
+| `Permissions-Policy` | caméra, micro, géoloc… désactivés | Accès aux capteurs |
+| `Cross-Origin-Opener-Policy` | `same-origin` | Prise de contrôle par l'ouvrant |
+| `Cross-Origin-Resource-Policy` | `same-origin` | Chargement des images par des tiers |
+
+En développement, HSTS, le cadrage et la CSP sont omis : ils casseraient
+l'iframe des Nuxt DevTools et le rechargement à chaud de Vite.
+
+### Content-Security-Policy : report-only puis bloquante
+
+Tout est auto-hébergé (polices `/_fonts`, images `/_ipx`, scripts `/_nuxt`), la
+politique tient donc en `'self'` — seule exception, `frame-src` pour la carte
+OpenStreetMap de la page contact.
+
+Reste le cas des deux scripts que Nuxt sérialise dans chaque page pré-rendue
+(carte d'imports et `window.__NUXT__.config`). Une CSP bloquante sans leur
+empreinte coupe l'hydratation : le HTML s'affiche, plus rien ne réagit. D'où le
+défaut prudent — `Content-Security-Policy-Report-Only` — et la bascule en deux
+temps :
+
+```bash
+npm run build
+npm run security:csp-hashes    # relève les empreintes des scripts en ligne
+```
+
+Reporter la ligne obtenue dans l'environnement de production, puis activer :
+
+```
+NUXT_SECURITY_CSP_SCRIPT_HASHES=sha256-…,sha256-…
+NUXT_SECURITY_CSP_MODE=enforce
+```
+
+Les empreintes changent à chaque build qui touche la configuration publique :
+`npm run security:csp-hashes` fait partie du déploiement. En attendant, le mode
+report-only signale les violations dans la console du navigateur — les deux
+scripts Nuxt y apparaissent, avec l'empreinte à autoriser.
+
+### Génération entièrement statique
+
+`npm run generate` ne produit aucun serveur Nitro : le plugin ne s'exécute pas.
+Les en-têtes doivent alors être posés par l'hébergeur — fichier `_headers`
+(Netlify, Cloudflare Pages), `add_header` (Nginx) — en reprenant les valeurs de
+`server/utils/securityHeaders.ts`.
+
+---
+
 ## Points à finaliser avec le client
 
 1. **Carte de contact** — `app/pages/contact.vue` intègre une carte
@@ -270,6 +338,16 @@ seule `DATABASE_URL` change le comportement (base au lieu de contenu statique).
 npm run typecheck
 npm run build
 ```
+
+En-têtes de sécurité, sur le build de production :
+
+```bash
+node .output/server/index.mjs
+curl -sI http://127.0.0.1:3000/ | grep -iE 'content-security|strict-transport|x-content-type|x-frame|referrer-policy|permissions-policy'
+```
+
+En ligne, viser A ou A+ sur <https://securityheaders.com> (A tant que la CSP
+reste en report-only, A+ une fois passée en `enforce`).
 
 `typecheck` remonte une erreur `TS2537` dans
 `node_modules/@nuxt/image/dist/runtime/components/NuxtPicture.vue` : c'est une
