@@ -1,0 +1,18 @@
+# Normalise les fins de ligne : LF dans le dépôt, natif dans la copie de travail.
+* text=auto eol=lf
+
+# Fichiers binaires — jamais convertis.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.webp  binary
+*.ico   binary
+*.woff  binary
+*.woff2 binary
+*.pdf   binary
+
+# La maquette source est un bundle généré : ni diff ni fusion utiles.
+design/maquette-source.html -diff -merge linguist-generated
+
+# Le lockfile ne doit pas polluer les diffs de revue.
+package-lock.json -diff linguist-generated
