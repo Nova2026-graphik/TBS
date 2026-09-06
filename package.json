@@ -18,13 +18,18 @@
     "db:seed": "tsx --env-file-if-exists=.env server/database/seed.ts",
     "security:csp-hashes": "node scripts/csp-hashes.mjs"
   },
+  "//overrides": "Deux paquets transitifs sans correctif amont. `sharp` : ipx 2.x demande ^0.32.6, vulnérable (GHSA-f88m-g3jw-g9cj) ; seul ipx 4, encore en bêta, monte à ^0.35. On force la version corrigée sous ipx 2, dont l'usage de l'API sharp n'a pas bougé. `esbuild` : deux avis visent son serveur de développement (GHSA-67mh-4wv8-2f99, GHSA-g7r4-m6w7-qqqr) ; fontless demande ^0.27.0 et @esbuild-kit/core-utils, abandonné et tiré par drizzle-kit, demande ~0.18.20. On force la version corrigée, que vite et nitro acceptent déjà nativement.",
+  "overrides": {
+    "sharp": "^0.35.0",
+    "esbuild": "^0.28.2"
+  },
   "dependencies": {
-    "@nuxt/fonts": "^0.13.0",
+    "@nuxt/fonts": "^0.14.0",
     "@nuxt/image": "^1.11.0",
     "@nuxtjs/robots": "^5.5.0",
     "@nuxtjs/sitemap": "^7.4.0",
     "@vueuse/nuxt": "^13.9.0",
-    "drizzle-orm": "^0.44.0",
+    "drizzle-orm": "^0.45.2",
     "nuxt": "^4.2.0",
     "postgres": "^3.4.7",
     "vue": "^3.5.0",

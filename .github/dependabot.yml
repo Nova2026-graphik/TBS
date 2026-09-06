@@ -1,0 +1,33 @@
+# Veille automatique des dépendances.
+#
+# Sans elle, un avis de sécurité amont ne se découvre qu'au prochain
+# `npm audit` lancé à la main — c'est ainsi que les quatre vulnérabilités
+# élevées de l'issue #2 sont passées inaperçues.
+#
+# Le contrôle bloquant (`npm audit --audit-level=high`) relève de
+# l'intégration continue, traitée par l'issue #17.
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Africa/Lome
+    # Assez pour ne rien manquer, assez peu pour rester lisible.
+    open-pull-requests-limit: 5
+    labels:
+      - securite
+      - qualite-code
+    commit-message:
+      prefix: 'deps'
+      prefix-development: 'deps-dev'
+    groups:
+      # Correctifs et versions mineures regroupés : une PR par semaine plutôt
+      # que quinze. Les majeures restent séparées, elles se relisent une à une.
+      mineures:
+        update-types:
+          - minor
+          - patch
