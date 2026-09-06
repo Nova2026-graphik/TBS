@@ -8,11 +8,18 @@
   /* -- Couleurs de marque -------------------------------------------------- */
   --color-ink: #3e3524; /* brun profond — texte fort, fonds sombres */
   --color-ink-soft: #6b5f45; /* texte courant */
-  --color-ink-mute: #8b8069; /* texte tertiaire */
-  --color-gold: #827148; /* accent principal / branche Équipements */
+  --color-ink-mute: #756a55; /* texte tertiaire — 5,32:1 sur blanc */
+  --color-gold: #827148; /* accent principal / branche Équipements — 4,77:1 */
   --color-gold-deep: #6d5e3a;
-  --color-peach: #e8a07c; /* branche Events */
-  --color-olive: #a5af79; /* branche Agro */
+  --color-peach: #e8a07c; /* branche Events — décoratif uniquement */
+  --color-olive: #a5af79; /* branche Agro — décoratif uniquement */
+
+  /* Variantes texte des couleurs de branche. Pêche et olive sont des teintes
+     claires : lisibles en pastille ou en filet, elles tombent à 2,15:1 et
+     2,33:1 dès qu'on en fait du texte, très loin des 4,5:1 exigés par WCAG
+     1.4.3. Même teinte, luminance abaissée — l'identité est préservée. */
+  --color-peach-text: #a85c33; /* 4,95:1 sur blanc · 4,69:1 sur sable */
+  --color-olive-text: #5f6a3a; /* 5,82:1 sur blanc · 5,51:1 sur sable */
   --color-cream: #ffeed6; /* crème claire (titres sur sombre) */
   --color-sand: #fff8ec; /* fond de section alterné */
   --color-shell: #f6e7cf; /* placeholder image */
@@ -173,7 +180,11 @@
   /* Lien souligné qui s'anime de gauche à droite. */
   .u-link-underline {
     position: relative;
-    display: inline-block;
+    /* `inline-flex` + hauteur minimale : la cible atteint les 24 px exigés
+       par WCAG 2.5.8 sans que le trait ne s'éloigne du texte. */
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.5rem;
     padding-bottom: 0.375rem;
     font-size: var(--text-eyebrow);
     letter-spacing: 0.2em;

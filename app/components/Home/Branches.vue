@@ -63,9 +63,11 @@ const sizesHalfMd = SIZES_HALF_MD
 
           <h3 class="mb-1.5 mt-3 text-h3">{{ branch.name }}</h3>
 
+          <!-- La couleur de branche sert de pastille au-dessus ; en texte, elle
+               passe par sa variante lisible (WCAG 1.4.3). -->
           <p
             class="mb-3.5 text-xs uppercase tracking-[0.1em]"
-            :style="{ color: branch.color === '#3E3524' ? '#3E3524' : branch.color }"
+            :style="{ color: brandTextColor(branch.color) }"
           >
             {{ branch.tagline }}
           </p>
