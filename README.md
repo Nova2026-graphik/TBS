@@ -638,6 +638,53 @@ Les en-têtes doivent alors être posés par l'hébergeur — fichier `_headers`
    demandes de devis »). Reste à ouvrir le compte Resend ou Brevo, vérifier le
    domaine d'envoi et renseigner `NUXT_MAIL_API_KEY` en production.
 
+## Référencement local
+
+Une recherche « location chaises Lomé » ou « fournisseur matériel bureau Agôè »
+se joue dans le bloc cartographique, avant la première page de résultats. Deux
+choses le nourrissent : une position exacte, et une fiche d'établissement.
+
+### Coordonnées de l'entrepôt
+
+Elles ne sont **pas** écrites dans le code. Elles viennent de
+`NUXT_PUBLIC_GEO_LATITUDE` et `NUXT_PUBLIC_GEO_LONGITUDE`, et tant qu'elles
+sont vides, rien n'est publié :
+
+| Renseignées | JSON-LD | Carte de `/contact` |
+| --- | --- | --- |
+| non (défaut) | pas de `geo` | cadrage de quartier, sans marqueur ni itinéraire |
+| oui | `geo` avec `GeoCoordinates` | centrée à ~450 m, marqueur, bouton « Itinéraire » |
+
+C'est un choix : une latitude approximative dans un `LocalBusiness` est reprise
+telle quelle par les moteurs, affichée comme un fait, et envoie un chauffeur à
+un kilomètre du portail. L'absence se corrige ; une valeur fausse se propage.
+
+**Relevé** — sur Google Maps, clic long sur le portail de l'entrepôt : les deux
+nombres s'affichent, latitude d'abord. Une valeur hors des bornes du Togo est
+ignorée avec un avertissement, l'erreur la plus courante étant d'intervertir
+les deux.
+
+Le bouton « Itinéraire » pointe vers Google Maps et non OpenStreetMap : c'est
+l'application de navigation installée par défaut sur les téléphones Android,
+largement majoritaires au Togo.
+
+### Fiche d'établissement Google
+
+Gratuite, à créer et faire valider par courrier ou téléphone. Une fois l'URL
+connue, `NUXT_PUBLIC_GOOGLE_BUSINESS_URL` alimente `hasMap` et `sameAs` dans le
+JSON-LD — c'est ce qui relie le site à la fiche aux yeux d'un moteur.
+
+À renseigner sur la fiche : catégories, horaires, photos, zone desservie. Et
+surtout, **aligner au caractère près** la raison sociale, l'adresse et le
+téléphone entre la fiche, le site et le JSON-LD : la cohérence de ces trois
+informations pèse lourd dans le classement local.
+
+Les réseaux sociaux rejoignent `sameAs` dès que `SOCIAL_ACCOUNTS`
+(`shared/utils/siteData.ts`) porte une URL — les entrées à `null` sont écartées
+plutôt que publiées vides.
+
+---
+
 ---
 
 ## Vérifications

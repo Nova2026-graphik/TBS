@@ -68,6 +68,17 @@ export default defineNuxtConfig({
       whatsapp: '22890108510',
       email: 'tbstogo228@gmail.com',
       address: 'Agôè - Démakpoè, Lomé, Togo',
+      /**
+       * Coordonnées de l'entrepôt, à relever sur place — cf.
+       * `app/utils/businessLocation.ts`. Laissées vides tant que le relevé
+       * n'a pas eu lieu : le JSON-LD n'annonce alors aucune position, et la
+       * carte de `/contact` reste sur son cadrage de quartier. Une latitude
+       * approximative publiée comme un fait vaut moins que rien.
+       */
+      geoLatitude: '',
+      geoLongitude: '',
+      /** Fiche d'établissement Google, une fois créée et validée. */
+      googleBusinessUrl: '',
     },
   },
 
