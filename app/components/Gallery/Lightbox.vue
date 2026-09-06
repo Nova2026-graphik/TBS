@@ -9,8 +9,8 @@ import type { GalleryItem } from '#shared/types'
  * fermeture, Échap ferme, flèches gauche/droite naviguent, le scroll de la
  * page est verrouillé.
  */
-const props = defineProps<{ items: GalleryItem[]; index: number | null }>()
-const emit = defineEmits<{ close: []; navigate: [index: number] }>()
+const props = defineProps<{ items: GalleryItem[], index: number | null }>()
+const emit = defineEmits<{ close: [], navigate: [index: number] }>()
 
 const dialog = ref<HTMLElement | null>(null)
 const current = computed(() => (props.index === null ? null : props.items[props.index] ?? null))
@@ -51,6 +51,12 @@ const sizesLightbox = SIZES_LIGHTBOX
       leave-active-class="transition-opacity duration-200"
       leave-to-class="opacity-0"
     >
+      <!--
+        Le clic sur le fond ferme la visionneuse. C'est un raccourci de confort
+        pour la souris, doublé au clavier par la touche Échap (cf. plus haut) :
+        aucune fonction n'est réservée au pointeur, d'où la dérogation.
+      -->
+      <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events, vuejs-accessibility/no-static-element-interactions -->
       <div
         v-if="current"
         ref="dialog"

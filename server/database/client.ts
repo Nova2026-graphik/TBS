@@ -21,7 +21,8 @@ function resolveConnectionString(): string | undefined {
   try {
     const config = useRuntimeConfig()
     if (config.databaseUrl) return config.databaseUrl
-  } catch {
+  }
+  catch {
     /* hors contexte Nitro */
   }
   return process.env.DATABASE_URL || process.env.NUXT_DATABASE_URL
@@ -48,7 +49,8 @@ export function useDb(): Database | null {
     })
     _db = drizzle(_sql, { schema })
     return _db
-  } catch (error) {
+  }
+  catch (error) {
     console.error('[db] connexion impossible, repli sur le contenu statique :', error)
     return null
   }

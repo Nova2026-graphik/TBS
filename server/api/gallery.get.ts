@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
   // Le filtre est appliqué ici plutôt qu'en SQL : le jeu tient en mémoire et
   // la réponse complète reste cachable pour la vue « Tout voir ».
   if (typeof category === 'string' && CATEGORIES.includes(category as GalleryCategory)) {
-    return { data: data.filter((i) => i.category === category), source }
+    return { data: data.filter(i => i.category === category), source }
   }
 
   return { data, source }

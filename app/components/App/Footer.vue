@@ -27,7 +27,7 @@ const pageLinks = [
  */
 const socialLinks = [
   { label: 'WhatsApp', href: info.whatsappUrl },
-  ...SOCIAL_ACCOUNTS.filter((account) => account.url).map((account) => ({
+  ...SOCIAL_ACCOUNTS.filter(account => account.url).map(account => ({
     label: account.label,
     href: account.url as string,
   })),

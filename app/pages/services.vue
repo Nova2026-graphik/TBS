@@ -14,7 +14,7 @@ const router = useRouter()
 const { data } = await useSiteContent()
 
 const tabs = BRANCH_TABS
-const VALID = tabs.map((t) => t.slug) as readonly string[]
+const VALID = tabs.map(t => t.slug) as readonly string[]
 
 const active = computed<BranchSlug>(() => {
   const raw = route.query.branche
@@ -26,8 +26,8 @@ function select(slug: string) {
   router.replace({ query: { ...route.query, branche: slug } })
 }
 
-const activeBranch = computed(() => data.value.branches.find((b) => b.slug === active.value))
-const activeBlocks = computed(() => data.value.services.filter((s) => s.branch === active.value))
+const activeBranch = computed(() => data.value.branches.find(b => b.slug === active.value))
+const activeBlocks = computed(() => data.value.services.filter(s => s.branch === active.value))
 const activeProcess = computed(() => PROCESS_BY_BRANCH[active.value]!)
 const accent = computed(() => activeBranch.value?.color ?? '#827148')
 

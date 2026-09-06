@@ -80,7 +80,7 @@ function requestFor(message: EmailMessage, transport: MailTransport): RequestIni
 
   return {
     method: 'POST',
-    headers: { authorization: `Bearer ${transport.apiKey}`, 'content-type': 'application/json' },
+    headers: { 'authorization': `Bearer ${transport.apiKey}`, 'content-type': 'application/json' },
     body: JSON.stringify({
       from: transport.from,
       to: [message.to],

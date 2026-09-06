@@ -13,6 +13,11 @@
     "//typecheck": "`typecheck` passe par scripts/typecheck.mjs, qui tolère une erreur — et une seule : NuxtPicture.vue, TS2537, incompatibilité entre @nuxt/image 1.11 et les types @unhead de Nuxt 4. Le composant n'est pas utilisé ici. Le script échoue sur toute autre erreur, et échoue aussi le jour où celle-ci disparaît : c'est le signal de mettre à jour @nuxt/image et de supprimer l'exception. `typecheck:brut` donne la sortie sans filtre.",
     "typecheck": "node scripts/typecheck.mjs",
     "typecheck:brut": "nuxt typecheck",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
@@ -42,12 +47,20 @@
     "zod": "^4.1.0"
   },
   "devDependencies": {
+    "@nuxt/eslint": "^1.17.0",
+    "@nuxt/test-utils": "^4.2.0",
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/vite": "^4.1.0",
     "@types/node": "^26.4.1",
+    "@vue/test-utils": "^2.5.0",
     "drizzle-kit": "^0.31.0",
+    "eslint": "^10.10.0",
+    "eslint-plugin-vuejs-accessibility": "^2.6.0",
+    "happy-dom": "^20.14.0",
     "tailwindcss": "^4.1.0",
     "tsx": "^4.20.0",
     "typescript": "^5.9.0",
+    "vitest": "^4.1.11",
     "vue-tsc": "^3.1.0"
   }
 }

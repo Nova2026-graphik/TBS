@@ -64,7 +64,7 @@ useBreadcrumbSchema([{ name: 'Confidentialité', path: '/confidentialite' }])
 
         <h2>Responsable du traitement</h2>
         <p>
-          TBS Distribution S.A.R.L, {{ info.address }}.<br >
+          TBS Distribution S.A.R.L, {{ info.address }}.<br>
           Téléphone : <a :href="`tel:${info.phonePrimary}`">{{ info.phoneDisplay }}</a> —
           courriel : <a :href="`mailto:${info.email}`">{{ info.email }}</a>.
         </p>
@@ -172,7 +172,7 @@ useBreadcrumbSchema([{ name: 'Confidentialité', path: '/confidentialite' }])
         <p>
           Si la réponse ne vous satisfait pas, vous pouvez saisir
           l'<strong>Instance de protection des données à caractère personnel
-          (IPDCP)</strong>, autorité de contrôle togolaise. Les personnes
+            (IPDCP)</strong>, autorité de contrôle togolaise. Les personnes
           résidant dans l'Union européenne peuvent également saisir l'autorité
           de contrôle de leur pays de résidence.
         </p>
