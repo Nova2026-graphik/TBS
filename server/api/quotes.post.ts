@@ -5,7 +5,10 @@
  *  - validation stricte (Zod) et normalisation avant écriture ;
  *  - champ piège `company` : rempli = robot, on renvoie 200 sans écrire ;
  *  - délai minimum de remplissage (`elapsedMs`) ;
- *  - limitation de débit par IP hachée (mémoire Nitro, fenêtre glissante).
+ *  - limitation de débit par IP hachée, comptée en base sur une fenêtre
+ *    glissante d'une heure — cf. `utils/rateLimit.ts` — et sur une IP qui
+ *    n'est lue dans un en-tête que derrière un proxy déclaré de confiance,
+ *    cf. `utils/clientIp.ts`.
  *
  * Sans base de données, la demande est journalisée côté serveur et la
  * réponse reste un succès : le formulaire ne casse jamais en production.
@@ -18,7 +21,9 @@ import { createHash } from 'node:crypto'
 import { z } from 'zod'
 import { useDb } from '../database/client'
 import * as schema from '../database/schema'
+import { getClientIp, parseTrustedProxy } from '../utils/clientIp'
 import { notifyQuote } from '../utils/quoteNotification'
+import { isQuoteRateLimited } from '../utils/rateLimit'
 
 const quoteSchema = z.object({
   name: z.string().trim().min(2, 'Nom trop court').max(160),
@@ -51,26 +56,6 @@ const quoteSchema = z.object({
   elapsedMs: z.coerce.number().min(0).optional(),
 })
 
-/** Fenêtre glissante en mémoire — suffisant pour un site vitrine mono-instance. */
-const rateBuckets = new Map<string, number[]>()
-const WINDOW_MS = 60 * 60 * 1000
-
-function isRateLimited(key: string, limit: number): boolean {
-  const now = Date.now()
-  const hits = (rateBuckets.get(key) ?? []).filter((t) => now - t < WINDOW_MS)
-  hits.push(now)
-  rateBuckets.set(key, hits)
-
-  // Purge opportuniste pour éviter une croissance non bornée de la Map.
-  if (rateBuckets.size > 5000) {
-    for (const [k, v] of rateBuckets) {
-      if (!v.some((t) => now - t < WINDOW_MS)) rateBuckets.delete(k)
-    }
-  }
-
-  return hits.length > limit
-}
-
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   const body = await readBody(event)
@@ -97,15 +82,29 @@ export default defineEventHandler(async (event) => {
     return { ok: true, id: null }
   }
 
-  const ip = getRequestIP(event, { xForwardedFor: true }) ?? 'unknown'
-  const ipHash = createHash('sha256').update(ip).digest('hex').slice(0, 64)
+  const db = useDb()
+
+  /**
+   * Sans adresse fiable, la demande passe sans être comptée : ranger tous les
+   * anonymes sous une même clé reviendrait à les faire se limiter les uns les
+   * autres, et un seul robot suffirait à fermer le formulaire à tout le monde.
+   * Le piège et le délai minimum restent en place pour ce cas.
+   */
+  const ip = getClientIp(event, {
+    trustedProxy: parseTrustedProxy(config.security.trustedProxy),
+    hops: Number(config.security.trustedProxyHops || 1),
+  })
+  const ipHash = ip ? createHash('sha256').update(ip).digest('hex').slice(0, 64) : null
   const limit = Number(config.quoteRateLimitPerHour || 10)
 
-  if (isRateLimited(ipHash, limit)) {
-    throw createError({
-      statusCode: 429,
-      statusMessage: 'Trop de demandes. Réessayez dans une heure ou appelez-nous.',
-    })
+  if (ipHash) {
+    const rate = await isQuoteRateLimited(db, ipHash, limit)
+    if (rate.limited) {
+      throw createError({
+        statusCode: 429,
+        statusMessage: 'Trop de demandes. Réessayez dans une heure ou appelez-nous.',
+      })
+    }
   }
 
   const record = {
@@ -122,7 +121,6 @@ export default defineEventHandler(async (event) => {
     userAgent: getRequestHeader(event, 'user-agent')?.slice(0, 400) ?? null,
   }
 
-  const db = useDb()
   let id: string | null = null
   let persisted = false
 

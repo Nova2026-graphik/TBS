@@ -49,6 +49,15 @@ export default defineNuxtConfig({
     security: {
       cspMode: 'report-only',
       cspScriptHashes: '',
+      /**
+       * Ce qui se trouve devant l'application, et donc quel en-tête peut être
+       * cru pour identifier le client — cf. `server/utils/clientIp.ts`.
+       * `direct` (défaut) : aucun en-tête n'est lu, seule l'adresse de la
+       * connexion fait foi. Sinon `cloudflare`, `vercel`, `netlify`, ou
+       * `x-forwarded-for` avec le nombre de proxys de confiance.
+       */
+      trustedProxy: 'direct',
+      trustedProxyHops: '1',
     },
     public: {
       siteUrl: 'https://www.tbs-distribution.tg',
