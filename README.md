@@ -434,6 +434,33 @@ lignes sont à ajouter dans `nuxt.config.ts`.
 
 ## Intégration continue
 
+> ### ⚠ GitHub Actions ne démarre aucune exécution sur ce dépôt
+>
+> **Les 66 exécutions enregistrées ont toutes échoué au démarrage**, sans
+> produire un seul journal — la CI, Dependabot, et jusqu'à un workflow de cinq
+> lignes poussé pour le vérifier. Aucune n'a jamais abouti.
+>
+> Le workflow n'est pas en cause : GitHub l'a enregistré, il est actif et
+> nommé, et son YAML est valide. Trois workflows sans rapport échouant de la
+> même façon, la cause est au niveau du compte, pas du fichier.
+>
+> Sur un dépôt **privé** d'un compte personnel, c'est presque toujours le
+> quota : les 2 000 minutes mensuelles incluses sont épuisées, ou aucune limite
+> de dépense n'est configurée. À vérifier dans
+> **Settings → Billing → Plans and usage**. Rendre le dépôt public lèverait
+> aussi la contrainte — les dépôts publics ont des minutes illimitées — mais
+> c'est une décision d'une autre nature pour le site d'un client.
+>
+> **En attendant, `npm run ci` rejoue localement le travail `qualite`** :
+>
+> ```bash
+> npm run ci
+> ```
+>
+> Il enchaîne lint, types, tests, build et audit, s'arrête à la première
+> erreur et renvoie un code non nul — utilisable tel quel en crochet
+> `pre-push`. Comptez environ deux minutes, dont une et demie de build.
+
 `.github/workflows/ci.yml` s'exécute à chaque poussée sur `main` et sur chaque
 pull request. Trois travaux, du plus rapide au plus lent :
 
