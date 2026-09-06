@@ -11,9 +11,23 @@ const info = useSiteInfo()
  */
 const mapVisible = ref(false)
 
-const MAP_EMBED
+/**
+ * Cadrage de la carte.
+ *
+ * Avec les coordonnées de l'entrepôt en configuration, la carte se centre
+ * dessus avec un marqueur et un lien d'itinéraire. Sans elles, on retombe sur
+ * un cadre de quartier : approximatif, mais annoncé comme tel — l'inverse
+ * d'un point précis et faux. Cf. `app/utils/businessLocation.ts`.
+ */
+const coords = parseCoordinates(info.geoLatitude, info.geoLongitude)
+
+const QUARTIER_EMBED
   = 'https://www.openstreetmap.org/export/embed.html?bbox=1.13%2C6.20%2C1.25%2C6.28&layer=mapnik'
-const MAP_LINK = 'https://www.openstreetmap.org/#map=13/6.24/1.19'
+const QUARTIER_LINK = 'https://www.openstreetmap.org/#map=13/6.24/1.19'
+
+const mapEmbed = coords ? mapEmbedUrl(coords) : QUARTIER_EMBED
+const mapLink = coords ? mapLinkUrl(coords) : QUARTIER_LINK
+const itineraire = coords ? directionsUrl(coords) : null
 
 usePageSeo({
   title: 'Contact — demander un devis',
@@ -99,14 +113,12 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
           </dl>
         </div>
 
-        <!-- Carte : rien n'est chargé avant que la personne ne le demande.
-             Remplacez le `bbox` par les coordonnées exactes de l'entrepôt une
-             fois relevées au GPS. -->
+        <!-- Carte : rien n'est chargé avant que la personne ne le demande. -->
         <div class="relative aspect-4/3 overflow-hidden bg-shell">
           <iframe
             v-if="mapVisible"
             title="Localisation de TBS Distribution à Agôè-Démakpoè, Lomé"
-            :src="MAP_EMBED"
+            :src="mapEmbed"
             loading="lazy"
             referrerpolicy="no-referrer"
             sandbox="allow-scripts allow-same-origin allow-popups"
@@ -121,12 +133,26 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
             <p class="text-[0.9375rem] leading-[1.6] text-ink-soft">
               {{ info.address }}
             </p>
-            <UiButton variant="ghost" @click="mapVisible = true">Afficher la carte</UiButton>
+            <div class="flex flex-wrap items-center justify-center gap-3">
+              <UiButton variant="ghost" @click="mapVisible = true">Afficher la carte</UiButton>
+              <!-- L'itinéraire n'apparaît que si la destination est connue :
+                   un lien qui mène au centre d'un quartier de 13 km ne rend
+                   service à personne. -->
+              <UiButton
+                v-if="itineraire"
+                variant="ghost"
+                :href="itineraire"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Itinéraire
+              </UiButton>
+            </div>
             <p class="max-w-[34ch] text-xs leading-[1.6] text-ink-mute">
               L'affichage envoie une requête à OpenStreetMap, qui reçoit alors
               votre adresse IP.
               <a
-                :href="MAP_LINK"
+                :href="mapLink"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="underline underline-offset-2 hover:text-ink"
