@@ -7,7 +7,7 @@ const densitiesFull = DENSITIES_FULL
 const sizesHalfLg = SIZES_HALF_LG
 
 /** Détail par branche, affiché en quatre panneaux sous l'histoire. */
-const branchDetails: Record<string, { label: string; value: string }[]> = {
+const branchDetails: Record<string, { label: string, value: string }[]> = {
   equipements: [
     { label: 'Fourniture', value: 'Bureau, informatique, santé & laboratoire, matériel roulant' },
     { label: 'Installation', value: 'Livraison, montage, mise en service et réception sur site' },
@@ -23,7 +23,7 @@ const branchDetails: Record<string, { label: string; value: string }[]> = {
   etudes: [
     { label: 'Études', value: 'Diagnostics, faisabilité, dimensionnement et chiffrage' },
     { label: 'Conseil', value: 'Organisation, procédures, outils de gestion, formation' },
-    { label: 'AMO', value: "Suivi de projet et montage de dossiers d'appels d'offres" },
+    { label: 'AMO', value: 'Suivi de projet et montage de dossiers d\'appels d\'offres' },
     { label: 'Clients', value: 'Institutions, bailleurs, ONG, PME et groupements' },
   ],
   agro: [
@@ -36,14 +36,14 @@ const branchDetails: Record<string, { label: string; value: string }[]> = {
 
 const values = [
   { n: '01', title: 'Exigence', text: 'Matériel lavé, vérifié et compté avant chaque départ' },
-  { n: '02', title: 'Ponctualité', text: "Montage terminé avant l'arrivée du premier invité" },
+  { n: '02', title: 'Ponctualité', text: 'Montage terminé avant l\'arrivée du premier invité' },
   { n: '03', title: 'Discrétion', text: 'Une équipe présente, jamais dans le cadre' },
 ]
 
 usePageSeo({
   title: 'À propos — TBS Distribution S.A.R.L',
   description:
-    "Née à Agôè-Démakpoè, TBS équipe les grands moments de la vie togolaise depuis plus de dix ans. Quatre branches, un parc de plus de 900 références, 18 personnes sur le terrain.",
+    'Née à Agôè-Démakpoè, TBS équipe les grands moments de la vie togolaise depuis plus de dix ans. Quatre branches, un parc de plus de 900 références, 18 personnes sur le terrain.',
   path: '/a-propos',
   image: '/og-a-propos.jpg',
 })

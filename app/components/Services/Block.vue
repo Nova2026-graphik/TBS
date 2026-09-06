@@ -8,7 +8,7 @@ import type { ServiceBlock } from '#shared/types'
  * à l'ordre du DOM : la lecture au clavier et au lecteur d'écran reste
  * image → texte quelle que soit la parité de la boucle.
  */
-defineProps<{ block: ServiceBlock; reversed: boolean; accent: string }>()
+defineProps<{ block: ServiceBlock, reversed: boolean, accent: string }>()
 
 const sizesHalfLg = SIZES_HALF_LG
 </script>

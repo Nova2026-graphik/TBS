@@ -6,12 +6,12 @@ import type { Domain } from '#shared/types'
  * La pastille reprend la couleur de la branche : le lecteur relie chaque
  * ligne à son métier sans avoir à lire l'étiquette.
  */
-const props = defineProps<{ domains: Domain[]; branches: { slug: string; color: string; name: string }[] }>()
+const props = defineProps<{ domains: Domain[], branches: { slug: string, color: string, name: string }[] }>()
 
 const colorOf = (slug: string) =>
-  props.branches.find((b) => b.slug === slug)?.color ?? '#827148'
+  props.branches.find(b => b.slug === slug)?.color ?? '#827148'
 const nameOf = (slug: string) =>
-  props.branches.find((b) => b.slug === slug)?.name ?? ''
+  props.branches.find(b => b.slug === slug)?.name ?? ''
 </script>
 
 <template>

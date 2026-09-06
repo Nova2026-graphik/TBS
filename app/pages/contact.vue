@@ -32,7 +32,7 @@ const itineraire = coords ? directionsUrl(coords) : null
 usePageSeo({
   title: 'Contact — demander un devis',
   description:
-    "Une réception à équiper, un lot de fournitures, une étude ou une campagne agricole : précisez la branche concernée, un conseiller TBS vous rappelle sous 24 heures. Agôè-Démakpoè, Lomé.",
+    'Une réception à équiper, un lot de fournitures, une étude ou une campagne agricole : précisez la branche concernée, un conseiller TBS vous rappelle sous 24 heures. Agôè-Démakpoè, Lomé.',
   path: '/contact',
 })
 
@@ -99,7 +99,7 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
 
             <div class="py-4">
               <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">Adresse</dt>
-              <dd class="mt-2 text-[0.9375rem] text-ink">Agôè - Démakpoè<br >Lomé, Togo</dd>
+              <dd class="mt-2 text-[0.9375rem] text-ink">Agôè - Démakpoè<br>Lomé, Togo</dd>
             </div>
 
             <div class="py-4">
