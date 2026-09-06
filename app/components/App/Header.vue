@@ -14,6 +14,7 @@ const NAV = [
   { label: 'Galerie', to: '/galerie' },
   { label: 'Nos services', to: '/services' },
   { label: 'À propos', to: '/a-propos' },
+  { label: 'Conseils', to: '/conseils' },
   { label: 'Contact', to: '/contact' },
   { label: 'FAQ', to: '/faq' },
 ]
