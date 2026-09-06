@@ -17,7 +17,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const LOGO = resolve(root, 'public/images/logo-tbs.png')
 const OUT = resolve(root, 'public')
 
-const image = (name) => resolve(root, 'public/images', name)
+const image = name => resolve(root, 'public/images', name)
 
 /** Blanc plutôt que transparent : une icône d'onglet se pose sur des fonds
  *  imprévisibles, et le logo est bicolore sur fond clair. */
@@ -76,7 +76,7 @@ function buildIco(images) {
     offset += data.length
   })
 
-  return Buffer.concat([header, directory, ...images.map((i) => i.data)])
+  return Buffer.concat([header, directory, ...images.map(i => i.data)])
 }
 
 /**

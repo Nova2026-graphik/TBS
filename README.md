@@ -441,6 +441,8 @@ exécution sans rien apprendre de neuf.
 | `quoteValidation.spec.ts` | Le schéma de la demande de devis, le champ piège et le délai minimum — y compris le fait que le piège n'apparaît jamais dans les erreurs renvoyées |
 | `repository.spec.ts` | Le repli statique : base absente, requête en erreur, table vide |
 | `imageSizes.spec.ts` | Les chaînes `sizes`, dont aucun jeton ne doit être nu — le bug a déjà coûté cher |
+| `clientIp.spec.ts` | L'adresse du client : en-tête ignoré sans proxy déclaré, `X-Forwarded-For` lu par la droite, normalisation des formes d'une même adresse |
+| `rateLimit.spec.ts` | Le quota horaire : fenêtre glissante, comptes séparés par adresse, repli en mémoire qui ne s'ouvre pas quand la base tousse |
 
 ### Tests de bout en bout
 
