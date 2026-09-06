@@ -191,6 +191,7 @@ async function submit() {
       },
     })
     status.value = 'sent'
+    track(ANALYTICS_EVENTS.devisEnvoye, { branche: form.branch.split('—')[0]!.trim() })
   }
   catch (error: unknown) {
     const err = error as { data?: { data?: { errors?: Record<string, string> }, statusMessage?: string } }
