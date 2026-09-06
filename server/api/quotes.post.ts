@@ -9,11 +9,16 @@
  *
  * Sans base de données, la demande est journalisée côté serveur et la
  * réponse reste un succès : le formulaire ne casse jamais en production.
+ *
+ * Une fois la demande acquise, l'équipe est alertée par e-mail et le
+ * demandeur reçoit un accusé de réception. L'envoi est borné dans le temps et
+ * ne peut jamais faire échouer la requête — cf. `utils/quoteNotification.ts`.
  */
 import { createHash } from 'node:crypto'
 import { z } from 'zod'
 import { useDb } from '../database/client'
 import * as schema from '../database/schema'
+import { notifyQuote } from '../utils/quoteNotification'
 
 const quoteSchema = z.object({
   name: z.string().trim().min(2, 'Nom trop court').max(160),
@@ -118,27 +123,69 @@ export default defineEventHandler(async (event) => {
   }
 
   const db = useDb()
-  if (!db) {
-    // Pas de base configurée : on trace pour que la demande ne soit pas perdue.
+  let id: string | null = null
+  let persisted = false
+
+  if (db) {
+    try {
+      const [row] = await db
+        .insert(schema.quoteRequests)
+        .values(record)
+        .returning({ id: schema.quoteRequests.id })
+
+      id = row?.id ?? null
+      persisted = true
+    } catch (error) {
+      console.error('[devis] écriture impossible :', error)
+      throw createError({
+        statusCode: 500,
+        statusMessage: "Envoi impossible pour l'instant. Appelez-nous au (+228) 90 10 85 10.",
+      })
+    }
+  } else {
+    // Pas de base configurée : on trace pour que la demande ne soit pas perdue,
+    // même si l'e-mail ne part pas non plus.
     console.info('[devis] nouvelle demande (hors base) :', {
       ...record,
       ipHash: undefined,
     })
-    return { ok: true, id: null, persisted: false }
   }
 
-  try {
-    const [row] = await db
-      .insert(schema.quoteRequests)
-      .values(record)
-      .returning({ id: schema.quoteRequests.id })
+  // L'envoi est attendu — chaque message est plafonné à 8 s — pour que la
+  // réponse dise la vérité sur la notification. Il ne lève jamais : la demande
+  // est acquise, elle ne doit pas être perdue pour un prestataire mal luné.
+  const notification = await notifyQuote({
+    notice: {
+      name: record.name,
+      phone: record.phone,
+      email: record.email,
+      branch: record.branch,
+      requestType: record.requestType,
+      eventDate: record.eventDate,
+      guestCount: record.guestCount,
+      location: record.location,
+      message: record.message,
+      persisted,
+      receivedAt: new Date(),
+    },
+    notifyEmail: config.notifyEmail,
+    transport: config.mail,
+    contact: {
+      phonePrimary: config.public.phonePrimary,
+      phoneSecondary: config.public.phoneSecondary,
+      whatsapp: config.public.whatsapp,
+      siteUrl: config.public.siteUrl,
+    },
+  })
 
-    return { ok: true, id: row?.id ?? null, persisted: true }
-  } catch (error) {
-    console.error('[devis] écriture impossible :', error)
-    throw createError({
-      statusCode: 500,
-      statusMessage: "Envoi impossible pour l'instant. Appelez-nous au (+228) 90 10 85 10.",
-    })
+  if (notification.sent.length) {
+    console.info('[devis] notification envoyée :', notification.sent.join(', '))
   }
+  if (notification.failed.configuration) {
+    console.warn('[devis] notification non configurée :', notification.failed.configuration)
+  } else if (Object.keys(notification.failed).length) {
+    console.error('[devis] notification en échec :', notification.failed)
+  }
+
+  return { ok: true, id, persisted, notified: notification.sent.length > 0 }
 })
