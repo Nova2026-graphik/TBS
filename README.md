@@ -405,6 +405,72 @@ gh api -X PUT repos/Nova2026-graphik/TBS/branches/main/protection   -F required_
 
 ---
 
+## Rubrique Conseils
+
+Le site n'avait aucune surface d'entrée au-delà des requêtes de marque. Les
+requêtes qui rapportent sont longues et précises — « combien de chaises pour
+300 invités », « prix location vaisselle mariage Lomé », « fournisseur
+équipement laboratoire Togo appel d'offres » — et se captent avec du contenu.
+
+### Ajouter un article
+
+Un fichier Markdown dans `content/conseils/`. Le nom du fichier fait l'URL.
+
+```markdown
+---
+title: "Titre complet, celui du <h1> et de la balise title"
+shortTitle: "Titre court pour les vignettes"
+description: "Une phrase — sert de méta-description et de chapô"
+publishedAt: '2026-05-12'
+updatedAt: '2026-05-12'
+category: "Réception"        # Réception · Équipements · Appels d'offres · Agro
+readingTime: 6               # minutes, annoncées avant le clic
+image: "/images/…jpg"
+imageAlt: "Description de la photo"
+featured: false              # un seul article à la une
+---
+```
+
+**Mettez toutes les valeurs entre guillemets.** Un « : » suivi d'une espace
+dans une valeur non protégée fait échouer l'analyse YAML — silencieusement :
+l'article se construit, mais avec des champs vides. Le schéma de
+`content.config.ts` est strict pour cette raison ; il vaut mieux une erreur au
+build qu'une méta-description absente en production.
+
+`updatedAt` alimente `dateModified` du JSON-LD : c'est ce qui indique à un
+moteur qu'un contenu est tenu à jour plutôt que laissé en l'état. À corriger à
+chaque révision de fond.
+
+### Le calculateur de matériel
+
+`app/components/content/CalculateurMateriel.vue`, inséré dans un article par
+`::calculateur-materiel`. C'est le seul contenu du site qui rend un service
+avant la vente : on saisit un nombre d'invités, on obtient une liste chiffrée,
+et un bouton la transforme en demande de devis **pré-remplie** — nombre
+d'invités, inventaire complet et branche, sans rien recopier.
+
+Les ratios vivent dans `app/utils/materielReception.ts`, pas dans le composant :
+ils s'éprouvent seuls, et TBS doit pouvoir les corriger sans toucher à
+l'interface. Ils sont commentés un par un — un siège par invité plus 5 %, dix
+couverts par table ronde, 2,5 assiettes par convive, 1,3 m² par invité assis.
+
+Le formulaire de devis lit `?invites=` et `?message=` au montage
+(`app/components/Contact/Form.vue`), en bornant le message à la limite du
+schéma serveur.
+
+### Flux et référencement
+
+| Élément | Où |
+| --- | --- |
+| JSON-LD `Article` (dont `dateModified`) | `app/pages/conseils/[slug].vue` |
+| Flux RSS | `/conseils/rss.xml` — `server/routes/conseils/rss.xml.get.ts` |
+| Sitemap | `server/api/__sitemap__/urls.get.ts`, déclaré dans `sitemap.sources` |
+
+Sans cette dernière source, un article publié n'entrerait au sitemap qu'une
+fois découvert par un lien.
+
+---
+
 ---
 
 ## Déploiement

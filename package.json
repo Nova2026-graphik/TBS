@@ -25,11 +25,13 @@
     "esbuild": "^0.28.2"
   },
   "dependencies": {
+    "@nuxt/content": "^3.16.0",
     "@nuxt/fonts": "^0.14.0",
     "@nuxt/image": "^1.11.0",
     "@nuxtjs/robots": "^5.5.0",
     "@nuxtjs/sitemap": "^7.4.0",
     "@vueuse/nuxt": "^13.9.0",
+    "better-sqlite3": "^13.0.3",
     "drizzle-orm": "^0.45.2",
     "nuxt": "^4.2.0",
     "postgres": "^3.4.7",
