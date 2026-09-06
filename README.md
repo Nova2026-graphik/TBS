@@ -188,6 +188,72 @@ intégré** — serverless, edge — la tâche ne part pas toute seule : déclen
 
 ---
 
+## Supervision
+
+Trois questions, trois réponses distinctes. Aucune n'exige de compte pour que
+le code fonctionne : tout est inerte tant que rien n'est configuré.
+
+### Les erreurs ne sont plus silencieuses
+
+`server/plugins/error-reporting.ts` capte toute erreur serveur non rattrapée,
+en écrit une ligne greppable, et alerte par e-mail — via le prestataire déjà
+configuré pour les devis, sans compte supplémentaire.
+
+Deux règles :
+
+- **rien de personnel ne sort.** Le corps de la requête n'est jamais lu, la
+  chaîne de requête est retirée du chemin, les en-têtes ne sont pas joints. Une
+  alerte sur `/api/quotes` ne republie pas la demande ;
+- **on n'inonde pas.** Une même signature ne déclenche qu'une alerte par quart
+  d'heure. Les 4xx sont ignorées : une validation refusée n'apprend rien sur la
+  santé du service.
+
+Sans `NUXT_NOTIFY_EMAIL` ni prestataire d'envoi, les erreurs restent
+journalisées — c'est-à-dire l'état antérieur, mais structuré.
+
+### Audience, sans bandeau de consentement
+
+`NUXT_PUBLIC_ANALYTICS_*` branche **Plausible** ou **Umami** (auto-hébergeable).
+Tous deux fonctionnent sans cookie et sans identifiant persistant : aucune
+bannière n'est requise. Vide, rien n'est chargé.
+
+L'origine renseignée alimente aussi la CSP (`script-src`, `connect-src`) —
+sans quoi le script serait bloqué et la page resterait muette sans erreur
+visible. La politique de confidentialité s'ajuste elle aussi : elle nomme le
+prestataire quand il y en a un, et affirme l'absence de mesure sinon.
+
+Six événements, définis dans `shared/utils/analytics.ts` :
+
+| Événement | Ce qu'il révèle |
+| --- | --- |
+| `devis_ouvert` | Trafic qui atteint réellement le formulaire |
+| `devis_commence` | Premier champ rempli |
+| `devis_envoye` | Conversion |
+| `whatsapp_clic` · `appel_clic` | Le canal réellement préféré |
+| `branche_consultee` | La branche qui intéresse |
+
+Le rapport `devis_commence` → `devis_envoye` dit si le formulaire décourage.
+Les trois derniers événements sont captés par délégation sur le document : un
+seul écouteur couvre tous les liens, présents et à venir.
+
+### Disponibilité
+
+`GET /api/health` vérifie la dépendance qui compte :
+
+```bash
+curl -sI https://<domaine>/api/health   # 200 si tout va, 503 si la base est injoignable
+```
+
+Surveiller `/` ne dirait rien d'utile : la page d'accueil est pré-rendue et
+continuerait de s'afficher alors que toute demande de devis se perd. Brancher
+UptimeRobot ou Better Stack sur `/api/health`, toutes les cinq minutes, alerte
+par e-mail.
+
+La réponse ne publie ni version, ni chemin, ni message d'erreur : l'adresse est
+publique par nécessité.
+
+---
+
 ## Architecture
 
 ```
@@ -210,7 +276,9 @@ app/
   plugins/reveal.ts        Directive v-reveal (IntersectionObserver partagé, SSR-safe)
   utils/imageSizes.ts      Valeurs `sizes` pour <NuxtImg>
 server/
-  api/                     site-content, branches, gallery, faq (GET) · quotes (POST)
+  api/                     site-content, branches, gallery, faq, health (GET) · quotes (POST)
+  plugins/error-reporting.ts   Alerte sur erreur serveur, sans donnée personnelle
+  utils/errorReporter.ts   Mise en forme et fenêtre anti-inondation
   data/content.ts          Contenu de référence — seed + repli
   database/                schema.ts, client.ts, seed.ts
   utils/mailer.ts          Envoi e-mail — Resend ou Brevo, par API HTTP
