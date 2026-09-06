@@ -24,7 +24,8 @@ export default defineEventHandler(async (event) => {
     try {
       await db.execute(sql`select 1`)
       database = 'ok'
-    } catch (error) {
+    }
+    catch (error) {
       database = 'injoignable'
       console.error('[sante] base injoignable :', error)
     }

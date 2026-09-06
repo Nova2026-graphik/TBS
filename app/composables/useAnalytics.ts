@@ -29,7 +29,8 @@ export function useAnalytics() {
     try {
       if (cfg.analytics.provider === 'umami') window.umami?.track(event, props)
       else window.plausible?.(event, props ? { props } : undefined)
-    } catch {
+    }
+    catch {
       // Un bloqueur de publicité peut avoir retiré la fonction en cours de route.
     }
   }
