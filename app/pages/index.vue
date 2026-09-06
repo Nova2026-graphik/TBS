@@ -17,7 +17,7 @@ usePageSeo({
 
 <template>
   <div>
-    <HomeHero />
+    <HomeHero :branches="data.branches" />
 
     <UiStatRow :items="stats" />
 
