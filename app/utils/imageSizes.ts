@@ -47,3 +47,23 @@ export const SIZES_THIRD_MD = buildSizes('100vw', { md: '33vw' })
 
 /** Visionneuse : pleine largeur en mobile, 80 % au-delà de `lg`. */
 export const SIZES_LIGHTBOX = buildSizes('100vw', { lg: '80vw' })
+
+/**
+ * Densités pour une image **pleine largeur**.
+ *
+ * Avec `sizes`, @nuxt/image émet un `srcset` en descripteurs `w` : le
+ * navigateur y applique lui-même la densité de l'écran. Les densités du
+ * module ne servent alors qu'à prolonger l'échelle vers le haut — et sur une
+ * image en 100vw, l'échelle des points de rupture couvre déjà 320 → 1536 px,
+ * soit de quoi servir un téléphone 390 px en 3× (1170 px → variante 1280).
+ *
+ * La densité 2 n'ajoutait donc que des variantes 2048 et 3072, au-delà de la
+ * largeur des sources (1400 px) : IPX les ramène au même fichier, mais elles
+ * restent en tête du `srcset`, et @nuxt/image y prend le repli du `<img src>`
+ * comme du `<link rel="preload">`. Un navigateur sans `imagesrcset` chargeait
+ * ainsi la variante la plus lourde du lot.
+ *
+ * À réserver au plein écran : sur une vignette en 33vw, l'échelle plafonne à
+ * ~500 px et la densité 2 reste indispensable.
+ */
+export const DENSITIES_FULL = '1'
