@@ -94,18 +94,24 @@ function onScroll() {
       </li>
     </ul>
 
-    <!-- Indicateurs cliquables : ils disent aussi combien il en reste. -->
-    <div class="mt-8 flex gap-2">
+    <!-- Indicateurs cliquables : ils disent aussi combien il en reste.
+         Le trait reste fin, mais la cible fait 44 px de haut : à 2 px, elle
+         était impossible à viser au doigt (WCAG 2.5.8 en demande 24). -->
+    <div class="mt-5 flex gap-1">
       <button
         v-for="(item, i) in testimonials"
         :key="`dot-${i}`"
         type="button"
-        class="h-0.5 transition-all duration-500 ease-[var(--ease-out-expo)]"
-        :class="i === active ? 'w-10 bg-cream' : 'w-5 bg-white/25 hover:bg-white/50'"
+        class="group grid h-11 place-items-center px-1"
         :aria-label="`Témoignage ${i + 1}`"
         :aria-current="i === active"
         @click="scrollTo(i)"
-      />
+      >
+        <span
+          class="h-0.5 transition-all duration-500 ease-[var(--ease-out-expo)]"
+          :class="i === active ? 'w-10 bg-cream' : 'w-5 bg-white/25 group-hover:bg-white/50'"
+        />
+      </button>
     </div>
   </section>
 </template>

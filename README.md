@@ -143,6 +143,22 @@ Les gabarits vivent dans `server/utils/quoteNotification.ts` et n'importent
 rien de Nitro : ils se rendent hors serveur, ce qui permet de les relire sans
 démarrer quoi que ce soit.
 
+### Conservation et anonymisation
+
+La politique de confidentialité annonce une conservation de
+`QUOTE_RETENTION_MONTHS` mois (24) « à compter du dernier échange ». Une tâche
+planifiée rend cette phrase vraie : `server/tasks/quotes/anonymise.ts` tourne
+chaque nuit à 3 h et écrase nom, téléphone, e-mail, lieu, description et
+éléments techniques des demandes expirées. Branche, type de demande et dates
+subsistent — des statistiques sans lien avec une personne.
+
+Aucune migration n'est nécessaire : les colonnes `NOT NULL` reçoivent un
+marqueur, qui sert aussi de garde d'idempotence.
+
+Le planificateur vient du préréglage Node. **Sur une plate-forme sans cron
+intégré** — serverless, edge — la tâche ne part pas toute seule : déclencher
+`quotes:anonymise` depuis le cron de la plate-forme.
+
 ---
 
 ## Architecture
@@ -232,6 +248,13 @@ performance.
 - Anneau de focus visible et unique sur tous les éléments interactifs.
 - `prefers-reduced-motion` respecté : le contenu reste visible, les
   animations sont neutralisées.
+- **Contrastes conformes AA** (WCAG 1.4.3). Les couleurs de branche pêche et
+  olive sont décoratives : lisibles en pastille, elles tombent à 2,15:1 et
+  2,33:1 dès qu'on en fait du texte. `brandTextColor()`
+  (`shared/utils/branchColors.ts`) donne la variante texte — même teinte,
+  luminance abaissée. **Toute nouvelle couleur de texte doit passer par elle.**
+- **Cibles tactiles à 24 px** (WCAG 2.5.8), y compris les puces du carrousel :
+  le trait reste fin, la zone cliquable fait 44 px de haut.
 
 ### Performance
 
@@ -243,7 +266,14 @@ performance.
   CSS : plus d'images invisibles chargées ni de pièges au clavier.
 - Contenu chargé une seule fois et partagé entre les pages
   (`useAsyncData` + `getCachedData`), réponse API mise en cache 10 min (SWR).
-- Six pages pré-rendues, assets compressés en gzip et brotli.
+- Neuf pages pré-rendues, assets compressés en gzip et brotli.
+- **Cache des images** : `routeRules` pose `immutable` un an sur `/_ipx/**`
+  — ces URL portent format, qualité et dimensions, elles sont adressées par
+  leur contenu — et trente jours sur `/images/**`.
+- **Galerie progressive** : neuf vignettes au premier rendu, le reste sur
+  demande. Le rendu serveur ne produit que les neuf premières.
+- Qualité des vignettes à 60 : indiscernable à 300 px de large, 13 % de moins
+  sur le fichier.
 
 ### SEO
 
@@ -382,8 +412,10 @@ Les en-têtes doivent alors être posés par l'hébergeur — fichier `_headers`
 1. **Carte de contact** — `app/pages/contact.vue` intègre une carte
    OpenStreetMap centrée sur Lomé. Remplacer les coordonnées du `bbox` par
    celles relevées à l'entrepôt d'Agôè-Démakpoè.
-2. **Réseaux sociaux** — les liens Facebook, Instagram et LinkedIn du footer
-   pointent sur `#` en attendant les URL réelles.
+2. **Réseaux sociaux** — Facebook, Instagram et LinkedIn ne sont plus
+   affichés : les liens pointaient sur `#`, ce qui ne menait nulle part.
+   Renseigner une URL dans `SOCIAL_ACCOUNTS` (`shared/utils/siteData.ts`)
+   suffit à réafficher l'entrée.
 3. **Photographies** — les 34 images proviennent de la maquette (banque
    d'images). À remplacer par les photos des réalisations TBS ; les noms de
    fichiers de `public/images/` décrivent leur usage.

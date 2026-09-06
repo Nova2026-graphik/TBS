@@ -18,11 +18,18 @@ const pageLinks = [
   { label: 'FAQ', to: '/faq' },
 ]
 
+/**
+ * WhatsApp est le canal réel ; les autres comptes n'apparaissent que si TBS
+ * en a communiqué l'URL (`SOCIAL_ACCOUNTS`). Trois `href="#"` traînaient ici :
+ * au clic la page remontait en haut, et les lecteurs d'écran annonçaient un
+ * lien sans destination.
+ */
 const socialLinks = [
-  { label: 'WhatsApp', href: info.whatsappUrl, external: true },
-  { label: 'Facebook', href: '#', external: false },
-  { label: 'Instagram', href: '#', external: false },
-  { label: 'LinkedIn', href: '#', external: false },
+  { label: 'WhatsApp', href: info.whatsappUrl },
+  ...SOCIAL_ACCOUNTS.filter((account) => account.url).map((account) => ({
+    label: account.label,
+    href: account.url as string,
+  })),
 ]
 
 const legalLinks = [
@@ -63,14 +70,14 @@ const legalLinks = [
           <li v-for="link in branchLinks" :key="link.label">
             <NuxtLink
               :to="link.to"
-              class="flex items-center gap-2.5 text-sm text-white/60 transition-colors hover:text-white"
+              class="flex items-center gap-2.5 py-1 text-sm text-white/60 transition-colors hover:text-white"
             >
               <span class="size-1.5 shrink-0 rounded-full" :style="{ background: link.color }" />
               {{ link.label }}
             </NuxtLink>
           </li>
           <li>
-            <NuxtLink to="/galerie" class="text-sm text-white/60 transition-colors hover:text-white">
+            <NuxtLink to="/galerie" class="inline-block py-1 text-sm text-white/60 transition-colors hover:text-white">
               Réalisations &amp; références
             </NuxtLink>
           </li>
@@ -82,7 +89,7 @@ const legalLinks = [
         <h2 class="text-[0.6875rem] uppercase tracking-[0.2em] text-white">Pages</h2>
         <ul class="mt-5 flex flex-col gap-3">
           <li v-for="link in pageLinks" :key="link.to">
-            <NuxtLink :to="link.to" class="text-sm text-white/60 transition-colors hover:text-white">
+            <NuxtLink :to="link.to" class="inline-block py-1 text-sm text-white/60 transition-colors hover:text-white">
               {{ link.label }}
             </NuxtLink>
           </li>
@@ -94,22 +101,22 @@ const legalLinks = [
         <h2 class="text-[0.6875rem] uppercase tracking-[0.2em] text-white">Coordonnées</h2>
         <ul class="mt-5 flex flex-col gap-3 text-sm text-white/60">
           <li>
-            <a :href="`tel:${info.phonePrimary}`" class="transition-colors hover:text-white">
+            <a :href="`tel:${info.phonePrimary}`" class="inline-flex min-h-6 items-center transition-colors hover:text-white">
               {{ info.phoneDisplay }}
             </a>
           </li>
           <li>
-            <a :href="`tel:${info.phoneSecondary}`" class="transition-colors hover:text-white">
+            <a :href="`tel:${info.phoneSecondary}`" class="inline-flex min-h-6 items-center transition-colors hover:text-white">
               {{ info.phoneSecondaryDisplay }}
             </a>
           </li>
           <li>
-            <a :href="`mailto:${info.email}`" class="break-all transition-colors hover:text-white">
+            <a :href="`mailto:${info.email}`" class="inline-block break-all py-1 transition-colors hover:text-white">
               {{ info.email }}
             </a>
           </li>
-          <li class="text-white/45">Agôè - Démakpoè, Lomé</li>
-          <li v-for="slot in info.hours" :key="slot.days" class="text-white/45">
+          <li class="text-white/60">Agôè - Démakpoè, Lomé</li>
+          <li v-for="slot in info.hours" :key="slot.days" class="text-white/60">
             {{ slot.days }} : {{ slot.time }}
           </li>
         </ul>
@@ -122,9 +129,9 @@ const legalLinks = [
           <li v-for="link in socialLinks" :key="link.label">
             <a
               :href="link.href"
-              :target="link.external ? '_blank' : undefined"
-              :rel="link.external ? 'noopener noreferrer' : undefined"
-              class="text-sm text-white/60 transition-colors hover:text-white"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-block py-1 text-sm text-white/60 transition-colors hover:text-white"
             >
               {{ link.label }}
             </a>
@@ -133,7 +140,7 @@ const legalLinks = [
       </div>
     </div>
 
-    <div class="u-gutter flex flex-wrap items-center justify-between gap-4 border-t border-white/10 py-6 text-[0.6875rem] tracking-[0.1em] text-white/40">
+    <div class="u-gutter flex flex-wrap items-center justify-between gap-4 border-t border-white/10 py-6 text-[0.6875rem] tracking-[0.1em] text-white/60">
       <span>© {{ year }} TBS Distribution S.A.R.L — Tous droits réservés.</span>
       <!-- Ces trois pages sont exigées : les libellés étaient affichés depuis
            l'origine, sans lien ni page derrière. -->

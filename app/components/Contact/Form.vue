@@ -29,6 +29,8 @@ const REQUEST_TYPES = [
 ]
 
 const route = useRoute()
+const info = useSiteInfo()
+const retentionMonths = QUOTE_RETENTION_MONTHS
 
 const form = reactive({
   name: '',
@@ -287,5 +289,19 @@ const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
         Réponse sous 24 h ouvrées. Champs marqués * obligatoires.
       </p>
     </div>
+
+    <!-- Information sur le traitement des données. Elle appartient au
+         formulaire, pas à une page annexe : c'est ici que la personne décide
+         de transmettre ses coordonnées. -->
+    <p class="max-w-[68ch] border-t border-ink/10 pt-5 text-xs leading-[1.7] text-ink-mute">
+      Vos coordonnées servent uniquement à traiter cette demande de devis et
+      sont destinées à TBS Distribution S.A.R.L. Elles sont conservées
+      {{ retentionMonths }} mois, puis anonymisées. Vous pouvez à tout moment
+      demander à les consulter, les corriger ou les supprimer en écrivant à
+      <a :href="`mailto:${info.email}`" class="underline underline-offset-2 hover:text-ink">{{ info.email }}</a>.
+      <NuxtLink to="/confidentialite" class="underline underline-offset-2 hover:text-ink">
+        Politique de confidentialité
+      </NuxtLink>.
+    </p>
   </form>
 </template>
