@@ -46,7 +46,7 @@ const memoryBuckets = new Map<string, number[]>()
  * c'est la ligne insérée qui fera le compte au coup suivant.
  */
 export function isRateLimitedInMemory(key: string, limit: number, now = Date.now()): RateLimitResult {
-  const hits = (memoryBuckets.get(key) ?? []).filter((t) => now - t < WINDOW_MS)
+  const hits = (memoryBuckets.get(key) ?? []).filter(t => now - t < WINDOW_MS)
   const previous = hits.length
   hits.push(now)
   memoryBuckets.set(key, hits)
@@ -54,7 +54,7 @@ export function isRateLimitedInMemory(key: string, limit: number, now = Date.now
   // Purge opportuniste pour éviter une croissance non bornée de la Map.
   if (memoryBuckets.size > 5000) {
     for (const [k, v] of memoryBuckets) {
-      if (!v.some((t) => now - t < WINDOW_MS)) memoryBuckets.delete(k)
+      if (!v.some(t => now - t < WINDOW_MS)) memoryBuckets.delete(k)
     }
   }
 
@@ -101,7 +101,8 @@ export async function isQuoteRateLimited(
   try {
     const hits = await countRecentRequests(db, ipHash, new Date(now.getTime() - WINDOW_MS))
     return { limited: hits >= limit, scope: 'database', hits }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('[devis] comptage du quota impossible, repli en mémoire :', error)
     return isRateLimitedInMemory(ipHash, limit, now.getTime())
   }

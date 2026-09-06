@@ -58,8 +58,8 @@ const FIELD_LABELS: Record<string, string> = {
   email: 'E-mail',
   branch: 'Branche concernée',
   requestType: 'Type de demande',
-  eventDate: "Date de l'événement",
-  guestCount: "Nombre d'invités",
+  eventDate: 'Date de l\'événement',
+  guestCount: 'Nombre d\'invités',
   location: 'Lieu',
   message: 'Votre besoin',
 }
@@ -79,10 +79,10 @@ const errorSummary = ref<HTMLElement | null>(null)
 const errorList = computed(() => {
   const known = Object.keys(FIELD_LABELS)
   const fields = [
-    ...known.filter((field) => errors.value[field]),
-    ...Object.keys(errors.value).filter((field) => !known.includes(field)),
+    ...known.filter(field => errors.value[field]),
+    ...Object.keys(errors.value).filter(field => !known.includes(field)),
   ]
-  return fields.map((field) => ({
+  return fields.map(field => ({
     field,
     label: FIELD_LABELS[field] ?? field,
     message: errors.value[field]!,
