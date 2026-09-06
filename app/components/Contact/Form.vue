@@ -5,7 +5,8 @@
  * Écarts avec la maquette, où le bouton basculait simplement un booléen :
  *  - vraie soumission vers POST /api/quotes, avec états chargement / erreur ;
  *  - validation côté client ET côté serveur, erreurs rendues sous le champ
- *    concerné et reliées par `aria-describedby` ;
+ *    concerné et reliées par `aria-describedby`, plus un résumé focalisable
+ *    en tête de formulaire qui annonce le bilan avant le détail ;
  *  - champ e-mail ajouté (indispensable pour envoyer un devis écrit) ;
  *  - champ piège `company` + mesure du temps de remplissage contre les robots ;
  *  - les champs « invités » et « date » ne concernent pas les branches hors
@@ -45,10 +46,48 @@ const form = reactive({
   company: '', // piège
 })
 
+/**
+ * Intitulé de chaque champ pour le résumé d'erreurs. Le message seul —
+ * « Numéro de téléphone invalide. » — se comprend sous le champ, mais pas en
+ * tête de formulaire : le résumé doit nommer ce qu'il faut aller corriger.
+ * Les clés couvrent aussi les champs que seul le serveur peut rejeter.
+ */
+const FIELD_LABELS: Record<string, string> = {
+  name: 'Nom complet',
+  phone: 'Téléphone',
+  email: 'E-mail',
+  branch: 'Branche concernée',
+  requestType: 'Type de demande',
+  eventDate: "Date de l'événement",
+  guestCount: "Nombre d'invités",
+  location: 'Lieu',
+  message: 'Votre besoin',
+}
+
 const errors = ref<Record<string, string>>({})
 const status = ref<'idle' | 'pending' | 'sent' | 'error'>('idle')
 const serverError = ref('')
 const mountedAt = ref(Date.now())
+const errorSummary = ref<HTMLElement | null>(null)
+
+/**
+ * Erreurs à plat, dans l'ordre des champs du formulaire — et non dans celui
+ * où le serveur les a renvoyées. Une clé inconnue (champ ajouté au schéma
+ * sans l'être ici) reste listée en fin : mieux vaut un intitulé brut qu'une
+ * erreur invisible.
+ */
+const errorList = computed(() => {
+  const known = Object.keys(FIELD_LABELS)
+  const fields = [
+    ...known.filter((field) => errors.value[field]),
+    ...Object.keys(errors.value).filter((field) => !known.includes(field)),
+  ]
+  return fields.map((field) => ({
+    field,
+    label: FIELD_LABELS[field] ?? field,
+    message: errors.value[field]!,
+  }))
+})
 
 // Un lien « demander un devis » depuis une branche présélectionne celle-ci.
 onMounted(() => {
@@ -79,11 +118,25 @@ function validate(): boolean {
   return Object.keys(next).length === 0
 }
 
+/**
+ * Donne le focus au résumé plutôt qu'au premier champ fautif : l'utilisateur
+ * entend d'abord combien de champs sont à reprendre, puis choisit par où
+ * commencer. `role="alert"` fait annoncer le résumé dès son insertion ; le
+ * focus rend ensuite la liste atteignable au clavier.
+ */
+async function focusErrorSummary() {
+  await nextTick()
+  errorSummary.value?.focus()
+}
+
+/** Depuis le résumé, saute au champ concerné et l'ouvre au clavier. */
+function goToField(field: string) {
+  document.getElementById(`field-${field}`)?.focus()
+}
+
 async function submit() {
   if (!validate()) {
-    // Ramène l'utilisateur sur le premier champ fautif.
-    const first = Object.keys(errors.value)[0]
-    document.getElementById(`field-${first}`)?.focus()
+    await focusErrorSummary()
     return
   }
 
@@ -105,6 +158,7 @@ async function submit() {
     if (err.data?.data?.errors) {
       errors.value = err.data.data.errors
       status.value = 'idle'
+      await focusErrorSummary()
       return
     }
     serverError.value =
@@ -158,6 +212,30 @@ const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
         Société
         <input v-model="form.company" type="text" tabindex="-1" autocomplete="off">
       </label>
+    </div>
+
+    <!-- Résumé d'erreurs : le bilan avant le détail, atteignable au clavier. -->
+    <div
+      v-if="errorList.length"
+      ref="errorSummary"
+      role="alert"
+      tabindex="-1"
+      class="border-l-2 border-red-500 bg-red-50 px-4 py-4 outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+    >
+      <p class="text-sm font-medium text-red-700">
+        {{ errorList.length }} champ{{ errorList.length > 1 ? 's' : '' }} à corriger avant l'envoi :
+      </p>
+      <ul class="mt-2 flex flex-col gap-1 text-sm text-red-700">
+        <li v-for="item in errorList" :key="item.field">
+          <a
+            :href="`#field-${item.field}`"
+            class="underline underline-offset-2 hover:no-underline"
+            @click.prevent="goToField(item.field)"
+          >
+            {{ item.label }} — {{ item.message }}
+          </a>
+        </li>
+      </ul>
     </div>
 
     <div class="grid gap-7 sm:grid-cols-2">
@@ -250,6 +328,7 @@ const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
           id="field-location"
           v-model="form.location"
           type="text"
+          autocomplete="address-level2"
           placeholder="Ex. Agôè, Lomé"
           :class="FIELD"
         >
