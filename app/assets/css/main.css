@@ -217,6 +217,73 @@
     background: currentColor;
     opacity: 0.5;
   }
+
+  /* Corps de texte long — pages légales. La mesure est bornée à 72 caractères :
+     au-delà, l'œil perd la ligne suivante, et ces pages se lisent vraiment. */
+  .u-prose {
+    max-width: 72ch;
+    color: var(--color-ink-soft);
+    font-size: 0.9375rem;
+    line-height: 1.75;
+  }
+  .u-prose > * + * {
+    margin-block-start: 1.125rem;
+  }
+  .u-prose h2 {
+    margin-block-start: clamp(2.5rem, 5vw, 3.75rem);
+    color: var(--color-ink);
+    font-family: var(--font-display);
+    font-size: var(--text-h3);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+  .u-prose h3 {
+    margin-block-start: 2rem;
+    color: var(--color-ink);
+    font-size: 1.0625rem;
+    line-height: 1.4;
+  }
+  .u-prose h2 + *,
+  .u-prose h3 + * {
+    margin-block-start: 0.875rem;
+  }
+  .u-prose strong {
+    color: var(--color-ink);
+    font-weight: 500;
+  }
+  .u-prose a {
+    color: var(--color-gold-deep);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .u-prose a:hover {
+    color: var(--color-ink);
+  }
+  .u-prose ul {
+    padding-inline-start: 1.125rem;
+    list-style: disc;
+  }
+  .u-prose li + li {
+    margin-block-start: 0.5rem;
+  }
+  .u-prose li::marker {
+    color: var(--color-gold);
+  }
+
+  /* Information encore attendue de TBS. Volontairement voyante : une mention
+     légale incomplète doit se remarquer, pas se fondre dans le texte. */
+  .u-pending {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.4375rem;
+    padding: 0.125rem 0.5rem;
+    background: #fbeae5;
+    border: 1px dashed #c4633f;
+    color: #8a2b12;
+    font-size: var(--text-eyebrow);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
 }
 
 /* ==========================================================================
