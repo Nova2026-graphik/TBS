@@ -62,7 +62,7 @@ cp .env.example .env
 3. Créer les tables et injecter le contenu :
 
 ```bash
-npm run db:push
+npm run db:migrate
 npm run db:seed
 ```
 
@@ -73,15 +73,42 @@ npm run db:seed
 
 | Script | Rôle |
 | --- | --- |
-| `npm run db:generate` | Génère les fichiers de migration SQL depuis le schéma |
-| `npm run db:migrate` | Applique les migrations (recommandé en production) |
-| `npm run db:push` | Synchronise le schéma directement (pratique en développement) |
+| `npm run db:generate` | Génère une migration SQL depuis les modifications du schéma |
+| `npm run db:migrate` | Applique les migrations en attente — **le seul chemin autorisé en production** |
+| `npm run db:push` | Synchronise le schéma sans migration — **développement uniquement** |
 | `npm run db:seed` | Injecte le contenu éditorial de référence |
 | `npm run db:studio` | Ouvre Drizzle Studio pour parcourir et éditer les données |
 
+### Migrations
+
+`server/database/migrations/` est versionné : le SQL appliqué à la base fait
+partie du dépôt, au même titre que le schéma TypeScript dont il dérive.
+
+Toute modification de `server/database/schema.ts` se termine par :
+
+```bash
+npm run db:generate        # écrit la migration + le snapshot dans meta/
+git add server/database/migrations
+```
+
+**`db:push` ne doit jamais viser la production.** Il compare le schéma à la
+base et applique la différence sans rien écrire nulle part : aucune trace de
+ce qui a été appliqué ni quand, aucun retour en arrière possible, et un
+renommage de colonne qu'il lit comme *suppression + création* — c'est-à-dire
+la perte des demandes de `quote_requests`. En développement, sur une base
+jetable, il reste le chemin le plus court ; ailleurs, non.
+
+Au déploiement, `npm run db:migrate` s'exécute **avant** la mise en service du
+nouveau build, depuis le pipeline et non depuis un poste :
+
+```bash
+DATABASE_URL=… npm run db:migrate && node .output/server/index.mjs
+```
+
 ### Schéma
 
-`server/database/schema.ts` définit neuf tables :
+`server/database/schema.ts` définit huit tables et trois types énumérés
+(`branch_slug`, `gallery_category`, `quote_status`) :
 
 - **Contenu** — `branches`, `rental_categories`, `service_blocks`, `domains`,
   `gallery_items`, `testimonials`, `faq_items`. Chacune porte un `position`
@@ -310,8 +337,12 @@ npm run build          # → .output/
 node .output/server/index.mjs
 ```
 
+Avec une base configurée, `npm run db:migrate` précède la mise en service —
+cf. [Migrations](#migrations).
+
 **Vercel / Netlify** : connecter le dépôt, définir `DATABASE_URL` dans les
-variables d'environnement, aucune autre configuration nécessaire.
+variables d'environnement, et ajouter `npm run db:migrate` à la commande de
+build ; aucune autre configuration nécessaire.
 
 **Hébergement Node classique** : servir `.output/` derrière Nginx.
 
