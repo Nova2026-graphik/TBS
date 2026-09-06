@@ -9,10 +9,28 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/fonts',
     '@nuxt/content',
+    '@nuxt/eslint',
     '@vueuse/nuxt',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots',
   ],
+
+  /**
+   * Le module fournit la configuration Vue + TypeScript adaptée à
+   * l'arborescence du projet ; `eslint.config.mjs` l'étend à la racine.
+   * `stylistic` active le formatage dans ESLint : une seule chaîne d'outils,
+   * pas de Prettier à tenir en parallèle.
+   */
+  eslint: {
+    config: {
+      stylistic: {
+        indent: 2,
+        quotes: 'single',
+        semi: false,
+        commaDangle: 'always-multiline',
+      },
+    },
+  },
 
   css: ['~/assets/css/main.css'],
 
