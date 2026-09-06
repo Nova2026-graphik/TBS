@@ -125,9 +125,15 @@ useBreadcrumbSchema([{ name: 'Confidentialité', path: '/confidentialite' }])
         <p>
           Les demandes de devis sont conservées
           <strong>{{ retentionMonths }} mois</strong> à compter du
-          dernier échange, puis anonymisées : les éléments identifiants sont
-          supprimés et seules subsistent des statistiques agrégées sans lien
-          avec une personne.
+          dernier échange, puis anonymisées : nom, téléphone, adresse
+          électronique, lieu, description du besoin et éléments techniques sont
+          effacés. Ne subsistent que la branche, le type de demande et les
+          dates — des statistiques sans lien avec une personne.
+        </p>
+        <p>
+          Cette anonymisation est <strong>automatique</strong> : une tâche
+          planifiée la déclenche chaque nuit, elle ne dépend d'aucune
+          intervention manuelle.
         </p>
         <p>
           Lorsqu'une location est conclue, les pièces comptables associées sont
@@ -174,12 +180,16 @@ useBreadcrumbSchema([{ name: 'Confidentialité', path: '/confidentialite' }])
 
         <h2>Services tiers</h2>
         <p>
-          La page <NuxtLink to="/contact">contact</NuxtLink> affiche une carte
-          fournie par <strong>OpenStreetMap</strong>. Son affichage entraîne
-          une requête vers les serveurs d'OpenStreetMap, qui reçoivent alors
-          votre adresse IP et les caractéristiques de votre navigateur. Aucune
-          autre ressource tierce n'est chargée : polices, images et scripts
-          sont servis depuis ce site.
+          La page <NuxtLink to="/contact">contact</NuxtLink> propose une carte
+          fournie par <strong>OpenStreetMap</strong>.
+          <strong>Elle ne se charge pas toute seule</strong> : rien n'est
+          demandé à OpenStreetMap tant que vous n'avez pas cliqué sur
+          « Afficher la carte ». Si vous le faites, ses serveurs reçoivent
+          alors votre adresse IP et les caractéristiques de votre navigateur.
+        </p>
+        <p>
+          Aucune autre ressource tierce n'est chargée : polices, images et
+          scripts sont servis depuis ce site.
         </p>
 
         <h2>Modifications</h2>

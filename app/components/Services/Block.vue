@@ -32,7 +32,7 @@ const sizesHalfLg = SIZES_HALF_LG
     </div>
 
     <div v-reveal="100">
-      <span class="u-eyebrow" :style="{ color: accent === '#3E3524' ? '#827148' : accent }">
+      <span class="u-eyebrow" :style="{ color: brandTextColor(accent) }">
         {{ block.eyebrow }}
       </span>
 

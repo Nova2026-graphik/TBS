@@ -40,8 +40,42 @@ const visible = computed(() =>
 // cohérentes avec le filtre affiché.
 const lightboxIndex = ref<number | null>(null)
 
-// Un changement de filtre invalide l'index courant.
-watch(activeFilter, () => { lightboxIndex.value = null })
+/**
+ * Chargement progressif : neuf vignettes au premier rendu, le reste sur
+ * demande. Les vingt-trois d'un coup représentaient l'essentiel des 586 Ko
+ * d'images de la page — près de vingt secondes sur une 3G dégradée, courante
+ * hors de Lomé.
+ *
+ * Le rendu serveur ne produit donc que les neuf premières : les autres
+ * n'existent ni dans le HTML, ni dans le `srcset`, tant qu'on ne les demande
+ * pas. La visionneuse, elle, garde accès à la sélection entière.
+ */
+const BATCH = 9
+const shownCount = ref(BATCH)
+const shown = computed(() => visible.value.slice(0, shownCount.value))
+const remaining = computed(() => visible.value.length - shown.value.length)
+
+const grid = useTemplateRef<HTMLElement>('grid')
+
+
+async function showMore() {
+  const firstNew = shownCount.value
+  shownCount.value += BATCH
+  await nextTick()
+
+  // Le bouton disparaît quand tout est affiché : sans cela le focus
+  // retomberait sur le `<body>`. On le pose sur la première nouvelle vignette.
+  if (remaining.value === 0) {
+    const buttons = grid.value?.querySelectorAll<HTMLButtonElement>('li button')
+    buttons?.[firstNew]?.focus()
+  }
+}
+
+// Un changement de filtre invalide l'index courant et remet le compteur à zéro.
+watch(activeFilter, () => {
+  lightboxIndex.value = null
+  shownCount.value = BATCH
+})
 
 function chipClass(isActive: boolean) {
   return isActive
@@ -85,10 +119,15 @@ const sizesThird = SIZES_THIRD
       </div>
     </UiPageHero>
 
-    <section class="u-gutter u-section bg-white">
+    <section ref="grid" class="u-gutter u-section bg-white">
       <!-- Compteur : l'utilisateur voit immédiatement l'effet du filtre. -->
       <p class="mb-8 text-[0.6875rem] uppercase tracking-[0.2em] text-ink-mute" aria-live="polite">
-        {{ visible.length }} réalisation{{ visible.length > 1 ? 's' : '' }}
+        <template v-if="remaining > 0">
+          {{ shown.length }} sur {{ visible.length }} réalisations
+        </template>
+        <template v-else>
+          {{ visible.length }} réalisation{{ visible.length > 1 ? 's' : '' }}
+        </template>
       </p>
 
       <TransitionGroup
@@ -99,7 +138,7 @@ const sizesThird = SIZES_THIRD
         leave-active-class="absolute transition-opacity duration-200"
         leave-to-class="opacity-0"
       >
-        <li v-for="(item, i) in visible" :key="item.id">
+        <li v-for="(item, i) in shown" :key="item.id">
           <button
             type="button"
             class="group block w-full text-left"
@@ -111,6 +150,7 @@ const sizesThird = SIZES_THIRD
                 :alt="item.imageAlt"
                 preset="card"
                 loading="lazy"
+                fetchpriority="low"
                 :sizes="sizesThird"
                 width="900"
                 height="675"
@@ -148,6 +188,12 @@ const sizesThird = SIZES_THIRD
         </p>
         <UiButton variant="ghost" class="mt-6" @click="setFilter('all')">
           Voir tout
+        </UiButton>
+      </div>
+
+      <div v-if="remaining > 0" class="mt-[clamp(2rem,4vw,3.5rem)] flex justify-center">
+        <UiButton variant="ghost" @click="showMore">
+          Voir {{ Math.min(remaining, BATCH) }} réalisation{{ Math.min(remaining, BATCH) > 1 ? 's' : '' }} de plus
         </UiButton>
       </div>
 

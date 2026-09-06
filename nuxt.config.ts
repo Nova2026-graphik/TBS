@@ -94,7 +94,10 @@ export default defineNuxtConfig({
     quality: 74,
     format: ['webp'],
     presets: {
-      card: { modifiers: { format: 'webp', quality: 72 } },
+      // 60 au lieu de 72 : sur une vignette rendue à ~300 px de large, la
+      // différence est indiscernable et le fichier perd un cinquième de son
+      // poids. La galerie en affiche vingt-trois.
+      card: { modifiers: { format: 'webp', quality: 60 } },
       hero: { modifiers: { format: 'webp', quality: 78 } },
     },
   },
@@ -103,8 +106,29 @@ export default defineNuxtConfig({
     autoLastmod: true,
   },
 
+  /**
+   * Cache des images. Les URL `/_ipx/` portent format, qualité et dimensions
+   * dans leur chemin : elles sont adressées par leur contenu, donc immuables
+   * par construction — exactement comme les fichiers hachés de `/_nuxt/`.
+   * Les originaux de `/images/` gardent un nom fixe : un an serait un piège,
+   * trente jours laissent une purge possible.
+   */
+  routeRules: {
+    '/_ipx/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
+    '/images/**': { headers: { 'cache-control': 'public, max-age=2592000' } },
+  },
+
   nitro: {
     compressPublicAssets: { gzip: true, brotli: true },
+
+    /**
+     * Anonymisation des demandes de devis expirées, chaque nuit à 3 h.
+     * Le planificateur est fourni par le préréglage Node ; sur une plate-forme
+     * sans cron intégré, déclencher `quotes:anonymise` depuis le cron maison.
+     */
+    experimental: { tasks: true },
+    scheduledTasks: { '0 3 * * *': ['quotes:anonymise'] },
+
     prerender: {
       crawlLinks: true,
       routes: [
