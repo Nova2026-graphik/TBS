@@ -57,7 +57,7 @@ useBreadcrumbSchema([{ name: 'Confidentialité', path: '/confidentialite' }])
         </p>
         <p v-if="analytics">
           Une exception : une mesure d'audience <strong>sans cookie et sans
-          identifiant individuel</strong> compte les pages consultées. Elle ne
+            identifiant individuel</strong> compte les pages consultées. Elle ne
           permet pas de vous reconnaître d'une visite à l'autre. Détail au
           paragraphe « Cookies et traceurs ».
         </p>
