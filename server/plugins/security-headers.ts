@@ -20,12 +20,14 @@ import {
 } from '../utils/securityHeaders'
 
 export default defineNitroPlugin((nitroApp) => {
-  const { security } = useRuntimeConfig()
+  const config = useRuntimeConfig()
+  const { security } = config
 
   const options = {
     dev: import.meta.dev,
     cspMode: security.cspMode,
     cspScriptHashes: security.cspScriptHashes,
+    analyticsOrigin: config.public.analytics?.host,
   }
 
   // La politique ne dépend que de la configuration : on l'assemble une fois.

@@ -1,6 +1,10 @@
 <script setup lang="ts">
 const info = useSiteInfo()
 
+// `devis_ouvert` : le trafic qui atteint réellement le formulaire.
+const { track } = useAnalytics()
+onMounted(() => track(ANALYTICS_EVENTS.devisOuvert))
+
 /**
  * La carte OpenStreetMap ne se charge qu'à la demande.
  *

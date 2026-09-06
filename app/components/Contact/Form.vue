@@ -31,6 +31,19 @@ const REQUEST_TYPES = [
 
 const route = useRoute()
 const info = useSiteInfo()
+const { track } = useAnalytics()
+
+/**
+ * `devis_commence` ne part qu'une fois, au premier champ réellement rempli.
+ * Rapporté à `devis_envoye`, il dit si le formulaire décourage — ce qu'aucune
+ * autre mesure ne révèle.
+ */
+const started = ref(false)
+function markStarted() {
+  if (started.value) return
+  started.value = true
+  track(ANALYTICS_EVENTS.devisCommence)
+}
 const retentionMonths = QUOTE_RETENTION_MONTHS
 
 const form = reactive({
@@ -231,7 +244,14 @@ const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
   </div>
 
   <!-- Formulaire -->
-  <form v-else class="flex flex-col gap-7" novalidate @submit.prevent="submit">
+  <!-- `@input` en délégation : un seul écouteur pour les neuf champs. -->
+  <form
+    v-else
+    class="flex flex-col gap-7"
+    novalidate
+    @input="markStarted"
+    @submit.prevent="submit"
+  >
     <!-- Piège à robots : hors flux, masqué aux lecteurs d'écran, jamais tabulable. -->
     <div aria-hidden="true" class="absolute left-[-9999px] h-0 w-0 overflow-hidden">
       <label>

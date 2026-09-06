@@ -97,6 +97,18 @@ export default defineNuxtConfig({
       email: 'tbstogo228@gmail.com',
       address: 'Agôè - Démakpoè, Lomé, Togo',
       /**
+       * Mesure d'audience — cf. `shared/utils/analytics.ts`.
+       * `provider` : `plausible` ou `umami`, tous deux sans cookie, donc sans
+       * bandeau de consentement. Vide : rien n'est chargé, aucune requête ne
+       * part, et la politique de confidentialité l'annonce en conséquence.
+       * `host` alimente aussi la CSP.
+       */
+      analytics: {
+        provider: '',
+        host: '',
+        siteId: '',
+      },
+      /**
        * Coordonnées de l'entrepôt, à relever sur place — cf.
        * `app/utils/businessLocation.ts`. Laissées vides tant que le relevé
        * n'a pas eu lieu : le JSON-LD n'annonce alors aucune position, et la
