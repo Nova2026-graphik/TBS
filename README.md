@@ -605,4 +605,5 @@ n'est pas affecté. Aucune erreur ne provient du code du projet.
 Site réalisé pour **TBS Distribution S.A.R.L** (Agôè-Démakpoè, Lomé — Togo).
 Code, contenus éditoriaux et éléments d’identité : tous droits réservés.
 Les photographies issues de la maquette proviennent d’une banque d’images et
-sont destinées à être remplacées par les clichés des réalisations TBS.
+sont destinées à être remplacées par les clichés des réalisations TBS —
+le cahier de tournage est dans [`docs/reportage-photo.md`](docs/reportage-photo.md).
