@@ -3,6 +3,7 @@ const { data } = await useSiteContent()
 
 const stats = ABOUT_STATS
 const sizesFull = SIZES_FULL
+const densitiesFull = DENSITIES_FULL
 const sizesHalfLg = SIZES_HALF_LG
 
 /** Détail par branche, affiché en quatre panneaux sous l'histoire. */
@@ -60,6 +61,7 @@ useBreadcrumbSchema([{ name: 'À propos', path: '/a-propos' }])
         preset="hero"
         preload
         :sizes="sizesFull"
+        :densities="densitiesFull"
         width="1920"
         height="1280"
         class="absolute inset-0 size-full object-cover"
