@@ -10,7 +10,7 @@ const inspirations = INSPIRATIONS
 usePageSeo({
   title: 'Équipements, réception, études et agro à Lomé',
   description:
-    "TBS Distribution S.A.R.L : fourniture de matériels et d'équipements, location de matériel de réception, études et conseils, agriculture et agro-industrie. Devis chiffré sous 24h à Lomé et partout au Togo.",
+    'TBS Distribution S.A.R.L : fourniture de matériels et d\'équipements, location de matériel de réception, études et conseils, agriculture et agro-industrie. Devis chiffré sous 24h à Lomé et partout au Togo.',
   path: '/',
 })
 </script>

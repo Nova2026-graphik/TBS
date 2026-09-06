@@ -17,8 +17,8 @@ import {
 
 export default defineCachedEventHandler(
   async () => {
-    const [branches, categories, services, domains, gallery, testimonials, faq] =
-      await Promise.all([
+    const [branches, categories, services, domains, gallery, testimonials, faq]
+      = await Promise.all([
         getBranches(),
         getRentalCategories(),
         getServiceBlocks(),

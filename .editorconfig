@@ -1,0 +1,14 @@
+# Aligne les éditeurs sur ce qu'ESLint impose déjà — cf. eslint.config.mjs.
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+indent_size = 2
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.md]
+# Deux espaces en fin de ligne valent un retour à la ligne en Markdown.
+trim_trailing_whitespace = false

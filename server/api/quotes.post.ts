@@ -18,43 +18,12 @@
  * ne peut jamais faire échouer la requête — cf. `utils/quoteNotification.ts`.
  */
 import { createHash } from 'node:crypto'
-import { z } from 'zod'
 import { useDb } from '../database/client'
 import * as schema from '../database/schema'
 import { getClientIp, parseTrustedProxy } from '../utils/clientIp'
 import { notifyQuote } from '../utils/quoteNotification'
 import { isQuoteRateLimited } from '../utils/rateLimit'
-
-const quoteSchema = z.object({
-  name: z.string().trim().min(2, 'Nom trop court').max(160),
-  phone: z
-    .string()
-    .trim()
-    .min(6, 'Numéro invalide')
-    .max(40)
-    .regex(/^[\d\s+().-]+$/, 'Numéro invalide'),
-  email: z.string().trim().email('E-mail invalide').max(200).optional().or(z.literal('')),
-  branch: z.string().trim().min(1).max(120),
-  requestType: z.string().trim().min(1).max(120),
-  eventDate: z
-    .string()
-    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date invalide')
-    .optional()
-    .or(z.literal('')),
-  guestCount: z.coerce.number().int().min(0).max(100_000).optional(),
-  location: z.string().trim().max(200).optional().or(z.literal('')),
-  message: z.string().trim().min(5, 'Précisez votre besoin').max(4000),
-  /**
-   * Champ piège : invisible pour l'utilisateur, attirant pour les robots.
-   * Accepté tel quel — c'est le gestionnaire, plus bas, qui rejette en silence.
-   * Une contrainte de schéma (`max(0)`) renverrait une 422 nommant `company`
-   * dans le corps de la réponse, ce qui désignerait le piège à l'attaquant.
-   * Le plafond reste large mais fini : le champ ne sert pas de soute.
-   */
-  company: z.string().max(200).optional(),
-  /** Millisecondes écoulées entre l'affichage et l'envoi du formulaire. */
-  elapsedMs: z.coerce.number().min(0).optional(),
-})
+import { formatIssues, looksAutomated, quoteSchema } from '../utils/quoteValidation'
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
@@ -65,20 +34,16 @@ export default defineEventHandler(async (event) => {
     throw createError({
       statusCode: 422,
       statusMessage: 'Formulaire invalide',
-      data: {
-        // Format compact { champ: message } directement exploitable par le front.
-        errors: Object.fromEntries(
-          parsed.error.issues.map((i) => [i.path.join('.'), i.message]),
-        ),
-      },
+      // Format compact { champ: message } directement exploitable par le front.
+      data: { errors: formatIssues(parsed.error) },
     })
   }
 
   const payload = parsed.data
 
-  // Robot : champ piège rempli, ou formulaire envoyé en moins de 2 secondes.
-  // On renvoie un succès silencieux pour ne pas renseigner l'attaquant.
-  if (payload.company || (payload.elapsedMs !== undefined && payload.elapsedMs < 2000)) {
+  // Robot : champ piège rempli, ou formulaire envoyé trop vite. On renvoie un
+  // succès silencieux pour ne pas renseigner l'attaquant.
+  if (looksAutomated(payload)) {
     return { ok: true, id: null }
   }
 
@@ -133,14 +98,16 @@ export default defineEventHandler(async (event) => {
 
       id = row?.id ?? null
       persisted = true
-    } catch (error) {
+    }
+    catch (error) {
       console.error('[devis] écriture impossible :', error)
       throw createError({
         statusCode: 500,
-        statusMessage: "Envoi impossible pour l'instant. Appelez-nous au (+228) 90 10 85 10.",
+        statusMessage: 'Envoi impossible pour l\'instant. Appelez-nous au (+228) 90 10 85 10.',
       })
     }
-  } else {
+  }
+  else {
     // Pas de base configurée : on trace pour que la demande ne soit pas perdue,
     // même si l'e-mail ne part pas non plus.
     console.info('[devis] nouvelle demande (hors base) :', {
@@ -181,7 +148,8 @@ export default defineEventHandler(async (event) => {
   }
   if (notification.failed.configuration) {
     console.warn('[devis] notification non configurée :', notification.failed.configuration)
-  } else if (Object.keys(notification.failed).length) {
+  }
+  else if (Object.keys(notification.failed).length) {
     console.error('[devis] notification en échec :', notification.failed)
   }
 
