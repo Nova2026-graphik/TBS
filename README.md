@@ -592,11 +592,33 @@ curl -sI http://127.0.0.1:3000/ | grep -iE 'content-security|strict-transport|x-
 En ligne, viser A ou A+ sur <https://securityheaders.com> (A tant que la CSP
 reste en report-only, A+ une fois passée en `enforce`).
 
-`typecheck` remonte une erreur `TS2537` dans
-`node_modules/@nuxt/image/dist/runtime/components/NuxtPicture.vue` : c'est une
-incompatibilité entre `@nuxt/image` et les types `@unhead` actuels, dans une
-dépendance. Le composant `<NuxtPicture>` n'est pas utilisé ici et le build
-n'est pas affecté. Aucune erreur ne provient du code du projet.
+### L'exception du contrôle de types
+
+`npm run typecheck` passe par [`scripts/typecheck.mjs`](scripts/typecheck.mjs),
+qui tolère **une** erreur et une seule : `TS2537` dans
+`node_modules/@nuxt/image/dist/runtime/components/NuxtPicture.vue`, une
+incompatibilité entre `@nuxt/image` 1.11 et les types `@unhead` livrés avec
+Nuxt 4. Le composant `<NuxtPicture>` n'est pas utilisé ici et le build n'est
+pas affecté.
+
+Ni `skipLibCheck` ni un `exclude` de tsconfig ne couvrent ce cas :
+`skipLibCheck` ne vaut que pour les `.d.ts`, et le composant est tiré
+transitivement par les types de composants globaux.
+
+La dérogation se périme d'elle-même. Le script échoue :
+
+- sur **toute autre** erreur de type, qu'il liste ;
+- **et** le jour où l'erreur tolérée disparaît — c'est alors le signal de
+  mettre à jour `@nuxt/image` et de supprimer le script.
+
+Sans cette seconde condition, une exception muette survivrait à son motif et
+finirait par masquer de vraies erreurs. `npm run typecheck:brut` donne la
+sortie sans filtre.
+
+**Levée de l'exception** : `@nuxt/image` 2.x corrige la signature. La montée
+de version est une majeure — elle touche le rendu des images, donc le LCP de
+l'accueil — et mérite d'être vérifiée pour elle-même plutôt que glissée dans
+un correctif d'outillage.
 
 ---
 
