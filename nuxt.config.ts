@@ -107,7 +107,17 @@ export default defineNuxtConfig({
     compressPublicAssets: { gzip: true, brotli: true },
     prerender: {
       crawlLinks: true,
-      routes: ['/', '/services', '/galerie', '/a-propos', '/contact', '/faq'],
+      routes: [
+        '/',
+        '/services',
+        '/galerie',
+        '/a-propos',
+        '/contact',
+        '/faq',
+        '/mentions-legales',
+        '/conditions-de-location',
+        '/confidentialite',
+      ],
     },
   },
 
