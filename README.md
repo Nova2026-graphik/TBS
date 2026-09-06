@@ -314,7 +314,7 @@ performance.
 - **Formulaire de devis réel** : validation client et serveur (Zod), erreurs
   sous chaque champ, états chargement / succès / erreur, champ e-mail ajouté,
   champ piège anti-robot, délai minimum de remplissage, limitation à 10
-  demandes par IP et par heure.
+  demandes par IP et par heure, comptées en base.
 - **Notification à réception** : alerte à l'équipe et accusé de réception au
   demandeur, sans jamais pouvoir faire échouer l'enregistrement.
 - **Dock de contact permanent** : bouton WhatsApp flottant en bureau, barre
@@ -507,6 +507,41 @@ Les empreintes changent à chaque build qui touche la configuration publique :
 `npm run security:csp-hashes` fait partie du déploiement. En attendant, le mode
 report-only signale les violations dans la console du navigateur — les deux
 scripts Nuxt y apparaissent, avec l'empreinte à autoriser.
+
+### Limitation de débit et adresse du client
+
+Le formulaire de devis accepte `NUXT_QUOTE_RATE_LIMIT_PER_HOUR` demandes par
+heure et par adresse. Le compte est tenu **en base**, par un décompte des
+lignes de `quote_requests` sur la dernière heure — l'index `(ip_hash,
+created_at)` est là pour ça. Il vaut donc pour toutes les instances à la fois,
+y compris derrière un hébergement sans serveur où chaque requête peut tomber
+sur un processus neuf. Sans `DATABASE_URL`, le compte retombe en mémoire du
+processus : mono-instance, et remis à zéro à chaque démarrage.
+
+Encore faut-il savoir *qui* demande. `X-Forwarded-For` est un en-tête de
+requête, écrit par le client : le lire sans proxy de confiance devant revient
+à laisser un robot changer d'identité à chaque envoi. Les en-têtes de
+plate-forme (`cf-connecting-ip`, `x-vercel-forwarded-for`…) ne valent que
+derrière la plate-forme qui les réécrit.
+
+`NUXT_SECURITY_TRUSTED_PROXY` nomme donc explicitement ce qui se trouve
+devant :
+
+| Valeur | En-tête lu | Quand |
+| --- | --- | --- |
+| `direct` (défaut) | aucun | Accès direct au serveur Node |
+| `cloudflare` | `cf-connecting-ip` | Derrière Cloudflare |
+| `vercel` | `x-vercel-forwarded-for` | Sur Vercel |
+| `netlify` | `x-nf-client-connection-ip` | Sur Netlify |
+| `x-forwarded-for` | `X-Forwarded-For` | Reverse proxy maison — préciser le nombre de sauts avec `NUXT_SECURITY_TRUSTED_PROXY_HOPS` |
+
+Par défaut, seule l'adresse de la connexion TCP fait foi : prudent, mais faux
+si un proxy se trouve devant sans être déclaré — tous les visiteurs partagent
+alors le quota de l'adresse du proxy. **La valeur est à renseigner au
+déploiement, en même temps que `DATABASE_URL`.**
+
+Le piège anti-robot et le délai minimum de deux secondes restent en place :
+ils couvrent le spam automatisé, là où la limitation vise l'abus délibéré.
 
 ### Génération entièrement statique
 
