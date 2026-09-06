@@ -74,7 +74,8 @@ function toOrigin(value: string | undefined): string | null {
   if (!value) return null
   try {
     return new URL(value).origin
-  } catch {
+  }
+  catch {
     console.warn(`[securite] origine de mesure d'audience invalide : ${value}`)
     return null
   }

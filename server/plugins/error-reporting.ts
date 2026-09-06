@@ -46,11 +46,11 @@ export default defineNitroPlugin((nitroApp) => {
         html: `<pre style="font:13px/1.6 ui-monospace,monospace;white-space:pre-wrap">${formatAlertBody(
           report,
           config.public.siteUrl,
-        ).replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' })[c] ?? c)}</pre>`,
+        ).replace(/[<>&]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' })[c] ?? c)}</pre>`,
       },
       config.mail,
     ).catch((sendError) => {
-      console.error("[erreur] alerte non envoyée :", sendError)
+      console.error('[erreur] alerte non envoyée :', sendError)
     })
   })
 })
