@@ -4,8 +4,8 @@
 # `npm audit` lancé à la main — c'est ainsi que les quatre vulnérabilités
 # élevées de l'issue #2 sont passées inaperçues.
 #
-# Le contrôle bloquant (`npm audit --audit-level=high`) relève de
-# l'intégration continue, traitée par l'issue #17.
+# Le contrôle bloquant (`npm audit --audit-level=high`) est assuré par le
+# travail `qualite` de `.github/workflows/ci.yml`.
 version: 2
 
 updates:
@@ -31,3 +31,18 @@ updates:
         update-types:
           - minor
           - patch
+
+  # Les actions du workflow sont épinglées à une version majeure : Dependabot
+  # suit les correctifs de sécurité qu'elles reçoivent, que rien d'autre ne
+  # signalerait.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Africa/Lome
+    labels:
+      - qualite-code
+    commit-message:
+      prefix: 'ci'

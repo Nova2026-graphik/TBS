@@ -1,0 +1,57 @@
+name: Anomalie
+description: Quelque chose ne fonctionne pas comme prévu
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de prendre le temps de signaler. Le plus utile reste le constat
+        précis : ce que vous avez fait, ce que vous attendiez, ce qui s'est
+        passé.
+
+  - type: textarea
+    id: constat
+    attributes:
+      label: Constat
+      description: Ce qui se produit, et sur quelle page.
+      placeholder: Sur /contact, l'envoi du formulaire ne rend pas la main.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Comment le reproduire
+      value: |
+        1. Aller sur …
+        2. Cliquer sur …
+        3. Observer …
+    validations:
+      required: true
+
+  - type: textarea
+    id: attendu
+    attributes:
+      label: Ce qui était attendu
+    validations:
+      required: true
+
+  - type: input
+    id: environnement
+    attributes:
+      label: Environnement
+      description: Navigateur, appareil, et connexion si elle joue un rôle.
+      placeholder: Chrome 141 sur Android, 3G
+    validations:
+      required: false
+
+  - type: dropdown
+    id: gravite
+    attributes:
+      label: Gravité
+      options:
+        - Bloquant — le site ou une fonction est inutilisable
+        - Important — une fonction se comporte mal, un contournement existe
+        - Mineur — gêne visuelle ou cas de bord
+    validations:
+      required: true
