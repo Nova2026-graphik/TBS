@@ -43,7 +43,8 @@ export default defineTask({
       }
 
       return { result: { count, cutoff: cutoff.toISOString() } }
-    } catch (error) {
+    }
+    catch (error) {
       // Une purge qui échoue ne doit pas faire tomber le serveur : elle
       // repassera au prochain déclenchement.
       console.error('[devis] anonymisation impossible :', error)
