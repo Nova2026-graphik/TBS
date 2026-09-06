@@ -117,7 +117,8 @@ app/
   composables/
     useSiteContent.ts      Chargement dédupliqué du contenu + coordonnées
     useSeo.ts              Meta par page, JSON-LD LocalBusiness / FAQPage / Breadcrumb
-  pages/                   index, services, galerie, a-propos, contact, faq
+  pages/                   index, services, galerie, a-propos, contact, faq,
+                           mentions-legales, conditions-de-location, confidentialite
   plugins/reveal.ts        Directive v-reveal (IntersectionObserver partagé, SSR-safe)
   utils/imageSizes.ts      Valeurs `sizes` pour <NuxtImg>
 server/
@@ -130,6 +131,7 @@ server/
 scripts/csp-hashes.mjs     Relève les empreintes CSP des scripts en ligne
 shared/
   types.ts                 Types partagés client / serveur
+  utils/legalData.ts       Identité légale — le seul fichier à compléter
   utils/siteData.ts        Contenu de présentation statique (process, formules, stats)
 public/images/             34 photos extraites de la maquette
 design/                    Maquette source + plaquettes commerciales (documentation)
@@ -324,8 +326,12 @@ Les en-têtes doivent alors être posés par l'hébergeur — fichier `_headers`
    fichiers de `public/images/` décrivent leur usage.
 4. **Logo sur fond sombre** — le logo bichrome est posé sur une pastille
    blanche dans le footer. Une version monochrome claire serait plus élégante.
-5. **Mentions légales** — les liens du bas de page sont présents mais les
-   pages restent à rédiger.
+5. **Mentions légales** — les trois pages existent et sont liées au pied de
+   page. Reste à fournir les informations marquées « à compléter » :
+   **RCCM**, **NIF**, capital social, nom du gérant, coordonnées de
+   l'hébergeur, et les valeurs commerciales des conditions de location
+   (acompte, caution, délais d'annulation). Tout se renseigne dans
+   `shared/utils/legalData.ts`.
 6. **Notification de devis** — les demandes sont enregistrées en base ;
    l'envoi d'un e-mail d'alerte (`NUXT_NOTIFY_EMAIL`) reste à brancher sur un
    service d'envoi (Resend, Brevo, SMTP).
