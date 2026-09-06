@@ -22,13 +22,13 @@ export default defineNuxtPlugin(() => {
     script: [
       cfg.analytics.provider === 'umami'
         ? {
-            src: analyticsScriptUrl(cfg.analytics),
-            defer: true,
+            'src': analyticsScriptUrl(cfg.analytics),
+            'defer': true,
             'data-website-id': cfg.analytics.siteId,
           }
         : {
-            src: analyticsScriptUrl(cfg.analytics),
-            defer: true,
+            'src': analyticsScriptUrl(cfg.analytics),
+            'defer': true,
             'data-domain': cfg.analytics.siteId,
           },
     ],
