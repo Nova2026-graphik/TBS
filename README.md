@@ -100,6 +100,51 @@ sont journalisées côté serveur pour ne pas être perdues.
 
 ---
 
+## Notification des demandes de devis
+
+Une demande enregistrée qui n'alerte personne ne vaut rien : le site promet une
+réponse sous 24 h. À réception, `server/api/quotes.post.ts` envoie donc deux
+messages — une alerte à l'équipe (`NUXT_NOTIFY_EMAIL`) et un accusé de
+réception au demandeur s'il a laissé une adresse.
+
+### Mise en route
+
+1. Ouvrir un compte chez **Resend** ou **Brevo** (l'offre gratuite suffit :
+   quelques centaines de messages par mois).
+2. Vérifier le domaine d'envoi (SPF + DKIM). Sans cela, les messages partent en
+   indésirables — ou sont refusés.
+3. Renseigner trois variables :
+
+```
+NUXT_MAIL_PROVIDER=resend        # ou brevo
+NUXT_MAIL_API_KEY=re_…
+NUXT_MAIL_FROM=TBS Distribution <devis@tbs-distribution.tg>
+```
+
+Le prestataire se change par configuration, sans toucher au code : les deux
+API sont appelées en HTTP depuis `server/utils/mailer.ts`, sans dépendance npm
+ni port SMTP — le même code tourne derrière Node, Vercel ou Cloudflare.
+
+### Garanties
+
+- **L'envoi ne peut jamais faire échouer une demande.** Chaque message est
+  plafonné à 8 secondes, les échecs sont journalisés, la réponse reste un
+  succès. La réponse porte `notified: true|false` pour le dire honnêtement.
+- **Sans clé d'API, rien ne casse** : l'envoi est désactivé, la demande reste
+  enregistrée et journalisée, et un avertissement le signale dans le journal.
+- **Aucune donnée technique interne dans les messages** : ni `ipHash` ni
+  `userAgent`, qui servent l'anti-spam et pas le commercial qui rappelle.
+- **L'alerte interne répond au client.** Son `Reply-To` est l'adresse du
+  demandeur : répondre depuis la boîte de l'équipe écrit directement au client.
+- Sans base de données, l'alerte porte un avertissement visible — elle est
+  alors la seule trace de la demande.
+
+Les gabarits vivent dans `server/utils/quoteNotification.ts` et n'importent
+rien de Nitro : ils se rendent hors serveur, ce qui permet de les relire sans
+démarrer quoi que ce soit.
+
+---
+
 ## Architecture
 
 ```
@@ -125,7 +170,8 @@ server/
   api/                     site-content, branches, gallery, faq (GET) · quotes (POST)
   data/content.ts          Contenu de référence — seed + repli
   database/                schema.ts, client.ts, seed.ts
-  plugins/security-headers.ts  En-têtes de sécurité HTTP sur toutes les réponses
+  utils/mailer.ts          Envoi e-mail — Resend ou Brevo, par API HTTP
+  utils/quoteNotification.ts  Alerte équipe + accusé de réception
   utils/repository.ts      Accès base avec repli statique
   utils/securityHeaders.ts Politique CSP et en-têtes — source unique de vérité
 scripts/csp-hashes.mjs     Relève les empreintes CSP des scripts en ligne
@@ -212,6 +258,8 @@ performance.
   sous chaque champ, états chargement / succès / erreur, champ e-mail ajouté,
   champ piège anti-robot, délai minimum de remplissage, limitation à 10
   demandes par IP et par heure.
+- **Notification à réception** : alerte à l'équipe et accusé de réception au
+  demandeur, sans jamais pouvoir faire échouer l'enregistrement.
 - **Dock de contact permanent** : bouton WhatsApp flottant en bureau, barre
   Appeler / WhatsApp / Devis en mobile — les deux canaux qui convertissent le
   mieux au Togo.
@@ -247,6 +295,21 @@ npm run generate
 
 Voir `.env.example`. Aucune n'est obligatoire pour faire tourner le site ;
 seule `DATABASE_URL` change le comportement (base au lieu de contenu statique).
+
+### Dépendances surchargées
+
+`package.json` force deux paquets transitifs, faute de correctif amont — le
+motif de chacun est écrit dans la clé `//overrides`, juste au-dessus :
+
+| Paquet | Forcé en | Pourquoi |
+| --- | --- | --- |
+| `sharp` | `^0.35.0` | Vulnérabilités libvips ([GHSA-f88m-g3jw-g9cj](https://github.com/advisories/GHSA-f88m-g3jw-g9cj)). `ipx@2` demande `^0.32.6` ; seul `ipx@4`, encore en bêta, monte à `^0.35`. |
+| `esbuild` | `^0.28.2` | Deux avis visant son serveur de développement. `@esbuild-kit/core-utils`, abandonné et tiré par `drizzle-kit`, reste bloqué sur `~0.18.20`. |
+
+Ces deux lignes disparaîtront quand l'amont rattrapera : surveiller la sortie
+stable d'`ipx@4` (`@nuxt/image@2`) et l'abandon de `@esbuild-kit` par
+`drizzle-kit`. Dependabot (`.github/dependabot.yml`) signale les mises à jour
+chaque lundi.
 
 ---
 
@@ -326,15 +389,11 @@ Les en-têtes doivent alors être posés par l'hébergeur — fichier `_headers`
    fichiers de `public/images/` décrivent leur usage.
 4. **Logo sur fond sombre** — le logo bichrome est posé sur une pastille
    blanche dans le footer. Une version monochrome claire serait plus élégante.
-5. **Mentions légales** — les trois pages existent et sont liées au pied de
-   page. Reste à fournir les informations marquées « à compléter » :
-   **RCCM**, **NIF**, capital social, nom du gérant, coordonnées de
-   l'hébergeur, et les valeurs commerciales des conditions de location
-   (acompte, caution, délais d'annulation). Tout se renseigne dans
-   `shared/utils/legalData.ts`.
-6. **Notification de devis** — les demandes sont enregistrées en base ;
-   l'envoi d'un e-mail d'alerte (`NUXT_NOTIFY_EMAIL`) reste à brancher sur un
-   service d'envoi (Resend, Brevo, SMTP).
+5. **Mentions légales** — les liens du bas de page sont présents mais les
+   pages restent à rédiger.
+6. **Notification de devis** — l'envoi est en place (voir « Notification des
+   demandes de devis »). Reste à ouvrir le compte Resend ou Brevo, vérifier le
+   domaine d'envoi et renseigner `NUXT_MAIL_API_KEY` en production.
 
 ---
 
@@ -343,6 +402,7 @@ Les en-têtes doivent alors être posés par l'hébergeur — fichier `_headers`
 ```bash
 npm run typecheck
 npm run build
+npm audit           # doit rester à 0 vulnérabilité
 ```
 
 En-têtes de sécurité, sur le build de production :

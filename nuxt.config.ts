@@ -27,6 +27,17 @@ export default defineNuxtConfig({
   runtimeConfig: {
     databaseUrl: '',
     notifyEmail: '',
+    /**
+     * Envoi des notifications de devis — cf. `server/utils/mailer.ts`.
+     * `provider` : `resend` ou `brevo`. Sans `apiKey`, l'envoi est simplement
+     * désactivé : la demande reste enregistrée et journalisée.
+     * Le domaine de `from` doit être vérifié chez le prestataire.
+     */
+    mail: {
+      provider: 'resend',
+      apiKey: '',
+      from: 'TBS Distribution <devis@tbs-distribution.tg>',
+    },
     quoteRateLimitPerHour: '10',
     /**
      * En-têtes de sécurité — cf. `server/utils/securityHeaders.ts`.
