@@ -34,17 +34,17 @@ const branchDots = [
       <div class="flex flex-wrap items-center gap-x-6 gap-y-1 text-[0.6875rem] tracking-[0.12em]">
         <a
           :href="`tel:${info.phonePrimary}`"
-          class="text-white/60 transition-colors hover:text-white"
+          class="inline-flex min-h-6 items-center text-white/60 transition-colors hover:text-white"
         >
           {{ info.phoneDisplay }}
         </a>
         <a
           :href="`mailto:${info.email}`"
-          class="text-white/60 transition-colors hover:text-white"
+          class="inline-flex min-h-6 items-center text-white/60 transition-colors hover:text-white"
         >
           {{ info.email }}
         </a>
-        <span class="text-white/40">Agôè - Démakpoè, Lomé</span>
+        <span class="text-white/60">Agôè - Démakpoè, Lomé</span>
       </div>
     </div>
   </div>

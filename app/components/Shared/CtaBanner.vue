@@ -45,7 +45,7 @@ const sizesFull = SIZES_FULL
         <UiButton to="/contact" variant="light" size="lg">Demander un devis</UiButton>
         <a
           :href="`tel:${info.phonePrimary}`"
-          class="border-b border-white/40 pb-1.5 text-[0.6875rem] uppercase tracking-[0.18em] text-white transition-colors hover:border-white"
+          class="inline-flex min-h-6 items-center border-b border-white/40 pb-1.5 text-[0.6875rem] uppercase tracking-[0.18em] text-white transition-colors hover:border-white"
         >
           {{ info.phoneDisplay }}
         </a>

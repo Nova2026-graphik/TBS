@@ -223,3 +223,17 @@ export const GALLERY_FILTERS = [
   { value: 'decor', label: 'Décor & détails' },
   { value: 'fourniture', label: 'Fournitures & équipements' },
 ] as const
+
+/**
+ * Comptes sociaux. `url: null` = compte inexistant ou non communiqué : le pied
+ * de page n'affiche alors rien du tout.
+ *
+ * Un lien mort — `href="#"` — était pire que l'absence : au clic la page
+ * remontait en haut, et les lecteurs d'écran annonçaient un lien sans
+ * destination. Renseigner une URL ici suffit à réafficher l'entrée.
+ */
+export const SOCIAL_ACCOUNTS: { label: string, url: string | null }[] = [
+  { label: 'Facebook', url: null },
+  { label: 'Instagram', url: null },
+  { label: 'LinkedIn', url: null },
+]
