@@ -1,0 +1,41 @@
+name: Amélioration
+description: Une évolution du site, du contenu ou de l'outillage
+labels: ['amelioration']
+body:
+  - type: textarea
+    id: besoin
+    attributes:
+      label: Le besoin
+      description: Le problème à résoudre, avant toute idée de solution.
+      placeholder: |
+        Les demandes de devis n'indiquent pas le budget envisagé : chaque
+        rappel commence par cette question.
+    validations:
+      required: true
+
+  - type: textarea
+    id: piste
+    attributes:
+      label: Piste envisagée
+      description: Facultatif. Une direction, pas un cahier des charges.
+    validations:
+      required: false
+
+  - type: textarea
+    id: mesure
+    attributes:
+      label: Comment saura-t-on que c'est réglé
+      description: Le critère d'acceptation, si vous en avez un en tête.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: priorite
+    attributes:
+      label: Priorité perçue
+      options:
+        - P1 — important, à traiter avant la mise en ligne
+        - P2 — industrialisation, à traiter ensuite
+        - P3 — confort, quand le temps le permet
+    validations:
+      required: true
