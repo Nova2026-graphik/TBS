@@ -37,7 +37,7 @@ export const branches: Branch[] = [
     name: 'TBS Équipements',
     tagline: 'Fourniture de matériels & équipements',
     description:
-      "Mobilier et matériel de bureau, informatique, équipements hospitaliers et de laboratoire, matériel roulant : nous fournissons, livrons et installons pour les entreprises, les administrations et les ONG.",
+      'Mobilier et matériel de bureau, informatique, équipements hospitaliers et de laboratoire, matériel roulant : nous fournissons, livrons et installons pour les entreprises, les administrations et les ONG.',
     color: BRANCH_COLORS.equipements!,
     image: '/images/branche-equipements.jpg',
     imageAlt: 'Plateau de bureaux équipé par TBS Équipements',
@@ -49,7 +49,7 @@ export const branches: Branch[] = [
     name: 'TBS Events',
     tagline: 'Location de matériel de réception & événementiel',
     description:
-      "Mobilier, art de la table, décoration, son et lumière : nous équipons, installons et reprenons mariages, cérémonies, réceptions privées et événements d'entreprise, de 20 à 2 000 invités.",
+      'Mobilier, art de la table, décoration, son et lumière : nous équipons, installons et reprenons mariages, cérémonies, réceptions privées et événements d\'entreprise, de 20 à 2 000 invités.',
     color: BRANCH_COLORS.events!,
     image: '/images/branche-events.jpg',
     imageAlt: 'Salle de réception dressée par TBS Events',
@@ -61,7 +61,7 @@ export const branches: Branch[] = [
     name: 'TBS Études & Conseils',
     tagline: 'Études & prestations intellectuelles',
     description:
-      "Études techniques et de faisabilité, conseil en organisation, formation, assistance à maîtrise d'ouvrage et montage de dossiers d'appels d'offres.",
+      'Études techniques et de faisabilité, conseil en organisation, formation, assistance à maîtrise d\'ouvrage et montage de dossiers d\'appels d\'offres.',
     color: BRANCH_COLORS.etudes!,
     image: '/images/branche-etudes.jpg',
     imageAlt: 'Séance de travail TBS Études & Conseils',
@@ -108,7 +108,7 @@ export const rentalCategories: RentalCategory[] = [
     name: 'Décoration',
     refCount: 160,
     image: '/images/categorie-decoration.jpg',
-    imageAlt: "Chandeliers, vases et tapis d'honneur",
+    imageAlt: 'Chandeliers, vases et tapis d\'honneur',
   },
   {
     slug: 'son-lumiere',
@@ -131,7 +131,7 @@ export const domains: Domain[] = [
     branch: 'equipements',
     title: 'Mobilier & matériel de bureau',
     description:
-      "Bureaux, fauteuils, armoires, banques d'accueil et aménagement complet de plateaux.",
+      'Bureaux, fauteuils, armoires, banques d\'accueil et aménagement complet de plateaux.',
   },
   {
     branch: 'equipements',
@@ -166,7 +166,7 @@ export const domains: Domain[] = [
     branch: 'etudes',
     title: 'Études & prestations intellectuelles',
     description:
-      "Études techniques, conseil en organisation, formation et assistance à maîtrise d'ouvrage.",
+      'Études techniques, conseil en organisation, formation et assistance à maîtrise d\'ouvrage.',
   },
   {
     branch: 'agro',
@@ -183,7 +183,7 @@ export const serviceBlocks: ServiceBlock[] = [
     eyebrow: '01 — Bureau',
     title: 'Mobilier & matériel de bureau',
     description:
-      "Aménagement complet de plateaux : bureaux, fauteuils ergonomiques, armoires, caissons et banques d'accueil. Nous chiffrons, livrons et montons sur site.",
+      'Aménagement complet de plateaux : bureaux, fauteuils ergonomiques, armoires, caissons et banques d\'accueil. Nous chiffrons, livrons et montons sur site.',
     tags: ['Bureaux', 'Sièges', 'Rangement', 'Accueil'],
     image: '/images/branche-equipements.jpg',
     imageAlt: 'Bureaux équipés — mobilier et postes de travail',
@@ -213,7 +213,7 @@ export const serviceBlocks: ServiceBlock[] = [
     eyebrow: '04 — Matériel roulant',
     title: 'Matériel roulant',
     description:
-      "Véhicules de service et utilitaires, engins, pièces détachées et pneumatiques. Nous accompagnons le renouvellement et l'entretien des flottes d'entreprise et d'institution.",
+      'Véhicules de service et utilitaires, engins, pièces détachées et pneumatiques. Nous accompagnons le renouvellement et l\'entretien des flottes d\'entreprise et d\'institution.',
     tags: ['Véhicules', 'Utilitaires', 'Pièces', 'Suivi de flotte'],
     image: '/images/equipements-materiel-roulant.jpg',
     imageAlt: 'Matériel roulant — véhicules de service',
@@ -245,8 +245,8 @@ export const serviceBlocks: ServiceBlock[] = [
     eyebrow: '03 — Décoration',
     title: 'Scénographie & décor',
     description:
-      "Chandeliers, vases, drapés, arches, tapis d'honneur et potelets. Nous construisons une direction visuelle cohérente, de l'entrée des invités jusqu'au fond de scène.",
-    tags: ['Chandeliers', 'Drapés', "Tapis d'honneur"],
+      'Chandeliers, vases, drapés, arches, tapis d\'honneur et potelets. Nous construisons une direction visuelle cohérente, de l\'entrée des invités jusqu\'au fond de scène.',
+    tags: ['Chandeliers', 'Drapés', 'Tapis d\'honneur'],
     image: '/images/events-scenographie.jpg',
     imageAlt: 'Décoration — scénographie de salle',
   },
@@ -307,12 +307,12 @@ export const serviceBlocks: ServiceBlock[] = [
 ]
 
 export const galleryItems: GalleryItem[] = [
-  { id: 'gal-01', title: 'Mariage Adjovi — 620 invités', location: 'Agôè', category: 'mariage', branch: 'events', image: '/images/galerie-mariage-adjovi.jpg', imageAlt: "Mariage — vue d'ensemble de la salle" },
+  { id: 'gal-01', title: 'Mariage Adjovi — 620 invités', location: 'Agôè', category: 'mariage', branch: 'events', image: '/images/galerie-mariage-adjovi.jpg', imageAlt: 'Mariage — vue d\'ensemble de la salle' },
   { id: 'gal-02', title: 'Art de la table — ligne ivoire', location: null, category: 'decor', branch: 'events', image: '/images/galerie-verrerie.jpg', imageAlt: 'Détail — verrerie et chandeliers' },
   { id: 'gal-03', title: 'Séminaire annuel — 180 places', location: null, category: 'corporate', branch: 'events', image: '/images/galerie-seminaire.jpg', imageAlt: 'Séminaire — salle en configuration conférence' },
-  { id: 'gal-04', title: 'Cérémonie officielle', location: null, category: 'ceremonie', branch: 'events', image: '/images/galerie-ceremonie-officielle.jpg', imageAlt: "Cérémonie — tapis d'honneur et potelets" },
-  { id: 'gal-05', title: "Vin d'honneur — jardin", location: null, category: 'mariage', branch: 'events', image: '/images/galerie-vin-honneur.jpg', imageAlt: 'Mariage — cocktail extérieur' },
-  { id: 'gal-06', title: 'Dîner de gala — 400 couverts', location: 'Lomé', category: 'corporate', branch: 'events', image: '/images/galerie-diner-gala.jpg', imageAlt: "Gala — dîner d'entreprise, plan large" },
+  { id: 'gal-04', title: 'Cérémonie officielle', location: null, category: 'ceremonie', branch: 'events', image: '/images/galerie-ceremonie-officielle.jpg', imageAlt: 'Cérémonie — tapis d\'honneur et potelets' },
+  { id: 'gal-05', title: 'Vin d\'honneur — jardin', location: null, category: 'mariage', branch: 'events', image: '/images/galerie-vin-honneur.jpg', imageAlt: 'Mariage — cocktail extérieur' },
+  { id: 'gal-06', title: 'Dîner de gala — 400 couverts', location: 'Lomé', category: 'corporate', branch: 'events', image: '/images/galerie-diner-gala.jpg', imageAlt: 'Gala — dîner d\'entreprise, plan large' },
   { id: 'gal-07', title: 'Centre de table — saison sèche', location: null, category: 'decor', branch: 'events', image: '/images/galerie-centre-de-table.jpg', imageAlt: 'Détail — nappage et centre de table' },
   { id: 'gal-08', title: 'Soirée blanche — Baguida', location: null, category: 'mariage', branch: 'events', image: '/images/galerie-soiree-blanche.jpg', imageAlt: 'Soirée — piste de danse lumineuse' },
   { id: 'gal-09', title: 'Baptême — chapiteau 200 places', location: null, category: 'ceremonie', branch: 'events', image: '/images/galerie-bapteme.jpg', imageAlt: 'Baptême — réception familiale sous chapiteau' },
@@ -323,11 +323,11 @@ export const galleryItems: GalleryItem[] = [
   { id: 'gal-14', title: 'Gala annuel — 300 couverts', location: null, category: 'corporate', branch: 'events', image: '/images/branche-events.jpg', imageAlt: 'Gala — dîner assis' },
   { id: 'gal-15', title: 'Dressage — ligne or', location: null, category: 'decor', branch: 'events', image: '/images/events-dressage-or.jpg', imageAlt: 'Détail — couvert dressé' },
   { id: 'gal-16', title: 'Bénédiction nuptiale — 250 places', location: null, category: 'mariage', branch: 'events', image: '/images/categorie-tentes.jpg', imageAlt: 'Mariage — cérémonie sous chapiteau' },
-  { id: 'gal-17', title: "Cocktail d'honneur — Baguida", location: 'Baguida', category: 'ceremonie', branch: 'events', image: '/images/ambiance-cocktail.jpg', imageAlt: 'Cocktail extérieur — mange-debout' },
+  { id: 'gal-17', title: 'Cocktail d\'honneur — Baguida', location: 'Baguida', category: 'ceremonie', branch: 'events', image: '/images/ambiance-cocktail.jpg', imageAlt: 'Cocktail extérieur — mange-debout' },
   { id: 'gal-18', title: 'Soirée de lancement — piste LED', location: null, category: 'corporate', branch: 'events', image: '/images/ambiance-nuit-electrique.jpg', imageAlt: 'Soirée entreprise — éclairage' },
   { id: 'gal-19', title: 'Scénographie de scène — fond drapé', location: null, category: 'decor', branch: 'events', image: '/images/events-scenographie.jpg', imageAlt: 'Décor — fond de scène' },
   { id: 'gal-20', title: 'Nappage — chemins de table', location: null, category: 'decor', branch: 'events', image: '/images/categorie-nappage.jpg', imageAlt: 'Nappage — chemins de table' },
-  { id: 'gal-21', title: "Laboratoire d'analyses — équipement livré", location: null, category: 'fourniture', branch: 'equipements', image: '/images/equipements-laboratoire.jpg', imageAlt: 'Laboratoire équipé' },
+  { id: 'gal-21', title: 'Laboratoire d\'analyses — équipement livré', location: null, category: 'fourniture', branch: 'equipements', image: '/images/equipements-laboratoire.jpg', imageAlt: 'Laboratoire équipé' },
   { id: 'gal-22', title: 'Flotte de service — 6 véhicules', location: null, category: 'fourniture', branch: 'equipements', image: '/images/equipements-materiel-roulant.jpg', imageAlt: 'Matériel roulant livré' },
   { id: 'gal-23', title: 'Projet agricole — petits équipements', location: null, category: 'fourniture', branch: 'agro', image: '/images/branche-agro.jpg', imageAlt: 'Agrobusiness — équipements livrés' },
 ]
@@ -335,7 +335,7 @@ export const galleryItems: GalleryItem[] = [
 export const testimonials: Testimonial[] = [
   {
     quote:
-      "Six cents invités, une salle transformée en une nuit. Le matin du mariage tout était en place, et personne n'a vu l'équipe travailler.",
+      'Six cents invités, une salle transformée en une nuit. Le matin du mariage tout était en place, et personne n\'a vu l\'équipe travailler.',
     author: 'Akouvi & Kodjo',
     context: 'Mariage, Agôè',
   },
@@ -347,7 +347,7 @@ export const testimonials: Testimonial[] = [
   },
   {
     quote:
-      "J'avais changé trois fois de plan de salle. Ils ont tout repris sans un soupir, et la piste de danse a fait l'unanimité.",
+      'J\'avais changé trois fois de plan de salle. Ils ont tout repris sans un soupir, et la piste de danse a fait l\'unanimité.',
     author: 'Sandrine A.',
     context: 'Anniversaire, Baguida',
   },
@@ -357,7 +357,7 @@ export const faqItems: FaqItem[] = [
   {
     id: 'faq-1',
     group: 'TBS Events',
-    question: "Combien de temps à l'avance faut-il réserver ?",
+    question: 'Combien de temps à l\'avance faut-il réserver ?',
     answer:
       'Deux à quatre semaines pour un mariage ou une grande réception, surtout en saison sèche. Pour les demandes urgentes, appelez-nous : nous vérifions la disponibilité du stock immédiatement.',
   },
@@ -387,7 +387,7 @@ export const faqItems: FaqItem[] = [
     group: 'TBS Events',
     question: 'Que se passe-t-il en cas de casse ?',
     answer:
-      "Une caution est prévue au contrat. Les pièces cassées ou manquantes sont facturées au tarif de remplacement indiqué à l'avance sur le devis, sans surprise après l'événement.",
+      'Une caution est prévue au contrat. Les pièces cassées ou manquantes sont facturées au tarif de remplacement indiqué à l\'avance sur le devis, sans surprise après l\'événement.',
   },
   {
     id: 'faq-6',
@@ -399,9 +399,9 @@ export const faqItems: FaqItem[] = [
   {
     id: 'faq-7',
     group: 'TBS Équipements, Études & Agro',
-    question: "Répondez-vous aux appels d'offres ?",
+    question: 'Répondez-vous aux appels d\'offres ?',
     answer:
-      "Oui, sur les quatre branches. TBS Distribution S.A.R.L participe aux consultations et appels d'offres publics et privés : dossier administratif à jour, offre technique et financière, factures normalisées et références vérifiables.",
+      'Oui, sur les quatre branches. TBS Distribution S.A.R.L participe aux consultations et appels d\'offres publics et privés : dossier administratif à jour, offre technique et financière, factures normalisées et références vérifiables.',
   },
   {
     id: 'faq-8',

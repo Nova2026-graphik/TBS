@@ -29,7 +29,9 @@ const { y } = useWindowScroll()
 const scrolled = computed(() => y.value > 12)
 
 // Le tiroir se ferme à chaque changement de route.
-watch(() => route.fullPath, () => { open.value = false })
+watch(() => route.fullPath, () => {
+  open.value = false
+})
 
 // Scroll verrouillé tant que le tiroir est ouvert.
 watch(open, (isOpen) => {
@@ -42,10 +44,12 @@ onBeforeUnmount(() => {
   if (import.meta.client) document.documentElement.style.overflow = ''
 })
 
-onKeyStroke('Escape', () => { if (open.value) open.value = false })
-onClickOutside(drawerRef, () => { if (open.value) open.value = false }, {
-  ignore: [toggleRef],
+onKeyStroke('Escape', () => {
+  if (open.value) open.value = false
 })
+onClickOutside(drawerRef, () => {
+  if (open.value) open.value = false
+}, { ignore: [toggleRef] })
 </script>
 
 <template>
@@ -122,7 +126,7 @@ onClickOutside(drawerRef, () => { if (open.value) open.value = false }, {
       >
         <nav class="flex flex-col" aria-label="Navigation mobile">
           <NuxtLink
-            v-for="(item, i) in NAV"
+            v-for="item in NAV"
             :key="item.to"
             :to="item.to"
             class="border-b border-white/10 py-3 font-display text-[1.625rem] transition-colors last:border-0"

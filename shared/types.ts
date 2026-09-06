@@ -7,12 +7,12 @@
 export type BranchSlug = 'equipements' | 'events' | 'etudes' | 'agro'
 
 /** Catégories de filtrage de la galerie. */
-export type GalleryCategory =
-  | 'mariage'
-  | 'ceremonie'
-  | 'corporate'
-  | 'decor'
-  | 'fourniture'
+export type GalleryCategory
+  = | 'mariage'
+    | 'ceremonie'
+    | 'corporate'
+    | 'decor'
+    | 'fourniture'
 
 export interface Branch {
   slug: BranchSlug

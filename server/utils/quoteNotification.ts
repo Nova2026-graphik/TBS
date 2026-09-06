@@ -58,7 +58,7 @@ function escapeHtml(value: string): string {
     .replaceAll('<', '&lt;')
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#39;')
+    .replaceAll('\'', '&#39;')
 }
 
 /** « TBS Events — location de matériel » → « TBS Events », pour l'objet. */
@@ -86,7 +86,7 @@ function noticeRows(notice: QuoteNotice): Row[] {
   rows.push(['Branche', notice.branch], ['Type de demande', notice.requestType])
 
   const eventDate = formatEventDate(notice.eventDate)
-  if (eventDate) rows.push(["Date de l'événement", eventDate])
+  if (eventDate) rows.push(['Date de l\'événement', eventDate])
   if (notice.guestCount !== null) rows.push(['Invités', String(notice.guestCount)])
   if (notice.location) rows.push(['Lieu', notice.location])
 
@@ -130,7 +130,7 @@ export function buildTeamEmail(notice: QuoteNotice, to: string): EmailMessage {
   const rows = noticeRows(notice)
   const warning = notice.persisted
     ? null
-    : "Aucune base de données n'est configurée : cet e-mail est la seule trace de la demande."
+    : 'Aucune base de données n\'est configurée : cet e-mail est la seule trace de la demande.'
 
   const text = [
     `Nouvelle demande de devis — ${shortBranch(notice.branch)}`,

@@ -17,7 +17,7 @@
  * empreinte plutôt que d'ouvrir `script-src-attr` à `'unsafe-inline'`.
  * Régénérer avec `npm run security:csp-hashes` si @nuxt/image change la chaîne.
  */
-const NUXT_IMG_ONERROR_HASH = "'sha256-bwK6T5wZVTANitXbrTsel7kl/PyCjCd/Dq5Qoz3imjM='"
+const NUXT_IMG_ONERROR_HASH = '\'sha256-bwK6T5wZVTANitXbrTsel7kl/PyCjCd/Dq5Qoz3imjM=\''
 
 /** Carte de la page contact — seule origine tierce encadrée par le site. */
 const OPENSTREETMAP_ORIGIN = 'https://www.openstreetmap.org'
@@ -27,27 +27,27 @@ const OPENSTREETMAP_ORIGIN = 'https://www.openstreetmap.org'
  * scripts et styles sont tous auto-hébergés, aucun CDN n'est sollicité.
  */
 const CSP_DIRECTIVES = {
-  'default-src': ["'self'"],
+  'default-src': ['\'self\''],
   // Aucune balise <base> : interdire l'injection d'une base d'URL.
-  'base-uri': ["'none'"],
-  'object-src': ["'none'"],
+  'base-uri': ['\'none\''],
+  'object-src': ['\'none\''],
   // Doublon volontaire de X-Frame-Options, pour les navigateurs modernes.
-  'frame-ancestors': ["'none'"],
+  'frame-ancestors': ['\'none\''],
   // Le formulaire de devis poste sur /api/quotes, jamais ailleurs.
-  'form-action': ["'self'"],
-  'script-src': ["'self'"],
-  'script-src-attr': ["'unsafe-hashes'", NUXT_IMG_ONERROR_HASH],
-  'style-src': ["'self'"],
+  'form-action': ['\'self\''],
+  'script-src': ['\'self\''],
+  'script-src-attr': ['\'unsafe-hashes\'', NUXT_IMG_ONERROR_HASH],
+  'style-src': ['\'self\''],
   // Le rendu SSR de Vue émet des attributs `style` (transitions, révélations).
-  'style-src-attr': ["'unsafe-inline'"],
-  'img-src': ["'self'", 'data:'],
-  'font-src': ["'self'"],
+  'style-src-attr': ['\'unsafe-inline\''],
+  'img-src': ['\'self\'', 'data:'],
+  'font-src': ['\'self\''],
   // Hydratation : récupération de `_payload.json` et appels /api.
-  'connect-src': ["'self'"],
+  'connect-src': ['\'self\''],
   'frame-src': [OPENSTREETMAP_ORIGIN],
-  'media-src': ["'self'"],
-  'worker-src': ["'self'"],
-  'manifest-src': ["'self'"],
+  'media-src': ['\'self\''],
+  'worker-src': ['\'self\''],
+  'manifest-src': ['\'self\''],
 } satisfies Record<string, string[]>
 
 export interface SecurityHeadersOptions {
@@ -67,9 +67,9 @@ export interface SecurityHeadersOptions {
 function parseHashes(raw: string | undefined): string[] {
   return (raw ?? '')
     .split(',')
-    .map((hash) => hash.trim().replace(/^'|'$/g, ''))
+    .map(hash => hash.trim().replace(/^'|'$/g, ''))
     .filter(Boolean)
-    .map((hash) => `'${hash}'`)
+    .map(hash => `'${hash}'`)
 }
 
 /** `true` quand la politique doit bloquer plutôt que se contenter de signaler. */
