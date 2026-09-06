@@ -162,7 +162,8 @@ app/
   composables/
     useSiteContent.ts      Chargement dédupliqué du contenu + coordonnées
     useSeo.ts              Meta par page, JSON-LD LocalBusiness / FAQPage / Breadcrumb
-  pages/                   index, services, galerie, a-propos, contact, faq
+  pages/                   index, services, galerie, a-propos, contact, faq,
+                           mentions-legales, conditions-de-location, confidentialite
   plugins/reveal.ts        Directive v-reveal (IntersectionObserver partagé, SSR-safe)
   utils/imageSizes.ts      Valeurs `sizes` pour <NuxtImg>
 server/
@@ -176,6 +177,7 @@ server/
 scripts/csp-hashes.mjs     Relève les empreintes CSP des scripts en ligne
 shared/
   types.ts                 Types partagés client / serveur
+  utils/legalData.ts       Identité légale — le seul fichier à compléter
   utils/siteData.ts        Contenu de présentation statique (process, formules, stats)
 public/images/             34 photos extraites de la maquette
 design/                    Maquette source + plaquettes commerciales (documentation)

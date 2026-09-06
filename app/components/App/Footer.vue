@@ -24,6 +24,12 @@ const socialLinks = [
   { label: 'Instagram', href: '#', external: false },
   { label: 'LinkedIn', href: '#', external: false },
 ]
+
+const legalLinks = [
+  { label: 'Mentions légales', to: '/mentions-legales' },
+  { label: 'Conditions de location', to: '/conditions-de-location' },
+  { label: 'Confidentialité', to: '/confidentialite' },
+]
 </script>
 
 <template>
@@ -129,7 +135,19 @@ const socialLinks = [
 
     <div class="u-gutter flex flex-wrap items-center justify-between gap-4 border-t border-white/10 py-6 text-[0.6875rem] tracking-[0.1em] text-white/40">
       <span>© {{ year }} TBS Distribution S.A.R.L — Tous droits réservés.</span>
-      <span>Mentions légales · Conditions de location · Confidentialité</span>
+      <!-- Ces trois pages sont exigées : les libellés étaient affichés depuis
+           l'origine, sans lien ni page derrière. -->
+      <nav aria-label="Informations légales" class="flex flex-wrap items-center gap-x-3 gap-y-1">
+        <template v-for="(link, i) in legalLinks" :key="link.to">
+          <span v-if="i > 0" aria-hidden="true">·</span>
+          <NuxtLink
+            :to="link.to"
+            class="inline-block py-1 transition-colors hover:text-white/80"
+          >
+            {{ link.label }}
+          </NuxtLink>
+        </template>
+      </nav>
     </div>
   </footer>
 </template>
