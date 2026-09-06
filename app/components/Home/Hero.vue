@@ -8,6 +8,7 @@
  */
 
 const sizesFull = SIZES_FULL
+const densitiesFull = DENSITIES_FULL
 </script>
 
 <template>
@@ -19,6 +20,7 @@ const sizesFull = SIZES_FULL
         preset="hero"
         preload
         :sizes="sizesFull"
+        :densities="densitiesFull"
         width="1920"
         height="1280"
         class="size-full object-cover"
