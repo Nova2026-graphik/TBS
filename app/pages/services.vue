@@ -43,7 +43,7 @@ usePageSeo({
   description:
     'TBS Équipements fournit et installe. TBS Events loue et organise. TBS Études & Conseils accompagne. TBS Agro cultive et transforme. Quatre branches, un seul interlocuteur à Lomé.',
   path: '/services',
-  image: '/images/branche-equipements.jpg',
+  image: '/og-services.jpg',
 })
 
 useBreadcrumbSchema([{ name: 'Nos services', path: '/services' }])

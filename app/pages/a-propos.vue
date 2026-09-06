@@ -44,7 +44,7 @@ usePageSeo({
   description:
     "Née à Agôè-Démakpoè, TBS équipe les grands moments de la vie togolaise depuis plus de dix ans. Quatre branches, un parc de plus de 900 références, 18 personnes sur le terrain.",
   path: '/a-propos',
-  image: '/images/apropos-equipe.jpg',
+  image: '/og-a-propos.jpg',
 })
 
 useBreadcrumbSchema([{ name: 'À propos', path: '/a-propos' }])

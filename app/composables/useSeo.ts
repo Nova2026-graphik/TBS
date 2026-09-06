@@ -7,10 +7,24 @@
  */
 import type { FaqItem } from '#shared/types'
 
+/**
+ * Format imposé aux images sociales : 1200 × 630, le rapport 1,91:1 qu'attendent
+ * Facebook, LinkedIn et WhatsApp. Les dimensions sont déclarées dans les
+ * métadonnées pour que l'aperçu s'affiche dès le premier partage, sans que la
+ * plate-forme ait à télécharger l'image pour les deviner — c'est ce qui
+ * produisait un lien nu au premier envoi.
+ *
+ * Toutes les cartes de `public/og-*.jpg` sont donc fabriquées à ce format par
+ * `scripts/generate-icons.mjs`. Une image d'un autre gabarit ferait mentir ces
+ * deux nombres : passer par le script, pas par un chemin quelconque.
+ */
+const OG_IMAGE_WIDTH = 1200
+const OG_IMAGE_HEIGHT = 630
+
 interface PageSeoOptions {
   title: string
   description: string
-  /** Chemin absolu de l'image sociale (défaut : visuel de réception). */
+  /** Carte sociale de la page — un fichier 1200 × 630 de `public/`. */
   image?: string
   /** Chemin de la page, pour l'URL canonique. */
   path?: string
@@ -21,7 +35,7 @@ export function usePageSeo(options: PageSeoOptions) {
   const route = useRoute()
 
   const url = `${cfg.siteUrl}${options.path ?? route.path}`
-  const image = `${cfg.siteUrl}${options.image ?? '/images/hero-reception.jpg'}`
+  const image = `${cfg.siteUrl}${options.image ?? '/og-image.jpg'}`
 
   useHead({
     link: [{ rel: 'canonical', href: url }],
@@ -36,12 +50,16 @@ export function usePageSeo(options: PageSeoOptions) {
     ogUrl: url,
     ogImage: image,
     ogImageAlt: options.title,
+    ogImageWidth: OG_IMAGE_WIDTH,
+    ogImageHeight: OG_IMAGE_HEIGHT,
+    ogImageType: 'image/jpeg',
     ogSiteName: cfg.siteName,
     ogLocale: 'fr_TG',
     twitterCard: 'summary_large_image',
     twitterTitle: options.title,
     twitterDescription: options.description,
     twitterImage: image,
+    twitterImageAlt: options.title,
   })
 }
 
