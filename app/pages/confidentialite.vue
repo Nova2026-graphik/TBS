@@ -13,6 +13,14 @@
 const info = useSiteInfo()
 const updatedAt = formatLegalDate(LEGAL_UPDATED_AT)
 const processors = LEGAL_PROCESSORS
+
+/**
+ * La page dit ce qui est réellement en place. Annoncer « aucune mesure
+ * d'audience » alors qu'un script tourne serait une fausse déclaration ;
+ * l'inverse, une inquiétude gratuite.
+ */
+const { public: cfg } = useRuntimeConfig()
+const analytics = isAnalyticsEnabled(cfg.analytics) ? cfg.analytics : null
 const retentionMonths = QUOTE_RETENTION_MONTHS
 
 usePageSeo({
@@ -46,6 +54,12 @@ useBreadcrumbSchema([{ name: 'Confidentialité', path: '/confidentialite' }])
           de mesure d'audience et ne pratique aucune publicité ciblée. La seule
           collecte de données a lieu lorsque vous remplissez volontairement le
           formulaire de demande de devis.
+        </p>
+        <p v-if="analytics">
+          Une exception : une mesure d'audience <strong>sans cookie et sans
+          identifiant individuel</strong> compte les pages consultées. Elle ne
+          permet pas de vous reconnaître d'une visite à l'autre. Détail au
+          paragraphe « Cookies et traceurs ».
         </p>
 
         <h2>Responsable du traitement</h2>
@@ -173,9 +187,22 @@ useBreadcrumbSchema([{ name: 'Confidentialité', path: '/confidentialite' }])
 
         <h2>Cookies et traceurs</h2>
         <p>
-          Le site ne dépose aucun cookie, n'utilise ni stockage local, ni
-          pixel, ni outil de mesure d'audience. Aucune bannière de consentement
-          n'est donc nécessaire : il n'y a rien à consentir.
+          Le site ne dépose <strong>aucun cookie</strong> et n'utilise ni
+          stockage local, ni pixel publicitaire. Aucune bannière de
+          consentement n'est nécessaire : il n'y a rien à consentir.
+        </p>
+        <p v-if="analytics">
+          La mesure d'audience est assurée par
+          <strong>{{ analytics.provider === 'umami' ? 'Umami' : 'Plausible' }}</strong>
+          ({{ analytics.host }}), choisi précisément parce qu'il fonctionne
+          sans cookie et sans identifiant persistant. Sont comptés la page
+          consultée, le pays, le type d'appareil et la provenance — jamais de
+          quoi vous reconnaître. Sont également comptés quelques gestes utiles
+          au suivi commercial : ouverture du formulaire de devis, envoi,
+          clics sur les numéros et sur WhatsApp.
+        </p>
+        <p v-else>
+          Aucun outil de mesure d'audience n'est en place.
         </p>
 
         <h2>Services tiers</h2>

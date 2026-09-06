@@ -61,6 +61,23 @@ export interface SecurityHeadersOptions {
    * script `window.__NUXT__.config` est bloqué et l'hydratation échoue.
    */
   cspScriptHashes?: string
+  /**
+   * Origine du serveur de mesure d'audience, quand il y en a un. Sans elle, la
+   * CSP bloquerait le script et sa balise — un ajout de mesure d'audience se
+   * traduirait par une page muette et un diagnostic long.
+   */
+  analyticsOrigin?: string
+}
+
+/** Garde l'origine d'une URL de configuration, sans son chemin. */
+function toOrigin(value: string | undefined): string | null {
+  if (!value) return null
+  try {
+    return new URL(value).origin
+  } catch {
+    console.warn(`[securite] origine de mesure d'audience invalide : ${value}`)
+    return null
+  }
 }
 
 /** Normalise une liste d'empreintes saisie en variable d'environnement. */
@@ -81,9 +98,17 @@ function isEnforced(options: SecurityHeadersOptions): boolean {
 export function buildContentSecurityPolicy(options: SecurityHeadersOptions): string {
   // Les scripts en ligne de Nuxt sont autorisés par empreinte, jamais par
   // `'unsafe-inline'` : sans elles, la politique bloquante casse l'hydratation.
+  const analytics = toOrigin(options.analyticsOrigin)
+
   const directives: Record<string, string[]> = {
     ...CSP_DIRECTIVES,
-    'script-src': [...CSP_DIRECTIVES['script-src'], ...parseHashes(options.cspScriptHashes)],
+    'script-src': [
+      ...CSP_DIRECTIVES['script-src'],
+      ...parseHashes(options.cspScriptHashes),
+      ...(analytics ? [analytics] : []),
+    ],
+    // Le script d'analyse poste ses événements sur sa propre origine.
+    'connect-src': [...CSP_DIRECTIVES['connect-src'], ...(analytics ? [analytics] : [])],
   }
 
   const policy = Object.entries(directives).map(([name, values]) => `${name} ${values.join(' ')}`)
