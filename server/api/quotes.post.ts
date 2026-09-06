@@ -39,8 +39,14 @@ const quoteSchema = z.object({
   guestCount: z.coerce.number().int().min(0).max(100_000).optional(),
   location: z.string().trim().max(200).optional().or(z.literal('')),
   message: z.string().trim().min(5, 'Précisez votre besoin').max(4000),
-  /** Champ piège : invisible pour l'utilisateur, attirant pour les robots. */
-  company: z.string().max(0).optional().or(z.literal('')),
+  /**
+   * Champ piège : invisible pour l'utilisateur, attirant pour les robots.
+   * Accepté tel quel — c'est le gestionnaire, plus bas, qui rejette en silence.
+   * Une contrainte de schéma (`max(0)`) renverrait une 422 nommant `company`
+   * dans le corps de la réponse, ce qui désignerait le piège à l'attaquant.
+   * Le plafond reste large mais fini : le champ ne sert pas de soute.
+   */
+  company: z.string().max(200).optional(),
   /** Millisecondes écoulées entre l'affichage et l'envoi du formulaire. */
   elapsedMs: z.coerce.number().min(0).optional(),
 })
