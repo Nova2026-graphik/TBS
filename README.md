@@ -299,6 +299,47 @@ performance.
   maintenir si le nombre de témoignages change.
 - **Page 404** aux couleurs du site.
 
+## Intégration continue
+
+`.github/workflows/ci.yml` s'exécute à chaque poussée sur `main` et sur chaque
+pull request. Trois travaux, du plus rapide au plus lent :
+
+| Travail | Étapes | Bloquant |
+| --- | --- | --- |
+| `qualite` | `npm ci`, lint, types, tests unitaires, build, `npm audit --audit-level=high --omit=dev` | oui |
+| `parcours` | Playwright sur Chromium, les quatre parcours de bout en bout | oui |
+| `performance` | Lighthouse CI sur quatre pages, trois relevés chacune | non — avertissement |
+
+Une nouvelle poussée annule la vérification en cours sur la même branche.
+
+Les étapes `lint`, `test` et `test:e2e` passent par `npm run --if-present` :
+les scripts arrivent avec l'outillage de l'issue #16, et la CI ne doit pas
+échouer sur les branches ouvertes avant lui.
+
+### Budget de performance
+
+`lighthouserc.json` porte les seuils. Ils sont tous en **avertissement** :
+avant de bloquer une fusion sur un chiffre, il faut plusieurs relevés réels
+pour connaître la dispersion d'une mesure à l'autre — le coureur GitHub est
+partagé, et un écart de dix points d'un passage à l'autre n'est pas rare.
+
+Repère mesuré à la main sur l'accueil pré-rendu : environ **274 Ko**
+transférés (gzip), hors fontes — le plafond de 600 Ko laisse donc de la marge
+sans être décoratif.
+
+Le seuil d'accessibilité à 1,0 n'a de sens qu'une fois les contrastes et les
+cibles tactiles corrigés ; il reste en avertissement jusque-là.
+
+### Protection de la branche `main`
+
+À poser une fois cette PR fusionnée, depuis un compte administrateur du dépôt :
+
+```bash
+gh api -X PUT repos/Nova2026-graphik/TBS/branches/main/protection   -F required_status_checks[strict]=true   -F 'required_status_checks[contexts][]=Lint, types, tests, build'   -F 'required_status_checks[contexts][]=Parcours de bout en bout'   -F enforce_admins=false   -F required_pull_request_reviews[required_approving_review_count]=1   -F restrictions=null
+```
+
+---
+
 ---
 
 ## Déploiement
