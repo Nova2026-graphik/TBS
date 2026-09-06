@@ -8,6 +8,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/image',
     '@nuxt/fonts',
+    '@nuxt/content',
     '@vueuse/nuxt',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots',
@@ -125,6 +126,12 @@ export default defineNuxtConfig({
 
   sitemap: {
     autoLastmod: true,
+    /**
+     * Les articles de la rubrique Conseils ne sont pas des routes déclarées :
+     * sans cette source, un article publié n'entrerait au sitemap qu'une fois
+     * découvert par un lien. Cf. `server/api/__sitemap__/urls.get.ts`.
+     */
+    sources: ['/api/__sitemap__/urls'],
   },
 
   /**
@@ -162,6 +169,8 @@ export default defineNuxtConfig({
         '/mentions-legales',
         '/conditions-de-location',
         '/confidentialite',
+        '/conseils',
+        // Les articles sont découverts par `crawlLinks` depuis le sommaire.
       ],
     },
   },

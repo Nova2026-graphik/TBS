@@ -89,13 +89,38 @@ const errorList = computed(() => {
   }))
 })
 
-// Un lien « demander un devis » depuis une branche présélectionne celle-ci.
+/**
+ * Pré-remplissage depuis un lien.
+ *
+ *  - `?branche=events` — un lien « demander un devis » depuis une branche ;
+ *  - `?invites=` et `?message=` — le calculateur de matériel de la rubrique
+ *    Conseils, qui envoie ici son inventaire chiffré. Sans cela, il faudrait
+ *    recopier vingt lignes à la main, et personne ne le ferait.
+ *
+ * Le message est tronqué à la limite du schéma serveur : une URL trafiquée ne
+ * doit pas produire une 422 incompréhensible pour le visiteur.
+ */
+const MESSAGE_MAX = 4000
+
+function texteDeRequete(valeur: unknown): string {
+  return typeof valeur === 'string' ? valeur : ''
+}
+
 onMounted(() => {
   const branche = route.query.branche
   const match = BRANCH_OPTIONS.find((option) =>
     typeof branche === 'string' && option.toLowerCase().includes(branche.toLowerCase()),
   )
   if (match) form.branch = match
+
+  const invites = Number(texteDeRequete(route.query.invites))
+  if (Number.isInteger(invites) && invites > 0 && invites <= 100_000) {
+    form.guestCount = String(invites)
+  }
+
+  const message = texteDeRequete(route.query.message).slice(0, MESSAGE_MAX)
+  if (message) form.message = message
+
   mountedAt.value = Date.now()
 })
 
