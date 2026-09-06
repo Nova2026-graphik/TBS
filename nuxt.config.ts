@@ -69,6 +69,14 @@ export default defineNuxtConfig({
     },
     quoteRateLimitPerHour: '10',
     /**
+     * Espace de suivi des devis — cf. `server/utils/adminSession.ts`.
+     * Vide : `/admin` et `/api/admin/*` répondent 404. Un déploiement qui
+     * oublie la variable n'ouvre pas un accès libre aux demandes.
+     */
+    admin: {
+      password: '',
+    },
+    /**
      * En-têtes de sécurité — cf. `server/utils/securityHeaders.ts`.
      * `cspMode` : `report-only` (défaut) ou `enforce`.
      * `cspScriptHashes` : empreintes des scripts en ligne des pages
@@ -130,6 +138,7 @@ export default defineNuxtConfig({
    * trente jours laissent une purge possible.
    */
   routeRules: {
+    '/admin/**': { prerender: false },
     '/_ipx/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
     '/images/**': { headers: { 'cache-control': 'public, max-age=2592000' } },
   },
@@ -215,8 +224,18 @@ export default defineNuxtConfig({
     },
   },
 
+  /**
+   * L'espace de suivi est privé : ni indexé, ni pré-rendu. `noindex` double la
+   * garde d'authentification — une page protégée qui fuit dans un index reste
+   * une fuite d'information.
+   */
+  robots: {
+    disallow: ['/admin'],
+  },
+
   sitemap: {
     autoLastmod: true,
+    exclude: ['/admin', '/admin/**'],
     /**
      * Les articles de la rubrique Conseils ne sont pas des routes déclarées :
      * sans cette source, un article publié n'entrerait au sitemap qu'une fois

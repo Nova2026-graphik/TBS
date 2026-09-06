@@ -66,6 +66,8 @@ export function buildAnonymiseQuery(db: Database, cutoff: Date) {
       email: null,
       location: null,
       message: ANONYMISED_MARKER,
+      // La note du commercial peut nommer des personnes : elle part avec le reste.
+      internalNote: null,
       ipHash: null,
       userAgent: null,
     })

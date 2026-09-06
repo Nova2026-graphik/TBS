@@ -173,6 +173,11 @@ export const quoteRequests = pgTable(
     location: varchar('location', { length: 200 }),
     message: text('message').notNull(),
     status: quoteStatusEnum('status').notNull().default('nouveau'),
+    /**
+     * Note du commercial qui traite la demande — jamais montrée au client.
+     * Anonymisée en même temps que le reste, passé le délai de conservation.
+     */
+    internalNote: text('internal_note'),
     /** Conservé pour la limitation de débit et l'analyse anti-spam. */
     ipHash: varchar('ip_hash', { length: 64 }),
     userAgent: varchar('user_agent', { length: 400 }),
