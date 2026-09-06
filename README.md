@@ -473,6 +473,70 @@ gh api -X PUT repos/Nova2026-graphik/TBS/branches/main/protection   -F required_
 
 ---
 
+## Qualité
+
+| Commande | Ce qu'elle vérifie |
+| --- | --- |
+| `npm run lint` | ESLint : règles Vue, TypeScript, accessibilité, et le formatage |
+| `npm run lint:fix` | Les corrige quand c'est automatisable |
+| `npm run typecheck` | Types, sur les gabarits comme sur le code |
+| `npm test` | Tests unitaires (Vitest) |
+| `npm run test:e2e` | Parcours de bout en bout (Playwright) |
+
+### Lint
+
+`@nuxt/eslint` fournit la base accordée à l'arborescence du projet ; s'y
+ajoutent les règles `vuejs-accessibility`, qui sont la raison principale
+d'avoir un linter ici. Le contrôle de types ne dit rien d'un `alt` manquant,
+d'un `label` sans champ ou d'un rôle ARIA inventé — trois erreurs invisibles à
+la relecture et coûteuses une fois le site en ligne.
+
+Le formatage passe par `@stylistic` (réglé dans `nuxt.config.ts`) plutôt que
+par Prettier : une seule chaîne d'outils, une seule source de vérité.
+
+Deux règles de mise en forme des gabarits sont désactivées, avec le motif
+écrit dans `eslint.config.mjs` : elles casseraient en trois lignes tout
+élément d'une ligne et n'autoriseraient qu'un attribut par ligne.
+
+### Tests unitaires
+
+`tests/unit/`, en environnement Node — les trois suites portent sur des
+modules purs, monter un environnement Nuxt complet coûterait une minute par
+exécution sans rien apprendre de neuf.
+
+| Suite | Ce qu'elle garde |
+| --- | --- |
+| `quoteValidation.spec.ts` | Le schéma de la demande de devis, le champ piège et le délai minimum — y compris le fait que le piège n'apparaît jamais dans les erreurs renvoyées |
+| `repository.spec.ts` | Le repli statique : base absente, requête en erreur, table vide |
+| `imageSizes.spec.ts` | Les chaînes `sizes`, dont aucun jeton ne doit être nu — le bug a déjà coûté cher |
+| `clientIp.spec.ts` | L'adresse du client : en-tête ignoré sans proxy déclaré, `X-Forwarded-For` lu par la droite, normalisation des formes d'une même adresse |
+| `rateLimit.spec.ts` | Le quota horaire : fenêtre glissante, comptes séparés par adresse, repli en mémoire qui ne s'ouvre pas quand la base tousse |
+
+### Tests de bout en bout
+
+`tests/e2e/`, sur la **sortie de production** (`npm run build` puis le serveur
+Nitro) et non sur le serveur de développement : le pré-rendu, l'hydratation et
+les en-têtes y sont ceux du site livré.
+
+Quatre parcours : envoi d'une demande de devis, filtrage de la galerie et
+visionneuse, changement de branche sur `/services` avec synchronisation de
+l'URL, tiroir mobile au clavier. Aucune base n'est requise — la dégradation
+gracieuse fait partie de ce qui est vérifié.
+
+Première exécution :
+
+```bash
+npx playwright install chromium
+npm run test:e2e
+```
+
+### Versions
+
+`.nvmrc` fixe Node 24, `.editorconfig` aligne les éditeurs sur ce qu'ESLint
+impose déjà.
+
+---
+
 ## Rubrique Conseils
 
 Le site n'avait aucune surface d'entrée au-delà des requêtes de marque. Les
@@ -536,6 +600,7 @@ schéma serveur.
 
 Sans cette dernière source, un article publié n'entrerait au sitemap qu'une
 fois découvert par un lien.
+
 
 ---
 

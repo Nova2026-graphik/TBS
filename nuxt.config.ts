@@ -1,23 +1,51 @@
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-15',
-  future: { compatibilityVersion: 4 },
-  devtools: { enabled: true },
 
   modules: [
     '@nuxt/image',
     '@nuxt/fonts',
     '@nuxt/content',
+    '@nuxt/eslint',
     '@vueuse/nuxt',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots',
   ],
+  devtools: { enabled: true },
+
+  app: {
+    head: {
+      htmlAttrs: { lang: 'fr' },
+      titleTemplate: '%s · TBS Distribution',
+      /**
+       * Jeu d'icônes complet — fabriqué depuis le logo par
+       * `node scripts/generate-icons.mjs`, et versionné dans `public/`.
+       * L'ICO couvre 16, 32 et 48 px pour les onglets et les favoris ; le PNG
+       * de 96 px sert les écrans à forte densité ; `apple-touch-icon` évite
+       * qu'iOS ne mette une capture de la page sur l'écran d'accueil ; le
+       * manifeste rend l'installation possible sous Android.
+       */
+      link: [
+        { rel: 'icon', href: '/favicon.ico', sizes: '32x32' },
+        { rel: 'icon', type: 'image/png', href: '/favicon-96.png', sizes: '96x96' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
+        { rel: 'manifest', href: '/site.webmanifest' },
+        { rel: 'canonical', href: 'https://www.tbs-distribution.tg' },
+      ],
+      meta: [
+        { name: 'theme-color', content: '#3e3524' },
+        { name: 'apple-mobile-web-app-title', content: 'TBS' },
+        { name: 'format-detection', content: 'telephone=no' },
+      ],
+    },
+    pageTransition: { name: 'page', mode: 'out-in' },
+  },
 
   css: ['~/assets/css/main.css'],
 
-  vite: {
-    plugins: [tailwindcss()],
+  site: {
+    url: 'https://www.tbs-distribution.tg',
+    name: 'TBS Distribution S.A.R.L',
   },
 
   /**
@@ -94,69 +122,6 @@ export default defineNuxtConfig({
     },
   },
 
-  site: {
-    url: 'https://www.tbs-distribution.tg',
-    name: 'TBS Distribution S.A.R.L',
-  },
-
-  app: {
-    head: {
-      htmlAttrs: { lang: 'fr' },
-      titleTemplate: '%s · TBS Distribution',
-      /**
-       * Jeu d'icônes complet — fabriqué depuis le logo par
-       * `node scripts/generate-icons.mjs`, et versionné dans `public/`.
-       * L'ICO couvre 16, 32 et 48 px pour les onglets et les favoris ; le PNG
-       * de 96 px sert les écrans à forte densité ; `apple-touch-icon` évite
-       * qu'iOS ne mette une capture de la page sur l'écran d'accueil ; le
-       * manifeste rend l'installation possible sous Android.
-       */
-      link: [
-        { rel: 'icon', href: '/favicon.ico', sizes: '32x32' },
-        { rel: 'icon', type: 'image/png', href: '/favicon-96.png', sizes: '96x96' },
-        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
-        { rel: 'manifest', href: '/site.webmanifest' },
-        { rel: 'canonical', href: 'https://www.tbs-distribution.tg' },
-      ],
-      meta: [
-        { name: 'theme-color', content: '#3e3524' },
-        { name: 'apple-mobile-web-app-title', content: 'TBS' },
-        { name: 'format-detection', content: 'telephone=no' },
-      ],
-    },
-    pageTransition: { name: 'page', mode: 'out-in' },
-  },
-
-  fonts: {
-    families: [
-      { name: 'Cormorant Garamond', provider: 'google', weights: [300, 400, 500], styles: ['normal', 'italic'] },
-      { name: 'Jost', provider: 'google', weights: [300, 400, 500], styles: ['normal'] },
-    ],
-    defaults: { subsets: ['latin', 'latin-ext'] },
-  },
-
-  image: {
-    quality: 74,
-    format: ['webp'],
-    presets: {
-      // 60 au lieu de 72 : sur une vignette rendue à ~300 px de large, la
-      // différence est indiscernable et le fichier perd un cinquième de son
-      // poids. La galerie en affiche vingt-trois.
-      card: { modifiers: { format: 'webp', quality: 60 } },
-      hero: { modifiers: { format: 'webp', quality: 78 } },
-    },
-  },
-
-  sitemap: {
-    autoLastmod: true,
-    /**
-     * Les articles de la rubrique Conseils ne sont pas des routes déclarées :
-     * sans cette source, un article publié n'entrerait au sitemap qu'une fois
-     * découvert par un lien. Cf. `server/api/__sitemap__/urls.get.ts`.
-     */
-    sources: ['/api/__sitemap__/urls'],
-  },
-
   /**
    * Cache des images. Les URL `/_ipx/` portent format, qualité et dimensions
    * dans leur chemin : elles sont adressées par leur contenu, donc immuables
@@ -168,6 +133,12 @@ export default defineNuxtConfig({
     '/_ipx/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
     '/images/**': { headers: { 'cache-control': 'public, max-age=2592000' } },
   },
+  future: { compatibilityVersion: 4 },
+
+  experimental: {
+    payloadExtraction: true,
+  },
+  compatibilityDate: '2025-07-15',
 
   nitro: {
     compressPublicAssets: { gzip: true, brotli: true },
@@ -198,12 +169,59 @@ export default defineNuxtConfig({
     },
   },
 
+  vite: {
+    plugins: [tailwindcss()],
+  },
+
   typescript: {
     strict: true,
     typeCheck: false,
   },
 
-  experimental: {
-    payloadExtraction: true,
+  /**
+   * Le module fournit la configuration Vue + TypeScript adaptée à
+   * l'arborescence du projet ; `eslint.config.mjs` l'étend à la racine.
+   * `stylistic` active le formatage dans ESLint : une seule chaîne d'outils,
+   * pas de Prettier à tenir en parallèle.
+   */
+  eslint: {
+    config: {
+      stylistic: {
+        indent: 2,
+        quotes: 'single',
+        semi: false,
+        commaDangle: 'always-multiline',
+      },
+    },
+  },
+
+  fonts: {
+    families: [
+      { name: 'Cormorant Garamond', provider: 'google', weights: [300, 400, 500], styles: ['normal', 'italic'] },
+      { name: 'Jost', provider: 'google', weights: [300, 400, 500], styles: ['normal'] },
+    ],
+    defaults: { subsets: ['latin', 'latin-ext'] },
+  },
+
+  image: {
+    quality: 74,
+    format: ['webp'],
+    presets: {
+      // 60 au lieu de 72 : sur une vignette rendue à ~300 px de large, la
+      // différence est indiscernable et le fichier perd un cinquième de son
+      // poids. La galerie en affiche vingt-trois.
+      card: { modifiers: { format: 'webp', quality: 60 } },
+      hero: { modifiers: { format: 'webp', quality: 78 } },
+    },
+  },
+
+  sitemap: {
+    autoLastmod: true,
+    /**
+     * Les articles de la rubrique Conseils ne sont pas des routes déclarées :
+     * sans cette source, un article publié n'entrerait au sitemap qu'une fois
+     * découvert par un lien. Cf. `server/api/__sitemap__/urls.get.ts`.
+     */
+    sources: ['/api/__sitemap__/urls'],
   },
 })

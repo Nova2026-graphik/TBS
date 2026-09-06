@@ -108,7 +108,8 @@ export function getClientIp(event: H3Event, options: ClientIpOptions): string | 
     const header = getRequestHeader(event, 'x-forwarded-for')
     const address = header ? fromForwardedFor(header, hops) : ''
     if (address) return address
-  } else {
+  }
+  else {
     const headerName = PLATFORM_HEADER[trustedProxy]
     if (headerName) {
       const header = getRequestHeader(event, headerName)

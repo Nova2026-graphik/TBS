@@ -4,7 +4,7 @@ const { data } = await useSiteContent()
 usePageSeo({
   title: 'Questions fréquentes',
   description:
-    "Délais de réservation, livraison et montage, casse, appels d'offres, délais de fourniture : les réponses de TBS Distribution aux questions les plus posées.",
+    'Délais de réservation, livraison et montage, casse, appels d\'offres, délais de fourniture : les réponses de TBS Distribution aux questions les plus posées.',
   path: '/faq',
 })
 

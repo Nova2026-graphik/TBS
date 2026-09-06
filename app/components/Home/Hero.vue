@@ -189,7 +189,7 @@ function estRendue(index: number) {
 
       <!-- Fixe : ancrage SEO et plan du document. -->
       <h1 class="max-w-[17em] text-display text-white">
-        Équiper vos réceptions,<br >
+        Équiper vos réceptions,<br>
         <span class="italic text-cream">fournir vos projets</span>
       </h1>
 
