@@ -23,7 +23,7 @@ import type {
 async function withFallback<T>(
   query: () => Promise<T[]>,
   fallback: T[],
-): Promise<{ data: T[]; source: 'database' | 'static' }> {
+): Promise<{ data: T[], source: 'database' | 'static' }> {
   const db = useDb()
   if (!db) return { data: fallback, source: 'static' }
 
@@ -31,7 +31,8 @@ async function withFallback<T>(
     const rows = await query()
     if (!rows.length) return { data: fallback, source: 'static' }
     return { data: rows, source: 'database' }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('[repository] requête échouée, repli statique :', error)
     return { data: fallback, source: 'static' }
   }
@@ -46,7 +47,7 @@ export function getBranches() {
       .where(eq(schema.branches.isPublished, true))
       .orderBy(asc(schema.branches.position))
 
-    return rows.map((r) => ({
+    return rows.map(r => ({
       slug: r.slug,
       index: r.position,
       name: r.name,
@@ -69,7 +70,7 @@ export function getRentalCategories() {
       .where(eq(schema.rentalCategories.isPublished, true))
       .orderBy(asc(schema.rentalCategories.position))
 
-    return rows.map((r) => ({
+    return rows.map(r => ({
       slug: r.slug,
       name: r.name,
       refCount: r.refCount,
@@ -88,7 +89,7 @@ export function getServiceBlocks() {
       .where(eq(schema.serviceBlocks.isPublished, true))
       .orderBy(asc(schema.serviceBlocks.position))
 
-    return rows.map((r) => ({
+    return rows.map(r => ({
       branch: r.branchSlug,
       eyebrow: r.eyebrow,
       title: r.title,
@@ -108,7 +109,7 @@ export function getDomains() {
       .from(schema.domains)
       .orderBy(asc(schema.domains.position))
 
-    return rows.map((r) => ({
+    return rows.map(r => ({
       branch: r.branchSlug,
       title: r.title,
       description: r.description,
@@ -125,7 +126,7 @@ export function getGalleryItems() {
       .where(eq(schema.galleryItems.isPublished, true))
       .orderBy(asc(schema.galleryItems.position))
 
-    return rows.map((r) => ({
+    return rows.map(r => ({
       id: r.ref,
       title: r.title,
       location: r.location,
@@ -146,7 +147,7 @@ export function getTestimonials() {
       .where(eq(schema.testimonials.isPublished, true))
       .orderBy(asc(schema.testimonials.position))
 
-    return rows.map((r) => ({
+    return rows.map(r => ({
       quote: r.quote,
       author: r.author,
       context: r.context,
@@ -163,7 +164,7 @@ export function getFaqItems() {
       .where(eq(schema.faqItems.isPublished, true))
       .orderBy(asc(schema.faqItems.position))
 
-    return rows.map((r) => ({
+    return rows.map(r => ({
       id: r.ref,
       group: r.groupLabel,
       question: r.question,

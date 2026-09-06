@@ -40,7 +40,7 @@ export const LEGAL_IDENTITY: LegalField[] = [
   {
     label: 'NIF',
     value: null,
-    hint: "Numéro d'identification fiscale",
+    hint: 'Numéro d\'identification fiscale',
   },
   {
     label: 'Gérant',
@@ -59,7 +59,7 @@ export const LEGAL_HOST: LegalField[] = [
   {
     label: 'Adresse',
     value: null,
-    hint: "Siège de l'hébergeur",
+    hint: 'Siège de l\'hébergeur',
   },
   {
     label: 'Contact',
@@ -74,8 +74,8 @@ export const LEGAL_HOST: LegalField[] = [
  * choisis — cf. `.env.example`.
  */
 export const LEGAL_PROCESSORS: LegalField[] = [
-  { label: 'Hébergement du site', value: null, hint: "Prestataire et pays d'hébergement" },
-  { label: 'Base de données', value: null, hint: "Prestataire et pays d'hébergement" },
+  { label: 'Hébergement du site', value: null, hint: 'Prestataire et pays d\'hébergement' },
+  { label: 'Base de données', value: null, hint: 'Prestataire et pays d\'hébergement' },
   { label: 'Envoi des e-mails', value: null, hint: 'Prestataire retenu pour les notifications' },
 ]
 
@@ -92,7 +92,7 @@ export const RENTAL_TERMS: LegalField[] = [
     value: null,
     hint: 'Nombre de jours avant la date de mise à disposition',
   },
-  { label: 'Annulation tardive', value: null, hint: "Part de l'acompte conservée" },
+  { label: 'Annulation tardive', value: null, hint: 'Part de l\'acompte conservée' },
   {
     label: 'Casse et manquants',
     value: null,
@@ -124,5 +124,5 @@ export function formatLegalDate(iso: string): string {
 
 /** Nombre d'informations encore attendues de TBS, tous blocs confondus. */
 export function countPendingLegalFields(...groups: LegalField[][]): number {
-  return groups.flat().filter((field) => field.value === null).length
+  return groups.flat().filter(field => field.value === null).length
 }

@@ -24,7 +24,7 @@ const REQUEST_TYPES = [
   'Mariage',
   'Cérémonie / baptême',
   'Réception privée',
-  "Événement d'entreprise",
+  'Événement d\'entreprise',
   'Fourniture / marché public',
   'Autre',
 ]
@@ -71,8 +71,8 @@ const FIELD_LABELS: Record<string, string> = {
   email: 'E-mail',
   branch: 'Branche concernée',
   requestType: 'Type de demande',
-  eventDate: "Date de l'événement",
-  guestCount: "Nombre d'invités",
+  eventDate: 'Date de l\'événement',
+  guestCount: 'Nombre d\'invités',
   location: 'Lieu',
   message: 'Votre besoin',
 }
@@ -92,10 +92,10 @@ const errorSummary = ref<HTMLElement | null>(null)
 const errorList = computed(() => {
   const known = Object.keys(FIELD_LABELS)
   const fields = [
-    ...known.filter((field) => errors.value[field]),
-    ...Object.keys(errors.value).filter((field) => !known.includes(field)),
+    ...known.filter(field => errors.value[field]),
+    ...Object.keys(errors.value).filter(field => !known.includes(field)),
   ]
-  return fields.map((field) => ({
+  return fields.map(field => ({
     field,
     label: FIELD_LABELS[field] ?? field,
     message: errors.value[field]!,
@@ -121,7 +121,7 @@ function texteDeRequete(valeur: unknown): string {
 
 onMounted(() => {
   const branche = route.query.branche
-  const match = BRANCH_OPTIONS.find((option) =>
+  const match = BRANCH_OPTIONS.find(option =>
     typeof branche === 'string' && option.toLowerCase().includes(branche.toLowerCase()),
   )
   if (match) form.branch = match
@@ -139,7 +139,7 @@ onMounted(() => {
 
 /** Les champs date / invités n'ont de sens que pour une demande événementielle. */
 const isEventRequest = computed(() =>
-  ['Mariage', 'Cérémonie / baptême', 'Réception privée', "Événement d'entreprise"].includes(
+  ['Mariage', 'Cérémonie / baptême', 'Réception privée', 'Événement d\'entreprise'].includes(
     form.requestType,
   ),
 )
@@ -191,18 +191,18 @@ async function submit() {
       },
     })
     status.value = 'sent'
-    track(ANALYTICS_EVENTS.devisEnvoye, { branche: form.branch.split('—')[0]!.trim() })
-  } catch (error: unknown) {
-    const err = error as { data?: { data?: { errors?: Record<string, string> }; statusMessage?: string } }
+  }
+  catch (error: unknown) {
+    const err = error as { data?: { data?: { errors?: Record<string, string> }, statusMessage?: string } }
     if (err.data?.data?.errors) {
       errors.value = err.data.data.errors
       status.value = 'idle'
       await focusErrorSummary()
       return
     }
-    serverError.value =
-      err.data?.statusMessage ??
-      "Envoi impossible pour l'instant. Appelez-nous au (+228) 90 10 85 10."
+    serverError.value
+      = err.data?.statusMessage
+        ?? 'Envoi impossible pour l\'instant. Appelez-nous au (+228) 90 10 85 10.'
     status.value = 'error'
   }
 }
@@ -219,8 +219,8 @@ function reset() {
   mountedAt.value = Date.now()
 }
 
-const FIELD =
-  'w-full border-0 border-b border-ink/20 bg-transparent pb-3 pt-2 text-[0.9375rem] text-ink transition-colors duration-400 outline-none placeholder:text-ink-mute/70 focus:border-gold'
+const FIELD
+  = 'w-full border-0 border-b border-ink/20 bg-transparent pb-3 pt-2 text-[0.9375rem] text-ink transition-colors duration-400 outline-none placeholder:text-ink-mute/70 focus:border-gold'
 const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
 </script>
 

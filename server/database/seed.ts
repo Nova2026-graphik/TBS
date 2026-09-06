@@ -39,7 +39,7 @@ async function seed() {
 
   console.log('→ Branches…')
   await db.insert(schema.branches).values(
-    branchesContent.map((b) => ({
+    branchesContent.map(b => ({
       slug: b.slug,
       position: b.index,
       name: b.name,
@@ -78,7 +78,7 @@ async function seed() {
     })),
   )
 
-  console.log("→ Domaines d'intervention…")
+  console.log('→ Domaines d\'intervention…')
   await db.insert(schema.domains).values(
     domainsContent.map((d, i) => ({
       branchSlug: d.branch,

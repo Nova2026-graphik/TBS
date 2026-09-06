@@ -29,7 +29,7 @@ function sha256(source) {
 /** Les attributs HTML arrivent encodés ; le navigateur hache la valeur décodée. */
 function decodeEntities(value) {
   return value
-    .replaceAll('&#39;', "'")
+    .replaceAll('&#39;', '\'')
     .replaceAll('&quot;', '"')
     .replaceAll('&lt;', '<')
     .replaceAll('&gt;', '>')

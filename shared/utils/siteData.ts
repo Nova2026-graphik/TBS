@@ -49,7 +49,7 @@ export const PROCESS_BY_BRANCH: Record<string, ProcessBlock> = {
       },
     ],
     footnote:
-      "TBS Distribution S.A.R.L répond également aux consultations et appels d'offres publics et privés : dossier administratif à jour, offre technique et financière, factures normalisées.",
+      'TBS Distribution S.A.R.L répond également aux consultations et appels d\'offres publics et privés : dossier administratif à jour, offre technique et financière, factures normalisées.',
   },
 
   events: {
@@ -61,7 +61,7 @@ export const PROCESS_BY_BRANCH: Record<string, ProcessBlock> = {
         step: '01',
         title: 'Dites-nous tout',
         description:
-          "Date, lieu, nombre d'invités, style souhaité. Un échange de dix minutes suffit.",
+          'Date, lieu, nombre d\'invités, style souhaité. Un échange de dix minutes suffit.',
       },
       {
         step: '02',
@@ -72,7 +72,7 @@ export const PROCESS_BY_BRANCH: Record<string, ProcessBlock> = {
         step: '03',
         title: 'On installe',
         description:
-          "Livraison, montage et mise en place terminés avant l'arrivée des invités.",
+          'Livraison, montage et mise en place terminés avant l\'arrivée des invités.',
       },
       {
         step: '04',
@@ -86,11 +86,11 @@ export const PROCESS_BY_BRANCH: Record<string, ProcessBlock> = {
   etudes: {
     eyebrow: 'TBS Études & Conseils — prestations',
     title: 'Assistance',
-    titleAccent: "& maîtrise d'ouvrage",
+    titleAccent: '& maîtrise d\'ouvrage',
     steps: [
       {
         step: '01',
-        title: "Assistance à maîtrise d'ouvrage",
+        title: 'Assistance à maîtrise d\'ouvrage',
         description:
           'Suivi technique et administratif de vos projets, du cahier des charges à la réception des travaux ou des équipements.',
       },
@@ -98,7 +98,7 @@ export const PROCESS_BY_BRANCH: Record<string, ProcessBlock> = {
         step: '02',
         title: 'Montage de dossiers',
         description:
-          "Constitution des dossiers d'appels d'offres, pièces administratives, offres techniques et financières.",
+          'Constitution des dossiers d\'appels d\'offres, pièces administratives, offres techniques et financières.',
       },
       {
         step: '03',
@@ -124,7 +124,7 @@ export const PROCESS_BY_BRANCH: Record<string, ProcessBlock> = {
         step: '02',
         title: 'Projets & bailleurs',
         description:
-          "Fourniture d'équipements pour les projets agricoles financés par les bailleurs et les ONG.",
+          'Fourniture d\'équipements pour les projets agricoles financés par les bailleurs et les ONG.',
       },
       {
         step: '03',
@@ -174,14 +174,14 @@ export const INSPIRATIONS: Inspiration[] = [
   {
     title: 'Nuit électrique',
     description:
-      "Piste de danse lumineuse, lounge sombre, éclairage d'ambiance piloté sur place.",
+      'Piste de danse lumineuse, lounge sombre, éclairage d\'ambiance piloté sur place.',
     image: '/images/ambiance-nuit-electrique.jpg',
     imageAlt: 'Ambiance soirée — piste LED et lumière colorée',
   },
   {
     title: 'Cocktail sous les arbres',
     description:
-      "Mange-debout, bar mobile et guirlandes : le format idéal pour les lancements et les réceptions d'entreprise en extérieur.",
+      'Mange-debout, bar mobile et guirlandes : le format idéal pour les lancements et les réceptions d\'entreprise en extérieur.',
     image: '/images/ambiance-cocktail.jpg',
     imageAlt: 'Ambiance cocktail extérieur — mange-debout au jardin',
   },
@@ -202,7 +202,7 @@ export const HOME_STATS: StatItem[] = [
 export const ABOUT_STATS: StatItem[] = [
   { value: '2014', label: 'Année de création' },
   { value: '480', suffix: '+', label: 'Événements équipés' },
-  { value: '4', label: "Branches d'activité" },
+  { value: '4', label: 'Branches d\'activité' },
   { value: '18', label: 'Personnes sur le terrain' },
 ]
 

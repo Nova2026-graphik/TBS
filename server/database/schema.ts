@@ -79,7 +79,7 @@ export const rentalCategories = pgTable(
     position: integer('position').notNull().default(0),
     isPublished: boolean('is_published').notNull().default(true),
   },
-  (t) => [uniqueIndex('rental_categories_slug_idx').on(t.slug)],
+  t => [uniqueIndex('rental_categories_slug_idx').on(t.slug)],
 )
 
 /** Blocs de prestation affichés sur /services, rattachés à une branche. */
@@ -97,7 +97,7 @@ export const serviceBlocks = pgTable(
     position: integer('position').notNull().default(0),
     isPublished: boolean('is_published').notNull().default(true),
   },
-  (t) => [index('service_blocks_branch_idx').on(t.branchSlug, t.position)],
+  t => [index('service_blocks_branch_idx').on(t.branchSlug, t.position)],
 )
 
 /** Domaines d'intervention listés en page d'accueil. */
@@ -125,7 +125,7 @@ export const galleryItems = pgTable(
     position: integer('position').notNull().default(0),
     isPublished: boolean('is_published').notNull().default(true),
   },
-  (t) => [
+  t => [
     uniqueIndex('gallery_items_ref_idx').on(t.ref),
     index('gallery_items_category_idx').on(t.category, t.position),
   ],
@@ -153,7 +153,7 @@ export const faqItems = pgTable(
     position: integer('position').notNull().default(0),
     isPublished: boolean('is_published').notNull().default(true),
   },
-  (t) => [uniqueIndex('faq_items_ref_idx').on(t.ref)],
+  t => [uniqueIndex('faq_items_ref_idx').on(t.ref)],
 )
 
 /* ── Transactionnel ───────────────────────────────────────────────────────── */
@@ -179,7 +179,7 @@ export const quoteRequests = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
     handledAt: timestamp('handled_at', { withTimezone: true }),
   },
-  (t) => [
+  t => [
     index('quote_requests_created_idx').on(t.createdAt),
     index('quote_requests_status_idx').on(t.status),
     index('quote_requests_ip_idx').on(t.ipHash, t.createdAt),

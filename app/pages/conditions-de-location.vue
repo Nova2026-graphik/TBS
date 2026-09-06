@@ -57,7 +57,7 @@ useBreadcrumbSchema([{ name: 'Conditions de location', path: '/conditions-de-loc
         </p>
         <p>
           Elles complètent le devis accepté. <strong>En cas de divergence, le
-          devis prévaut</strong> : il porte le détail du matériel, les dates,
+            devis prévaut</strong> : il porte le détail du matériel, les dates,
           le lieu et le prix ferme convenus.
         </p>
 
@@ -178,7 +178,7 @@ useBreadcrumbSchema([{ name: 'Conditions de location', path: '/conditions-de-loc
         <h2>Droit applicable et litiges</h2>
         <p>
           Les présentes conditions sont soumises au <strong>droit
-          togolais</strong>. En cas de différend, les parties recherchent
+            togolais</strong>. En cas de différend, les parties recherchent
           d'abord une solution amiable. À défaut d'accord, le litige relève des
           <strong>tribunaux compétents de Lomé</strong>.
         </p>

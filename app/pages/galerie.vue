@@ -15,7 +15,7 @@ const router = useRouter()
 const { data } = await useSiteContent()
 
 const filters = GALLERY_FILTERS
-const VALID = filters.map((f) => f.value) as readonly string[]
+const VALID = filters.map(f => f.value) as readonly string[]
 
 const activeFilter = computed<string>(() => {
   const raw = route.query.filtre
@@ -33,7 +33,7 @@ function setFilter(value: string) {
 const visible = computed(() =>
   activeFilter.value === 'all'
     ? data.value.gallery
-    : data.value.gallery.filter((i) => i.category === (activeFilter.value as GalleryCategory)),
+    : data.value.gallery.filter(i => i.category === (activeFilter.value as GalleryCategory)),
 )
 
 // Index dans `visible`, pour que les flèches de la visionneuse restent
@@ -56,7 +56,6 @@ const shown = computed(() => visible.value.slice(0, shownCount.value))
 const remaining = computed(() => visible.value.length - shown.value.length)
 
 const grid = useTemplateRef<HTMLElement>('grid')
-
 
 async function showMore() {
   const firstNew = shownCount.value

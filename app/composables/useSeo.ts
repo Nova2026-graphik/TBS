@@ -84,44 +84,44 @@ export function useOrganizationSchema() {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     '@id': `${cfg.siteUrl}/#organization`,
-    name: cfg.siteName,
-    alternateName: 'TBS',
-    description:
-      "Fourniture de matériels et d'équipements, location de matériel de réception, études et conseils, agriculture et agro-industrie. Lomé, Togo.",
-    url: cfg.siteUrl,
-    logo: `${cfg.siteUrl}/images/logo-tbs.png`,
-    image: `${cfg.siteUrl}/images/hero-reception.jpg`,
+    'name': cfg.siteName,
+    'alternateName': 'TBS',
+    'description':
+      'Fourniture de matériels et d\'équipements, location de matériel de réception, études et conseils, agriculture et agro-industrie. Lomé, Togo.',
+    'url': cfg.siteUrl,
+    'logo': `${cfg.siteUrl}/images/logo-tbs.png`,
+    'image': `${cfg.siteUrl}/images/hero-reception.jpg`,
     // Les deux lignes de l'entreprise : schema.org accepte la répétition, et
     // un appel manqué sur la première ne doit pas coûter la demande.
-    telephone: [cfg.phonePrimary, cfg.phoneSecondary].filter(Boolean),
-    email: cfg.email,
-    priceRange: '$$',
-    address: {
+    'telephone': [cfg.phonePrimary, cfg.phoneSecondary].filter(Boolean),
+    'email': cfg.email,
+    'priceRange': '$$',
+    'address': {
       '@type': 'PostalAddress',
-      streetAddress: 'Agôè - Démakpoè',
-      addressLocality: 'Lomé',
-      addressCountry: 'TG',
+      'streetAddress': 'Agôè - Démakpoè',
+      'addressLocality': 'Lomé',
+      'addressCountry': 'TG',
     },
     // Position et fiche : publiées seulement si elles sont connues.
     ...(coords
       ? {
           geo: {
             '@type': 'GeoCoordinates',
-            latitude: coords.latitude,
-            longitude: coords.longitude,
+            'latitude': coords.latitude,
+            'longitude': coords.longitude,
           },
         }
       : {}),
     ...(cfg.googleBusinessUrl ? { hasMap: cfg.googleBusinessUrl } : {}),
     ...(sameAs.length ? { sameAs } : {}),
-    areaServed: [
-      { '@type': 'City', name: 'Lomé' },
-      { '@type': 'Country', name: 'Togo' },
+    'areaServed': [
+      { '@type': 'City', 'name': 'Lomé' },
+      { '@type': 'Country', 'name': 'Togo' },
     ],
-    openingHoursSpecification: [
+    'openingHoursSpecification': [
       {
         '@type': 'OpeningHoursSpecification',
-        dayOfWeek: [
+        'dayOfWeek': [
           'Monday',
           'Tuesday',
           'Wednesday',
@@ -129,16 +129,16 @@ export function useOrganizationSchema() {
           'Friday',
           'Saturday',
         ],
-        opens: '08:00',
-        closes: '19:00',
+        'opens': '08:00',
+        'closes': '19:00',
       },
     ],
-    makesOffer: [
+    'makesOffer': [
       'TBS Équipements — fourniture de matériels & équipements',
       'TBS Events — location de matériel de réception',
       'TBS Études & Conseils — études & prestations intellectuelles',
       'TBS Agro — agriculture & agro-industrie',
-    ].map((name) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name } })),
+    ].map(name => ({ '@type': 'Offer', 'itemOffered': { '@type': 'Service', name } })),
   }
 
   useHead({
@@ -158,10 +158,10 @@ export function useFaqSchema(items: MaybeRefOrGetter<FaqItem[]>) {
           JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'FAQPage',
-            mainEntity: toValue(items).map((item) => ({
+            'mainEntity': toValue(items).map(item => ({
               '@type': 'Question',
-              name: item.question,
-              acceptedAnswer: { '@type': 'Answer', text: item.answer },
+              'name': item.question,
+              'acceptedAnswer': { '@type': 'Answer', 'text': item.answer },
             })),
           }),
         ),
@@ -171,7 +171,7 @@ export function useFaqSchema(items: MaybeRefOrGetter<FaqItem[]>) {
 }
 
 /** JSON-LD BreadcrumbList. */
-export function useBreadcrumbSchema(trail: { name: string; path: string }[]) {
+export function useBreadcrumbSchema(trail: { name: string, path: string }[]) {
   const { public: cfg } = useRuntimeConfig()
 
   useHead({
@@ -181,11 +181,11 @@ export function useBreadcrumbSchema(trail: { name: string; path: string }[]) {
         innerHTML: JSON.stringify({
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
-          itemListElement: [{ name: 'Accueil', path: '/' }, ...trail].map((item, i) => ({
+          'itemListElement': [{ name: 'Accueil', path: '/' }, ...trail].map((item, i) => ({
             '@type': 'ListItem',
-            position: i + 1,
-            name: item.name,
-            item: `${cfg.siteUrl}${item.path}`,
+            'position': i + 1,
+            'name': item.name,
+            'item': `${cfg.siteUrl}${item.path}`,
           })),
         }),
       },
