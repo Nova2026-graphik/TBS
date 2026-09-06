@@ -88,7 +88,7 @@ usePageSeo({
   description:
     'Une sélection de réceptions équipées par TBS Events et de livraisons réalisées par TBS Distribution entre 2024 et 2026, à Lomé et partout au Togo.',
   path: '/galerie',
-  image: '/images/galerie-mariage-adjovi.jpg',
+  image: '/og-galerie.jpg',
 })
 
 useBreadcrumbSchema([{ name: 'Galerie', path: '/galerie' }])

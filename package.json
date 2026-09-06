@@ -16,7 +16,8 @@
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "db:seed": "tsx --env-file-if-exists=.env server/database/seed.ts",
-    "security:csp-hashes": "node scripts/csp-hashes.mjs"
+    "security:csp-hashes": "node scripts/csp-hashes.mjs",
+    "icons:generate": "node scripts/generate-icons.mjs"
   },
   "//overrides": "Deux paquets transitifs sans correctif amont. `sharp` : ipx 2.x demande ^0.32.6, vulnérable (GHSA-f88m-g3jw-g9cj) ; seul ipx 4, encore en bêta, monte à ^0.35. On force la version corrigée sous ipx 2, dont l'usage de l'API sharp n'a pas bougé. `esbuild` : deux avis visent son serveur de développement (GHSA-67mh-4wv8-2f99, GHSA-g7r4-m6w7-qqqr) ; fontless demande ^0.27.0 et @esbuild-kit/core-utils, abandonné et tiré par drizzle-kit, demande ~0.18.20. On force la version corrigée, que vite et nitro acceptent déjà nativement.",
   "overrides": {

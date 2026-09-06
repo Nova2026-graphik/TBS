@@ -70,12 +70,24 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: { lang: 'fr' },
       titleTemplate: '%s · TBS Distribution',
+      /**
+       * Jeu d'icônes complet — fabriqué depuis le logo par
+       * `node scripts/generate-icons.mjs`, et versionné dans `public/`.
+       * L'ICO couvre 16, 32 et 48 px pour les onglets et les favoris ; le PNG
+       * de 96 px sert les écrans à forte densité ; `apple-touch-icon` évite
+       * qu'iOS ne mette une capture de la page sur l'écran d'accueil ; le
+       * manifeste rend l'installation possible sous Android.
+       */
       link: [
-        { rel: 'icon', type: 'image/png', href: '/images/logo-tbs.png' },
+        { rel: 'icon', href: '/favicon.ico', sizes: '32x32' },
+        { rel: 'icon', type: 'image/png', href: '/favicon-96.png', sizes: '96x96' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
+        { rel: 'manifest', href: '/site.webmanifest' },
         { rel: 'canonical', href: 'https://www.tbs-distribution.tg' },
       ],
       meta: [
-        { name: 'theme-color', content: '#3E3524' },
+        { name: 'theme-color', content: '#3e3524' },
+        { name: 'apple-mobile-web-app-title', content: 'TBS' },
         { name: 'format-detection', content: 'telephone=no' },
       ],
     },
