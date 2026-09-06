@@ -254,6 +254,62 @@ publique par nécessité.
 
 ---
 
+## Espace de suivi des devis
+
+`/admin` liste les demandes, permet d'en ouvrir une, de la rappeler, d'en
+changer le statut et d'y attacher une note interne. Jusqu'ici, la seule façon
+de lire une demande était `npm run db:studio` depuis un poste de
+développement : inutilisable par un commercial.
+
+### Accès
+
+Un mot de passe partagé, pas de comptes : l'écran sert deux ou trois personnes,
+et gérer des utilisateurs coûterait plus cher que le problème ne vaut.
+
+```
+NUXT_ADMIN_PASSWORD=…
+```
+
+**Vide, l'espace n'existe pas** : `/admin` comme `/api/admin/*` répondent 404,
+page comprise. Un déploiement qui oublie la variable n'ouvre pas un accès libre
+aux demandes de devis.
+
+Ce qui protège l'accès :
+
+| | |
+| --- | --- |
+| Session | Jeton HMAC-SHA256 sur la date d'expiration, cookie `HttpOnly`, `SameSite=Strict`, `Secure` hors développement, huit heures |
+| Mot de passe | Jamais stocké côté navigateur ; comparaison à temps constant |
+| Force brute | Dix tentatives par heure et par adresse |
+| Indexation | `noindex, nofollow`, `Disallow: /admin`, hors sitemap, hors pré-rendu |
+| Mot de passe faible | Avertissement au journal sous douze caractères, ou s'il commence par un mot évident |
+
+Changer le mot de passe déconnecte tout le monde : la clé de signature en
+dérive. C'est le comportement attendu.
+
+### Ce que l'écran montre — et ne montre pas
+
+`ip_hash` ne sort jamais : il sert la limitation de débit, pas le suivi
+commercial. Le `user_agent` n'apparaît qu'au détail, où il aide à juger un
+envoi automatisé.
+
+La **note interne** n'est jamais montrée au client, et part avec le reste à
+l'anonymisation — elle peut nommer des personnes.
+
+`handled_at` se pose tout seul dès qu'une demande quitte « nouveau » : c'est la
+date qui fait foi pour la conservation, et personne ne penserait à la
+renseigner à la main.
+
+### Migration
+
+L'espace ajoute une colonne :
+
+```bash
+npm run db:migrate      # applique 0001_large_boom_boom.sql
+```
+
+---
+
 ## Architecture
 
 ```
