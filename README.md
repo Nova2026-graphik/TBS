@@ -294,6 +294,21 @@ npm run generate
 Voir `.env.example`. Aucune n'est obligatoire pour faire tourner le site ;
 seule `DATABASE_URL` change le comportement (base au lieu de contenu statique).
 
+### Dépendances surchargées
+
+`package.json` force deux paquets transitifs, faute de correctif amont — le
+motif de chacun est écrit dans la clé `//overrides`, juste au-dessus :
+
+| Paquet | Forcé en | Pourquoi |
+| --- | --- | --- |
+| `sharp` | `^0.35.0` | Vulnérabilités libvips ([GHSA-f88m-g3jw-g9cj](https://github.com/advisories/GHSA-f88m-g3jw-g9cj)). `ipx@2` demande `^0.32.6` ; seul `ipx@4`, encore en bêta, monte à `^0.35`. |
+| `esbuild` | `^0.28.2` | Deux avis visant son serveur de développement. `@esbuild-kit/core-utils`, abandonné et tiré par `drizzle-kit`, reste bloqué sur `~0.18.20`. |
+
+Ces deux lignes disparaîtront quand l'amont rattrapera : surveiller la sortie
+stable d'`ipx@4` (`@nuxt/image@2`) et l'abandon de `@esbuild-kit` par
+`drizzle-kit`. Dependabot (`.github/dependabot.yml`) signale les mises à jour
+chaque lundi.
+
 ---
 
 ## Sécurité
@@ -385,6 +400,7 @@ Les en-têtes doivent alors être posés par l'hébergeur — fichier `_headers`
 ```bash
 npm run typecheck
 npm run build
+npm audit           # doit rester à 0 vulnérabilité
 ```
 
 En-têtes de sécurité, sur le build de production :
