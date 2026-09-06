@@ -15,7 +15,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:seed": "tsx --env-file-if-exists=.env server/database/seed.ts"
+    "db:seed": "tsx --env-file-if-exists=.env server/database/seed.ts",
+    "security:csp-hashes": "node scripts/csp-hashes.mjs"
   },
   "dependencies": {
     "@nuxt/fonts": "^0.13.0",
