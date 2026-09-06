@@ -100,6 +100,51 @@ sont journalisées côté serveur pour ne pas être perdues.
 
 ---
 
+## Notification des demandes de devis
+
+Une demande enregistrée qui n'alerte personne ne vaut rien : le site promet une
+réponse sous 24 h. À réception, `server/api/quotes.post.ts` envoie donc deux
+messages — une alerte à l'équipe (`NUXT_NOTIFY_EMAIL`) et un accusé de
+réception au demandeur s'il a laissé une adresse.
+
+### Mise en route
+
+1. Ouvrir un compte chez **Resend** ou **Brevo** (l'offre gratuite suffit :
+   quelques centaines de messages par mois).
+2. Vérifier le domaine d'envoi (SPF + DKIM). Sans cela, les messages partent en
+   indésirables — ou sont refusés.
+3. Renseigner trois variables :
+
+```
+NUXT_MAIL_PROVIDER=resend        # ou brevo
+NUXT_MAIL_API_KEY=re_…
+NUXT_MAIL_FROM=TBS Distribution <devis@tbs-distribution.tg>
+```
+
+Le prestataire se change par configuration, sans toucher au code : les deux
+API sont appelées en HTTP depuis `server/utils/mailer.ts`, sans dépendance npm
+ni port SMTP — le même code tourne derrière Node, Vercel ou Cloudflare.
+
+### Garanties
+
+- **L'envoi ne peut jamais faire échouer une demande.** Chaque message est
+  plafonné à 8 secondes, les échecs sont journalisés, la réponse reste un
+  succès. La réponse porte `notified: true|false` pour le dire honnêtement.
+- **Sans clé d'API, rien ne casse** : l'envoi est désactivé, la demande reste
+  enregistrée et journalisée, et un avertissement le signale dans le journal.
+- **Aucune donnée technique interne dans les messages** : ni `ipHash` ni
+  `userAgent`, qui servent l'anti-spam et pas le commercial qui rappelle.
+- **L'alerte interne répond au client.** Son `Reply-To` est l'adresse du
+  demandeur : répondre depuis la boîte de l'équipe écrit directement au client.
+- Sans base de données, l'alerte porte un avertissement visible — elle est
+  alors la seule trace de la demande.
+
+Les gabarits vivent dans `server/utils/quoteNotification.ts` et n'importent
+rien de Nitro : ils se rendent hors serveur, ce qui permet de les relire sans
+démarrer quoi que ce soit.
+
+---
+
 ## Architecture
 
 ```
@@ -124,6 +169,8 @@ server/
   api/                     site-content, branches, gallery, faq (GET) · quotes (POST)
   data/content.ts          Contenu de référence — seed + repli
   database/                schema.ts, client.ts, seed.ts
+  utils/mailer.ts          Envoi e-mail — Resend ou Brevo, par API HTTP
+  utils/quoteNotification.ts  Alerte équipe + accusé de réception
   utils/repository.ts      Accès base avec repli statique
 shared/
   types.ts                 Types partagés client / serveur
@@ -206,6 +253,8 @@ performance.
   sous chaque champ, états chargement / succès / erreur, champ e-mail ajouté,
   champ piège anti-robot, délai minimum de remplissage, limitation à 10
   demandes par IP et par heure.
+- **Notification à réception** : alerte à l'équipe et accusé de réception au
+  demandeur, sans jamais pouvoir faire échouer l'enregistrement.
 - **Dock de contact permanent** : bouton WhatsApp flottant en bureau, barre
   Appeler / WhatsApp / Devis en mobile — les deux canaux qui convertissent le
   mieux au Togo.
@@ -258,9 +307,9 @@ seule `DATABASE_URL` change le comportement (base au lieu de contenu statique).
    blanche dans le footer. Une version monochrome claire serait plus élégante.
 5. **Mentions légales** — les liens du bas de page sont présents mais les
    pages restent à rédiger.
-6. **Notification de devis** — les demandes sont enregistrées en base ;
-   l'envoi d'un e-mail d'alerte (`NUXT_NOTIFY_EMAIL`) reste à brancher sur un
-   service d'envoi (Resend, Brevo, SMTP).
+6. **Notification de devis** — l'envoi est en place (voir « Notification des
+   demandes de devis »). Reste à ouvrir le compte Resend ou Brevo, vérifier le
+   domaine d'envoi et renseigner `NUXT_MAIL_API_KEY` en production.
 
 ---
 
