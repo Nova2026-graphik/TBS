@@ -6,6 +6,7 @@
 const info = useSiteInfo()
 
 const sizesFull = SIZES_FULL
+const densitiesFull = DENSITIES_FULL
 </script>
 
 <template>
@@ -17,6 +18,7 @@ const sizesFull = SIZES_FULL
       preset="card"
       loading="lazy"
       :sizes="sizesFull"
+      :densities="densitiesFull"
       width="1600"
       height="900"
       class="absolute inset-0 size-full object-cover opacity-45"
