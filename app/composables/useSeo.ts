@@ -67,6 +67,19 @@ export function usePageSeo(options: PageSeoOptions) {
 export function useOrganizationSchema() {
   const { public: cfg } = useRuntimeConfig()
 
+  const coords = parseCoordinates(cfg.geoLatitude, cfg.geoLongitude)
+
+  /**
+   * Comptes et fiches à rattacher à l'établissement. `sameAs` est ce qui
+   * permet à un moteur de recouper le site, la fiche Google et les réseaux :
+   * c'est le lien entre l'entité et ses représentations ailleurs. Les entrées
+   * non renseignées sont écartées plutôt que publiées vides.
+   */
+  const sameAs = [
+    cfg.googleBusinessUrl,
+    ...SOCIAL_ACCOUNTS.map(compte => compte.url),
+  ].filter((url): url is string => Boolean(url))
+
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
@@ -78,7 +91,9 @@ export function useOrganizationSchema() {
     url: cfg.siteUrl,
     logo: `${cfg.siteUrl}/images/logo-tbs.png`,
     image: `${cfg.siteUrl}/images/hero-reception.jpg`,
-    telephone: cfg.phonePrimary,
+    // Les deux lignes de l'entreprise : schema.org accepte la répétition, et
+    // un appel manqué sur la première ne doit pas coûter la demande.
+    telephone: [cfg.phonePrimary, cfg.phoneSecondary].filter(Boolean),
     email: cfg.email,
     priceRange: '$$',
     address: {
@@ -87,6 +102,18 @@ export function useOrganizationSchema() {
       addressLocality: 'Lomé',
       addressCountry: 'TG',
     },
+    // Position et fiche : publiées seulement si elles sont connues.
+    ...(coords
+      ? {
+          geo: {
+            '@type': 'GeoCoordinates',
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+          },
+        }
+      : {}),
+    ...(cfg.googleBusinessUrl ? { hasMap: cfg.googleBusinessUrl } : {}),
+    ...(sameAs.length ? { sameAs } : {}),
     areaServed: [
       { '@type': 'City', name: 'Lomé' },
       { '@type': 'Country', name: 'Togo' },
