@@ -298,6 +298,44 @@ performance.
   au doigt, molette horizontale, et plus d'arithmétique de pourcentages à
   maintenir si le nombre de témoignages change.
 - **Page 404** aux couleurs du site.
+- **Icônes et cartes sociales** : jeu complet (ICO 16/32/48, PNG 96 et 180,
+  192 et 512 pour Android dont une masquable, manifeste d'application) et une
+  image de partage 1200 × 630 par page, fabriqués depuis le logo et les photos
+  du site par `npm run icons:generate`.
+
+### Icônes et images de partage
+
+`public/` porte le jeu d'icônes et les cartes sociales, tous produits depuis
+`public/images/logo-tbs.png` et les photos du site :
+
+```bash
+npm run icons:generate      # → scripts/generate-icons.mjs
+```
+
+| Fichier | Rôle |
+| --- | --- |
+| `favicon.ico` | Onglet et favoris — 16, 32 et 48 px dans un même conteneur |
+| `favicon-96.png` | Onglet sur écran à forte densité |
+| `apple-touch-icon.png` | Écran d'accueil iOS (180 px) — sans lui, iOS met une capture de la page |
+| `icon-192.png`, `icon-512.png` | Manifeste Android |
+| `icon-512-maskable.png` | Découpe Android (cercle, goutte…) : le logo tient dans la zone de sécurité |
+| `site.webmanifest` | Nom, couleurs, installation, raccourcis « Devis » et « Galerie » |
+| `og-image.jpg` et `og-<page>.jpg` | Partage social, 1200 × 630 |
+
+Les fichiers sont **versionnés** : le déploiement ne dépend pas de sharp. Le
+script n'est à rejouer que si le logo ou une photo change.
+
+Toutes les cartes sociales font 1200 × 630, et `usePageSeo` déclare ces
+dimensions dans `og:image:width` / `og:image:height`. Sans elles, Facebook,
+LinkedIn et WhatsApp doivent télécharger l'image pour les deviner — d'où le
+lien nu au premier partage. Une image d'un autre gabarit ferait mentir ces
+deux nombres : passer par le script.
+
+**Ce qui manque encore** : `favicon.svg` et `mask-icon`. Les deux demandent le
+logo en vectoriel, et le dépôt n'a que le PNG de 400 × 200. Emballer ce PNG
+dans un `<svg>` n'apporterait rien — mêmes pixels, aucune mise à l'échelle
+gagnée. Le jour où le fichier vectoriel arrive (AI, EPS ou SVG), les deux
+lignes sont à ajouter dans `nuxt.config.ts`.
 
 ---
 
