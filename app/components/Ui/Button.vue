@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { RouteLocationRaw } from 'vue-router'
+
 /**
  * Bouton / lien d'action unique du site.
  *
@@ -11,7 +13,12 @@ type Size = 'md' | 'lg'
 
 const props = withDefaults(
   defineProps<{
-    to?: string
+    /**
+     * Chemin, ou route complète. L'objet est nécessaire dès qu'un lien porte
+     * une chaîne de requête — le calculateur de matériel transmet ainsi son
+     * inventaire au formulaire de devis — et `NuxtLink` l'accepte tel quel.
+     */
+    to?: RouteLocationRaw
     href?: string
     type?: 'button' | 'submit'
     variant?: Variant
