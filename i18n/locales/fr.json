@@ -69,7 +69,13 @@
         "line2": "transformer vos récoltes"
       }
     },
-    "lead": "TBS Distribution réunit quatre branches : Équipements, Events, Études & Conseils et Agro. Fournir, équiper, conseiller et cultiver — un seul interlocuteur, à Lomé et partout au Togo.",
+    "lead": "Quatre branches, un seul interlocuteur : fournir, équiper, conseiller et cultiver, à Lomé et partout au Togo.",
+    "branchLeads": {
+      "equipements": "Bureau, informatique, santé et laboratoire, matériel roulant : nous fournissons, livrons et installons.",
+      "events": "Mobilier, art de la table, décor, son et lumière : de 20 à 2 000 invités, montage et reprise compris.",
+      "etudes": "Études techniques, conseil en organisation, formation et montage de dossiers d'appels d'offres.",
+      "agro": "Intrants, petits équipements agricoles et matériel de transformation, pour exploitations et coopératives."
+    },
     "imageAlt": "Salle de réception dressée par TBS Events, plan large",
     "house": {
       "name": "TBS Distribution",
