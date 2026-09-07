@@ -29,6 +29,28 @@ const REQUEST_TYPES = [
   'Autre',
 ]
 
+/**
+ * Branche déduite du type de demande.
+ *
+ * Les deux listes se recouvraient : choisir « Mariage » implique déjà TBS
+ * Events, et demander à la personne de le confirmer juste en dessous est une
+ * question pour rien — chaque champ supplémentaire coûte des conversions.
+ *
+ * Le sélecteur de branche ne reste affiché que pour les deux cas réellement
+ * ambigus : « Fourniture / marché public », qui peut relever d'Équipements,
+ * d'Études ou d'Agro, et « Autre », qui ne dit rien par construction. Le
+ * formulaire passe donc de neuf champs visibles à huit dans le cas courant.
+ *
+ * La valeur transmise reste la chaîne d'origine : les demandes déjà
+ * enregistrées restent comparables aux nouvelles.
+ */
+const BRANCHE_PAR_TYPE: Record<string, string> = {
+  'Mariage': BRANCH_OPTIONS[1]!,
+  'Cérémonie / baptême': BRANCH_OPTIONS[1]!,
+  'Réception privée': BRANCH_OPTIONS[1]!,
+  'Événement d\'entreprise': BRANCH_OPTIONS[1]!,
+}
+
 const route = useRoute()
 const info = useSiteInfo()
 const { track } = useAnalytics()
@@ -50,7 +72,10 @@ const form = reactive({
   name: '',
   phone: '',
   email: '',
-  branch: BRANCH_OPTIONS[0]!,
+  // Déduite du type par défaut, et non fixée au premier de la liste : sans
+  // cela, une demande envoyée sans toucher au type partirait sur « Mariage »
+  // et « TBS Équipements », ce que le sélecteur masqué ne laisserait pas voir.
+  branch: BRANCHE_PAR_TYPE[REQUEST_TYPES[0]!] ?? BRANCH_OPTIONS[0]!,
   requestType: REQUEST_TYPES[0]!,
   eventDate: '',
   guestCount: '',
@@ -119,12 +144,31 @@ function texteDeRequete(valeur: unknown): string {
   return typeof valeur === 'string' ? valeur : ''
 }
 
+/** Vrai quand le type de demande ne suffit pas à désigner la branche. */
+const brancheAmbigue = computed(() => !BRANCHE_PAR_TYPE[form.requestType])
+
+/**
+ * Un lien `?branche=` reste prioritaire : il vient d'une page de branche, où
+ * le visiteur a déjà dit ce qui l'intéresse. Hors de ce cas, le type de
+ * demande commande la branche.
+ */
+const brancheImposee = ref(false)
+
+watch(() => form.requestType, (type) => {
+  const deduite = BRANCHE_PAR_TYPE[type]
+  if (deduite && !brancheImposee.value) form.branch = deduite
+})
+
 onMounted(() => {
   const branche = route.query.branche
   const match = BRANCH_OPTIONS.find(option =>
     typeof branche === 'string' && option.toLowerCase().includes(branche.toLowerCase()),
   )
-  if (match) form.branch = match
+  if (match) {
+    form.branch = match
+    // Le lien vient d'une page de branche : ce choix prime sur la déduction.
+    brancheImposee.value = true
+  }
 
   const invites = Number(texteDeRequete(route.query.invites))
   if (Number.isInteger(invites) && invites > 0 && invites <= 100_000) {
@@ -210,7 +254,8 @@ async function submit() {
 
 function reset() {
   Object.assign(form, {
-    name: '', phone: '', email: '', branch: BRANCH_OPTIONS[0]!,
+    name: '', phone: '', email: '',
+    branch: BRANCHE_PAR_TYPE[REQUEST_TYPES[0]!] ?? BRANCH_OPTIONS[0]!,
     requestType: REQUEST_TYPES[0]!, eventDate: '', guestCount: '',
     location: '', message: '', company: '',
   })
@@ -334,9 +379,14 @@ const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
       <p v-if="errors.email" id="err-email" class="mt-2 text-xs text-red-600">{{ errors.email }}</p>
     </div>
 
-    <div>
+    <!--
+      Masqué quand le type de demande désigne déjà la branche — mais toujours
+      affiché si un lien l'a imposée : une valeur pré-remplie que le visiteur
+      ne peut ni voir ni corriger vaut moins que la question elle-même.
+    -->
+    <div v-if="brancheAmbigue || brancheImposee">
       <label :class="LABEL" for="field-branch">Branche concernée</label>
-      <select id="field-branch" v-model="form.branch" :class="FIELD">
+      <select id="field-branch" v-model="form.branch" :class="FIELD" @change="markStarted">
         <option v-for="option in BRANCH_OPTIONS" :key="option" :value="option">{{ option }}</option>
       </select>
     </div>
