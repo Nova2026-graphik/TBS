@@ -115,6 +115,16 @@
       "close": "Fermer la visionneuse",
       "previous": "Image précédente",
       "next": "Image suivante"
+    },
+    "sectors": {
+      "eyebrow": "Secteurs & domaines",
+      "title": "Quatre secteurs,",
+      "accent": "huit domaines",
+      "lead": "Les réceptions ne sont qu'une part du travail. Survolez un secteur — ou parcourez-les au clavier — pour voir les domaines qu'il couvre.",
+      "branch": "Branche {index}",
+      "domains": "Domaines couverts",
+      "cta": "Voir les prestations",
+      "ctaLabel": "{sector} — voir les prestations"
     }
   },
   "about": {

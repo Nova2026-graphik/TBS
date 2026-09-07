@@ -206,6 +206,11 @@ const sizesThird = SIZES_THIRD
       </div>
     </section>
 
+    <!-- Les vignettes montrent des réceptions ; l'accordéon rappelle que la
+         même société couvre trois autres secteurs. Il ferme la page côté
+         « qui fait quoi », avant l'appel au devis. -->
+    <GallerySectors :branches="data.branches" :domains="data.domains" />
+
     <GalleryLightbox
       :items="visible"
       :index="lightboxIndex"
