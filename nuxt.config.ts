@@ -21,14 +21,19 @@ export default defineNuxtConfig({
        * Jeu d'icônes complet — fabriqué depuis le logo par
        * `node scripts/generate-icons.mjs`, et versionné dans `public/`.
        * L'ICO couvre 16, 32 et 48 px pour les onglets et les favoris ; le PNG
-       * de 96 px sert les écrans à forte densité ; `apple-touch-icon` évite
+       * de 96 px sert les écrans à forte densité ; le SVG est préféré par les
+       * navigateurs modernes, qui l'affichent net à toute taille ; `mask-icon`
+       * est l'icône épinglée de Safari, monochrome par contrat ;
+       * `apple-touch-icon` évite
        * qu'iOS ne mette une capture de la page sur l'écran d'accueil ; le
        * manifeste rend l'installation possible sous Android.
        */
       link: [
         { rel: 'icon', href: '/favicon.ico', sizes: '32x32' },
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
         { rel: 'icon', type: 'image/png', href: '/favicon-96.png', sizes: '96x96' },
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
+        { rel: 'mask-icon', href: '/mask-icon.svg', color: '#2E78C0' },
         { rel: 'manifest', href: '/site.webmanifest' },
         { rel: 'canonical', href: 'https://www.tbs-distribution.tg' },
       ],
