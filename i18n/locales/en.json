@@ -1,0 +1,512 @@
+{
+  "nav": {
+    "home": "Home",
+    "gallery": "Gallery",
+    "services": "Services",
+    "about": "About",
+    "contact": "Contact",
+    "faq": "FAQ",
+    "mobileLabel": "Mobile navigation",
+    "mainLabel": "Main navigation",
+    "homeLabel": "TBS Distribution — home",
+    "open": "Open menu",
+    "close": "Close menu",
+    "advice": "Advice"
+  },
+  "common": {
+    "quote": "Request a quote",
+    "discoverServices": "Explore our services",
+    "seeGallery": "View the gallery",
+    "writeUs": "Write to us",
+    "contactUs": "Contact us",
+    "whatsapp": "WhatsApp",
+    "whatsappWrite": "Message us on WhatsApp",
+    "call": "Call",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "hours": "Opening hours",
+    "addressShort": "Agôè - Démakpoè, Lomé",
+    "addressStreet": "Agôè - Démakpoè",
+    "addressCity": "Lomé, Togo",
+    "breadcrumb": "Breadcrumb",
+    "hoursWeek": "Monday — Saturday",
+    "hoursWeekTime": "8am — 7pm",
+    "hoursSunday": "Sunday",
+    "hoursSundayTime": "by appointment",
+    "whatsappMessage": "Hello TBS, I would like a quote for…",
+    "skipToContent": "Skip to content"
+  },
+  "topbar": {
+    "branches": {
+      "equipements": "Equipment",
+      "events": "Events",
+      "etudes": "Studies & Consulting",
+      "agro": "Agri-business"
+    },
+    "language": "Language",
+    "switchTo": "Version française"
+  },
+  "hero": {
+    "eyebrow": "Lomé — Togo",
+    "titleLine1": "Equipping your events,",
+    "titleLine2": "supplying your projects",
+    "lead": "TBS Distribution brings together four divisions: Equipment, Events, Studies & Consulting and Agri-business. Supplying, equipping, advising and cultivating — one point of contact, in Lomé and across Togo.",
+    "imageAlt": "Reception hall set up by TBS Events, wide shot",
+    "showBranch": "Show {branch}",
+    "pause": "Pause the rotating divisions",
+    "resume": "Resume the rotating divisions"
+  },
+  "home": {
+    "branches": {
+      "eyebrow": "One company, four divisions",
+      "title": "Four trades,",
+      "accent": "one point of contact"
+    },
+    "categories": {
+      "eyebrow": "TBS Events — our categories",
+      "title": "Six ranges,",
+      "accent": "a single delivery"
+    },
+    "domains": {
+      "eyebrow": "Where we operate",
+      "title": "Eight fields,",
+      "accent": "four divisions",
+      "detail": "Full list of services"
+    },
+    "inspirations": {
+      "eyebrow": "Inspiration",
+      "title": "Three settings",
+      "accent": "staged by TBS"
+    },
+    "testimonials": {
+      "previous": "Previous testimonial",
+      "next": "Next testimonial",
+      "goTo": "Testimonial {n}"
+    }
+  },
+  "services": {
+    "eyebrow": "Our services",
+    "title": "Four divisions,",
+    "accent": "one point of contact",
+    "lead": "TBS Equipment supplies and installs. TBS Events rents and organises. TBS Studies & Consulting advises. TBS Agri-business grows and processes. Choose the division that concerns you.",
+    "tablist": "Business divisions",
+    "offers": {
+      "eyebrow": "Packages",
+      "title": "Three levels",
+      "accent": "of support"
+    }
+  },
+  "gallery": {
+    "eyebrow": "Gallery",
+    "title": "Our events,",
+    "accent": "hall by hall",
+    "lead": "A selection of receptions equipped by TBS Events and deliveries carried out by TBS Distribution between 2024 and 2026. Filter by sector.",
+    "similar": "A similar project? Let's talk",
+    "filters": {
+      "all": "View all",
+      "mariage": "Weddings",
+      "ceremonie": "Ceremonies",
+      "corporate": "Corporate",
+      "decor": "Décor & details",
+      "fourniture": "Supplies & equipment"
+    },
+    "lightbox": {
+      "close": "Close the viewer",
+      "previous": "Previous image",
+      "next": "Next image"
+    }
+  },
+  "about": {
+    "eyebrow": "Organisation",
+    "title": "What each",
+    "accent": "division does",
+    "heroAlt": "The TBS team setting up a hall",
+    "warehouseAlt": "TBS warehouse — equipment stored and inspected",
+    "legalName": "S.A.R.L",
+    "eyebrowAbout": "About",
+    "historyEyebrow": "Our story",
+    "lead": "Born in Agôè-Démakpoè, TBS has been equipping the great moments of Togolese life for over ten years.",
+    "p1": "What began as a few batches of chairs and tableware lent to the neighbourhood has become a stock of more than 900 items, maintained piece by piece in our warehouses. Today we serve families, caterers, hotels, institutions and companies across Greater Lomé.",
+    "p2Intro": "The company is now organised into four divisions:",
+    "p2Equipements": "for the supply of materials and equipment,",
+    "p2Events": "for reception equipment rental and event management,",
+    "p2Etudes": "for studies and advisory services, and",
+    "p2Agro": "for farming and agri-industry.",
+    "p3": "Our work does not stop at delivery: we advise on volumes and specifications, install and commission, coordinate suppliers and follow up after the event. One point of contact, from the first call to the last box loaded.",
+    "values": [
+      [
+        "Rigour",
+        "Equipment washed, checked and counted before every dispatch"
+      ],
+      [
+        "Punctuality",
+        "Set-up finished before the first guest arrives"
+      ],
+      [
+        "Discretion",
+        "A team that is present, never in the picture"
+      ]
+    ]
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Request",
+    "accent": "a quote",
+    "lead": "An event to equip, a batch of supplies, a study or a farming campaign: tell us which division is involved, and an adviser will call you back with a written proposal within 24 hours.",
+    "map": {
+      "title": "Location of TBS Distribution in Agôè-Démakpoè, Lomé",
+      "show": "Show the map",
+      "directions": "Directions",
+      "notice": "Displaying the map sends a request to OpenStreetMap, which then receives your IP address.",
+      "openExternal": "Open on openstreetmap.org"
+    },
+    "heading": "Get in touch"
+  },
+  "faq": {
+    "title": "Frequently asked",
+    "accent": "questions",
+    "lead": "Can't find your answer? Give us a call — we reply quickly."
+  },
+  "footer": {
+    "tagline": "Four divisions: Equipment, Events, Studies & Consulting, Agri-business. Supply, rental, consulting and agri-business. Agôè-Démakpoè, Lomé — Togo.",
+    "branches": "Divisions",
+    "pages": "Pages",
+    "contact": "Contact details",
+    "social": "Social",
+    "references": "Projects & references",
+    "legalLabel": "Legal information",
+    "legal": {
+      "mentions": "Legal notice",
+      "rental": "Rental terms",
+      "privacy": "Privacy"
+    }
+  },
+  "dock": {
+    "whatsapp": "Message us on WhatsApp",
+    "call": "Call",
+    "quote": "Quote"
+  },
+  "form": {
+    "sentEyebrow": "Sent",
+    "sentTitle": "Request sent",
+    "sentBody": "Thank you. A TBS adviser will call you back within 24 hours with a costed proposal.",
+    "newRequest": "New request",
+    "company": "Company",
+    "summary": "{n} field to correct before sending: | {n} fields to correct before sending:",
+    "submit": "Send my request",
+    "submitting": "Sending…",
+    "notice": "Reply within 24 working hours. Fields marked * are required.",
+    "privacy": "Your details are used solely to process this quote request and are held by TBS Distribution S.A.R.L. They are kept for {months} months, then anonymised. You may ask to see, correct or delete them at any time by writing to",
+    "privacyLink": "Privacy policy",
+    "fields": {
+      "name": "Full name",
+      "phone": "Phone",
+      "email": "Email",
+      "branch": "Division concerned",
+      "requestType": "Request type",
+      "eventDate": "Event date",
+      "guestCount": "Number of guests",
+      "location": "Location",
+      "message": "What you need"
+    },
+    "placeholders": {
+      "name": "e.g. Akouvi Adjovi",
+      "phone": "(+228) 00 00 00 00",
+      "email": "To receive the quote in writing",
+      "guestCount": "e.g. 350",
+      "location": "e.g. Agôè, Lomé",
+      "message": "Furniture, tableware, décor, sound…"
+    },
+    "errors": {
+      "name": "Please enter your name.",
+      "phone": "Invalid phone number.",
+      "email": "Invalid email address.",
+      "message": "Please describe what you need.",
+      "server": "Sending is not possible right now. Call us on (+228) 90 10 85 10."
+    },
+    "branches": [
+      "TBS Equipment — supply of materials & equipment",
+      "TBS Events — reception equipment rental",
+      "TBS Studies & Consulting — studies & advisory services",
+      "TBS Agri-business — farming & agri-industry",
+      "Several divisions"
+    ],
+    "requestTypes": [
+      "Wedding",
+      "Ceremony / christening",
+      "Private reception",
+      "Corporate event",
+      "Supply / public tender",
+      "Other"
+    ]
+  },
+  "seo": {
+    "about": {
+      "title": "About — TBS Distribution S.A.R.L",
+      "description": "Born in Agôè-Démakpoè, TBS has been equipping the great moments of Togolese life for over ten years. Four divisions, a stock of more than 900 items, 18 people in the field."
+    },
+    "contact": {
+      "title": "Contact — request a quote",
+      "description": "An event to equip, a batch of supplies, a study or a farming campaign: tell us which division is involved and a TBS adviser will call you back within 24 hours. Agôè-Démakpoè, Lomé."
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "description": "Booking lead times, delivery and set-up, breakage, public tenders, supply times: TBS Distribution answers the questions we are asked most."
+    },
+    "gallery": {
+      "title": "Gallery — our events and deliveries",
+      "description": "A selection of receptions equipped by TBS Events and deliveries carried out by TBS Distribution between 2024 and 2026, in Lomé and across Togo."
+    },
+    "home": {
+      "title": "Equipment, events, consulting and agri-business in Lomé",
+      "description": "TBS Distribution S.A.R.L: supply of materials and equipment, reception equipment rental, studies and consulting, farming and agri-industry. Costed quote within 24 hours, in Lomé and across Togo."
+    },
+    "services": {
+      "title": "Our services — equipment, events, consulting, agri-business",
+      "description": "TBS Equipment supplies and installs. TBS Events rents and organises. TBS Studies & Consulting advises. TBS Agri-business grows and processes. Four divisions, one point of contact in Lomé."
+    }
+  },
+  "data": {
+    "process": {
+      "equipements": {
+        "eyebrow": "TBS Equipment — how we work",
+        "title": "From the request",
+        "titleAccent": "to commissioning",
+        "steps": [
+          [
+            "Statement of needs",
+            "Specifications, quantities, technical requirements. We frame the request with your teams."
+          ],
+          [
+            "Costed offer",
+            "Sourcing from our suppliers, detailed technical and financial offer, committed lead times."
+          ],
+          [
+            "Delivery & installation",
+            "Transport, joint acceptance, installation and commissioning on site."
+          ],
+          [
+            "Warranty & follow-up",
+            "Manufacturer warranty, parts, maintenance and consumable restocking."
+          ]
+        ],
+        "footnote": "TBS Distribution S.A.R.L also responds to public and private consultations and tenders: administrative file up to date, technical and financial offer, standardised invoices."
+      },
+      "events": {
+        "eyebrow": "TBS Events — how it works",
+        "title": "Rent in",
+        "titleAccent": "four steps",
+        "steps": [
+          [
+            "Tell us everything",
+            "Date, venue, number of guests, the look you want. A ten-minute conversation is enough."
+          ],
+          [
+            "Receive the quote",
+            "Detailed inventory, floor plan and firm price within 24 hours."
+          ],
+          [
+            "We set up",
+            "Delivery, assembly and set-up completed before the guests arrive."
+          ],
+          [
+            "We take it all back",
+            "Dismantling and collection after the party. You put nothing away."
+          ]
+        ]
+      },
+      "etudes": {
+        "eyebrow": "TBS Studies & Consulting — services",
+        "title": "Client-side",
+        "titleAccent": "project support",
+        "steps": [
+          [
+            "Client-side project support",
+            "Technical and administrative follow-up of your projects, from specifications to acceptance of the works or equipment."
+          ],
+          [
+            "Tender file preparation",
+            "Assembling tender files, administrative documents, technical and financial offers."
+          ],
+          [
+            "General trade & sourcing",
+            "Local and import sourcing, group purchasing, general supplies for institutions and companies."
+          ]
+        ]
+      },
+      "agro": {
+        "eyebrow": "TBS Agri-business — support",
+        "title": "From the field",
+        "titleAccent": "to the market",
+        "steps": [
+          [
+            "Support for cooperatives",
+            "Structuring, group purchasing and technical training for members."
+          ],
+          [
+            "Projects & funders",
+            "Supply of equipment for farming projects financed by donors and NGOs."
+          ],
+          [
+            "Equipment maintenance",
+            "Parts, servicing and refurbishment of small equipment and processing units."
+          ]
+        ]
+      }
+    },
+    "offers": [
+      [
+        "Package",
+        "Rental only",
+        "You choose the items, we deliver and collect. Ideal for families and smaller receptions.",
+        "Delivery included from 250,000 F"
+      ],
+      [
+        "Most requested",
+        "Rental + set-up",
+        "Full assembly, room set-up and dismantling after the party. We work out the seating plan with you.",
+        "Tailored quote within 24 h"
+      ],
+      [
+        "Package",
+        "Turnkey event",
+        "Full coordination: venue survey, staging, suppliers, schedule and presence on the day.",
+        "By appointment"
+      ]
+    ],
+    "inspirations": [
+      [
+        "White & gold",
+        "Ivory linen, tall candelabras, gilded Napoleon chairs. The safe choice for grand ceremonies.",
+        "White and gold wedding setting"
+      ],
+      [
+        "Electric night",
+        "Illuminated dance floor, dark lounge, ambient lighting controlled on site.",
+        "Evening setting — LED floor and coloured light"
+      ],
+      [
+        "Cocktails under the trees",
+        "Poseur tables, mobile bar and string lights: the ideal format for launches and outdoor corporate receptions.",
+        "Outdoor cocktail setting — poseur tables in a garden"
+      ]
+    ],
+    "homeStats": [
+      [
+        "Items in stock",
+        "Furniture, tableware, décor, technical"
+      ],
+      [
+        "Delivery & set-up",
+        "Greater Lomé and all of Togo"
+      ],
+      [
+        "Costed quote",
+        "A dedicated adviser for your date"
+      ],
+      [
+        "Equipment inspected",
+        "Washed and checked before every dispatch"
+      ]
+    ],
+    "homeStatsValues": [
+      "900",
+      "7 days",
+      "24",
+      "100 %"
+    ],
+    "aboutStats": [
+      "Founded",
+      "Events equipped",
+      "Business divisions",
+      "People in the field"
+    ],
+    "branchTabs": {
+      "equipements": "Equipment",
+      "events": "Events",
+      "etudes": "Studies & Consulting",
+      "agro": "Agri-business"
+    },
+    "branchDetails": {
+      "equipements": [
+        [
+          "Supply",
+          "Office, IT, health & laboratory, vehicles"
+        ],
+        [
+          "Installation",
+          "Delivery, assembly, commissioning and on-site acceptance"
+        ],
+        [
+          "Follow-up",
+          "Manufacturer warranty, parts, maintenance, consumables"
+        ],
+        [
+          "Clients",
+          "Companies, public bodies, clinics, NGOs and projects"
+        ]
+      ],
+      "events": [
+        [
+          "Rental",
+          "Furniture, tableware, linen, décor, sound and lighting"
+        ],
+        [
+          "Installation",
+          "Delivery, assembly, set-up, dismantling"
+        ],
+        [
+          "Coordination",
+          "Staging, coordination and presence on the day"
+        ],
+        [
+          "Clients",
+          "Families, caterers, hotels, companies, institutions"
+        ]
+      ],
+      "etudes": [
+        [
+          "Studies",
+          "Assessments, feasibility, sizing and costing"
+        ],
+        [
+          "Consulting",
+          "Organisation, procedures, management tools, training"
+        ],
+        [
+          "Project support",
+          "Project follow-up and tender file preparation"
+        ],
+        [
+          "Clients",
+          "Institutions, donors, NGOs, SMEs and farmer groups"
+        ]
+      ],
+      "agro": [
+        [
+          "Inputs",
+          "Seeds, fertiliser, treatment products, tools"
+        ],
+        [
+          "Agri-industry",
+          "Processing, packaging, storage, drying"
+        ],
+        [
+          "Support",
+          "Cooperatives, farming projects, technical training"
+        ],
+        [
+          "Clients",
+          "Farms, cooperatives, projects and donors"
+        ]
+      ]
+    }
+  },
+  "cta": {
+    "eyebrow": "Your project",
+    "title": "Let's talk about your",
+    "accent": "next date",
+    "lead": "Date, venue, number of guests: you receive a costed proposal within 24 hours."
+  }
+}

@@ -75,6 +75,12 @@ async function signOut() {
 watch(statut, () => {
   page.value = 1
 })
+
+/**
+ * Espace interne, français uniquement : le doubler en anglais créerait des
+ * URL à indexer pour des pages qui n'ont pas à l'être.
+ */
+defineI18nRoute({ locales: ['fr'] })
 </script>
 
 <template>

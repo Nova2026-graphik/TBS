@@ -81,6 +81,12 @@ const rows = computed(() => {
     ['Traitée le', formatAdminDate(q.handledAt)],
   ] as const
 })
+
+/**
+ * Espace interne, français uniquement : le doubler en anglais créerait des
+ * URL à indexer pour des pages qui n'ont pas à l'être.
+ */
+defineI18nRoute({ locales: ['fr'] })
 </script>
 
 <template>
