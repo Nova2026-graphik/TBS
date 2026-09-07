@@ -1,16 +1,16 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const { data } = await useSiteContent()
 
 // La branche Events porte le processus « louez en quatre étapes » affiché en
 // page d'accueil ; les autres branches ont le leur sur /services.
-const eventsProcess = PROCESS_BY_BRANCH.events!
-const stats = HOME_STATS
-const inspirations = INSPIRATIONS
+const { process, homeStats, inspirations } = useSiteData()
+const eventsProcess = computed(() => process.value.events!)
+const stats = homeStats
 
 usePageSeo({
-  title: 'Équipements, réception, études et agro à Lomé',
-  description:
-    'TBS Distribution S.A.R.L : fourniture de matériels et d\'équipements, location de matériel de réception, études et conseils, agriculture et agro-industrie. Devis chiffré sous 24h à Lomé et partout au Togo.',
+  title: t('seo.home.title'),
+  description: t('seo.home.description'),
   path: '/',
 })
 </script>

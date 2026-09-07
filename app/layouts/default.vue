@@ -4,6 +4,13 @@
  * Le JSON-LD LocalBusiness est posé ici pour être présent sur chaque page.
  */
 useOrganizationSchema()
+
+/**
+ * `lang`, `dir` et les liens `hreflang` réciproques — y compris `x-default` —
+ * posés par le module pour toutes les pages. Sans eux, un moteur voit deux
+ * sites sans rapport plutôt que deux versions d'un même site.
+ */
+useHead(useLocaleHead({ seo: true }))
 </script>
 
 <template>
@@ -13,7 +20,7 @@ useOrganizationSchema()
       href="#contenu"
       class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-200 focus:bg-ink focus:px-5 focus:py-3 focus:text-[0.6875rem] focus:uppercase focus:tracking-[0.18em] focus:text-white"
     >
-      Aller au contenu
+      {{ $t('common.skipToContent') }}
     </a>
 
     <AppTopBar />

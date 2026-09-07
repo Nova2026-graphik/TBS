@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const info = useSiteInfo()
 
 // `devis_ouvert` : le trafic qui atteint réellement le formulaire.
@@ -34,9 +35,8 @@ const mapLink = coords ? mapLinkUrl(coords) : QUARTIER_LINK
 const itineraire = coords ? directionsUrl(coords) : null
 
 usePageSeo({
-  title: 'Contact — demander un devis',
-  description:
-    'Une réception à équiper, un lot de fournitures, une étude ou une campagne agricole : précisez la branche concernée, un conseiller TBS vous rappelle sous 24 heures. Agôè-Démakpoè, Lomé.',
+  title: t('seo.contact.title'),
+  description: t('seo.contact.description'),
   path: '/contact',
 })
 
@@ -46,10 +46,10 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
 <template>
   <div>
     <UiPageHero
-      eyebrow="Contact"
-      title="Demander"
-      accent="un devis"
-      lead="Une réception à équiper, un lot de fournitures, une étude ou une campagne agricole : précisez la branche concernée, un conseiller vous rappelle et vous envoie une proposition sous 24 heures."
+      :eyebrow="$t('contact.eyebrow')"
+      :title="$t('contact.title')"
+      :accent="$t('contact.accent')"
+      :lead="$t('contact.lead')"
     />
 
     <section class="u-gutter u-section grid gap-[clamp(2.5rem,5vw,5rem)] bg-white lg:grid-cols-[1.35fr_1fr]">
@@ -61,12 +61,12 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
         <div class="bg-sand p-[clamp(1.5rem,3vw,2.25rem)]">
           <h2 class="u-eyebrow">
             <span class="u-rule" />
-            Nous joindre
+            {{ $t('contact.heading') }}
           </h2>
 
           <dl class="mt-7 divide-y divide-ink/10 border-t border-ink/10">
             <div class="py-4">
-              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">Téléphone</dt>
+              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">{{ $t('common.phone') }}</dt>
               <dd class="mt-2 flex flex-col gap-1">
                 <a
                   :href="`tel:${info.phonePrimary}`"
@@ -80,19 +80,19 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
             </div>
 
             <div class="py-4">
-              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">WhatsApp</dt>
+              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">{{ $t('common.whatsapp') }}</dt>
               <dd class="mt-2">
                 <a
                   :href="info.whatsappUrl"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="text-[0.9375rem] text-ink transition-colors hover:text-gold"
-                >Écrire sur WhatsApp</a>
+                >{{ $t('common.whatsappWrite') }}</a>
               </dd>
             </div>
 
             <div class="py-4">
-              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">E-mail</dt>
+              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">{{ $t('common.email') }}</dt>
               <dd class="mt-2">
                 <a
                   :href="`mailto:${info.email}`"
@@ -102,12 +102,12 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
             </div>
 
             <div class="py-4">
-              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">Adresse</dt>
-              <dd class="mt-2 text-[0.9375rem] text-ink">Agôè - Démakpoè<br>Lomé, Togo</dd>
+              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">{{ $t('common.address') }}</dt>
+              <dd class="mt-2 text-[0.9375rem] text-ink">{{ $t('common.addressStreet') }}<br>{{ $t('common.addressCity') }}</dd>
             </div>
 
             <div class="py-4">
-              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">Horaires</dt>
+              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">{{ $t('common.hours') }}</dt>
               <dd class="mt-2 text-[0.9375rem] text-ink">
                 <span v-for="slot in info.hours" :key="slot.days" class="block">
                   {{ slot.days }} : {{ slot.time }}
@@ -121,7 +121,7 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
         <div class="relative aspect-4/3 overflow-hidden bg-shell">
           <iframe
             v-if="mapVisible"
-            title="Localisation de TBS Distribution à Agôè-Démakpoè, Lomé"
+            :title="$t('contact.map.title')"
             :src="mapEmbed"
             loading="lazy"
             referrerpolicy="no-referrer"
@@ -138,7 +138,7 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
               {{ info.address }}
             </p>
             <div class="flex flex-wrap items-center justify-center gap-3">
-              <UiButton variant="ghost" @click="mapVisible = true">Afficher la carte</UiButton>
+              <UiButton variant="ghost" @click="mapVisible = true">{{ $t('contact.map.show') }}</UiButton>
               <!-- L'itinéraire n'apparaît que si la destination est connue :
                    un lien qui mène au centre d'un quartier de 13 km ne rend
                    service à personne. -->
@@ -160,7 +160,7 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
                 target="_blank"
                 rel="noopener noreferrer"
                 class="underline underline-offset-2 hover:text-ink"
-              >Ouvrir sur openstreetmap.org</a>
+              >{{ $t('contact.map.openExternal') }}</a>
             </p>
           </div>
         </div>

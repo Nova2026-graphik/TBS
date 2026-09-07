@@ -6,16 +6,16 @@
  * réellement mise en avant (fond sombre, badge) au lieu d'être une carte
  * identique aux autres avec un simple libellé différent.
  */
-const offers = EVENT_OFFERS
+const { offers } = useSiteData()
 </script>
 
 <template>
   <section class="u-gutter u-section bg-sand">
     <UiSectionHead
-      eyebrow="Formules"
+      :eyebrow="$t('services.offers.eyebrow')"
       dot="#E8A07C"
-      title="Trois niveaux"
-      accent="d'accompagnement"
+      :title="$t('services.offers.title')"
+      :accent="$t('services.offers.accent')"
       align="start"
     />
 

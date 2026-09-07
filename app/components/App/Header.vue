@@ -9,15 +9,18 @@
  *  - tiroir mobile accessible : verrouillage du scroll, fermeture à Échap,
  *    focus renvoyé sur le bouton à la fermeture.
  */
-const NAV = [
-  { label: 'Accueil', to: '/' },
-  { label: 'Galerie', to: '/galerie' },
-  { label: 'Nos services', to: '/services' },
-  { label: 'À propos', to: '/a-propos' },
-  { label: 'Conseils', to: '/conseils' },
-  { label: 'Contact', to: '/contact' },
-  { label: 'FAQ', to: '/faq' },
-]
+const { t } = useI18n()
+const localePath = useLocalePath()
+
+const NAV = computed(() => [
+  { key: 'home', to: '/' },
+  { key: 'gallery', to: '/galerie' },
+  { key: 'services', to: '/services' },
+  { key: 'about', to: '/a-propos' },
+  { key: 'advice', to: '/conseils' },
+  { key: 'contact', to: '/contact' },
+  { key: 'faq', to: '/faq' },
+].map(item => ({ ...item, label: t(`nav.${item.key}`), to: localePath(item.to) })))
 
 const route = useRoute()
 const info = useSiteInfo()
@@ -58,7 +61,7 @@ onClickOutside(drawerRef, () => {
     :class="scrolled ? 'shadow-[0_10px_30px_-24px_rgb(62_53_36/0.55)]' : ''"
   >
     <div class="u-gutter flex items-center justify-between gap-6 py-[clamp(0.75rem,1.9vw,1.375rem)]">
-      <NuxtLink to="/" class="shrink-0" aria-label="TBS Distribution — accueil">
+      <NuxtLinkLocale to="/" class="shrink-0" :aria-label="$t('nav.homeLabel')">
         <NuxtImg
           src="/images/logo-tbs.png"
           alt="TBS Distribution S.A.R.L"
@@ -67,11 +70,11 @@ onClickOutside(drawerRef, () => {
           preload
           class="h-[clamp(2rem,4.2vw,3.125rem)] w-auto"
         />
-      </NuxtLink>
+      </NuxtLinkLocale>
 
       <!-- Navigation bureau -->
-      <nav class="hidden items-center gap-[clamp(0.875rem,2.4vw,2.125rem)] lg:flex" aria-label="Navigation principale">
-        <NuxtLink
+      <nav class="hidden items-center gap-[clamp(0.875rem,2.4vw,2.125rem)] lg:flex" :aria-label="$t('nav.mainLabel')">
+        <NuxtLinkLocale
           v-for="item in NAV"
           :key="item.to"
           :to="item.to"
@@ -83,10 +86,10 @@ onClickOutside(drawerRef, () => {
           "
         >
           {{ item.label }}
-        </NuxtLink>
+        </NuxtLinkLocale>
 
         <UiButton to="/contact" class="ml-[clamp(0.125rem,0.8vw,0.875rem)]">
-          Demander un devis
+          {{ $t('common.quote') }}
         </UiButton>
       </nav>
 
@@ -97,7 +100,7 @@ onClickOutside(drawerRef, () => {
         class="flex size-11 flex-col justify-center gap-[5px] px-2 lg:hidden"
         :aria-expanded="open"
         aria-controls="mobile-nav"
-        :aria-label="open ? 'Fermer le menu' : 'Ouvrir le menu'"
+        :aria-label="open ? $t('nav.close') : $t('nav.open')"
         @click="open = !open"
       >
         <span
@@ -124,8 +127,8 @@ onClickOutside(drawerRef, () => {
         ref="drawerRef"
         class="u-gutter absolute inset-x-0 top-full max-h-[calc(100dvh-var(--header-h))] overflow-y-auto bg-ink pb-8 pt-6 lg:hidden"
       >
-        <nav class="flex flex-col" aria-label="Navigation mobile">
-          <NuxtLink
+        <nav class="flex flex-col" :aria-label="$t('nav.mobileLabel')">
+          <NuxtLinkLocale
             v-for="item in NAV"
             :key="item.to"
             :to="item.to"
@@ -133,11 +136,11 @@ onClickOutside(drawerRef, () => {
             :class="route.path === item.to ? 'text-cream' : 'text-white'"
           >
             {{ item.label }}
-          </NuxtLink>
+          </NuxtLinkLocale>
         </nav>
 
         <UiButton to="/contact" variant="light" block class="mt-5">
-          Demander un devis
+          {{ $t('common.quote') }}
         </UiButton>
 
         <div class="mt-6 flex flex-col gap-1.5 text-[0.6875rem] tracking-[0.12em] text-white/55">

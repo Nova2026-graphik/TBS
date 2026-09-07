@@ -182,15 +182,15 @@ function estRendue(index: number) {
         />
         <Transition name="hero-texte" mode="out-in">
           <span :key="courante?.slug ?? 'defaut'" class="text-[0.6875rem] uppercase tracking-[0.28em]">
-            {{ courante ? `${courante.name} — ${courante.tagline}` : 'Lomé — Togo' }}
+            {{ courante ? `${courante.name} — ${courante.tagline}` : $t('hero.eyebrow') }}
           </span>
         </Transition>
       </div>
 
       <!-- Fixe : ancrage SEO et plan du document. -->
       <h1 class="max-w-[17em] text-display text-white">
-        Équiper vos réceptions,<br>
-        <span class="italic text-cream">fournir vos projets</span>
+        {{ $t('hero.titleLine1') }}<br>
+        <span class="italic text-cream">{{ $t('hero.titleLine2') }}</span>
       </h1>
 
       <!-- La grille superpose gabarit et texte : la hauteur ne bouge plus. -->
@@ -206,16 +206,16 @@ function estRendue(index: number) {
             :key="courante?.slug ?? 'defaut'"
             class="col-start-1 row-start-1 text-[clamp(0.9375rem,1.45vw,1.125rem)] leading-[1.75] text-white/85"
           >
-            {{ courante?.description ?? 'TBS Distribution réunit quatre branches : Équipements, Events, Études & Conseils et Agro. Fournir, équiper, conseiller et cultiver — un seul interlocuteur, à Lomé et partout au Togo.' }}
+            {{ courante?.description ?? $t('hero.lead') }}
           </p>
         </Transition>
       </div>
 
       <div class="pointer-events-auto flex flex-wrap gap-3">
         <UiButton :to="courante ? `/services?branche=${courante.slug}` : '/services'" variant="light" size="lg">
-          Découvrir nos services
+          {{ $t('common.discoverServices') }}
         </UiButton>
-        <UiButton to="/contact" variant="outline" size="lg">Demander un devis</UiButton>
+        <UiButton to="/contact" variant="outline" size="lg">{{ $t('common.quote') }}</UiButton>
       </div>
 
       <!--
@@ -229,7 +229,7 @@ function estRendue(index: number) {
           :key="branche.slug"
           type="button"
           class="group flex h-11 w-14 items-center"
-          :aria-label="`Afficher ${branche.name}`"
+          :aria-label="$t('hero.showBranch', { branch: branche.name })"
           :aria-current="i === actif ? 'true' : undefined"
           @click="aller(i)"
         >
@@ -249,7 +249,7 @@ function estRendue(index: number) {
           v-if="rotationAutomatique"
           type="button"
           class="flex size-11 items-center justify-center text-white/70 transition-colors duration-500 hover:text-white"
-          :aria-label="enPauseManuelle ? 'Reprendre le défilement des branches' : 'Mettre en pause le défilement des branches'"
+          :aria-label="enPauseManuelle ? $t('hero.resume') : $t('hero.pause')"
           :aria-pressed="enPauseManuelle"
           @click="enPauseManuelle = !enPauseManuelle"
         >

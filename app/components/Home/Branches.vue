@@ -16,9 +16,9 @@ const sizesHalfMd = SIZES_HALF_MD
 <template>
   <section class="u-gutter u-section bg-white">
     <UiSectionHead
-      eyebrow="Une maison, quatre branches"
-      title="Quatre métiers,"
-      accent="un seul interlocuteur"
+      :eyebrow="$t('home.branches.eyebrow')"
+      :title="$t('home.branches.title')"
+      :accent="$t('home.branches.accent')"
     >
       <template #aside>
         <p class="text-[0.9375rem] leading-[1.72]">
@@ -78,8 +78,8 @@ const sizesHalfMd = SIZES_HALF_MD
 
           <UiTag :items="branch.tags" class="mb-6" />
 
-          <NuxtLink
-            :to="`/services?branche=${branch.slug}`"
+          <NuxtLinkLocale
+            :to="{ path: '/services', query: { branche: branch.slug } }"
             class="u-link-underline mt-auto self-start after:bg-current"
             :style="{ '--tw-text-opacity': 1 }"
           >
@@ -88,7 +88,7 @@ const sizesHalfMd = SIZES_HALF_MD
                  d'écran. -->
             <span class="absolute inset-0" aria-hidden="true" />
             Voir la branche<span class="sr-only"> {{ branch.name }}</span>
-          </NuxtLink>
+          </NuxtLinkLocale>
         </div>
       </article>
     </div>

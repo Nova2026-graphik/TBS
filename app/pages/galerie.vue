@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { GalleryCategory } from '#shared/types'
 
+const { t } = useI18n()
+
 /**
  * Galerie filtrable.
  *
@@ -14,8 +16,12 @@ const route = useRoute()
 const router = useRouter()
 const { data } = await useSiteContent()
 
-const filters = GALLERY_FILTERS
-const VALID = filters.map(f => f.value) as readonly string[]
+/** Les valeurs restent les catégories de la base ; seuls les libellés changent. */
+const filters = computed(() =>
+  GALLERY_FILTERS.map(filter => ({ ...filter, label: t(`gallery.filters.${filter.value}`) })),
+)
+/** Les valeurs valides ne dépendent pas de la langue : elles viennent des données. */
+const VALID = GALLERY_FILTERS.map(f => f.value) as readonly string[]
 
 const activeFilter = computed<string>(() => {
   const raw = route.query.filtre
@@ -83,9 +89,8 @@ function chipClass(isActive: boolean) {
 }
 
 usePageSeo({
-  title: 'Galerie — nos réceptions et livraisons',
-  description:
-    'Une sélection de réceptions équipées par TBS Events et de livraisons réalisées par TBS Distribution entre 2024 et 2026, à Lomé et partout au Togo.',
+  title: t('seo.gallery.title'),
+  description: t('seo.gallery.description'),
   path: '/galerie',
   image: '/og-galerie.jpg',
 })
@@ -98,10 +103,10 @@ const sizesThird = SIZES_THIRD
 <template>
   <div>
     <UiPageHero
-      eyebrow="Galerie"
-      title="Nos réceptions,"
-      accent="salle par salle"
-      lead="Une sélection de réceptions équipées par TBS Events et de livraisons réalisées par TBS Distribution entre 2024 et 2026. Filtrez par secteur."
+      :eyebrow="$t('gallery.eyebrow')"
+      :title="$t('gallery.title')"
+      :accent="$t('gallery.accent')"
+      :lead="$t('gallery.lead')"
     >
       <div class="mt-[clamp(1.75rem,4vw,3rem)] flex flex-wrap gap-2.5">
         <button
@@ -197,7 +202,7 @@ const sizesThird = SIZES_THIRD
       </div>
 
       <div class="mt-[clamp(2.5rem,5vw,4.5rem)] flex justify-center">
-        <UiButton to="/contact" size="lg">Un projet similaire ? Parlons-en</UiButton>
+        <UiButton to="/contact" size="lg">{{ $t('gallery.similar') }}</UiButton>
       </div>
     </section>
 
