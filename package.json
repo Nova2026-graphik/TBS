@@ -20,6 +20,7 @@
     "test:e2e": "playwright test",
     "//ci": "Rejoue localement le travail `qualite` du workflow. GitHub Actions ne démarre aucune exécution sur ce dépôt — voir README, section « Intégration continue ». Tant que ce n'est pas débloqué côté compte, `npm run ci` est le filet.",
     "ci": "node scripts/ci.mjs",
+    "hooks:install": "node scripts/install-hooks.mjs",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
