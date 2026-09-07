@@ -1,8 +1,13 @@
 # TBS Distribution S.A.R.L — site vitrine
 
-Site vitrine six pages pour TBS Distribution (Agôè-Démakpoè, Lomé — Togo),
-réalisé en **Nuxt 4 + TypeScript**, à partir de la maquette
+Site vitrine pour TBS Distribution (Agôè-Démakpoè, Lomé — Togo), réalisé en
+**Nuxt 4 + TypeScript**, à partir de la maquette
 `TBS Site 6 Pages - offline2.html`.
+
+Les six pages de la maquette en font vingt-trois au pré-rendu : dix en
+français — les six d'origine, les trois pages légales et l'index de la rubrique
+Conseils —, les sept articles de cette rubrique, et six en anglais sous `/en/`.
+L'espace de suivi des devis, `/admin`, reste hors index et hors pré-rendu.
 
 Quatre branches : **TBS Équipements**, **TBS Events**,
 **TBS Études & Conseils**, **TBS Agro**.
@@ -323,30 +328,65 @@ app/
     Gallery/               Lightbox
     Faq/                   Accordion
     Contact/               Form
+    Legal/                 Gabarit commun aux trois pages légales
+    Admin/                 StatusBadge — espace de suivi des devis
     Shared/                ProcessSteps, CtaBanner
+    content/               CalculateurMateriel — composant appelé depuis un article
   composables/
     useSiteContent.ts      Chargement dédupliqué du contenu + coordonnées
+    useSiteData.ts         Blocs de présentation, assemblés depuis la langue active
     useSeo.ts              Meta par page, JSON-LD LocalBusiness / FAQPage / Breadcrumb
+    useAnalytics.ts        Événements de parcours, sans cookie ni donnée personnelle
   pages/                   index, services, galerie, a-propos, contact, faq,
-                           mentions-legales, conditions-de-location, confidentialite
+                           mentions-legales, conditions-de-location, confidentialite,
+                           conseils/ (index + [slug]), admin/ (index + [id])
   plugins/reveal.ts        Directive v-reveal (IntersectionObserver partagé, SSR-safe)
+  plugins/analytics.ts     Collecte des événements de parcours
   utils/imageSizes.ts      Valeurs `sizes` pour <NuxtImg>
+  utils/businessLocation.ts    Coordonnées de l'entrepôt — carte, marqueur, itinéraire
+  utils/materielReception.ts   Barème du calculateur de matériel
+i18n/locales/              fr.json et en.json — les deux fichiers se correspondent
+content/conseils/          Les sept articles de la rubrique, en Markdown
 server/
   api/                     site-content, branches, gallery, faq, health (GET) · quotes (POST)
+  api/admin/               Session et suivi des demandes — sous authentification
+  api/__sitemap__/urls.get.ts  Les articles, pour qu'un ajout entre au sitemap sans build
+  routes/conseils/rss.xml.get.ts   Flux RSS de la rubrique
+  middleware/admin-gate.ts Barrière d'accès à /admin
   plugins/error-reporting.ts   Alerte sur erreur serveur, sans donnée personnelle
+  plugins/security-headers.ts  Pose les en-têtes sur chaque réponse
+  tasks/quotes/anonymise.ts    Anonymisation planifiée des demandes échues
   utils/errorReporter.ts   Mise en forme et fenêtre anti-inondation
   data/content.ts          Contenu de référence — seed + repli
-  database/                schema.ts, client.ts, seed.ts
+  data/content.en.ts       Sa traduction : seuls les champs lisibles
+  database/                schema.ts, client.ts, seed.ts, migrations/
   utils/mailer.ts          Envoi e-mail — Resend ou Brevo, par API HTTP
   utils/quoteNotification.ts  Alerte équipe + accusé de réception
+  utils/quoteValidation.ts    Validation partagée des demandes
+  utils/quoteRetention.ts     Durée de conservation et anonymisation
+  utils/rateLimit.ts       Fenêtre glissante en base, repli mémoire
+  utils/clientIp.ts        Adresse cliente — en-têtes de plate-forme vérifiés
+  utils/adminSession.ts, requireAdmin.ts   Session signée de l'espace de suivi
   utils/repository.ts      Accès base avec repli statique
   utils/securityHeaders.ts Politique CSP et en-têtes — source unique de vérité
-scripts/csp-hashes.mjs     Relève les empreintes CSP des scripts en ligne
+scripts/
+  ci.mjs                   Rejoue localement le travail `qualite` de la CI
+  typecheck.mjs            Contrôle de types, avec l'exception documentée
+  csp-hashes.mjs           Relève les empreintes CSP des scripts en ligne
+  generate-icons.mjs       Produit le jeu d'icônes depuis le logo
+  trace-logo.mjs           Vectorise le logo (favicon.svg, mask-icon.svg)
+  install-hooks.mjs        Installe le crochet de pré-envoi
+tests/
+  unit/                    Vitest — validation, dépôt, limiteur, IP, admin, images
+  e2e/                     Playwright — devis, galerie, services, navigation mobile
 shared/
   types.ts                 Types partagés client / serveur
   utils/legalData.ts       Identité légale — le seul fichier à compléter
   utils/siteData.ts        Contenu de présentation statique (process, formules, stats)
-public/images/             34 photos extraites de la maquette
+  utils/analytics.ts       Noms d'événements — une seule source
+  utils/adminQuotes.ts, branchColors.ts    Libellés de statut et couleurs de branche
+public/images/             33 photos de la maquette + le logo
+docs/reportage-photo.md    Cahier de tournage — remplacer les images de banque
 design/                    Maquette source + plaquettes commerciales (documentation)
 ```
 
@@ -359,8 +399,12 @@ design/                    Maquette source + plaquettes commerciales (documentat
 | `app/` | Interface Nuxt — pages, composants, styles, composables |
 | `server/` | API Nitro, schéma et accès base, contenu de référence |
 | `shared/` | Types et données partagés client / serveur |
-| `scripts/` | Outillage hors build — relevé des empreintes CSP |
-| `public/images/` | Les 34 photographies extraites de la maquette |
+| `i18n/locales/` | `fr.json` et `en.json` — voir [Version anglaise](#version-anglaise) |
+| `content/conseils/` | Les sept articles de la rubrique Conseils, en Markdown |
+| `tests/` | `unit/` (Vitest) et `e2e/` (Playwright) — voir [Qualité](#qualité) |
+| `scripts/` | Outillage hors build — vérification locale, empreintes CSP, icônes, crochets |
+| `docs/` | Notes de travail destinées à TBS — aujourd'hui le cahier de tournage photo |
+| `public/images/` | Les 33 photographies extraites de la maquette, et le logo |
 | `design/` | Maquette d’origine et plaquettes commerciales TBS — voir [design/README.md](design/README.md) |
 
 Le dossier `design/` documente la provenance : d’où viennent les couleurs, les
@@ -379,7 +423,7 @@ performance.
 - **Vraies pages plutôt qu'un state React.** La maquette affichait six écrans
   dans un composant unique piloté par `this.state.page`. Chaque page a
   désormais son URL : liens partageables, indexables, bouton « précédent »
-  fonctionnel, et six pages pré-rendues au build.
+  fonctionnel, et vingt-trois pages pré-rendues au build.
 - **Filtres et onglets dans l'URL.** `?branche=events`, `?filtre=mariage` —
   on peut envoyer un lien pointant directement sur une branche ou une
   catégorie.
@@ -492,7 +536,7 @@ lignes sont à ajouter dans `nuxt.config.ts`.
 
 > ### ⚠ GitHub Actions ne démarre aucune exécution sur ce dépôt
 >
-> **Les 66 exécutions enregistrées ont toutes échoué au démarrage**, sans
+> **Les 95 exécutions enregistrées ont toutes échoué au démarrage**, sans
 > produire un seul journal — la CI, Dependabot, et jusqu'à un workflow de cinq
 > lignes poussé pour le vérifier. Aucune n'a jamais abouti.
 >
