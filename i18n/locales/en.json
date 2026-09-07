@@ -69,7 +69,13 @@
         "line2": "transforming your harvest"
       }
     },
-    "lead": "TBS Distribution brings together four divisions: Equipment, Events, Studies & Consulting and Agri-business. Supplying, equipping, advising and cultivating — one point of contact, in Lomé and across Togo.",
+    "lead": "Four divisions, one point of contact: supplying, equipping, advising and cultivating, in Lomé and across Togo.",
+    "branchLeads": {
+      "equipements": "Office, IT, health and laboratory, vehicles: we supply, deliver and install.",
+      "events": "Furniture, tableware, décor, sound and light: from 20 to 2,000 guests, setup and collection included.",
+      "etudes": "Technical studies, organisational consulting, training and tender file preparation.",
+      "agro": "Inputs, small farm equipment and processing machinery, for farms and cooperatives."
+    },
     "imageAlt": "Reception hall set up by TBS Events, wide shot",
     "house": {
       "name": "TBS Distribution",
