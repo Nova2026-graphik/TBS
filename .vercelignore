@@ -1,0 +1,38 @@
+# Attention : dès qu'il existe, ce fichier remplace `.gitignore` — Vercel ne
+# lit plus ce dernier. Il doit donc en reprendre l'intégralité, sous peine de
+# téléverser `.env.local` ou `.vercel/project.json` et de modifier la
+# détection de plate-forme au moment du build.
+
+# Artefacts de construction — Vercel construit à distance. Téléverser une
+# sortie locale la fait primer sur le build de la plate-forme : le HTML servi
+# réclame alors les empreintes des assets de la machine de développement,
+# absents de `static/`, et le site part sans CSS ni JS.
+.nuxt
+.output
+.data
+dist
+node_modules
+
+# Environnement et liaison locale à la plate-forme
+.env
+.env.*
+.vercel
+
+# Journaux
+*.log
+npm-debug.log*
+
+# Système et éditeurs
+.DS_Store
+Thumbs.db
+.idea
+.vscode
+
+# Tests
+test-results
+playwright-report
+blob-report
+.playwright
+
+# Source de maquette (13 Mo), sans rôle dans la construction
+design
