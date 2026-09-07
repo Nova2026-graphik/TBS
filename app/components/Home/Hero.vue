@@ -2,61 +2,123 @@
 import type { Branch } from '#shared/types'
 
 /**
- * Hero d'accueil : les quatre branches défilent, quinze secondes chacune.
+ * Hero d'accueil : cinq diapositives défilent, cinq secondes chacune.
+ *
+ * La première présente **TBS Distribution**, la maison qui réunit les quatre
+ * branches ; les quatre suivantes présentent chaque branche. Sans elle, un
+ * visiteur qui arrivait pendant la rotation ne voyait jamais que « TBS Agro »
+ * ou « TBS Events » : l'ensemble n'était nommé nulle part au-dessus de la
+ * ligne de flottaison, alors que c'est la promesse du site — un seul
+ * interlocuteur pour quatre métiers.
  *
  * Ce qui tourne : la photo de fond, le sur-titre, la description, la couleur
  * d'accent et la destination du premier appel à l'action. Ce qui ne tourne
  * pas : le `<h1>`. C'est l'ancrage de référencement de la page, et le plan du
- * document n'a pas à changer toutes les quinze secondes.
+ * document n'a pas à changer toutes les cinq secondes.
  *
  * Trois contraintes ont dicté la mise en œuvre :
  *
- *  - **LCP.** La première image est préchargée ; les trois autres n'entrent
+ *  - **LCP.** La première image est préchargée ; les quatre autres n'entrent
  *    dans le DOM qu'après l'événement `load` de la page. Un `loading="lazy"`
- *    n'aurait rien réglé : les quatre images étant dans la fenêtre, elles
+ *    n'aurait rien réglé : les cinq images étant dans la fenêtre, elles
  *    partiraient toutes en même temps et se disputeraient la bande passante
  *    avec l'image qui, elle, doit s'afficher tout de suite.
  *  - **WCAG 2.2.2.** Un contenu qui défile seul au-delà de cinq secondes doit
- *    pouvoir être arrêté : pause au survol, au focus clavier, quand l'onglet
- *    passe en arrière-plan, et par un bouton explicite.
+ *    pouvoir être arrêté. Le compte ne porte pas sur une diapositive mais sur
+ *    la rotation, qui ne s'arrête jamais d'elle-même : l'exigence tient donc
+ *    à cinq secondes comme à quinze. Pause au survol, au focus clavier, quand
+ *    l'onglet passe en arrière-plan, et par un bouton explicite.
  *  - **`prefers-reduced-motion`.** La rotation est alors *désactivée*, pas
  *    accélérée. La réduction globale de `main.css` ramène les durées à
  *    0,01 ms, ce qui ferait sauter le contenu d'un cliché à l'autre toutes
- *    les quinze secondes — exactement ce que le réglage cherche à éviter.
+ *    les cinq secondes — exactement ce que le réglage cherche à éviter.
  */
 const props = defineProps<{ branches: Branch[] }>()
 
-/** Durée d'affichage d'une branche. */
-const DUREE_MS = 15_000
+const { t } = useI18n()
 
-/** Cadence du minuteur : 150 pas par branche, assez fin pour une barre fluide. */
+/** Durée d'affichage d'une diapositive. */
+const DUREE_MS = 5_000
+
+/** Cadence du minuteur : 50 pas par diapositive, assez fin pour une barre fluide. */
 const PAS_MS = 100
+
+/**
+ * Photo et couleur de la diapositive de tête.
+ *
+ * `hero-reception.jpg` est déjà l'image de référence de la maison — celle du
+ * JSON-LD `LocalBusiness` et des cartes de partage produites par
+ * `npm run icons:generate`. La crème, elle, n'appartient à aucune branche :
+ * le segment de la maison ne se confond donc avec aucun des quatre autres,
+ * là où l'or aurait doublé celui des Équipements.
+ */
+const IMAGE_MAISON = '/images/hero-reception.jpg'
+const COULEUR_MAISON = 'var(--color-cream)'
 
 const sizesFull = SIZES_FULL
 const densitiesFull = DENSITIES_FULL
 
 const section = ref<HTMLElement | null>(null)
 
-/** Ordre d'affichage : celui des branches, pas celui de la base. */
-const branches = computed(() => [...props.branches].sort((a, b) => a.index - b.index))
+interface Diapositive {
+  key: string
+  name: string
+  tagline: string
+  description: string
+  /** Couleur d'accent : filet du sur-titre et remplissage du segment. */
+  color: string
+  image: string
+  imageAlt: string
+  /** Destination du premier appel à l'action. */
+  to: string
+}
+
+/**
+ * La maison d'abord, puis les branches dans leur ordre d'affichage — pas
+ * celui de la base.
+ */
+const diapositives = computed<Diapositive[]>(() => [
+  {
+    key: 'maison',
+    name: t('hero.house.name'),
+    tagline: t('hero.house.tagline'),
+    description: t('hero.lead'),
+    color: COULEUR_MAISON,
+    image: IMAGE_MAISON,
+    imageAlt: t('hero.imageAlt'),
+    to: '/services',
+  },
+  ...[...props.branches]
+    .sort((a, b) => a.index - b.index)
+    .map(branche => ({
+      key: branche.slug,
+      name: branche.name,
+      tagline: branche.tagline,
+      description: branche.description,
+      color: branche.color,
+      image: branche.image,
+      imageAlt: branche.imageAlt,
+      to: `/services?branche=${branche.slug}`,
+    })),
+])
 
 const actif = ref(0)
-const courante = computed(() => branches.value[actif.value])
+const courante = computed(() => diapositives.value[actif.value])
 
 /**
  * Description la plus longue, rendue en double invisible pour réserver la
  * hauteur du bloc. Sans elle, le pied du hero remonterait et redescendrait à
- * chaque branche — un décalage de mise en page toutes les quinze secondes,
+ * chaque diapositive — un décalage de mise en page toutes les cinq secondes,
  * là où le site affiche aujourd'hui un CLS de 0.
  */
 const gabarit = computed(() =>
-  branches.value.reduce(
-    (plus, b) => (b.description.length > plus.length ? b.description : plus),
+  diapositives.value.reduce(
+    (plus, d) => (d.description.length > plus.length ? d.description : plus),
     '',
   ),
 )
 
-/** Écoulé sur la branche courante, en millisecondes. */
+/** Écoulé sur la diapositive courante, en millisecondes. */
 const ecoule = ref(0)
 const progression = computed(() => Math.min(ecoule.value / DUREE_MS, 1))
 
@@ -71,7 +133,7 @@ const mouvementReduit = usePreferredReducedMotion()
  * visiteur ne demande pas moins d'animation.
  */
 const rotationAutomatique = computed(
-  () => branches.value.length > 1 && mouvementReduit.value !== 'reduce',
+  () => diapositives.value.length > 1 && mouvementReduit.value !== 'reduce',
 )
 
 const enPause = computed(
@@ -84,9 +146,9 @@ const enPause = computed(
 
 /**
  * Le minuteur tourne en continu et n'accumule que hors pause : la barre de
- * progression et le changement de branche lisent ainsi la même horloge. Un
- * `useIntervalFn` de quinze secondes qu'on met en pause repartirait de zéro à
- * la reprise, et la barre se désynchroniserait aussitôt.
+ * progression et le changement de diapositive lisent ainsi la même horloge.
+ * Un `useIntervalFn` de cinq secondes qu'on met en pause repartirait de zéro
+ * à la reprise, et la barre se désynchroniserait aussitôt.
  */
 useIntervalFn(() => {
   if (!rotationAutomatique.value || enPause.value) return
@@ -96,7 +158,7 @@ useIntervalFn(() => {
 }, PAS_MS)
 
 function suivante() {
-  aller((actif.value + 1) % branches.value.length)
+  aller((actif.value + 1) % diapositives.value.length)
 }
 
 function aller(index: number) {
@@ -105,7 +167,7 @@ function aller(index: number) {
 }
 
 /**
- * Les trois autres images n'arrivent qu'une fois la page chargée. `load` a
+ * Les quatre autres images n'arrivent qu'une fois la page chargée. `load` a
  * déjà pu passer au moment de l'hydratation — d'où la vérification de
  * `readyState`, sans laquelle l'événement ne viendrait jamais.
  */
@@ -138,10 +200,10 @@ function estRendue(index: number) {
     <!--
       Les images sont empilées et se croisent en fondu : l'image sortante reste
       sous l'entrante, aucun aplat de fond n'apparaît entre deux clichés. Le
-      zoom lent repart à chaque branche, par la seule bascule de classe.
+      zoom lent repart à chaque diapositive, par la seule bascule de classe.
     -->
     <div class="pointer-events-none absolute inset-0">
-      <template v-for="(branche, i) in branches" :key="branche.slug">
+      <template v-for="(diapo, i) in diapositives" :key="diapo.key">
         <div
           v-if="estRendue(i)"
           class="hero-cliche absolute inset-0"
@@ -149,8 +211,8 @@ function estRendue(index: number) {
           aria-hidden="true"
         >
           <NuxtImg
-            :src="branche.image"
-            :alt="i === actif ? branche.imageAlt : ''"
+            :src="diapo.image"
+            :alt="i === actif ? diapo.imageAlt : ''"
             preset="hero"
             :preload="i === 0"
             :fetchpriority="i === 0 ? 'high' : 'low'"
@@ -173,7 +235,7 @@ function estRendue(index: number) {
     <div class="u-gutter pointer-events-none absolute inset-0 flex flex-col justify-end gap-[clamp(1.125rem,2.6vw,2.125rem)] pb-[clamp(2.125rem,5vw,4.5rem)] pt-[clamp(2.25rem,6vw,5.75rem)]">
       <!--
         `aria-live="off"` : le bloc change tout seul, il ne doit pas être
-        réannoncé en cours de lecture. Les puces, elles, nomment leur branche.
+        réannoncé en cours de lecture. Les puces, elles, nomment leur cible.
       -->
       <div class="flex items-center gap-3.5 text-white/80" aria-live="off">
         <span
@@ -181,7 +243,7 @@ function estRendue(index: number) {
           :style="{ background: courante?.color ?? 'currentColor' }"
         />
         <Transition name="hero-texte" mode="out-in">
-          <span :key="courante?.slug ?? 'defaut'" class="text-[0.6875rem] uppercase tracking-[0.28em]">
+          <span :key="courante?.key ?? 'defaut'" class="text-[0.6875rem] uppercase tracking-[0.28em]">
             {{ courante ? `${courante.name} — ${courante.tagline}` : $t('hero.eyebrow') }}
           </span>
         </Transition>
@@ -203,7 +265,7 @@ function estRendue(index: number) {
         </p>
         <Transition name="hero-texte" mode="out-in">
           <p
-            :key="courante?.slug ?? 'defaut'"
+            :key="courante?.key ?? 'defaut'"
             class="col-start-1 row-start-1 text-[clamp(0.9375rem,1.45vw,1.125rem)] leading-[1.75] text-white/85"
           >
             {{ courante?.description ?? $t('hero.lead') }}
@@ -212,24 +274,24 @@ function estRendue(index: number) {
       </div>
 
       <div class="pointer-events-auto flex flex-wrap gap-3">
-        <UiButton :to="courante ? `/services?branche=${courante.slug}` : '/services'" variant="light" size="lg">
+        <UiButton :to="courante?.to ?? '/services'" variant="light" size="lg">
           {{ $t('common.discoverServices') }}
         </UiButton>
         <UiButton to="/contact" variant="outline" size="lg">{{ $t('common.quote') }}</UiButton>
       </div>
 
       <!--
-        Quatre segments : celui de la branche affichée se remplit sur les
-        quinze secondes, et cesse de se remplir dès que la rotation est en
+        Cinq segments : celui de la diapositive affichée se remplit sur les
+        cinq secondes, et cesse de se remplir dès que la rotation est en
         pause — ce qui rend l'état visible sans avoir à l'écrire.
       -->
-      <div v-if="branches.length > 1" class="pointer-events-auto flex items-center gap-3">
+      <div v-if="diapositives.length > 1" class="pointer-events-auto flex items-center gap-3">
         <button
-          v-for="(branche, i) in branches"
-          :key="branche.slug"
+          v-for="(diapo, i) in diapositives"
+          :key="diapo.key"
           type="button"
           class="group flex h-11 w-14 items-center"
-          :aria-label="$t('hero.showBranch', { branch: branche.name })"
+          :aria-label="$t('hero.showBranch', { branch: diapo.name })"
           :aria-current="i === actif ? 'true' : undefined"
           @click="aller(i)"
         >
@@ -237,8 +299,8 @@ function estRendue(index: number) {
             <span
               class="absolute inset-y-0 left-0 transition-[width] duration-100 ease-linear"
               :style="{
-                width: i === actif ? `${progression * 100}%` : i < actif ? '0%' : '0%',
-                background: branche.color,
+                width: i === actif ? `${progression * 100}%` : '0%',
+                background: diapo.color,
               }"
             />
           </span>
@@ -267,23 +329,25 @@ function estRendue(index: number) {
 /**
  * Fondu croisé et zoom lent.
  *
- * Le zoom court sur toute la durée d'une branche plutôt que sur 2,6 s : à
- * quinze secondes d'affichage, un mouvement continu et à peine perceptible
- * tient mieux qu'une amorce qui s'arrête. Le retour à l'échelle 1 se fait
- * pendant que l'image s'efface, il ne se voit pas.
+ * Le zoom court sur toute la durée d'une diapositive plutôt que sur 2,6 s :
+ * un mouvement continu et à peine perceptible tient mieux qu'une amorce qui
+ * s'arrête. L'amplitude suit la durée — 2,5 % sur six secondes avancent à la
+ * même vitesse que les 6 % sur seize secondes d'avant, là où les garder
+ * aurait rendu la dérive voyante. Le retour à l'échelle 1 se fait pendant que
+ * l'image s'efface, il ne se voit pas.
  */
 .hero-cliche {
   opacity: 0;
   transform: scale(1);
   transition:
     opacity 1s var(--ease-out-expo),
-    transform 16s linear;
+    transform 6s linear;
   will-change: opacity, transform;
 }
 
 .hero-cliche.is-active {
   opacity: 1;
-  transform: scale(1.06);
+  transform: scale(1.025);
 }
 
 /* Le texte suit l'image avec un léger décalage, dans l'esprit de la
