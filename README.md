@@ -450,6 +450,9 @@ performance.
   luminance abaissée. **Toute nouvelle couleur de texte doit passer par elle.**
 - **Cibles tactiles à 24 px** (WCAG 2.5.8), y compris les puces du carrousel :
   le trait reste fin, la zone cliquable fait 44 px de haut.
+- **Rotation du hero arrêtable** (WCAG 2.2.2) : pause au survol, au focus
+  clavier, quand l'onglet passe en arrière-plan, et par un bouton explicite.
+  Sous `prefers-reduced-motion`, elle ne démarre pas.
 
 ### Performance
 
@@ -488,6 +491,10 @@ performance.
 - **Dock de contact permanent** : bouton WhatsApp flottant en bureau, barre
   Appeler / WhatsApp / Devis en mobile — les deux canaux qui convertissent le
   mieux au Togo.
+- **Hero en cinq diapositives** : TBS Distribution ouvre le défilement, puis
+  les quatre branches, cinq secondes chacune. La maquette montrait une image
+  fixe ; la maison, elle, n'était nommée nulle part au-dessus de la ligne de
+  flottaison.
 - **Visionneuse de galerie** : les vignettes n'étaient pas cliquables.
 - **Accordéon des secteurs**, au bas de la galerie : les quatre branches et
   les huit domaines, dépliés au survol comme au clavier. La maquette montrait
@@ -673,7 +680,8 @@ exécution sans rien apprendre de neuf.
 Nitro) et non sur le serveur de développement : le pré-rendu, l'hydratation et
 les en-têtes y sont ceux du site livré.
 
-Quatre parcours : envoi d'une demande de devis, filtrage de la galerie et
+Cinq parcours : envoi d'une demande de devis, rotation du hero d'accueil
+(ordre des diapositives, cadence, arrêt), filtrage de la galerie et
 visionneuse, changement de branche sur `/services` avec synchronisation de
 l'URL, tiroir mobile au clavier. Aucune base n'est requise — la dégradation
 gracieuse fait partie de ce qui est vérifié.
