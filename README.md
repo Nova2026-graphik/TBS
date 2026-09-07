@@ -556,6 +556,30 @@ gh api -X PUT repos/Nova2026-graphik/TBS/branches/main/protection   -F required_
 
 ---
 
+### Le crochet de pré-envoi
+
+Tant que GitHub Actions ne démarre pas, rien ne se déclenche tout seul. Le
+crochet versionné `.githooks/pre-push` comble ce vide : il rejoue `npm run ci`
+avant chaque envoi.
+
+```bash
+npm run hooks:install     # git config core.hooksPath .githooks
+```
+
+L'installation est **explicite, jamais faite par `postinstall`** : un
+`npm install` n'a pas à modifier en silence la configuration Git d'un poste.
+
+| Besoin | Commande |
+| --- | --- |
+| Passer outre une fois | `git push --no-verify` |
+| Passer outre sans toucher au crochet | `SKIP_PRE_PUSH=1 git push` |
+| Désinstaller | `git config --unset core.hooksPath` |
+
+Comptez deux à trois minutes par envoi, l'essentiel étant le build. C'est le
+prix d'un dépôt sans intégration continue active — et il tombera le jour où
+les exécutions repartiront.
+
+
 ## Qualité
 
 | Commande | Ce qu'elle vérifie |
