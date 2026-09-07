@@ -51,6 +51,24 @@
     "eyebrow": "Lomé — Togo",
     "titleLine1": "Équiper vos réceptions,",
     "titleLine2": "fournir vos projets",
+    "branchTitles": {
+      "equipements": {
+        "line1": "Fournir vos équipements,",
+        "line2": "livrer, installer, garantir"
+      },
+      "events": {
+        "line1": "Équiper vos réceptions,",
+        "line2": "du montage à la reprise"
+      },
+      "etudes": {
+        "line1": "Étudier vos projets,",
+        "line2": "chiffrer et accompagner"
+      },
+      "agro": {
+        "line1": "Cultiver vos terres,",
+        "line2": "transformer vos récoltes"
+      }
+    },
     "lead": "TBS Distribution réunit quatre branches : Équipements, Events, Études & Conseils et Agro. Fournir, équiper, conseiller et cultiver — un seul interlocuteur, à Lomé et partout au Togo.",
     "imageAlt": "Salle de réception dressée par TBS Events, plan large",
     "house": {
