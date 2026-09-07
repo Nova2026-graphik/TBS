@@ -249,11 +249,25 @@ function estRendue(index: number) {
         </Transition>
       </div>
 
-      <!-- Fixe : ancrage SEO et plan du document. -->
-      <h1 class="max-w-[17em] text-display text-white">
-        {{ $t('hero.titleLine1') }}<br>
-        <span class="italic text-cream">{{ $t('hero.titleLine2') }}</span>
-      </h1>
+      <!--
+        Le gabarit invisible est un `<p>`, pas un second `<h1>` : la page doit
+        garder exactement un titre de premier rang.
+      -->
+      <div class="grid max-w-[17em]" aria-live="off">
+        <p class="invisible col-start-1 row-start-1 text-display" aria-hidden="true">
+          {{ gabaritTitre.line1 }}<br>
+          <span class="italic">{{ gabaritTitre.line2 }}</span>
+        </p>
+        <Transition name="hero-texte" mode="out-in">
+          <h1
+            :key="courante?.slug ?? 'defaut'"
+            class="col-start-1 row-start-1 text-display text-white"
+          >
+            {{ titre(courante?.slug, 1) }}<br>
+            <span class="italic text-cream">{{ titre(courante?.slug, 2) }}</span>
+          </h1>
+        </Transition>
+      </div>
 
       <!-- La grille superpose gabarit et texte : la hauteur ne bouge plus. -->
       <div class="grid max-w-[48ch]" aria-live="off">
