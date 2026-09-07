@@ -31,6 +31,16 @@ usePageSeo({
 })
 
 useBreadcrumbSchema([{ name: 'Confidentialité', path: '/confidentialite' }])
+
+/**
+ * Page française uniquement.
+ *
+ * Ce document engage la société au regard du droit togolais. Une traduction
+ * non relue par un juriste ne serait pas un service mais une prise de risque :
+ * la version anglaise renvoie donc ici, et le lien du pied de page reste
+ * valide dans les deux langues.
+ */
+defineI18nRoute({ locales: ['fr'] })
 </script>
 
 <template>
@@ -70,7 +80,7 @@ useBreadcrumbSchema([{ name: 'Confidentialité', path: '/confidentialite' }])
         </p>
         <p>
           L'identification complète de la société figure sur la page
-          <NuxtLink to="/mentions-legales">mentions légales</NuxtLink>.
+          <NuxtLinkLocale to="/mentions-legales">mentions légales</NuxtLinkLocale>.
         </p>
 
         <h2>Données collectées</h2>
@@ -207,7 +217,7 @@ useBreadcrumbSchema([{ name: 'Confidentialité', path: '/confidentialite' }])
 
         <h2>Services tiers</h2>
         <p>
-          La page <NuxtLink to="/contact">contact</NuxtLink> propose une carte
+          La page <NuxtLinkLocale to="/contact">contact</NuxtLinkLocale> propose une carte
           fournie par <strong>OpenStreetMap</strong>.
           <strong>Elle ne se charge pas toute seule</strong> : rien n'est
           demandé à OpenStreetMap tant que vous n'avez pas cliqué sur
@@ -228,8 +238,8 @@ useBreadcrumbSchema([{ name: 'Confidentialité', path: '/confidentialite' }])
 
         <h2>Autres documents</h2>
         <ul>
-          <li><NuxtLink to="/mentions-legales">Mentions légales</NuxtLink></li>
-          <li><NuxtLink to="/conditions-de-location">Conditions de location</NuxtLink></li>
+          <li><NuxtLinkLocale to="/mentions-legales">Mentions légales</NuxtLinkLocale></li>
+          <li><NuxtLinkLocale to="/conditions-de-location">Conditions de location</NuxtLinkLocale></li>
         </ul>
       </div>
     </section>

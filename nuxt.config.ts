@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/content',
     '@nuxt/eslint',
+    '@nuxtjs/i18n',
     '@vueuse/nuxt',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots',
@@ -210,6 +211,35 @@ export default defineNuxtConfig({
       { name: 'Jost', provider: 'google', weights: [300, 400, 500], styles: ['normal'] },
     ],
     defaults: { subsets: ['latin', 'latin-ext'] },
+  },
+
+  /**
+   * Français par défaut, anglais sous `/en/`.
+   *
+   * `prefix_except_default` garde les URL françaises inchangées — aucune
+   * redirection, aucun lien cassé, aucun capital de référencement perdu.
+   *
+   * La détection par la langue du navigateur est **désactivée**. Elle
+   * enverrait un moteur d'indexation ou un visiteur francophone en voyage sur
+   * une version qu'il n'a pas demandée, et rendrait le pré-rendu non
+   * déterministe. Le choix passe par le sélecteur du bandeau supérieur, qui
+   * est explicite et se voit.
+   *
+   * Les trois pages légales et la rubrique Conseils n'existent qu'en
+   * français : les premières engagent la société au regard du droit togolais,
+   * la seconde vise une clientèle locale et se traduirait au prix d'une
+   * décision éditoriale à part.
+   */
+  i18n: {
+    defaultLocale: 'fr',
+    strategy: 'prefix_except_default',
+    locales: [
+      { code: 'fr', language: 'fr-TG', name: 'Français', file: 'fr.json', dir: 'ltr' },
+      { code: 'en', language: 'en', name: 'English', file: 'en.json', dir: 'ltr' },
+    ],
+    // Le chargement à la demande des fichiers de langue est le défaut en v10.
+    detectBrowserLanguage: false,
+    baseUrl: 'https://www.tbs-distribution.tg',
   },
 
   image: {

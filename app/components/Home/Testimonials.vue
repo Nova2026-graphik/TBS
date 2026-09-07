@@ -56,7 +56,7 @@ function onScroll() {
         <button
           type="button"
           class="flex size-11 items-center justify-center border border-white/25 text-white transition-colors duration-400 hover:border-white hover:bg-white hover:text-ink"
-          aria-label="Témoignage précédent"
+          :aria-label="$t('home.testimonials.previous')"
           @click="scrollTo(active - 1)"
         >
           <span aria-hidden="true">&#8592;</span>
@@ -64,7 +64,7 @@ function onScroll() {
         <button
           type="button"
           class="flex size-11 items-center justify-center border border-white/25 text-white transition-colors duration-400 hover:border-white hover:bg-white hover:text-ink"
-          aria-label="Témoignage suivant"
+          :aria-label="$t('home.testimonials.next')"
           @click="scrollTo(active + 1)"
         >
           <span aria-hidden="true">&#8594;</span>
@@ -103,7 +103,7 @@ function onScroll() {
         :key="`dot-${i}`"
         type="button"
         class="group grid h-11 place-items-center px-1"
-        :aria-label="`Témoignage ${i + 1}`"
+        :aria-label="$t('home.testimonials.goTo', { n: i + 1 })"
         :aria-current="i === active"
         @click="scrollTo(i)"
       >

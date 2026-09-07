@@ -8,9 +8,9 @@ const sizesThirdMd = SIZES_THIRD_MD
 
 <template>
   <section class="u-gutter u-section bg-sand">
-    <UiSectionHead eyebrow="Inspirations" title="Trois ambiances" accent="signées TBS">
+    <UiSectionHead :eyebrow="$t('home.inspirations.eyebrow')" :title="$t('home.inspirations.title')" :accent="$t('home.inspirations.accent')">
       <template #aside>
-        <NuxtLink to="/galerie" class="u-link-underline">Voir la galerie</NuxtLink>
+        <NuxtLinkLocale to="/galerie" class="u-link-underline">{{ $t('common.seeGallery') }}</NuxtLinkLocale>
       </template>
     </UiSectionHead>
 

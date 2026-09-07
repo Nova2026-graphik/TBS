@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { BranchSlug } from '#shared/types'
 
+const { t } = useI18n()
+
 /**
  * Page Services — les quatre branches en onglets.
  *
@@ -13,8 +15,9 @@ const route = useRoute()
 const router = useRouter()
 const { data } = await useSiteContent()
 
-const tabs = BRANCH_TABS
-const VALID = tabs.map(t => t.slug) as readonly string[]
+const { process, branchTabs: tabs } = useSiteData()
+/** Les slugs valides viennent de la structure, pas de la traduction. */
+const VALID = BRANCH_TABS.map(tab => tab.slug) as readonly string[]
 
 const active = computed<BranchSlug>(() => {
   const raw = route.query.branche
@@ -28,7 +31,7 @@ function select(slug: string) {
 
 const activeBranch = computed(() => data.value.branches.find(b => b.slug === active.value))
 const activeBlocks = computed(() => data.value.services.filter(s => s.branch === active.value))
-const activeProcess = computed(() => PROCESS_BY_BRANCH[active.value]!)
+const activeProcess = computed(() => process.value[active.value]!)
 const accent = computed(() => activeBranch.value?.color ?? '#827148')
 
 /** Onglet : chip pleine quand actif, contour discret sinon. */
@@ -39,9 +42,8 @@ function chipClass(isActive: boolean) {
 }
 
 usePageSeo({
-  title: 'Nos services — équipements, réception, études, agro',
-  description:
-    'TBS Équipements fournit et installe. TBS Events loue et organise. TBS Études & Conseils accompagne. TBS Agro cultive et transforme. Quatre branches, un seul interlocuteur à Lomé.',
+  title: t('seo.services.title'),
+  description: t('seo.services.description'),
   path: '/services',
   image: '/og-services.jpg',
 })
@@ -52,14 +54,14 @@ useBreadcrumbSchema([{ name: 'Nos services', path: '/services' }])
 <template>
   <div>
     <UiPageHero
-      eyebrow="Nos services"
-      title="Quatre branches,"
-      accent="un seul interlocuteur"
-      lead="TBS Équipements fournit et installe. TBS Events loue et organise. TBS Études & Conseils accompagne. TBS Agro cultive et transforme. Choisissez la branche qui vous concerne."
+      :eyebrow="$t('services.eyebrow')"
+      :title="$t('services.title')"
+      :accent="$t('services.accent')"
+      :lead="$t('services.lead')"
     >
       <!-- Onglets de branche : rôle tablist explicite, navigation clavier
            assurée par les liens natifs. -->
-      <div class="mt-[clamp(1.75rem,4vw,3rem)] flex flex-wrap gap-2.5" role="tablist" aria-label="Branches d'activité">
+      <div class="mt-[clamp(1.75rem,4vw,3rem)] flex flex-wrap gap-2.5" role="tablist" :aria-label="$t('services.tablist')">
         <button
           v-for="tab in tabs"
           :key="tab.slug"

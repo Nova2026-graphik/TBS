@@ -8,7 +8,8 @@
 import { asc, eq } from 'drizzle-orm'
 import { useDb } from '../database/client'
 import * as schema from '../database/schema'
-import * as content from '../data/content'
+import * as contentFr from '../data/content'
+import * as contentEn from '../data/content.en'
 import type {
   Branch,
   Domain,
@@ -18,6 +19,27 @@ import type {
   ServiceBlock,
   Testimonial,
 } from '../../shared/types'
+
+/**
+ * Langues servies. La valeur par défaut est le français : une locale inconnue
+ * — ou absente, comme dans les appels internes — retombe dessus plutôt que de
+ * renvoyer une page vide.
+ */
+export type ContentLocale = 'fr' | 'en'
+
+const CONTENU: Record<ContentLocale, typeof contentFr> = {
+  fr: contentFr,
+  en: contentEn as typeof contentFr,
+}
+
+/** Contenu statique de la langue demandée. */
+function statique(locale: ContentLocale = 'fr') {
+  return CONTENU[locale] ?? CONTENU.fr
+}
+
+export function parseLocale(value: unknown): ContentLocale {
+  return value === 'en' ? 'en' : 'fr'
+}
 
 /** Exécute `query` et retombe sur `fallback` si la base est absente ou vide. */
 async function withFallback<T>(
@@ -38,7 +60,7 @@ async function withFallback<T>(
   }
 }
 
-export function getBranches() {
+export function getBranches(locale: ContentLocale = 'fr') {
   return withFallback<Branch>(async () => {
     const db = useDb()!
     const rows = await db
@@ -58,10 +80,10 @@ export function getBranches() {
       imageAlt: r.imageAlt,
       tags: r.tags ?? [],
     }))
-  }, content.branches)
+  }, statique(locale).branches)
 }
 
-export function getRentalCategories() {
+export function getRentalCategories(locale: ContentLocale = 'fr') {
   return withFallback<RentalCategory>(async () => {
     const db = useDb()!
     const rows = await db
@@ -77,10 +99,10 @@ export function getRentalCategories() {
       image: r.image,
       imageAlt: r.imageAlt,
     }))
-  }, content.rentalCategories)
+  }, statique(locale).rentalCategories)
 }
 
-export function getServiceBlocks() {
+export function getServiceBlocks(locale: ContentLocale = 'fr') {
   return withFallback<ServiceBlock>(async () => {
     const db = useDb()!
     const rows = await db
@@ -98,10 +120,10 @@ export function getServiceBlocks() {
       image: r.image,
       imageAlt: r.imageAlt,
     }))
-  }, content.serviceBlocks)
+  }, statique(locale).serviceBlocks)
 }
 
-export function getDomains() {
+export function getDomains(locale: ContentLocale = 'fr') {
   return withFallback<Domain>(async () => {
     const db = useDb()!
     const rows = await db
@@ -114,10 +136,10 @@ export function getDomains() {
       title: r.title,
       description: r.description,
     }))
-  }, content.domains)
+  }, statique(locale).domains)
 }
 
-export function getGalleryItems() {
+export function getGalleryItems(locale: ContentLocale = 'fr') {
   return withFallback<GalleryItem>(async () => {
     const db = useDb()!
     const rows = await db
@@ -135,10 +157,10 @@ export function getGalleryItems() {
       image: r.image,
       imageAlt: r.imageAlt,
     }))
-  }, content.galleryItems)
+  }, statique(locale).galleryItems)
 }
 
-export function getTestimonials() {
+export function getTestimonials(locale: ContentLocale = 'fr') {
   return withFallback<Testimonial>(async () => {
     const db = useDb()!
     const rows = await db
@@ -152,10 +174,10 @@ export function getTestimonials() {
       author: r.author,
       context: r.context,
     }))
-  }, content.testimonials)
+  }, statique(locale).testimonials)
 }
 
-export function getFaqItems() {
+export function getFaqItems(locale: ContentLocale = 'fr') {
   return withFallback<FaqItem>(async () => {
     const db = useDb()!
     const rows = await db
@@ -170,5 +192,5 @@ export function getFaqItems() {
       question: r.question,
       answer: r.answer,
     }))
-  }, content.faqItems)
+  }, statique(locale).faqItems)
 }

@@ -32,19 +32,18 @@ const densitiesFull = DENSITIES_FULL
       <div v-reveal>
         <span class="u-eyebrow text-cream/70">
           <span class="u-rule" />
-          Votre projet
+          {{ $t('cta.eyebrow') }}
         </span>
         <h2 class="mt-4 max-w-[18ch] text-h2 text-white">
-          Parlons de votre <span class="italic text-cream">prochaine date</span>
+          {{ $t('cta.title') }} <span class="italic text-cream">{{ $t('cta.accent') }}</span>
         </h2>
         <p class="mt-5 max-w-[46ch] text-[0.9375rem] leading-[1.72] text-white/75">
-          Date, lieu, nombre d'invités : vous recevez une proposition chiffrée
-          sous 24 heures.
+          {{ $t('cta.lead') }}
         </p>
       </div>
 
       <div v-reveal="120" class="flex flex-wrap items-center gap-4">
-        <UiButton to="/contact" variant="light" size="lg">Demander un devis</UiButton>
+        <UiButton to="/contact" variant="light" size="lg">{{ $t('common.quote') }}</UiButton>
         <a
           :href="`tel:${info.phonePrimary}`"
           class="inline-flex min-h-6 items-center border-b border-white/40 pb-1.5 text-[0.6875rem] uppercase tracking-[0.18em] text-white transition-colors hover:border-white"

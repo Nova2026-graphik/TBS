@@ -31,7 +31,30 @@ const REQUEST_TYPES = [
 
 const route = useRoute()
 const info = useSiteInfo()
+const { t, tm, rt } = useI18n()
 const { track } = useAnalytics()
+
+/**
+ * Les libellés des deux listes viennent des fichiers de langue, mais **la
+ * valeur envoyée reste française**. Une demande arrivée en anglais doit
+ * atterrir dans le même bac que les autres : l'équipe commerciale lit un seul
+ * jeu d'intitulés, et le champ `branch` de `quote_requests` reste comparable
+ * d'une ligne à l'autre.
+ */
+/** `tm` renvoie un type trop profond pour être inféré : on le ramène à plat. */
+function libelles(cle: string): string[] {
+  return (tm(cle) as unknown[]).map(entree => rt(entree as string))
+}
+
+const branchOptions = computed(() => {
+  const labels = libelles('form.branches')
+  return BRANCH_OPTIONS.map((value, i) => ({ value, label: labels[i] ?? value }))
+})
+
+const requestTypeOptions = computed(() => {
+  const labels = libelles('form.requestTypes')
+  return REQUEST_TYPES.map((value, i) => ({ value, label: labels[i] ?? value }))
+})
 
 /**
  * `devis_commence` ne part qu'une fois, au premier champ réellement rempli.
@@ -65,17 +88,14 @@ const form = reactive({
  * tête de formulaire : le résumé doit nommer ce qu'il faut aller corriger.
  * Les clés couvrent aussi les champs que seul le serveur peut rejeter.
  */
-const FIELD_LABELS: Record<string, string> = {
-  name: 'Nom complet',
-  phone: 'Téléphone',
-  email: 'E-mail',
-  branch: 'Branche concernée',
-  requestType: 'Type de demande',
-  eventDate: 'Date de l\'événement',
-  guestCount: 'Nombre d\'invités',
-  location: 'Lieu',
-  message: 'Votre besoin',
-}
+const FIELD_KEYS = [
+  'name', 'phone', 'email', 'branch',
+  'requestType', 'eventDate', 'guestCount', 'location', 'message',
+] as const
+
+const FIELD_LABELS = computed<Record<string, string>>(() =>
+  Object.fromEntries(FIELD_KEYS.map(key => [key, t(`form.fields.${key}`)])),
+)
 
 const errors = ref<Record<string, string>>({})
 const status = ref<'idle' | 'pending' | 'sent' | 'error'>('idle')
@@ -90,14 +110,14 @@ const errorSummary = ref<HTMLElement | null>(null)
  * erreur invisible.
  */
 const errorList = computed(() => {
-  const known = Object.keys(FIELD_LABELS)
+  const known = Object.keys(FIELD_LABELS.value)
   const fields = [
     ...known.filter(field => errors.value[field]),
     ...Object.keys(errors.value).filter(field => !known.includes(field)),
   ]
   return fields.map(field => ({
     field,
-    label: FIELD_LABELS[field] ?? field,
+    label: FIELD_LABELS.value[field] ?? field,
     message: errors.value[field]!,
   }))
 })
@@ -146,11 +166,11 @@ const isEventRequest = computed(() =>
 
 function validate(): boolean {
   const next: Record<string, string> = {}
-  if (form.name.trim().length < 2) next.name = 'Indiquez votre nom.'
-  if (!/^[\d\s+().-]{6,}$/.test(form.phone.trim())) next.phone = 'Numéro de téléphone invalide.'
+  if (form.name.trim().length < 2) next.name = t('form.errors.name')
+  if (!/^[\d\s+().-]{6,}$/.test(form.phone.trim())) next.phone = t('form.errors.phone')
   if (form.email && !/^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(form.email.trim()))
-    next.email = 'Adresse e-mail invalide.'
-  if (form.message.trim().length < 5) next.message = 'Décrivez brièvement votre besoin.'
+    next.email = t('form.errors.email')
+  if (form.message.trim().length < 5) next.message = t('form.errors.message')
 
   errors.value = next
   return Object.keys(next).length === 0
@@ -201,9 +221,7 @@ async function submit() {
       await focusErrorSummary()
       return
     }
-    serverError.value
-      = err.data?.statusMessage
-        ?? 'Envoi impossible pour l\'instant. Appelez-nous au (+228) 90 10 85 10.'
+    serverError.value = err.data?.statusMessage ?? t('form.errors.server')
     status.value = 'error'
   }
 }
@@ -234,14 +252,13 @@ const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
   >
     <span class="u-eyebrow">
       <span class="u-rule" />
-      C'est envoyé
+      {{ $t('form.sentEyebrow') }}
     </span>
-    <h2 class="mt-4 text-h3">Demande envoyée</h2>
+    <h2 class="mt-4 text-h3">{{ $t('form.sentTitle') }}</h2>
     <p class="mt-4 max-w-[48ch] text-[0.9375rem] leading-[1.75]">
-      Merci. Un conseiller TBS vous rappelle dans les 24 heures avec une
-      proposition chiffrée.
+      {{ $t('form.sentBody') }}
     </p>
-    <UiButton variant="ghost" class="mt-8" @click="reset">Nouvelle demande</UiButton>
+    <UiButton variant="ghost" class="mt-8" @click="reset">{{ $t('form.newRequest') }}</UiButton>
   </div>
 
   <!-- Formulaire -->
@@ -256,7 +273,7 @@ const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
     <!-- Piège à robots : hors flux, masqué aux lecteurs d'écran, jamais tabulable. -->
     <div aria-hidden="true" class="absolute left-[-9999px] h-0 w-0 overflow-hidden">
       <label>
-        Société
+        {{ $t('form.company') }}
         <input v-model="form.company" type="text" tabindex="-1" autocomplete="off">
       </label>
     </div>
@@ -270,7 +287,7 @@ const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
       class="border-l-2 border-red-500 bg-red-50 px-4 py-4 outline-none focus-visible:ring-2 focus-visible:ring-red-500"
     >
       <p class="text-sm font-medium text-red-700">
-        {{ errorList.length }} champ{{ errorList.length > 1 ? 's' : '' }} à corriger avant l'envoi :
+        {{ $t('form.summary', { n: errorList.length }, errorList.length) }}
       </p>
       <ul class="mt-2 flex flex-col gap-1 text-sm text-red-700">
         <li v-for="item in errorList" :key="item.field">
@@ -287,14 +304,14 @@ const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
 
     <div class="grid gap-7 sm:grid-cols-2">
       <div>
-        <label :class="LABEL" for="field-name">Nom complet *</label>
+        <label :class="LABEL" for="field-name">{{ $t('form.fields.name') }} *</label>
         <input
           id="field-name"
           v-model="form.name"
           type="text"
           required
           autocomplete="name"
-          placeholder="Ex. Akouvi Adjovi"
+          :placeholder="$t('form.placeholders.name')"
           :class="[FIELD, errors.name ? 'border-red-500' : '']"
           :aria-invalid="!!errors.name"
           :aria-describedby="errors.name ? 'err-name' : undefined"
@@ -303,14 +320,14 @@ const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
       </div>
 
       <div>
-        <label :class="LABEL" for="field-phone">Téléphone *</label>
+        <label :class="LABEL" for="field-phone">{{ $t('form.fields.phone') }} *</label>
         <input
           id="field-phone"
           v-model="form.phone"
           type="tel"
           required
           autocomplete="tel"
-          placeholder="(+228) 00 00 00 00"
+          :placeholder="$t('form.placeholders.phone')"
           :class="[FIELD, errors.phone ? 'border-red-500' : '']"
           :aria-invalid="!!errors.phone"
           :aria-describedby="errors.phone ? 'err-phone' : undefined"
@@ -320,13 +337,13 @@ const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
     </div>
 
     <div>
-      <label :class="LABEL" for="field-email">E-mail</label>
+      <label :class="LABEL" for="field-email">{{ $t('form.fields.email') }}</label>
       <input
         id="field-email"
         v-model="form.email"
         type="email"
         autocomplete="email"
-        placeholder="Pour recevoir le devis par écrit"
+        :placeholder="$t('form.placeholders.email')"
         :class="[FIELD, errors.email ? 'border-red-500' : '']"
         :aria-invalid="!!errors.email"
         :aria-describedby="errors.email ? 'err-email' : undefined"
@@ -335,61 +352,65 @@ const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
     </div>
 
     <div>
-      <label :class="LABEL" for="field-branch">Branche concernée</label>
+      <label :class="LABEL" for="field-branch">{{ $t('form.fields.branch') }}</label>
       <select id="field-branch" v-model="form.branch" :class="FIELD">
-        <option v-for="option in BRANCH_OPTIONS" :key="option" :value="option">{{ option }}</option>
+        <option v-for="option in branchOptions" :key="option.value" :value="option.value">
+          {{ option.label }}
+        </option>
       </select>
     </div>
 
     <div class="grid gap-7 sm:grid-cols-2">
       <div>
-        <label :class="LABEL" for="field-requestType">Type de demande</label>
+        <label :class="LABEL" for="field-requestType">{{ $t('form.fields.requestType') }}</label>
         <select id="field-requestType" v-model="form.requestType" :class="FIELD">
-          <option v-for="option in REQUEST_TYPES" :key="option" :value="option">{{ option }}</option>
+          <option v-for="option in requestTypeOptions" :key="option.value" :value="option.value">
+            {{ option.label }}
+          </option>
         </select>
       </div>
 
       <div v-if="isEventRequest">
-        <label :class="LABEL" for="field-eventDate">Date de l'événement</label>
+        <label :class="LABEL" for="field-eventDate">{{ $t('form.fields.eventDate') }}</label>
         <input id="field-eventDate" v-model="form.eventDate" type="date" :class="FIELD">
       </div>
     </div>
 
     <div class="grid gap-7 sm:grid-cols-2">
       <div v-if="isEventRequest">
-        <label :class="LABEL" for="field-guestCount">Nombre d'invités</label>
+        <label :class="LABEL" for="field-guestCount">{{ $t('form.fields.guestCount') }}</label>
         <input
           id="field-guestCount"
           v-model="form.guestCount"
           type="number"
           min="0"
           inputmode="numeric"
-          placeholder="Ex. 350"
+          :placeholder="$t('form.placeholders.guestCount')"
           :class="FIELD"
         >
       </div>
 
       <div>
-        <label :class="LABEL" for="field-location">Lieu</label>
+        <label :class="LABEL" for="field-location">{{ $t('form.fields.location') }}</label>
         <input
           id="field-location"
           v-model="form.location"
           type="text"
           autocomplete="address-level2"
-          placeholder="Ex. Agôè, Lomé"
+          :placeholder="$t('form.placeholders.location')"
           :class="FIELD"
         >
       </div>
     </div>
 
     <div>
-      <label :class="LABEL" for="field-message">Votre besoin *</label>
+      <label :class="LABEL" for="field-message">{{ $t('form.fields.message') }} *</label>
       <textarea
         id="field-message"
         v-model="form.message"
         rows="3"
         required
-        placeholder="Mobilier, vaisselle, décoration, sonorisation…"
+        :placeholder="$t('form.placeholders.message')"
         :class="[FIELD, 'resize-y', errors.message ? 'border-red-500' : '']"
         :aria-invalid="!!errors.message"
         :aria-describedby="errors.message ? 'err-message' : undefined"
@@ -409,25 +430,20 @@ const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
 
     <div class="flex flex-wrap items-center gap-5">
       <UiButton type="submit" size="lg" :disabled="status === 'pending'">
-        {{ status === 'pending' ? 'Envoi…' : 'Envoyer ma demande' }}
+        {{ status === 'pending' ? $t('form.submitting') : $t('form.submit') }}
       </UiButton>
-      <p class="text-xs text-ink-mute">
-        Réponse sous 24 h ouvrées. Champs marqués * obligatoires.
-      </p>
+      <p class="text-xs text-ink-mute">{{ $t('form.notice') }}</p>
     </div>
 
     <!-- Information sur le traitement des données. Elle appartient au
          formulaire, pas à une page annexe : c'est ici que la personne décide
          de transmettre ses coordonnées. -->
     <p class="max-w-[68ch] border-t border-ink/10 pt-5 text-xs leading-[1.7] text-ink-mute">
-      Vos coordonnées servent uniquement à traiter cette demande de devis et
-      sont destinées à TBS Distribution S.A.R.L. Elles sont conservées
-      {{ retentionMonths }} mois, puis anonymisées. Vous pouvez à tout moment
-      demander à les consulter, les corriger ou les supprimer en écrivant à
+      {{ $t('form.privacy', { months: retentionMonths }) }}
       <a :href="`mailto:${info.email}`" class="underline underline-offset-2 hover:text-ink">{{ info.email }}</a>.
-      <NuxtLink to="/confidentialite" class="underline underline-offset-2 hover:text-ink">
-        Politique de confidentialité
-      </NuxtLink>.
+      <NuxtLinkLocale to="/confidentialite" class="underline underline-offset-2 hover:text-ink">
+        {{ $t('form.privacyLink') }}
+      </NuxtLinkLocale>.
     </p>
   </form>
 </template>
