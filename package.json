@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
+  "//engines": "Vercel ne lit pas `.nvmrc` : il lit `engines.node`, qui prime même sur le réglage du projet. Sans cette clé, la plate-forme choisit sa version par défaut et l'on déploie sur un autre Node que celui du développement et de la CI — c'est ainsi qu'un module natif comme better-sqlite3 casse en production seulement.",
+  "engines": {
+    "node": "24.x"
+  },
   "description": "Site vitrine TBS Distribution S.A.R.L — Lomé, Togo",
   "scripts": {
     "dev": "nuxt dev",

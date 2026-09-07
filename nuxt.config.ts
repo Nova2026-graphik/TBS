@@ -98,8 +98,14 @@ export default defineNuxtConfig({
        * `direct` (défaut) : aucun en-tête n'est lu, seule l'adresse de la
        * connexion fait foi. Sinon `cloudflare`, `vercel`, `netlify`, ou
        * `x-forwarded-for` avec le nombre de proxys de confiance.
+       *
+       * Sur Vercel, `direct` ne verrait que l'adresse du proxy : les dix
+       * demandes de devis par heure et par IP deviendraient dix pour la
+       * planète entière, sans que rien ne le signale. La plate-forme se
+       * détecte à la construction, le défaut suit — `NUXT_SECURITY_TRUSTED_PROXY`
+       * reste prioritaire pour tout autre hébergement.
        */
-      trustedProxy: 'direct',
+      trustedProxy: process.env.VERCEL ? 'vercel' : 'direct',
       trustedProxyHops: '1',
     },
     public: {
