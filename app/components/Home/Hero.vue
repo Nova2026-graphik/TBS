@@ -11,10 +11,13 @@ import type { Branch } from '#shared/types'
  * ligne de flottaison, alors que c'est la promesse du site — un seul
  * interlocuteur pour quatre métiers.
  *
- * Ce qui tourne : la photo de fond, le sur-titre, la description, la couleur
- * d'accent et la destination du premier appel à l'action. Ce qui ne tourne
- * pas : le `<h1>`. C'est l'ancrage de référencement de la page, et le plan du
- * document n'a pas à changer toutes les cinq secondes.
+ * Ce qui tourne : la photo de fond, le sur-titre, **le titre**, la
+ * description, la couleur d'accent et la destination du premier appel à
+ * l'action. Chaque diapositive annonce ce qu'elle fait.
+ *
+ * Le `<h1>` reste unique dans le plan du document — c'est son contenu qui
+ * change, pas son rang. La diapositive de tête porte la formule générale,
+ * celle que les moteurs indexent puisqu'elle sort du rendu serveur.
  *
  * Trois contraintes ont dicté la mise en œuvre :
  *
@@ -35,7 +38,7 @@ import type { Branch } from '#shared/types'
  */
 const props = defineProps<{ branches: Branch[] }>()
 
-const { t } = useI18n()
+const { t, te } = useI18n()
 
 /** Durée d'affichage d'une diapositive. */
 const DUREE_MS = 5_000
@@ -104,6 +107,19 @@ const diapositives = computed<Diapositive[]>(() => [
 
 const actif = ref(0)
 const courante = computed(() => diapositives.value[actif.value])
+
+/**
+ * Titre de la diapositive affichée, avec repli sur la formule générale.
+ *
+ * La maison n'a pas d'entrée dans `hero.branchTitles` : elle tombe donc
+ * naturellement sur `hero.titleLine1/2`, la promesse d'ensemble. Une branche
+ * ajoutée sans sa traduction fait de même, plutôt que d'afficher une clé i18n
+ * en caractères de six centimètres.
+ */
+function titre(cle: string | undefined, ligne: 1 | 2): string {
+  const chemin = `hero.branchTitles.${cle}.line${ligne}`
+  return cle && te(chemin) ? t(chemin) : t(`hero.titleLine${ligne}`)
+}
 
 /**
  * Description la plus longue, rendue en double invisible pour réserver la
@@ -250,21 +266,33 @@ function estRendue(index: number) {
       </div>
 
       <!--
-        Le gabarit invisible est un `<p>`, pas un second `<h1>` : la page doit
-        garder exactement un titre de premier rang.
+        Les cinq titres sont empilés invisibles dans la même cellule : la
+        rangée prend la hauteur du plus haut, et le bloc ne bouge plus d'une
+        diapositive à l'autre. Réserver d'après la plus longue chaîne ne
+        suffisait pas — à 1280 px, « Équiper vos réceptions, du montage à la
+        reprise » se replie sur une ligne de plus que le couple le plus long
+        pris ligne à ligne, et débordait de 86 px.
+
+        Ce sont des `<p>`, pas des `<h1>` : la page doit garder exactement un
+        titre de premier rang.
       -->
       <div class="grid max-w-[17em]" aria-live="off">
-        <p class="invisible col-start-1 row-start-1 text-display" aria-hidden="true">
-          {{ gabaritTitre.line1 }}<br>
-          <span class="italic">{{ gabaritTitre.line2 }}</span>
+        <p
+          v-for="diapo in diapositives"
+          :key="`gabarit-${diapo.key}`"
+          class="invisible col-start-1 row-start-1 text-display"
+          aria-hidden="true"
+        >
+          {{ titre(diapo.key, 1) }}<br>
+          <span class="italic">{{ titre(diapo.key, 2) }}</span>
         </p>
         <Transition name="hero-texte" mode="out-in">
           <h1
-            :key="courante?.slug ?? 'defaut'"
+            :key="courante?.key ?? 'defaut'"
             class="col-start-1 row-start-1 text-display text-white"
           >
-            {{ titre(courante?.slug, 1) }}<br>
-            <span class="italic text-cream">{{ titre(courante?.slug, 2) }}</span>
+            {{ titre(courante?.key, 1) }}<br>
+            <span class="italic text-cream">{{ titre(courante?.key, 2) }}</span>
           </h1>
         </Transition>
       </div>
