@@ -174,6 +174,14 @@ export default defineNuxtConfig({
 
     prerender: {
       crawlLinks: true,
+      /**
+       * L'optimiseur d'images de Vercel n'existe qu'à l'exécution : le
+       * crawler qui suit les `src` des pages y récolte autant de 404, et le
+       * build s'arrête sur « Exiting due to prerender errors ». Ces URL sont
+       * servies par la plate-forme, elles n'ont rien à faire dans le rendu
+       * anticipé.
+       */
+      ignore: ['/_vercel/image'],
       routes: [
         '/',
         '/services',
@@ -254,6 +262,18 @@ export default defineNuxtConfig({
   },
 
   image: {
+    /**
+     * Sans `provider` explicite, `@nuxt/image` devine la plate-forme, et ne
+     * devine pas la même chose d'un build à l'autre : un déploiement a servi
+     * des URL `/_ipx/…`, le suivant des `/_vercel/image?…`. Or le pré-rendu
+     * échoue sur les secondes — elles n'existent qu'à l'exécution — et le
+     * build casse sans qu'une seule ligne du dépôt ait changé.
+     *
+     * Sur Vercel on prend donc l'optimiseur natif de la plate-forme, qui
+     * dispense la fonction d'embarquer `sharp` ; ailleurs, IPX, qui tourne
+     * dans le processus et sert aussi `nuxt dev`.
+     */
+    provider: process.env.VERCEL ? 'vercel' : 'ipx',
     quality: 74,
     format: ['webp'],
     presets: {
