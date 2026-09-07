@@ -13,19 +13,22 @@ import {
   getRentalCategories,
   getServiceBlocks,
   getTestimonials,
+  parseLocale,
 } from '../utils/repository'
 
 export default defineCachedEventHandler(
-  async () => {
+  async (event) => {
+    const locale = parseLocale(getQuery(event).locale)
+
     const [branches, categories, services, domains, gallery, testimonials, faq]
       = await Promise.all([
-        getBranches(),
-        getRentalCategories(),
-        getServiceBlocks(),
-        getDomains(),
-        getGalleryItems(),
-        getTestimonials(),
-        getFaqItems(),
+        getBranches(locale),
+        getRentalCategories(locale),
+        getServiceBlocks(locale),
+        getDomains(locale),
+        getGalleryItems(locale),
+        getTestimonials(locale),
+        getFaqItems(locale),
       ])
 
     return {
@@ -36,6 +39,7 @@ export default defineCachedEventHandler(
       gallery: gallery.data,
       testimonials: testimonials.data,
       faq: faq.data,
+      locale,
       source: branches.source,
     }
   },
@@ -43,6 +47,8 @@ export default defineCachedEventHandler(
     name: 'site-content',
     maxAge: 60 * 10,
     swr: true,
-    getKey: () => 'v1',
+    // La langue entre dans la clé : sans elle, la première réponse mise en
+    // cache serait servie aux deux versions du site.
+    getKey: event => `v1-${parseLocale(getQuery(event).locale)}`,
   },
 )

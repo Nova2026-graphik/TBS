@@ -1,10 +1,10 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const { data } = await useSiteContent()
 
 usePageSeo({
-  title: 'Questions fréquentes',
-  description:
-    'Délais de réservation, livraison et montage, casse, appels d\'offres, délais de fourniture : les réponses de TBS Distribution aux questions les plus posées.',
+  title: t('seo.faq.title'),
+  description: t('seo.faq.description'),
   path: '/faq',
 })
 
@@ -17,12 +17,12 @@ useFaqSchema(() => data.value.faq)
   <div>
     <UiPageHero
       eyebrow="FAQ"
-      title="Questions"
-      accent="fréquentes"
-      lead="Vous ne trouvez pas votre réponse ? Appelez-nous, on répond vite."
+      :title="$t('faq.title')"
+      :accent="$t('faq.accent')"
+      :lead="$t('faq.lead')"
     >
       <div class="mt-8">
-        <UiButton to="/contact" variant="ghost">Nous écrire</UiButton>
+        <UiButton to="/contact" variant="ghost">{{ $t('common.writeUs') }}</UiButton>
       </div>
     </UiPageHero>
 

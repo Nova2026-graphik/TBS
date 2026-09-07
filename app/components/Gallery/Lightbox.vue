@@ -74,7 +74,7 @@ const sizesLightbox = SIZES_LIGHTBOX
           <button
             type="button"
             class="flex size-11 items-center justify-center text-2xl text-white/70 transition-colors hover:text-white"
-            aria-label="Fermer la visionneuse"
+            :aria-label="$t('gallery.lightbox.close')"
             @click="emit('close')"
           >
             <span aria-hidden="true">&times;</span>
@@ -85,7 +85,7 @@ const sizesLightbox = SIZES_LIGHTBOX
           <button
             type="button"
             class="hidden size-12 shrink-0 items-center justify-center border border-white/20 text-white transition-colors hover:bg-white hover:text-ink sm:flex"
-            aria-label="Image précédente"
+            :aria-label="$t('gallery.lightbox.previous')"
             @click="go(-1)"
           >
             <span aria-hidden="true">&#8592;</span>
@@ -113,7 +113,7 @@ const sizesLightbox = SIZES_LIGHTBOX
           <button
             type="button"
             class="hidden size-12 shrink-0 items-center justify-center border border-white/20 text-white transition-colors hover:bg-white hover:text-ink sm:flex"
-            aria-label="Image suivante"
+            :aria-label="$t('gallery.lightbox.next')"
             @click="go(1)"
           >
             <span aria-hidden="true">&#8594;</span>

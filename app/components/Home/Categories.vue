@@ -10,24 +10,24 @@ const sizesThird = SIZES_THIRD
 <template>
   <section class="u-gutter u-section bg-sand">
     <UiSectionHead
-      eyebrow="TBS Events — nos catégories"
+      :eyebrow="$t('home.categories.eyebrow')"
       dot="#E8A07C"
-      title="Six univers,"
-      accent="une seule livraison"
+      :title="$t('home.categories.title')"
+      :accent="$t('home.categories.accent')"
     >
       <template #aside>
-        <NuxtLink to="/services?branche=events" class="u-link-underline">
+        <NuxtLinkLocale :to="{ path: '/services', query: { branche: 'events' } }" class="u-link-underline">
           Voir le catalogue
-        </NuxtLink>
+        </NuxtLinkLocale>
       </template>
     </UiSectionHead>
 
     <div class="grid gap-[clamp(0.875rem,1.6vw,1.375rem)] sm:grid-cols-2 lg:grid-cols-3">
-      <NuxtLink
+      <NuxtLinkLocale
         v-for="(category, i) in categories"
         :key="category.slug"
         v-reveal="(i % 3) * 80"
-        :to="`/services?branche=events#${category.slug}`"
+        :to="{ path: '/services', query: { branche: 'events' }, hash: `#${category.slug}` }"
         class="group block transition-transform duration-600 ease-[var(--ease-out-expo)] hover:-translate-y-1.5"
       >
         <div class="relative aspect-4/3 overflow-hidden bg-shell">
@@ -51,7 +51,7 @@ const sizesThird = SIZES_THIRD
             {{ category.refCount }} réf.
           </span>
         </div>
-      </NuxtLink>
+      </NuxtLinkLocale>
     </div>
   </section>
 </template>

@@ -20,6 +20,16 @@ usePageSeo({
 })
 
 useBreadcrumbSchema([{ name: 'Conditions de location', path: '/conditions-de-location' }])
+
+/**
+ * Page française uniquement.
+ *
+ * Ce document engage la société au regard du droit togolais. Une traduction
+ * non relue par un juriste ne serait pas un service mais une prise de risque :
+ * la version anglaise renvoie donc ici, et le lien du pied de page reste
+ * valide dans les deux langues.
+ */
+defineI18nRoute({ locales: ['fr'] })
 </script>
 
 <template>
@@ -172,7 +182,7 @@ useBreadcrumbSchema([{ name: 'Conditions de location', path: '/conditions-de-loc
         <p>
           Les informations transmises lors d'une demande de devis sont traitées
           conformément à la
-          <NuxtLink to="/confidentialite">politique de confidentialité</NuxtLink>.
+          <NuxtLinkLocale to="/confidentialite">politique de confidentialité</NuxtLinkLocale>.
         </p>
 
         <h2>Droit applicable et litiges</h2>

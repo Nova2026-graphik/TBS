@@ -13,8 +13,8 @@ defineProps<{
 
 <template>
   <section class="u-gutter border-b border-ink/8 bg-sand pb-[clamp(2.25rem,5vw,4rem)] pt-[clamp(2.5rem,6vw,5.5rem)]">
-    <nav aria-label="Fil d'Ariane" class="mb-8 flex items-center gap-2 text-[0.6875rem] uppercase tracking-[0.2em] text-ink-mute">
-      <NuxtLink to="/" class="transition-colors hover:text-gold">Accueil</NuxtLink>
+    <nav :aria-label="$t('common.breadcrumb')" class="mb-8 flex items-center gap-2 text-[0.6875rem] uppercase tracking-[0.2em] text-ink-mute">
+      <NuxtLinkLocale to="/" class="transition-colors hover:text-gold">{{ $t('nav.home') }}</NuxtLinkLocale>
       <span aria-hidden="true">/</span>
       <span class="text-ink-soft">{{ eyebrow }}</span>
     </nav>

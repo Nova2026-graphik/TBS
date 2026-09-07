@@ -711,6 +711,80 @@ fois découvert par un lien.
 
 ---
 
+## Version anglaise
+
+Le français est la langue par défaut, l'anglais vit sous `/en/`. La stratégie
+`prefix_except_default` laisse les URL françaises **inchangées** : aucune
+redirection, aucun lien cassé, aucun capital de référencement perdu.
+
+```
+/                    français        /en                  anglais
+/services            français        /en/services         anglais
+/conseils            français uniquement
+/mentions-legales    français uniquement
+/admin               français uniquement
+```
+
+### Où vit le texte
+
+| Ce qui est traduit | Où |
+| --- | --- |
+| Copie des pages, formulaire, navigation, pied de page | `i18n/locales/fr.json` et `en.json` |
+| Contenu éditorial — branches, prestations, galerie, FAQ, témoignages | `server/data/content.ts` et `content.en.ts` |
+| Blocs de présentation — étapes, formules, ambiances, chiffres | clé `data` des fichiers de langue, assemblée par `app/composables/useSiteData.ts` |
+
+La règle est la même partout : **la structure d'un côté, le texte de l'autre**.
+`content.en.ts` ne redéfinit que les champs lisibles et reprend du fichier
+français les identifiants, slugs, couleurs, images et valeurs chiffrées. Deux
+raisons : une valeur non textuelle dupliquée finit toujours par diverger, et le
+filtrage de la galerie comme la sélection de branche passent par ces
+identifiants — ils ne doivent pas changer d'une langue à l'autre, sous peine de
+casser `?branche=` et `?filtre=`.
+
+Même principe dans le formulaire de devis : les libellés des listes sont
+traduits, mais **la valeur envoyée reste française**. Une demande venue de la
+version anglaise atterrit dans le même bac que les autres, et le champ `branch`
+de `quote_requests` reste comparable d'une ligne à l'autre.
+
+### Ce qui n'est pas traduit, et pourquoi
+
+**Les trois pages légales.** Elles engagent la société au regard du droit
+togolais ; une traduction non relue par un juriste serait une prise de risque,
+pas un service.
+
+**La rubrique Conseils.** Ses articles visent des requêtes locales — « combien
+de chaises pour 300 invités », « prix location vaisselle mariage Lomé ». Les
+traduire relèverait d'une décision éditoriale à part.
+
+**L'espace de suivi des devis.** Interne, et le doubler créerait des URL à
+indexer pour des pages qui n'ont pas à l'être.
+
+Ces pages sont déclarées `defineI18nRoute({ locales: ['fr'] })` : la version
+anglaise n'existe pas, et les liens y ramènent au français.
+
+**La détection par la langue du navigateur** est désactivée. Elle enverrait un
+moteur d'indexation ou un visiteur francophone en voyage sur une version qu'il
+n'a pas demandée, et rendrait le pré-rendu non déterministe. Le choix passe par
+le sélecteur du bandeau supérieur, qui conserve la page en cours.
+
+### Ajouter une chaîne
+
+1. La clé dans `i18n/locales/fr.json` **et** `en.json` — les deux fichiers ont
+   la même forme, un `diff` des clés le vérifie.
+2. `{{ $t('ma.cle') }}` dans le gabarit, ou `t('ma.cle')` dans le script.
+3. Pour un lien interne, `<NuxtLinkLocale>` plutôt que `<NuxtLink>`. `UiButton`
+   s'en charge seul pour sa prop `to`.
+
+### Vérifier
+
+```bash
+npm run build
+grep -o '<link[^>]*alternate[^>]*>' .output/public/index.html   # hreflang + x-default
+ls .output/public/__sitemap__/                                   # fr-TG.xml et en.xml
+```
+
+---
+
 ---
 
 ## Déploiement

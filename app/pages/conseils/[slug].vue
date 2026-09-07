@@ -77,6 +77,15 @@ function dateLisible(valeur: string) {
     day: 'numeric',
   })
 }
+
+/**
+ * Rubrique française uniquement.
+ *
+ * Les articles visent des requêtes locales — « combien de chaises pour 300
+ * invités », « prix location vaisselle mariage Lomé ». Les traduire relèverait
+ * d'une décision éditoriale à part, pas d'un miroir mécanique.
+ */
+defineI18nRoute({ locales: ['fr'] })
 </script>
 
 <template>
