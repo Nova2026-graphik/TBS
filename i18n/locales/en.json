@@ -115,6 +115,16 @@
       "close": "Close the viewer",
       "previous": "Previous image",
       "next": "Next image"
+    },
+    "sectors": {
+      "eyebrow": "Sectors & fields",
+      "title": "Four sectors,",
+      "accent": "eight fields",
+      "lead": "Receptions are only part of the work. Hover over a sector — or move through them with the keyboard — to see the fields it covers.",
+      "branch": "Division {index}",
+      "domains": "Fields covered",
+      "cta": "See the services",
+      "ctaLabel": "{sector} — see the services"
     }
   },
   "about": {
