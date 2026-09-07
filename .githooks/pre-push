@@ -1,0 +1,24 @@
+#!/bin/sh
+# Vérification avant envoi.
+#
+# GitHub Actions ne démarre aucune exécution sur ce dépôt — cf. l'issue #17 :
+# les exécutions échouent au démarrage, cause au niveau du compte. Tant que ce
+# n'est pas débloqué, ce crochet est le seul garde-fou automatique : il rejoue
+# localement les étapes du travail `qualite` avant que le code ne parte.
+#
+# Installation :  npm run hooks:install
+# Contournement : git push --no-verify   (à réserver aux cas où l'on sait ce
+#                 qu'on fait : une branche de brouillon, un correctif urgent)
+#
+# La suppression du crochet se fait par `git config --unset core.hooksPath`.
+
+if [ "$SKIP_PRE_PUSH" = "1" ]; then
+  echo "pre-push : ignoré (SKIP_PRE_PUSH=1)"
+  exit 0
+fi
+
+echo "pre-push : vérification locale — lint, types, tests, build, audit"
+echo "           (git push --no-verify pour passer outre)"
+echo
+
+npm run ci
