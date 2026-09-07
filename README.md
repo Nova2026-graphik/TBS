@@ -325,7 +325,7 @@ app/
     Ui/                    Button, SectionHead, Tag, StatRow, PageHero
     Home/                  Hero, Branches, Categories, Domains, Inspirations, Testimonials
     Services/              Block, Offers
-    Gallery/               Lightbox
+    Gallery/               Lightbox, Sectors
     Faq/                   Accordion
     Contact/               Form
     Legal/                 Gabarit commun aux trois pages légales
@@ -489,6 +489,10 @@ performance.
   Appeler / WhatsApp / Devis en mobile — les deux canaux qui convertissent le
   mieux au Togo.
 - **Visionneuse de galerie** : les vignettes n'étaient pas cliquables.
+- **Accordéon des secteurs**, au bas de la galerie : les quatre branches et
+  les huit domaines, dépliés au survol comme au clavier. La maquette montrait
+  des photos sans jamais dire de quel métier elles relevaient ; chaque panneau
+  mène désormais aux prestations de son secteur.
 - **Carrousel de témoignages** reconstruit sur `scroll-snap` natif : glissement
   au doigt, molette horizontale, et plus d'arithmétique de pourcentages à
   maintenir si le nombre de témoignages change.
