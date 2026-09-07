@@ -4,10 +4,14 @@ import type { Branch } from '#shared/types'
 /**
  * Hero d'accueil : les quatre branches défilent, quinze secondes chacune.
  *
- * Ce qui tourne : la photo de fond, le sur-titre, la description, la couleur
- * d'accent et la destination du premier appel à l'action. Ce qui ne tourne
- * pas : le `<h1>`. C'est l'ancrage de référencement de la page, et le plan du
- * document n'a pas à changer toutes les quinze secondes.
+ * Ce qui tourne : la photo de fond, le sur-titre, **le titre**, la
+ * description, la couleur d'accent et la destination du premier appel à
+ * l'action. Chaque branche annonce ce qu'elle fait, plutôt qu'une promesse
+ * générale posée sur quatre images différentes.
+ *
+ * Le `<h1>` reste unique dans le plan du document — c'est son contenu qui
+ * change, pas son rang. Les moteurs indexent la première branche, celle du
+ * rendu serveur ; le titre de page et la description, eux, restent généraux.
  *
  * Trois contraintes ont dicté la mise en œuvre :
  *
@@ -32,6 +36,18 @@ const DUREE_MS = 15_000
 /** Cadence du minuteur : 150 pas par branche, assez fin pour une barre fluide. */
 const PAS_MS = 100
 
+const { t, te } = useI18n()
+
+/**
+ * Titre de la branche affichée, avec repli sur la formule générale : une
+ * branche ajoutée sans sa traduction reste lisible plutôt que d'afficher une
+ * clé i18n en gros caractères.
+ */
+function titre(slug: string | undefined, ligne: 1 | 2): string {
+  const cle = `hero.branchTitles.${slug}.line${ligne}`
+  return slug && te(cle) ? t(cle) : t(`hero.titleLine${ligne}`)
+}
+
 const sizesFull = SIZES_FULL
 const densitiesFull = DENSITIES_FULL
 
@@ -55,6 +71,25 @@ const gabarit = computed(() =>
     '',
   ),
 )
+
+/** La plus longue des variantes — celle qui décide de la hauteur réservée. */
+function plusLong(valeurs: string[]): string {
+  return valeurs.reduce((plus, v) => (v.length > plus.length ? v : plus), '')
+}
+
+/**
+ * Même précaution que pour la description, appliquée au plus gros texte de la
+ * page : les quatre titres n'ont pas la même longueur, et sans hauteur
+ * réservée le bloc entier remonterait à chaque branche sur les fenêtres
+ * étroites, où la première ligne se replie.
+ */
+const gabaritTitre = computed(() => {
+  const slugs = branches.value.map(b => b.slug)
+  return {
+    line1: plusLong([...slugs.map(s => titre(s, 1)), t('hero.titleLine1')]),
+    line2: plusLong([...slugs.map(s => titre(s, 2)), t('hero.titleLine2')]),
+  }
+})
 
 /** Écoulé sur la branche courante, en millisecondes. */
 const ecoule = ref(0)
@@ -187,11 +222,25 @@ function estRendue(index: number) {
         </Transition>
       </div>
 
-      <!-- Fixe : ancrage SEO et plan du document. -->
-      <h1 class="max-w-[17em] text-display text-white">
-        {{ $t('hero.titleLine1') }}<br>
-        <span class="italic text-cream">{{ $t('hero.titleLine2') }}</span>
-      </h1>
+      <!--
+        Le gabarit invisible est un `<p>`, pas un second `<h1>` : la page doit
+        garder exactement un titre de premier rang.
+      -->
+      <div class="grid max-w-[17em]" aria-live="off">
+        <p class="invisible col-start-1 row-start-1 text-display" aria-hidden="true">
+          {{ gabaritTitre.line1 }}<br>
+          <span class="italic">{{ gabaritTitre.line2 }}</span>
+        </p>
+        <Transition name="hero-texte" mode="out-in">
+          <h1
+            :key="courante?.slug ?? 'defaut'"
+            class="col-start-1 row-start-1 text-display text-white"
+          >
+            {{ titre(courante?.slug, 1) }}<br>
+            <span class="italic text-cream">{{ titre(courante?.slug, 2) }}</span>
+          </h1>
+        </Transition>
+      </div>
 
       <!-- La grille superpose gabarit et texte : la hauteur ne bouge plus. -->
       <div class="grid max-w-[48ch]" aria-live="off">
