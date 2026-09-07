@@ -97,7 +97,7 @@ const diapositives = computed<Diapositive[]>(() => [
       key: branche.slug,
       name: branche.name,
       tagline: branche.tagline,
-      description: branche.description,
+      description: accroche(branche.slug, branche.description),
       color: branche.color,
       image: branche.image,
       imageAlt: branche.imageAlt,
@@ -107,6 +107,19 @@ const diapositives = computed<Diapositive[]>(() => [
 
 const actif = ref(0)
 const courante = computed(() => diapositives.value[actif.value])
+
+/**
+ * Accroche de la diapositive, avec repli sur la description de la branche.
+ *
+ * Les descriptions de `content.ts` sont écrites pour les cartes de la section
+ * « quatre branches », où l'on prend le temps de lire : jusqu'à 202
+ * caractères, soit quatre lignes dans le hero. Une diapositive dure cinq
+ * secondes ; il lui faut une phrase, pas un paragraphe.
+ */
+function accroche(cle: string, repli: string): string {
+  const chemin = `hero.branchLeads.${cle}`
+  return te(chemin) ? t(chemin) : repli
+}
 
 /**
  * Titre de la diapositive affichée, avec repli sur la formule générale.
@@ -276,11 +289,17 @@ function estRendue(index: number) {
         Ce sont des `<p>`, pas des `<h1>` : la page doit garder exactement un
         titre de premier rang.
       -->
-      <div class="grid max-w-[17em]" aria-live="off">
+      <!--
+        `max-w-[17em]` appartient aux éléments en `text-display`, pas à la
+        grille : `em` se rapporte à la taille de police de l'élément qui le
+        porte. Sur la grille, en corps de texte, la mesure valait 272 px au
+        lieu de 1458 — le titre se repliait sur cinq lignes et débordait.
+      -->
+      <div class="grid" aria-live="off">
         <p
           v-for="diapo in diapositives"
           :key="`gabarit-${diapo.key}`"
-          class="invisible col-start-1 row-start-1 text-display"
+          class="invisible col-start-1 row-start-1 max-w-[17em] text-display"
           aria-hidden="true"
         >
           {{ titre(diapo.key, 1) }}<br>
@@ -289,7 +308,7 @@ function estRendue(index: number) {
         <Transition name="hero-texte" mode="out-in">
           <h1
             :key="courante?.key ?? 'defaut'"
-            class="col-start-1 row-start-1 text-display text-white"
+            class="col-start-1 row-start-1 max-w-[17em] text-display text-white"
           >
             {{ titre(courante?.key, 1) }}<br>
             <span class="italic text-cream">{{ titre(courante?.key, 2) }}</span>
