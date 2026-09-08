@@ -13,7 +13,7 @@ const { offers } = useSiteData()
   <section class="u-gutter u-section bg-sand">
     <UiSectionHead
       :eyebrow="$t('services.offers.eyebrow')"
-      dot="#E8A07C"
+      dot="var(--color-peach)"
       :title="$t('services.offers.title')"
       :accent="$t('services.offers.accent')"
       align="start"

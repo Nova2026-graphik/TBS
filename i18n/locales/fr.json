@@ -47,6 +47,12 @@
     "language": "Langue",
     "switchTo": "Version anglaise"
   },
+  "theme": {
+    "label": "Charte",
+    "select": "Charte {name}",
+    "principal": "Sable & Or",
+    "logo": "Bleu & Rouge"
+  },
   "hero": {
     "eyebrow": "Lomé — Togo",
     "titleLine1": "Équiper vos réceptions,",

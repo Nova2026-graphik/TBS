@@ -29,7 +29,7 @@ usePageSeo({
 
     <SharedProcessSteps
       :eyebrow="eventsProcess.eyebrow"
-      dot="#E8A07C"
+      dot="var(--color-peach)"
       :title="eventsProcess.title"
       :accent="eventsProcess.titleAccent"
       :steps="eventsProcess.steps"
