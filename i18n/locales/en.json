@@ -95,12 +95,14 @@
     "branches": {
       "eyebrow": "One company, four divisions",
       "title": "Four trades,",
-      "accent": "one point of contact"
+      "accent": "one point of contact",
+      "lead": "TBS Distribution S.A.R.L is organised into four complementary divisions. Each has its own teams and suppliers; all share the same logistics and the same standard on deadlines."
     },
     "categories": {
       "eyebrow": "TBS Events — our categories",
       "title": "Six ranges,",
-      "accent": "a single delivery"
+      "accent": "a single delivery",
+      "refCount": "{count} items"
     },
     "domains": {
       "eyebrow": "Where we operate",
@@ -116,7 +118,8 @@
     "testimonials": {
       "previous": "Previous testimonial",
       "next": "Next testimonial",
-      "goTo": "Testimonial {n}"
+      "goTo": "Testimonial {n}",
+      "eyebrow": "They trusted us with their date"
     }
   },
   "services": {
@@ -199,7 +202,10 @@
         "Discretion",
         "A team that is present, never in the picture"
       ]
-    ]
+    ],
+    "valuesEyebrow": "Our values",
+    "valuesTitle": "Three commitments",
+    "valuesAccent": "we do not bend"
   },
   "contact": {
     "eyebrow": "Contact",
@@ -232,7 +238,8 @@
       "mentions": "Legal notice",
       "rental": "Rental terms",
       "privacy": "Privacy"
-    }
+    },
+    "copyright": "© {year} TBS Distribution S.A.R.L — All rights reserved."
   },
   "dock": {
     "whatsapp": "Message us on WhatsApp",

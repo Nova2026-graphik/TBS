@@ -179,10 +179,13 @@ useBreadcrumbSchema([{ name: 'À propos', path: '/a-propos' }])
       <div v-reveal="110">
         <span class="u-eyebrow">
           <span class="u-rule" />
-          Nos valeurs
+          {{ $t('about.valuesEyebrow') }}
         </span>
+        <!-- Titre en deux clés plutôt qu'une : l'italique porte sur la fin de
+             la phrase, et une concaténation casserait à la première langue
+             dont l'ordre des mots diffère. -->
         <h2 class="mt-4 max-w-[16ch] text-h2">
-          Trois engagements <span class="italic">non négociables</span>
+          {{ $t('about.valuesTitle') }} <span class="italic">{{ $t('about.valuesAccent') }}</span>
         </h2>
 
         <ul class="mt-10 divide-y divide-ink/10 border-y border-ink/10">
