@@ -31,8 +31,18 @@ export function parseCoordinates(
   latitude: unknown,
   longitude: unknown,
 ): BusinessCoordinates | null {
-  const lat = Number(String(latitude ?? '').trim())
-  const lng = Number(String(longitude ?? '').trim())
+  const brut = (valeur: unknown) => String(valeur ?? '').trim()
+  const latBrute = brut(latitude)
+  const lngBrute = brut(longitude)
+
+  // Une valeur vide est écartée **avant** toute conversion : `Number('')`
+  // vaut 0, un zéro parfaitement fini. Une seule variable renseignée donnait
+  // donc une longitude de 0 — qui tombe dans les bornes ci-dessous, et plaçait
+  // l'entrepôt en mer, au large du Ghana. Publié comme un fait.
+  if (!latBrute || !lngBrute) return null
+
+  const lat = Number(latBrute)
+  const lng = Number(lngBrute)
 
   if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null
   if (lat === 0 && lng === 0) return null
