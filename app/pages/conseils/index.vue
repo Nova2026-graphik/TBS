@@ -45,6 +45,16 @@ function dateLisible(valeur: string) {
  * d'une décision éditoriale à part, pas d'un miroir mécanique.
  */
 defineI18nRoute({ locales: ['fr'] })
+
+/**
+ * Planche-contact de l'en-tête : le savoir-faire dont les articles tirent
+ * leurs repères — dressage, nappage, art de la table.
+ */
+const HERO_MEDIA = [
+  { src: '/images/events-dressage-or.jpg', subject: 'Dressage de table' },
+  { src: '/images/categorie-nappage.jpg', subject: 'Nappage' },
+  { src: '/images/categorie-art-de-la-table.jpg', subject: 'Art de la table' },
+]
 </script>
 
 <template>
@@ -54,6 +64,7 @@ defineI18nRoute({ locales: ['fr'] })
       title="Ce que nous savons,"
       accent="mis à votre disposition"
       lead="Des repères chiffrés, tirés de dix ans de montages de salle et de livraisons : quantités, délais, pièces à réunir. De quoi préparer votre projet avant même de nous appeler."
+      :media="HERO_MEDIA"
     />
 
     <!-- Article à la une : c'est le calculateur, le contenu qui rend service
