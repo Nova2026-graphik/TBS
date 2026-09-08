@@ -41,6 +41,23 @@ usePageSeo({
 })
 
 useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
+
+/**
+ * Planche-contact de l'en-tête : qui répond, depuis où, et avec quoi. La page
+ * demande une confiance — un devis, un numéro de téléphone —, ces trois cadres
+ * montrent l'entreprise qui est derrière.
+ *
+ * Les sujets sont ceux commandés par `docs/reportage-photo.md` : l'équipe en
+ * plein montage, une allée de stockage, la flotte de livraison. Les fichiers
+ * de banque qui occupent ces noms en attendant le reportage montrent tout
+ * autre chose — c'est le nom qui fait foi, le remplacement se fera fichier
+ * par fichier sans toucher au code.
+ */
+const HERO_MEDIA = [
+  { src: '/images/apropos-equipe.jpg', subject: 'L\'équipe' },
+  { src: '/images/apropos-entrepot.jpg', subject: 'L\'entrepôt d\'Agôè' },
+  { src: '/images/equipements-materiel-roulant.jpg', subject: 'Matériel roulant — la livraison' },
+]
 </script>
 
 <template>
@@ -50,6 +67,7 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
       :title="$t('contact.title')"
       :accent="$t('contact.accent')"
       :lead="$t('contact.lead')"
+      :media="HERO_MEDIA"
     />
 
     <section class="u-gutter u-section grid gap-[clamp(2.5rem,5vw,5rem)] bg-white lg:grid-cols-[1.35fr_1fr]">

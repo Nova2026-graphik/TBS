@@ -98,6 +98,17 @@ usePageSeo({
 useBreadcrumbSchema([{ name: 'Galerie', path: '/galerie' }])
 
 const sizesThird = SIZES_THIRD
+
+/**
+ * Planche-contact de l'en-tête : une réalisation par famille, dans l'ordre des
+ * filtres posés juste en dessous. Le visiteur voit ce qu'il va pouvoir trier.
+ */
+const HERO_MEDIA = [
+  { src: '/images/galerie-mariage-adjovi.jpg', subject: 'Mariage — salle dressée' },
+  { src: '/images/galerie-ceremonie-officielle.jpg', subject: 'Cérémonie officielle' },
+  { src: '/images/galerie-diner-gala.jpg', subject: 'Dîner de gala — entreprise' },
+  { src: '/images/galerie-verrerie.jpg', subject: 'Verrerie — décor & détails' },
+]
 </script>
 
 <template>
@@ -107,6 +118,7 @@ const sizesThird = SIZES_THIRD
       :title="$t('gallery.title')"
       :accent="$t('gallery.accent')"
       :lead="$t('gallery.lead')"
+      :media="HERO_MEDIA"
     >
       <div class="mt-[clamp(1.75rem,4vw,3rem)] flex flex-wrap gap-2.5">
         <button

@@ -45,6 +45,13 @@ export const SIZES_THIRD = buildSizes('100vw', { sm: '50vw', lg: '33vw' })
 /** Une colonne en mobile, trois à partir de `md`. */
 export const SIZES_THIRD_MD = buildSizes('100vw', { md: '33vw' })
 
+/**
+ * Planche-contact des en-têtes de page (`UiPageHero`). La bande occupe toute
+ * la largeur en mobile et un tiers environ en bureau ; divisée par trois ou
+ * quatre cadres, chaque vignette ne dépasse jamais 200 px de large.
+ */
+export const SIZES_HERO_STRIP = buildSizes('33vw', { lg: '12vw' })
+
 /** Visionneuse : pleine largeur en mobile, 80 % au-delà de `lg`. */
 export const SIZES_LIGHTBOX = buildSizes('100vw', { lg: '80vw' })
 
