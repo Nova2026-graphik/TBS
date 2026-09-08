@@ -102,10 +102,7 @@ defineI18nRoute({ locales: ['fr'] })
         height="933"
         class="absolute inset-0 size-full object-cover"
       />
-      <div
-        class="absolute inset-0"
-        style="background: linear-gradient(180deg, rgb(62 53 36 / 0.5) 0%, rgb(62 53 36 / 0.4) 45%, rgb(62 53 36 / 0.92) 100%)"
-      />
+      <div class="u-scrim-article absolute inset-0" />
 
       <div class="u-gutter absolute inset-0 flex flex-col justify-end gap-5 pb-[clamp(2rem,5vw,4rem)]">
         <nav class="flex items-center gap-2.5 text-[0.6875rem] uppercase tracking-[0.16em] text-white/60" aria-label="Fil d'Ariane">

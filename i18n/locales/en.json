@@ -47,6 +47,12 @@
     "language": "Language",
     "switchTo": "Version française"
   },
+  "theme": {
+    "label": "Palette",
+    "select": "{name} palette",
+    "principal": "Sand & Gold",
+    "logo": "Blue & Red"
+  },
   "hero": {
     "eyebrow": "Lomé — Togo",
     "titleLine1": "Equipping your events,",

@@ -60,10 +60,7 @@ useBreadcrumbSchema([{ name: 'À propos', path: '/a-propos' }])
         height="1280"
         class="absolute inset-0 size-full object-cover"
       />
-      <div
-        class="absolute inset-0"
-        style="background: linear-gradient(180deg, rgb(62 53 36 / 0.5) 0%, rgb(62 53 36 / 0.35) 45%, rgb(62 53 36 / 0.9) 100%)"
-      />
+      <div class="u-scrim-page absolute inset-0" />
 
       <div class="u-gutter absolute inset-0 flex flex-col justify-end gap-6 pb-[clamp(2rem,5vw,4rem)]">
         <span class="u-eyebrow text-cream/75">
@@ -79,7 +76,12 @@ useBreadcrumbSchema([{ name: 'À propos', path: '/a-propos' }])
             :key="branch.slug"
             class="flex items-center gap-2.5 text-[0.6875rem] uppercase tracking-[0.16em] text-white/70"
           >
-            <span class="size-1.5 rounded-full" :style="{ background: branch.color === '#3E3524' ? '#FFEED6' : branch.color }" />
+            <!-- Études & Conseils est couleur d'encre : sur ce fond d'encre,
+                 la pastille prend la crème pour rester visible. -->
+            <span
+              class="size-1.5 rounded-full"
+              :style="{ background: branch.color.toLowerCase() === '#3e3524' ? 'var(--color-cream)' : brandColor(branch.color) }"
+            />
             {{ branch.name }}
           </li>
         </ul>
@@ -132,7 +134,7 @@ useBreadcrumbSchema([{ name: 'À propos', path: '/a-propos' }])
           class="flex flex-col bg-white p-[clamp(1.5rem,3vw,2.5rem)]"
         >
           <span class="u-eyebrow">
-            <span class="size-[7px] rounded-full" :style="{ background: branch.color }" />
+            <span class="size-[7px] rounded-full" :style="{ background: brandColor(branch.color) }" />
             Branche {{ String(branch.index).padStart(2, '0') }}
           </span>
 
