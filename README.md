@@ -657,11 +657,22 @@ lignes sont à ajouter dans `nuxt.config.ts`.
 > nommé, et son YAML est valide. Trois workflows sans rapport échouant de la
 > même façon, la cause est au niveau du compte, pas du fichier.
 >
-> Sur un dépôt **privé** d'un compte personnel, c'est presque toujours le
-> quota : les 2 000 minutes mensuelles incluses sont épuisées, ou aucune limite
-> de dépense n'est configurée. À vérifier dans
-> **Settings → Billing → Plans and usage**. Rendre le dépôt public lèverait
-> aussi la contrainte — les dépôts publics ont des minutes illimitées — mais
+> **GitHub le dit désormais explicitement.** L'exécution ne produit toujours
+> aucun journal, mais elle porte une annotation, que l'API rend lisible :
+>
+> ```bash
+> run=$(gh api "repos/Nova2026-graphik/TBS/actions/runs?per_page=1" --jq '.workflow_runs[0].id')
+> job=$(gh api "repos/Nova2026-graphik/TBS/actions/runs/$run/jobs" --jq '.jobs[0].id')
+> gh api "repos/Nova2026-graphik/TBS/check-runs/$job/annotations" --jq '.[0].message'
+> ```
+>
+> > The job was not started because your account is locked due to a billing issue.
+>
+> Ce n'est donc plus une hypothèse : le compte est bloqué pour un motif de
+> facturation, et aucune modification du dépôt n'y changera quoi que ce soit.
+> Le déblocage se fait dans **Settings → Billing** — moyen de paiement à
+> régulariser, puis limite de dépense à fixer. Rendre le dépôt public lèverait
+> aussi la contrainte, les dépôts publics ayant des minutes illimitées, mais
 > c'est une décision d'une autre nature pour le site d'un client.
 >
 > **En attendant, `npm run ci` rejoue localement le travail `qualite`** :
