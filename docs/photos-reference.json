@@ -1,0 +1,206 @@
+{
+  "agro-transformation.jpg": {
+    "width": 1400,
+    "height": 1049,
+    "ratio": 1.3346,
+    "orientation": "paysage"
+  },
+  "ambiance-blanc-or.jpg": {
+    "width": 1400,
+    "height": 933,
+    "ratio": 1.5005,
+    "orientation": "paysage"
+  },
+  "ambiance-cocktail.jpg": {
+    "width": 1400,
+    "height": 757,
+    "ratio": 1.8494,
+    "orientation": "paysage"
+  },
+  "ambiance-nuit-electrique.jpg": {
+    "width": 1400,
+    "height": 933,
+    "ratio": 1.5005,
+    "orientation": "paysage"
+  },
+  "apropos-entrepot.jpg": {
+    "width": 1400,
+    "height": 933,
+    "ratio": 1.5005,
+    "orientation": "paysage"
+  },
+  "apropos-equipe.jpg": {
+    "width": 1400,
+    "height": 2100,
+    "ratio": 0.6667,
+    "orientation": "portrait"
+  },
+  "branche-agro.jpg": {
+    "width": 1400,
+    "height": 933,
+    "ratio": 1.5005,
+    "orientation": "paysage"
+  },
+  "branche-equipements.jpg": {
+    "width": 1400,
+    "height": 933,
+    "ratio": 1.5005,
+    "orientation": "paysage"
+  },
+  "branche-etudes.jpg": {
+    "width": 1400,
+    "height": 2099,
+    "ratio": 0.667,
+    "orientation": "portrait"
+  },
+  "branche-events.jpg": {
+    "width": 1400,
+    "height": 933,
+    "ratio": 1.5005,
+    "orientation": "paysage"
+  },
+  "categorie-art-de-la-table.jpg": {
+    "width": 1400,
+    "height": 2100,
+    "ratio": 0.6667,
+    "orientation": "portrait"
+  },
+  "categorie-decoration.jpg": {
+    "width": 1400,
+    "height": 935,
+    "ratio": 1.4973,
+    "orientation": "paysage"
+  },
+  "categorie-mobilier.jpg": {
+    "width": 1400,
+    "height": 933,
+    "ratio": 1.5005,
+    "orientation": "paysage"
+  },
+  "categorie-nappage.jpg": {
+    "width": 1400,
+    "height": 1089,
+    "ratio": 1.2856,
+    "orientation": "paysage"
+  },
+  "categorie-son-lumiere.jpg": {
+    "width": 1400,
+    "height": 2489,
+    "ratio": 0.5625,
+    "orientation": "portrait"
+  },
+  "categorie-tentes.jpg": {
+    "width": 1400,
+    "height": 2100,
+    "ratio": 0.6667,
+    "orientation": "portrait"
+  },
+  "equipements-informatique.jpg": {
+    "width": 1400,
+    "height": 1120,
+    "ratio": 1.25,
+    "orientation": "paysage"
+  },
+  "equipements-laboratoire.jpg": {
+    "width": 1400,
+    "height": 933,
+    "ratio": 1.5005,
+    "orientation": "paysage"
+  },
+  "equipements-materiel-roulant.jpg": {
+    "width": 1400,
+    "height": 934,
+    "ratio": 1.4989,
+    "orientation": "paysage"
+  },
+  "etudes-formation.jpg": {
+    "width": 1400,
+    "height": 934,
+    "ratio": 1.4989,
+    "orientation": "paysage"
+  },
+  "events-dressage-or.jpg": {
+    "width": 1400,
+    "height": 2100,
+    "ratio": 0.6667,
+    "orientation": "portrait"
+  },
+  "events-mobilier.jpg": {
+    "width": 1400,
+    "height": 933,
+    "ratio": 1.5005,
+    "orientation": "paysage"
+  },
+  "events-scenographie.jpg": {
+    "width": 1400,
+    "height": 1867,
+    "ratio": 0.7499,
+    "orientation": "portrait"
+  },
+  "galerie-bapteme.jpg": {
+    "width": 1400,
+    "height": 933,
+    "ratio": 1.5005,
+    "orientation": "paysage"
+  },
+  "galerie-centre-de-table.jpg": {
+    "width": 1400,
+    "height": 910,
+    "ratio": 1.5385,
+    "orientation": "paysage"
+  },
+  "galerie-ceremonie-officielle.jpg": {
+    "width": 1400,
+    "height": 933,
+    "ratio": 1.5005,
+    "orientation": "paysage"
+  },
+  "galerie-diner-gala.jpg": {
+    "width": 1400,
+    "height": 933,
+    "ratio": 1.5005,
+    "orientation": "paysage"
+  },
+  "galerie-mariage-adjovi.jpg": {
+    "width": 1400,
+    "height": 933,
+    "ratio": 1.5005,
+    "orientation": "paysage"
+  },
+  "galerie-seminaire.jpg": {
+    "width": 1400,
+    "height": 930,
+    "ratio": 1.5054,
+    "orientation": "paysage"
+  },
+  "galerie-soiree-blanche.jpg": {
+    "width": 1400,
+    "height": 1050,
+    "ratio": 1.3333,
+    "orientation": "paysage"
+  },
+  "galerie-verrerie.jpg": {
+    "width": 1400,
+    "height": 933,
+    "ratio": 1.5005,
+    "orientation": "paysage"
+  },
+  "galerie-vin-honneur.jpg": {
+    "width": 1400,
+    "height": 933,
+    "ratio": 1.5005,
+    "orientation": "paysage"
+  },
+  "hero-reception.jpg": {
+    "width": 1400,
+    "height": 2098,
+    "ratio": 0.6673,
+    "orientation": "portrait"
+  },
+  "logo-tbs.png": {
+    "width": 400,
+    "height": 200,
+    "ratio": 2,
+    "orientation": "paysage"
+  }
+}
