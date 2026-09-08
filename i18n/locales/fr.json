@@ -154,12 +154,20 @@
       "eyebrow": "Secteurs & domaines",
       "title": "Quatre secteurs,",
       "accent": "huit domaines",
-      "lead": "Les réceptions ne sont qu'une part du travail. Survolez un secteur — ou parcourez-les au clavier — pour voir les domaines qu'il couvre.",
+      "lead": "Les réceptions ne sont qu'une part du travail : voici les quatre secteurs et les domaines que chacun couvre.",
       "branch": "Branche {index}",
       "domains": "Domaines couverts",
       "cta": "Voir les prestations",
       "ctaLabel": "{sector} — voir les prestations"
-    }
+    },
+    "sectorFilter": "Réalisations de {sector}",
+    "sectorFilterDomain": "Réalisations de {sector} — {domain}",
+    "clearFilter": "Voir toute la galerie",
+    "emptyTitle": "Aucune réalisation publiée pour ce domaine",
+    "emptyBody": "Nos photographies ne couvrent pas encore tout ce que nous faisons. Décrivez-nous votre projet : nous vous montrerons des références comparables.",
+    "emptyCta": "Décrire mon projet",
+    "sectorLink": "Voir les réalisations — {domain}",
+    "emptyCategory": "Aucune réalisation dans cette catégorie pour le moment"
   },
   "about": {
     "eyebrow": "Organisation",

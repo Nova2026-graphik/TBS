@@ -154,12 +154,20 @@
       "eyebrow": "Sectors & fields",
       "title": "Four sectors,",
       "accent": "eight fields",
-      "lead": "Receptions are only part of the work. Hover over a sector — or move through them with the keyboard — to see the fields it covers.",
+      "lead": "Receptions are only part of the work: here are the four sectors and the fields each one covers.",
       "branch": "Division {index}",
       "domains": "Fields covered",
       "cta": "See the services",
       "ctaLabel": "{sector} — see the services"
-    }
+    },
+    "sectorFilter": "Projects from {sector}",
+    "sectorFilterDomain": "Projects from {sector} — {domain}",
+    "clearFilter": "View the whole gallery",
+    "emptyTitle": "No project published for this field yet",
+    "emptyBody": "Our photographs do not yet cover everything we do. Tell us about your project and we will show you comparable references.",
+    "emptyCta": "Describe my project",
+    "sectorLink": "View projects — {domain}",
+    "emptyCategory": "No project in this category yet"
   },
   "about": {
     "eyebrow": "Organisation",
