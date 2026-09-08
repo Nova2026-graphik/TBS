@@ -11,7 +11,7 @@ const sizesThird = SIZES_THIRD
   <section class="u-gutter u-section bg-sand">
     <UiSectionHead
       :eyebrow="$t('home.categories.eyebrow')"
-      dot="#E8A07C"
+      dot="var(--color-peach)"
       :title="$t('home.categories.title')"
       :accent="$t('home.categories.accent')"
     >

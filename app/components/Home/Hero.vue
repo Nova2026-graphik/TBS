@@ -98,7 +98,7 @@ const diapositives = computed<Diapositive[]>(() => [
       name: branche.name,
       tagline: branche.tagline,
       description: accroche(branche.slug, branche.description),
-      color: branche.color,
+      color: brandColor(branche.color),
       image: branche.image,
       imageAlt: branche.imageAlt,
       to: `/services?branche=${branche.slug}`,
@@ -256,10 +256,7 @@ function estRendue(index: number) {
     </div>
 
     <!-- Dégradé : contraste garanti sur le texte, quel que soit le cliché. -->
-    <div
-      class="pointer-events-none absolute inset-0"
-      style="background: linear-gradient(180deg, rgb(62 53 36 / 0.55) 0%, rgb(62 53 36 / 0.24) 40%, rgb(62 53 36 / 0.88) 100%)"
-    />
+    <div class="u-scrim-portrait pointer-events-none absolute inset-0" />
 
     <div class="u-gutter pointer-events-none absolute inset-0 flex flex-col justify-end gap-[clamp(1.125rem,2.6vw,2.125rem)] pb-[clamp(2.125rem,5vw,4.5rem)] pt-[clamp(2.25rem,6vw,5.75rem)]">
       <!--

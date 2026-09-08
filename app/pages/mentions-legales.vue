@@ -51,7 +51,7 @@ defineI18nRoute({ locales: ['fr'] })
            informations sont renseignées dans `shared/utils/legalData.ts`. -->
       <aside
         v-if="pending > 0"
-        class="mt-8 max-w-[72ch] border border-dashed border-[#c4633f] bg-[#fbeae5] p-5 text-[0.9375rem] leading-[1.7] text-[#8a2b12]"
+        class="mt-8 max-w-[72ch] border border-dashed border-warn-border bg-warn-surface p-5 text-[0.9375rem] leading-[1.7] text-warn-text"
       >
         <strong class="font-medium">
           {{ pending }} information{{ pending > 1 ? 's' : '' }} manque{{ pending > 1 ? 'nt' : '' }} encore.

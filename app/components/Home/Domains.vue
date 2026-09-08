@@ -35,7 +35,7 @@ const nameOf = (slug: string) =>
       >
         <span
           class="mt-2 size-2 shrink-0 rounded-full transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:scale-150"
-          :style="{ background: colorOf(domain.branch) }"
+          :style="{ background: brandColor(colorOf(domain.branch)) }"
         />
         <div>
           <p class="text-[0.6875rem] uppercase tracking-[0.2em] text-ink-mute">

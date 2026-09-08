@@ -9,10 +9,10 @@ const year = new Date().getFullYear()
  * langues.
  */
 const branchLinks = computed(() => [
-  { key: 'equipements', color: '#827148' },
-  { key: 'events', color: '#E8A07C' },
-  { key: 'etudes', color: '#FFEED6' },
-  { key: 'agro', color: '#A5AF79' },
+  { key: 'equipements', color: 'var(--color-gold)' },
+  { key: 'events', color: 'var(--color-peach)' },
+  { key: 'etudes', color: 'var(--color-cream)' },
+  { key: 'agro', color: 'var(--color-olive)' },
 ].map(branche => ({
   ...branche,
   label: `TBS ${t(`topbar.branches.${branche.key}`)}`,

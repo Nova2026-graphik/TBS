@@ -58,7 +58,7 @@ onClickOutside(drawerRef, () => {
 <template>
   <header
     class="sticky top-0 z-120 border-b border-ink/8 bg-white/90 backdrop-blur-lg transition-shadow duration-500"
-    :class="scrolled ? 'shadow-[0_10px_30px_-24px_rgb(62_53_36/0.55)]' : ''"
+    :class="scrolled ? 'shadow-header' : ''"
   >
     <div class="u-gutter flex items-center justify-between gap-6 py-[clamp(0.75rem,1.9vw,1.375rem)]">
       <NuxtLinkLocale to="/" class="shrink-0" :aria-label="$t('nav.homeLabel')">
@@ -143,7 +143,16 @@ onClickOutside(drawerRef, () => {
           {{ $t('common.quote') }}
         </UiButton>
 
-        <div class="mt-6 flex flex-col gap-1.5 text-[0.6875rem] tracking-[0.12em] text-white/55">
+        <!-- Le bandeau supérieur, qui porte le sélecteur de charte sur
+             bureau, est masqué sous 768px : le tiroir le reprend. -->
+        <div class="mt-6 flex items-center justify-between gap-4">
+          <span class="text-[0.6875rem] uppercase tracking-[0.18em] text-white/55">
+            {{ $t('theme.label') }}
+          </span>
+          <UiThemeSwitch />
+        </div>
+
+        <div class="mt-5 flex flex-col gap-1.5 text-[0.6875rem] tracking-[0.12em] text-white/55">
           <a :href="`tel:${info.phonePrimary}`">{{ info.phoneDisplay }}</a>
           <a :href="`mailto:${info.email}`">{{ info.email }}</a>
         </div>

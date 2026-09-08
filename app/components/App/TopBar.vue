@@ -21,11 +21,18 @@ const autresLangues = computed(() =>
     })),
 )
 
+/**
+ * Pastilles des quatre branches. Les couleurs passent par les jetons de thème
+ * plutôt que par leur valeur hexadécimale : le bandeau suit ainsi le thème
+ * choisi. Études & Conseils prend la crème et non l'encre — la branche est
+ * couleur d'encre dans la charte, et une pastille encre sur un fond d'encre
+ * ne se verrait pas.
+ */
 const branchDots = computed(() => [
-  { key: 'equipements', color: '#827148' },
-  { key: 'events', color: '#E8A07C' },
-  { key: 'etudes', color: '#FFEED6' },
-  { key: 'agro', color: '#A5AF79' },
+  { key: 'equipements', color: 'var(--color-gold)' },
+  { key: 'events', color: 'var(--color-peach)' },
+  { key: 'etudes', color: 'var(--color-cream)' },
+  { key: 'agro', color: 'var(--color-olive)' },
 ].map(dot => ({ ...dot, label: t(`topbar.branches.${dot.key}`) })))
 </script>
 
@@ -47,6 +54,13 @@ const branchDots = computed(() => [
       </ul>
 
       <div class="flex flex-wrap items-center gap-x-6 gap-y-1 text-[0.6875rem] tracking-[0.12em]">
+        <!--
+          Sélecteur de charte. Il a sa place ici, aux côtés de la langue :
+          l'un et l'autre sont des préférences d'affichage, valables pour tout
+          le site et non pour la page en cours.
+        -->
+        <UiThemeSwitch />
+
         <!--
           Sélecteur de langue. Deux langues seulement : un lien vaut mieux
           qu'une liste déroulante — une cible, un clic, et l'état courant se
