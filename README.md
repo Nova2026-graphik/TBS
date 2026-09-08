@@ -643,32 +643,46 @@ lignes sont à ajouter dans `nuxt.config.ts`.
 
 ## Intégration continue
 
-> ### ⚠ GitHub Actions ne démarre aucune exécution sur ce dépôt
+> ### ⚠ Aucun travail ne s'exécute sur ce dépôt
 >
-> **Les 95 exécutions enregistrées ont toutes échoué au démarrage**, sans
-> produire un seul journal — la CI, Dependabot, et jusqu'à un workflow de cinq
-> lignes poussé pour le vérifier. Aucune n'a jamais abouti.
+> Les exécutions sont désormais **créées** — ce n'était pas le cas tant que le
+> dépôt était privé — mais aucune n'exécute quoi que ce soit : elles passent à
+> `failure` en une à deux secondes, **sans enregistrer une seule étape**. Pas
+> même « Set up job ».
 >
-> Le workflow n'est pas en cause : GitHub l'a enregistré, il est actif et
-> nommé, et son YAML est valide. Trois workflows sans rapport échouant de la
-> même façon, la cause est au niveau du compte, pas du fichier.
+> | Exécution | Durée | Étapes |
+> | --- | --- | --- |
+> | `34220621882` — CI sur `main` | 4 s | 0 |
+> | la même, rejouée à la main | 1 s | 0 |
+> | `34222898257` — un workflow ne contenant qu'un `echo` | 2 s | 0 |
 >
-> Sur un dépôt **privé** d'un compte personnel, c'est presque toujours le
-> quota : les 2 000 minutes mensuelles incluses sont épuisées, ou aucune limite
-> de dépense n'est configurée. À vérifier dans
-> **Settings → Billing → Plans and usage**. Rendre le dépôt public lèverait
-> aussi la contrainte — les dépôts publics ont des minutes illimitées — mais
-> c'est une décision d'une autre nature pour le site d'un client.
+> La dernière ligne tranche la question. Un workflow de six lignes, sans
+> dépendance, sans secret, sans cache, échoue exactement comme la CI complète :
+> **ni le fichier ni le dépôt ne sont en cause**. Passer le dépôt en public n'y
+> a rien changé non plus, ce qui écarte le quota de minutes des dépôts privés.
+>
+> Restent deux causes, toutes deux hors du dépôt et hors de portée de qui n'en
+> est pas administrateur :
+>
+> 1. **Actions désactivé par une politique** du compte ou de l'organisation —
+>    *Settings → Actions → General* ;
+> 2. **un blocage de facturation** — moyen de paiement expiré, limite de
+>    dépense à zéro — *Settings → Billing*.
+>
+> L'API le dirait (`gh api repos/Nova2026-graphik/TBS/actions/permissions`),
+> mais elle répond `403` à un compte qui n'a que le droit de pousser.
 >
 > **En attendant, `npm run ci` rejoue localement le travail `qualite`** :
 >
 > ```bash
-> npm run ci
+> npm run ci                # lint, types, tests, build, audit
+> npm run ci -- --parcours  # et les parcours Playwright par-dessus
 > ```
 >
-> Il enchaîne lint, types, tests, build et audit, s'arrête à la première
-> erreur et renvoie un code non nul — utilisable tel quel en crochet
-> `pre-push`. Comptez environ deux minutes, dont une et demie de build.
+> Il s'arrête à la première erreur et renvoie un code non nul — utilisable tel
+> quel en crochet `pre-push`. Comptez environ trois minutes, dont deux et demie
+> de build ; les parcours ajoutent autant, d'où leur mise à l'écart du chemin
+> par défaut.
 
 `.github/workflows/ci.yml` s'exécute à chaque poussée sur `main` et sur chaque
 pull request. Trois travaux, du plus rapide au plus lent :
@@ -681,9 +695,11 @@ pull request. Trois travaux, du plus rapide au plus lent :
 
 Une nouvelle poussée annule la vérification en cours sur la même branche.
 
-Les étapes `lint`, `test` et `test:e2e` passent par `npm run --if-present` :
-les scripts arrivent avec l'outillage de l'issue #16, et la CI ne doit pas
-échouer sur les branches ouvertes avant lui.
+Aucune étape ne passe plus par `npm run --if-present`. La garde avait un sens
+le temps que les branches ouvertes avant l'issue #16 rattrapent leur retard ;
+elle est devenue un trou. Une étape déclarée bloquante qu'un script renommé
+fait passer en silence ne bloque rien — c'est précisément ce que l'issue #17
+reproche à l'état antérieur.
 
 ### Budget de performance
 
@@ -727,6 +743,12 @@ L'installation est **explicite, jamais faite par `postinstall`** : un
 | Passer outre une fois | `git push --no-verify` |
 | Passer outre sans toucher au crochet | `SKIP_PRE_PUSH=1 git push` |
 | Désinstaller | `git config --unset core.hooksPath` |
+
+Le crochet **se tait sur une suppression de branche** : `git push --delete`
+n'envoie aucun commit, et trois minutes de build pour effacer une référence
+sont trois minutes perdues. Il lit pour cela les références que Git lui passe
+sur l'entrée standard, et ne rend la main sans rien faire que si toutes sont
+des suppressions.
 
 Comptez deux à trois minutes par envoi, l'essentiel étant le build. C'est le
 prix d'un dépôt sans intégration continue active — et il tombera le jour où
