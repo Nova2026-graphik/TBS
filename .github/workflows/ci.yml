@@ -41,17 +41,19 @@ jobs:
       - name: Installation
         run: npm ci
 
-      # `--if-present` : les scripts `lint` et `test` arrivent avec l'issue #16.
-      # Sans cette garde, la CI échouerait sur les branches ouvertes avant elle
-      # — et une fois le script en place, il s'exécute sans rien changer ici.
+      # Sans `--if-present` : les trois scripts existent depuis #16. La garde
+      # avait un sens le temps que les branches ouvertes avant lui rattrapent
+      # leur retard ; elle est devenue un trou. Une étape déclarée bloquante
+      # qu'un script renommé fait passer en silence ne bloque rien — et c'est
+      # exactement ce que cette issue reproche à l'état antérieur.
       - name: Lint
-        run: npm run --if-present lint
+        run: npm run lint
 
       - name: Types
         run: npm run typecheck
 
       - name: Tests unitaires
-        run: npm run --if-present test
+        run: npm run test
 
       - name: Build
         run: npm run build
@@ -88,7 +90,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Parcours
-        run: npm run --if-present test:e2e
+        run: npm run test:e2e
 
       # Le rapport ne sert qu'en cas d'échec : traces, captures et vidéos.
       - name: Conserver le rapport
