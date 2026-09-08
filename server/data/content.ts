@@ -128,47 +128,55 @@ export const rentalCategories: RentalCategory[] = [
 
 export const domains: Domain[] = [
   {
+    slug: 'mobilier-bureau',
     branch: 'equipements',
     title: 'Mobilier & matériel de bureau',
     description:
       'Bureaux, fauteuils, armoires, banques d\'accueil et aménagement complet de plateaux.',
   },
   {
+    slug: 'informatique',
     branch: 'equipements',
     title: 'Matériel informatique',
     description:
       'Postes de travail, portables, imprimantes, réseau, consommables et maintenance.',
   },
   {
+    slug: 'sante-laboratoire',
     branch: 'equipements',
     title: 'Équipements hospitaliers & de laboratoire',
     description:
       'Mobilier médical, appareillage, réactifs et consommables pour cliniques et laboratoires.',
   },
   {
+    slug: 'roulant',
     branch: 'equipements',
     title: 'Matériel roulant',
     description:
       'Véhicules de service, utilitaires, engins, pièces détachées et suivi de flotte.',
   },
   {
+    slug: 'location-reception',
     branch: 'events',
     title: 'Location de matériel de réception',
     description:
       'Mobilier, art de la table, nappage, décor, son et lumière — livrés et installés.',
   },
   {
+    slug: 'organisation',
     branch: 'events',
     title: 'Organisation & coordination',
     description: 'Scénographie, plan de salle, prestataires et présence le jour J.',
   },
   {
+    slug: 'etudes-prestations',
     branch: 'etudes',
     title: 'Études & prestations intellectuelles',
     description:
       'Études techniques, conseil en organisation, formation et assistance à maîtrise d\'ouvrage.',
   },
   {
+    slug: 'agro-industrie',
     branch: 'agro',
     title: 'Agriculture & agro-industrie',
     description:
@@ -307,29 +315,29 @@ export const serviceBlocks: ServiceBlock[] = [
 ]
 
 export const galleryItems: GalleryItem[] = [
-  { id: 'gal-01', title: 'Mariage Adjovi — 620 invités', location: 'Agôè', category: 'mariage', branch: 'events', image: '/images/galerie-mariage-adjovi.jpg', imageAlt: 'Mariage — vue d\'ensemble de la salle' },
-  { id: 'gal-02', title: 'Art de la table — ligne ivoire', location: null, category: 'decor', branch: 'events', image: '/images/galerie-verrerie.jpg', imageAlt: 'Détail — verrerie et chandeliers' },
-  { id: 'gal-03', title: 'Séminaire annuel — 180 places', location: null, category: 'corporate', branch: 'events', image: '/images/galerie-seminaire.jpg', imageAlt: 'Séminaire — salle en configuration conférence' },
-  { id: 'gal-04', title: 'Cérémonie officielle', location: null, category: 'ceremonie', branch: 'events', image: '/images/galerie-ceremonie-officielle.jpg', imageAlt: 'Cérémonie — tapis d\'honneur et potelets' },
-  { id: 'gal-05', title: 'Vin d\'honneur — jardin', location: null, category: 'mariage', branch: 'events', image: '/images/galerie-vin-honneur.jpg', imageAlt: 'Mariage — cocktail extérieur' },
-  { id: 'gal-06', title: 'Dîner de gala — 400 couverts', location: 'Lomé', category: 'corporate', branch: 'events', image: '/images/galerie-diner-gala.jpg', imageAlt: 'Gala — dîner d\'entreprise, plan large' },
-  { id: 'gal-07', title: 'Centre de table — saison sèche', location: null, category: 'decor', branch: 'events', image: '/images/galerie-centre-de-table.jpg', imageAlt: 'Détail — nappage et centre de table' },
-  { id: 'gal-08', title: 'Soirée blanche — Baguida', location: null, category: 'mariage', branch: 'events', image: '/images/galerie-soiree-blanche.jpg', imageAlt: 'Soirée — piste de danse lumineuse' },
-  { id: 'gal-09', title: 'Baptême — chapiteau 200 places', location: null, category: 'ceremonie', branch: 'events', image: '/images/galerie-bapteme.jpg', imageAlt: 'Baptême — réception familiale sous chapiteau' },
-  { id: 'gal-10', title: 'Équipement informatique — 40 postes', location: null, category: 'fourniture', branch: 'equipements', image: '/images/equipements-informatique.jpg', imageAlt: 'Livraison de matériel informatique' },
-  { id: 'gal-11', title: 'Aménagement de bureaux — siège Lomé', location: 'Lomé', category: 'fourniture', branch: 'equipements', image: '/images/branche-etudes.jpg', imageAlt: 'Aménagement de bureaux livré' },
-  { id: 'gal-12', title: 'Mariage Sika — 380 invités', location: null, category: 'mariage', branch: 'events', image: '/images/ambiance-blanc-or.jpg', imageAlt: 'Mariage — tables dressées' },
-  { id: 'gal-13', title: 'Cérémonie coutumière — 500 places', location: null, category: 'ceremonie', branch: 'events', image: '/images/hero-reception.jpg', imageAlt: 'Cérémonie — salle dressée' },
-  { id: 'gal-14', title: 'Gala annuel — 300 couverts', location: null, category: 'corporate', branch: 'events', image: '/images/branche-events.jpg', imageAlt: 'Gala — dîner assis' },
-  { id: 'gal-15', title: 'Dressage — ligne or', location: null, category: 'decor', branch: 'events', image: '/images/events-dressage-or.jpg', imageAlt: 'Détail — couvert dressé' },
-  { id: 'gal-16', title: 'Bénédiction nuptiale — 250 places', location: null, category: 'mariage', branch: 'events', image: '/images/categorie-tentes.jpg', imageAlt: 'Mariage — cérémonie sous chapiteau' },
-  { id: 'gal-17', title: 'Cocktail d\'honneur — Baguida', location: 'Baguida', category: 'ceremonie', branch: 'events', image: '/images/ambiance-cocktail.jpg', imageAlt: 'Cocktail extérieur — mange-debout' },
-  { id: 'gal-18', title: 'Soirée de lancement — piste LED', location: null, category: 'corporate', branch: 'events', image: '/images/ambiance-nuit-electrique.jpg', imageAlt: 'Soirée entreprise — éclairage' },
-  { id: 'gal-19', title: 'Scénographie de scène — fond drapé', location: null, category: 'decor', branch: 'events', image: '/images/events-scenographie.jpg', imageAlt: 'Décor — fond de scène' },
-  { id: 'gal-20', title: 'Nappage — chemins de table', location: null, category: 'decor', branch: 'events', image: '/images/categorie-nappage.jpg', imageAlt: 'Nappage — chemins de table' },
-  { id: 'gal-21', title: 'Laboratoire d\'analyses — équipement livré', location: null, category: 'fourniture', branch: 'equipements', image: '/images/equipements-laboratoire.jpg', imageAlt: 'Laboratoire équipé' },
-  { id: 'gal-22', title: 'Flotte de service — 6 véhicules', location: null, category: 'fourniture', branch: 'equipements', image: '/images/equipements-materiel-roulant.jpg', imageAlt: 'Matériel roulant livré' },
-  { id: 'gal-23', title: 'Projet agricole — petits équipements', location: null, category: 'fourniture', branch: 'agro', image: '/images/branche-agro.jpg', imageAlt: 'Agrobusiness — équipements livrés' },
+  { id: 'gal-01', title: 'Mariage Adjovi — 620 invités', location: 'Agôè', category: 'mariage', branch: 'events', domain: 'organisation', image: '/images/galerie-mariage-adjovi.jpg', imageAlt: 'Mariage — vue d\'ensemble de la salle' },
+  { id: 'gal-02', title: 'Art de la table — ligne ivoire', location: null, category: 'decor', branch: 'events', domain: 'location-reception', image: '/images/galerie-verrerie.jpg', imageAlt: 'Détail — verrerie et chandeliers' },
+  { id: 'gal-03', title: 'Séminaire annuel — 180 places', location: null, category: 'corporate', branch: 'events', domain: 'organisation', image: '/images/galerie-seminaire.jpg', imageAlt: 'Séminaire — salle en configuration conférence' },
+  { id: 'gal-04', title: 'Cérémonie officielle', location: null, category: 'ceremonie', branch: 'events', domain: 'organisation', image: '/images/galerie-ceremonie-officielle.jpg', imageAlt: 'Cérémonie — tapis d\'honneur et potelets' },
+  { id: 'gal-05', title: 'Vin d\'honneur — jardin', location: null, category: 'mariage', branch: 'events', domain: 'organisation', image: '/images/galerie-vin-honneur.jpg', imageAlt: 'Mariage — cocktail extérieur' },
+  { id: 'gal-06', title: 'Dîner de gala — 400 couverts', location: 'Lomé', category: 'corporate', branch: 'events', domain: 'organisation', image: '/images/galerie-diner-gala.jpg', imageAlt: 'Gala — dîner d\'entreprise, plan large' },
+  { id: 'gal-07', title: 'Centre de table — saison sèche', location: null, category: 'decor', branch: 'events', domain: 'location-reception', image: '/images/galerie-centre-de-table.jpg', imageAlt: 'Détail — nappage et centre de table' },
+  { id: 'gal-08', title: 'Soirée blanche — Baguida', location: null, category: 'mariage', branch: 'events', domain: 'organisation', image: '/images/galerie-soiree-blanche.jpg', imageAlt: 'Soirée — piste de danse lumineuse' },
+  { id: 'gal-09', title: 'Baptême — chapiteau 200 places', location: null, category: 'ceremonie', branch: 'events', domain: 'location-reception', image: '/images/galerie-bapteme.jpg', imageAlt: 'Baptême — réception familiale sous chapiteau' },
+  { id: 'gal-10', title: 'Équipement informatique — 40 postes', location: null, category: 'fourniture', branch: 'equipements', domain: 'informatique', image: '/images/equipements-informatique.jpg', imageAlt: 'Livraison de matériel informatique' },
+  { id: 'gal-11', title: 'Aménagement de bureaux — siège Lomé', location: 'Lomé', category: 'fourniture', branch: 'equipements', domain: 'mobilier-bureau', image: '/images/branche-etudes.jpg', imageAlt: 'Aménagement de bureaux livré' },
+  { id: 'gal-12', title: 'Mariage Sika — 380 invités', location: null, category: 'mariage', branch: 'events', domain: 'organisation', image: '/images/ambiance-blanc-or.jpg', imageAlt: 'Mariage — tables dressées' },
+  { id: 'gal-13', title: 'Cérémonie coutumière — 500 places', location: null, category: 'ceremonie', branch: 'events', domain: 'organisation', image: '/images/hero-reception.jpg', imageAlt: 'Cérémonie — salle dressée' },
+  { id: 'gal-14', title: 'Gala annuel — 300 couverts', location: null, category: 'corporate', branch: 'events', domain: 'organisation', image: '/images/branche-events.jpg', imageAlt: 'Gala — dîner assis' },
+  { id: 'gal-15', title: 'Dressage — ligne or', location: null, category: 'decor', branch: 'events', domain: 'location-reception', image: '/images/events-dressage-or.jpg', imageAlt: 'Détail — couvert dressé' },
+  { id: 'gal-16', title: 'Bénédiction nuptiale — 250 places', location: null, category: 'mariage', branch: 'events', domain: 'location-reception', image: '/images/categorie-tentes.jpg', imageAlt: 'Mariage — cérémonie sous chapiteau' },
+  { id: 'gal-17', title: 'Cocktail d\'honneur — Baguida', location: 'Baguida', category: 'ceremonie', branch: 'events', domain: 'organisation', image: '/images/ambiance-cocktail.jpg', imageAlt: 'Cocktail extérieur — mange-debout' },
+  { id: 'gal-18', title: 'Soirée de lancement — piste LED', location: null, category: 'corporate', branch: 'events', domain: 'location-reception', image: '/images/ambiance-nuit-electrique.jpg', imageAlt: 'Soirée entreprise — éclairage' },
+  { id: 'gal-19', title: 'Scénographie de scène — fond drapé', location: null, category: 'decor', branch: 'events', domain: 'organisation', image: '/images/events-scenographie.jpg', imageAlt: 'Décor — fond de scène' },
+  { id: 'gal-20', title: 'Nappage — chemins de table', location: null, category: 'decor', branch: 'events', domain: 'location-reception', image: '/images/categorie-nappage.jpg', imageAlt: 'Nappage — chemins de table' },
+  { id: 'gal-21', title: 'Laboratoire d\'analyses — équipement livré', location: null, category: 'fourniture', branch: 'equipements', domain: 'sante-laboratoire', image: '/images/equipements-laboratoire.jpg', imageAlt: 'Laboratoire équipé' },
+  { id: 'gal-22', title: 'Flotte de service — 6 véhicules', location: null, category: 'fourniture', branch: 'equipements', domain: 'roulant', image: '/images/equipements-materiel-roulant.jpg', imageAlt: 'Matériel roulant livré' },
+  { id: 'gal-23', title: 'Projet agricole — petits équipements', location: null, category: 'fourniture', branch: 'agro', domain: 'agro-industrie', image: '/images/branche-agro.jpg', imageAlt: 'Agrobusiness — équipements livrés' },
 ]
 
 export const testimonials: Testimonial[] = [

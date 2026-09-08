@@ -15,6 +15,13 @@
       "when": 1788730679740,
       "tag": "0001_large_boom_boom",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788855755756,
+      "tag": "0002_lying_starhawk",
+      "breakpoints": true
     }
   ]
 }

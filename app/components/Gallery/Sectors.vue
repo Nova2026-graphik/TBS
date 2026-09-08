@@ -21,8 +21,11 @@ import type { Branch, Domain } from '#shared/types'
  * Trois écarts avec l'accordéon d'origine, tous pour les mêmes raisons que le
  * reste du site :
  *
- *  - **un seul élément interactif par panneau**, un lien qui couvre toute la
- *    surface. L'original empilait `onMouseEnter` et `onClick` sur un `<div>` :
+ *  - **le panneau n'est plus une seule surface cliquable.** Il l'a été, pour
+ *    n'offrir qu'un arrêt de tabulation par secteur ; mais un lien ne peut pas
+ *    en contenir d'autres, et les domaines mènent désormais chacun à la
+ *    galerie filtrée. Le survol et le focus qui déplient vivent donc sur le
+ *    `<li>`, et les liens sont dans le contenu. L'original empilait `onMouseEnter` et `onClick` sur un `<div>` :
  *    rien au clavier, rien pour un lecteur d'écran. Ici le panneau se déplie
  *    au survol *et* à la prise de focus, et Entrée mène aux prestations du
  *    secteur (`/services?branche=…`, la route qui existe déjà) ;
@@ -97,11 +100,22 @@ const sizesHalfMd = SIZES_HALF_MD
       n'existe pas sur une colonne.
     -->
     <ul v-reveal class="flex flex-col gap-1.5 md:h-[37.5rem] md:flex-row md:gap-2.5">
+      <!--
+        `mouseenter` et `focusin` sur le `<li>` : ils ne font que déplier le
+        panneau survolé, et le repli des autres dépend de l'état de la liste
+        entière — ce qu'aucun sélecteur CSS ne sait exprimer entre frères. Rien
+        n'est atteignable par ce seul geste : les liens du panneau restent
+        dans l'ordre de tabulation, et sous `md` tout est déjà déplié. D'où la
+        dérogation, qui ne masque aucune interaction réservée à la souris.
+      -->
+      <!-- eslint-disable-next-line vuejs-accessibility/no-static-element-interactions -->
       <li
         v-for="sector in sectors"
         :key="sector.slug"
         class="group relative min-h-[29rem] overflow-hidden bg-shell transition-[flex] duration-[900ms] ease-[var(--ease-out-expo)] md:min-h-0"
         :class="active === sector.slug ? 'md:flex-[4]' : 'md:flex-[1]'"
+        @mouseenter="chosen = sector.slug"
+        @focusin="chosen = sector.slug"
       >
         <NuxtImg
           :src="sector.image"
@@ -163,27 +177,39 @@ const sizesHalfMd = SIZES_HALF_MD
                 {{ $t('gallery.sectors.domains') }}
               </p>
               <ul class="mt-2 flex flex-wrap gap-1.5">
-                <li
-                  v-for="domain in sector.domains"
-                  :key="domain.title"
-                  class="border border-white/25 bg-white/10 px-2.5 py-1 text-[0.6875rem] leading-[1.4] tracking-[0.06em] text-white"
-                >
-                  {{ domain.title }}
+                <li v-for="domain in sector.domains" :key="domain.slug">
+                  <!--
+                    Chaque domaine mène à la galerie filtrée. Les étiquettes
+                    avaient déjà l'apparence de boutons sans en avoir le
+                    comportement : on essayait de cliquer, il ne se passait
+                    rien. Le `min-h-11` porte la cible tactile à 44 px.
+                  -->
+                  <NuxtLinkLocale
+                    :to="{ path: '/galerie', query: { branche: sector.slug, domaine: domain.slug } }"
+                    class="inline-flex min-h-11 items-center border border-white/25 bg-white/10 px-2.5 py-1 text-[0.6875rem] leading-[1.4] tracking-[0.06em] text-white transition-colors duration-400 hover:border-white hover:bg-white/20 focus-visible:outline-offset-[-2px]"
+                  >
+                    <span class="sr-only">{{ $t('gallery.sectorLink', { domain: domain.title }) }}</span>
+                    <span aria-hidden="true">{{ domain.title }}</span>
+                  </NuxtLinkLocale>
                 </li>
               </ul>
             </div>
 
-            <!-- Reprise visuelle de l'intitulé porté par le lien : masquée aux
-                 lecteurs d'écran pour ne pas l'annoncer deux fois. -->
-            <span
-              aria-hidden="true"
-              class="mt-1 inline-flex items-center gap-2 text-[0.6875rem] uppercase tracking-[0.2em] text-white"
+            <!--
+              Le lien vers les prestations, désormais dans le flux plutôt qu'en
+              surface : il ne pouvait pas contenir les liens de domaine, et un
+              lien dans un lien n'est pas du HTML valide.
+            -->
+            <NuxtLinkLocale
+              :to="{ path: '/services', query: { branche: sector.slug } }"
+              class="mt-1 inline-flex min-h-11 items-center gap-2 text-[0.6875rem] uppercase tracking-[0.2em] text-white transition-colors duration-400 hover:text-cream focus-visible:outline-offset-[-2px]"
             >
-              {{ $t('gallery.sectors.cta') }}
+              <span class="sr-only">{{ $t('gallery.sectors.ctaLabel', { sector: sector.name }) }}</span>
+              <span aria-hidden="true">{{ $t('gallery.sectors.cta') }}</span>
               <svg viewBox="0 0 24 24" class="size-3.5" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                 <path d="M7 17 17 7M9 7h8v8" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
-            </span>
+            </NuxtLinkLocale>
           </div>
 
           <!-- Étiquette du panneau replié : verticale au-delà de `md`, où la
@@ -201,24 +227,6 @@ const sizesHalfMd = SIZES_HALF_MD
             </span>
           </span>
         </div>
-
-        <!-- Le lien couvre le panneau entier : cible tactile généreuse, un
-             seul arrêt de tabulation par secteur, et — puisqu'il porte toute
-             la surface — c'est lui qui reçoit le survol. Les gestionnaires
-             vivent donc sur l'élément interactif, pas sur le `<li>`. -->
-        <!-- Anneau de focus rentré de 4 px : le panneau est en `overflow-hidden`,
-             et l'`outline-offset: 3px` du style de base tomberait hors cadre —
-             donc invisible, exactement là où le clavier en a besoin. -->
-        <NuxtLinkLocale
-          :to="{ path: '/services', query: { branche: sector.slug } }"
-          class="absolute inset-0 z-20 focus-visible:outline-offset-[-4px]"
-          @mouseenter="chosen = sector.slug"
-          @focus="chosen = sector.slug"
-        >
-          <span class="sr-only">
-            {{ $t('gallery.sectors.ctaLabel', { sector: sector.name }) }}
-          </span>
-        </NuxtLinkLocale>
       </li>
     </ul>
   </section>
