@@ -22,9 +22,7 @@ const sizesHalfMd = SIZES_HALF_MD
     >
       <template #aside>
         <p class="text-[0.9375rem] leading-[1.72]">
-          TBS Distribution S.A.R.L structure son activité en quatre branches
-          complémentaires. Chacune a ses équipes et ses fournisseurs ; toutes
-          partagent la même logistique et la même exigence de délai.
+          {{ $t('home.branches.lead') }}
         </p>
       </template>
     </UiSectionHead>

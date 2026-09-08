@@ -48,7 +48,7 @@ const sizesThird = SIZES_THIRD
             {{ category.name }}
           </span>
           <span class="shrink-0 text-[0.6875rem] uppercase tracking-[0.18em] text-ink-soft">
-            {{ category.refCount }} réf.
+            {{ $t('home.categories.refCount', { count: category.refCount }) }}
           </span>
         </div>
       </NuxtLinkLocale>
