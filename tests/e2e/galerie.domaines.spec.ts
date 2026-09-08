@@ -52,6 +52,15 @@ test.describe('galerie filtrée par métier', () => {
 
   test('les deux familles de filtre s’excluent', async ({ page }) => {
     await page.goto('/galerie?branche=equipements&domaine=roulant')
+
+    // Seule épreuve du fichier à cliquer : les autres ne lisent que le
+    // balisage pré-rendu. Or ce balisage existe avant que Vue n'ait repris la
+    // main, et un clic envoyé trop tôt ne déclenche rien — `galerie.spec.ts`
+    // documente déjà le piège et attend de la même façon. L'épreuve passait
+    // par chance ; la planche-contact de l'en-tête, quatre images chargées
+    // sans délai, a suffi à faire perdre la course.
+    await page.waitForLoadState('networkidle')
+
     await page.getByRole('button', { name: 'Mariages' }).click()
 
     await expect(page).toHaveURL(/filtre=mariage/)
