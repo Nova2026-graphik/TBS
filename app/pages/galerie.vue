@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GalleryCategory } from '#shared/types'
+import type { BranchSlug, DomainSlug, GalleryCategory } from '#shared/types'
 
 const { t } = useI18n()
 
@@ -11,6 +11,12 @@ const { t } = useI18n()
  *  - les vignettes masquées sont retirées du DOM plutôt que cachées en CSS,
  *    donc plus d'images invisibles à charger ni de pièges au clavier ;
  *  - chaque vignette ouvre une visionneuse plein écran.
+ *
+ * Trois filtres coexistent, tous dans l'URL : `?filtre=` par catégorie de
+ * réception, `?branche=` et `?domaine=` par métier. Les deux familles
+ * **s'excluent** — croiser « Mariages » et « Matériel informatique » ne
+ * donnerait jamais rien, et un cul-de-sac se contourne mal. Choisir dans l'une
+ * efface donc l'autre.
  */
 const route = useRoute()
 const router = useRouter()
@@ -33,14 +39,61 @@ function setFilter(value: string) {
   const query = { ...route.query }
   if (value === 'all') delete query.filtre
   else query.filtre = value
+  // Les deux familles de filtre s'excluent.
+  delete query.branche
+  delete query.domaine
   router.replace({ query })
 }
 
-const visible = computed(() =>
-  activeFilter.value === 'all'
+/**
+ * Filtre métier, lu dans l'URL comme le filtre par catégorie. Une valeur
+ * inconnue est ignorée plutôt que de vider la galerie : un lien mal recopié
+ * doit ramener le visiteur au catalogue complet, pas à un écran vide.
+ */
+const activeBranch = computed<BranchSlug | null>(() => {
+  const raw = route.query.branche
+  const value = Array.isArray(raw) ? raw[0] : raw
+  const connue = data.value.branches.some(b => b.slug === value)
+  return connue ? (value as BranchSlug) : null
+})
+
+const activeDomain = computed<DomainSlug | null>(() => {
+  const raw = route.query.domaine
+  const value = Array.isArray(raw) ? raw[0] : raw
+  const domaine = data.value.domains.find(d => d.slug === value)
+  // Un domaine n'a de sens que dans sa branche : le préciser sans elle, ou
+  // avec une autre, ne décrit rien.
+  const coherent = domaine && (!activeBranch.value || domaine.branch === activeBranch.value)
+  return coherent ? (value as DomainSlug) : null
+})
+
+/** Intitulés du filtre métier actif, pour le bandeau au-dessus de la grille. */
+const activeSector = computed(() => {
+  if (!activeBranch.value) return null
+  const branche = data.value.branches.find(b => b.slug === activeBranch.value)
+  const domaine = data.value.domains.find(d => d.slug === activeDomain.value)
+  return branche ? { branche, domaine: domaine ?? null } : null
+})
+
+const visible = computed(() => {
+  if (activeBranch.value) {
+    return data.value.gallery.filter(i =>
+      i.branch === activeBranch.value
+      && (!activeDomain.value || i.domain === activeDomain.value),
+    )
+  }
+  return activeFilter.value === 'all'
     ? data.value.gallery
-    : data.value.gallery.filter(i => i.category === (activeFilter.value as GalleryCategory)),
-)
+    : data.value.gallery.filter(i => i.category === (activeFilter.value as GalleryCategory))
+})
+
+/** Retire le filtre métier et revient au catalogue complet. */
+function clearSector() {
+  const query = { ...route.query }
+  delete query.branche
+  delete query.domaine
+  router.replace({ query })
+}
 
 // Index dans `visible`, pour que les flèches de la visionneuse restent
 // cohérentes avec le filtre affiché.
@@ -77,9 +130,19 @@ async function showMore() {
 }
 
 // Un changement de filtre invalide l'index courant et remet le compteur à zéro.
-watch(activeFilter, () => {
+watch([activeFilter, activeBranch, activeDomain], () => {
   lightboxIndex.value = null
   shownCount.value = BATCH
+})
+
+/**
+ * Un filtre choisi en bas de page change la grille située au-dessus : sans ce
+ * défilement, le visiteur reste devant les secteurs et croit qu'il ne s'est
+ * rien passé. On ne le déclenche qu'à la navigation, jamais au premier rendu.
+ */
+watch([activeBranch, activeDomain], ([branche], [brancheAvant]) => {
+  if (!import.meta.client || (!branche && !brancheAvant)) return
+  nextTick(() => grid.value?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
 })
 
 function chipClass(isActive: boolean) {
@@ -125,9 +188,9 @@ const HERO_MEDIA = [
           v-for="filter in filters"
           :key="filter.value"
           type="button"
-          :aria-pressed="activeFilter === filter.value"
+          :aria-pressed="!activeSector && activeFilter === filter.value"
           class="rounded-full border px-5 py-2.5 text-[0.6875rem] uppercase tracking-[0.16em] transition-colors duration-400"
-          :class="chipClass(activeFilter === filter.value)"
+          :class="chipClass(!activeSector && activeFilter === filter.value)"
           @click="setFilter(filter.value)"
         >
           {{ filter.label }}
@@ -136,6 +199,32 @@ const HERO_MEDIA = [
     </UiPageHero>
 
     <section ref="grid" class="u-gutter u-section bg-white">
+      <!--
+        Filtre métier actif. Sans ce rappel, un visiteur arrivé par un lien
+        filtré croit que la galerie entière tient en trois photos.
+      -->
+      <div
+        v-if="activeSector"
+        class="mb-8 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-l-2 bg-sand px-5 py-4"
+        :style="{ borderColor: activeSector.branche.color }"
+      >
+        <p class="text-[0.9375rem] text-ink">
+          {{ activeSector.domaine
+            ? $t('gallery.sectorFilterDomain', { sector: activeSector.branche.name, domain: activeSector.domaine.title })
+            : $t('gallery.sectorFilter', { sector: activeSector.branche.name }) }}
+        </p>
+        <button
+          type="button"
+          class="inline-flex min-h-11 items-center gap-2 text-[0.6875rem] uppercase tracking-[0.16em] text-ink-soft transition-colors duration-400 hover:text-gold"
+          @click="clearSector"
+        >
+          {{ $t('gallery.clearFilter') }}
+          <svg viewBox="0 0 24 24" class="size-3.5" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" />
+          </svg>
+        </button>
+      </div>
+
       <!-- Compteur : l'utilisateur voit immédiatement l'effet du filtre. -->
       <p class="mb-8 text-[0.6875rem] uppercase tracking-[0.2em] text-ink-mute" aria-live="polite">
         <template v-if="remaining > 0">
@@ -146,7 +235,33 @@ const HERO_MEDIA = [
         </template>
       </p>
 
+      <!--
+        Écran vide. La photothèque ne couvre pas encore tous les domaines — la
+        branche Études n'a aucune réalisation publiée. Un « 0 résultat » sec se
+        lirait comme une panne : on dit ce qui manque, et on propose la suite.
+      -->
+      <div
+        v-if="!visible.length"
+        class="border border-ink/12 bg-sand px-[clamp(1.25rem,3vw,2.5rem)] py-[clamp(2rem,4vw,3.5rem)]"
+      >
+        <h3 class="max-w-[28ch] text-h3">
+          {{ activeSector ? $t('gallery.emptyTitle') : $t('gallery.emptyCategory') }}
+        </h3>
+        <p class="mt-4 max-w-[58ch] text-[0.9375rem] leading-[1.75] text-ink-soft">
+          {{ $t('gallery.emptyBody') }}
+        </p>
+        <div class="mt-8 flex flex-wrap items-center gap-4">
+          <UiButton :to="{ path: '/contact', query: { branche: activeBranch ?? undefined } }" size="lg">
+            {{ $t('gallery.emptyCta') }}
+          </UiButton>
+          <UiButton variant="ghost" @click="activeSector ? clearSector() : setFilter('all')">
+            {{ $t('gallery.clearFilter') }}
+          </UiButton>
+        </div>
+      </div>
+
       <TransitionGroup
+        v-else
         tag="ul"
         class="grid gap-[clamp(0.875rem,1.8vw,1.5rem)] sm:grid-cols-2 lg:grid-cols-3"
         enter-active-class="transition-[opacity,transform] duration-500 ease-[var(--ease-out-expo)]"
@@ -197,15 +312,6 @@ const HERO_MEDIA = [
           </button>
         </li>
       </TransitionGroup>
-
-      <div v-if="!visible.length" class="border border-ink/12 bg-sand p-12 text-center">
-        <p class="text-[0.9375rem]">
-          Aucune réalisation dans cette catégorie pour le moment.
-        </p>
-        <UiButton variant="ghost" class="mt-6" @click="setFilter('all')">
-          Voir tout
-        </UiButton>
-      </div>
 
       <div v-if="remaining > 0" class="mt-[clamp(2rem,4vw,3.5rem)] flex justify-center">
         <UiButton variant="ghost" @click="showMore">
