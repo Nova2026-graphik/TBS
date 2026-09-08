@@ -514,8 +514,12 @@ performance.
   branches sur `/services`, le savoir-faire sur `/conseils`, l'entreprise sur
   `/contact`, le matériel sur `/faq`. Elles entrent en cascade, avec un zoom
   lent, et sont neutralisées sous `prefers-reduced-motion`.
-  Les trois pages légales n'en reçoivent pas : une mention légale n'a pas à
-  s'illustrer, et `media` y reste simplement absent.
+  Les trois pages légales en reçoivent aussi, mais sur un autre principe : leur
+  planche suit les temps de leur chapô — le siège, les bureaux et une
+  photographie du site pour les mentions légales ; le parc, la livraison et le
+  matériel en service pour les conditions de location ; le formulaire, les
+  personnes et le siège pour la confidentialité. Un document qui engage la
+  société n'a pas à se décorer, mais il gagne à montrer de quoi il traite.
 
 ### Accessibilité
 

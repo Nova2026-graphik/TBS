@@ -22,8 +22,10 @@ import { SIZES_HERO_STRIP } from '~/utils/imageSizes'
  *    réservée avant le chargement : aucun décalage de mise en page, et le
  *    budget CLS de la CI (0,1) reste tenu.
  *
- * Sans `media`, le rendu est exactement celui d'avant — les trois pages
- * légales n'ont pas à s'illustrer.
+ * `media` reste facultatif, et le rendu sans lui est exactement celui d'avant.
+ * Les huit pages qui utilisent ce composant en passent aujourd'hui — les trois
+ * pages légales comprises, dont la planche suit les temps de leur chapô plutôt
+ * que d'y ajouter du décor.
  */
 export interface HeroMedia {
   src: string
@@ -73,8 +75,8 @@ const stripColumns = computed(() => `repeat(${strip.value.length}, minmax(0, 1fr
       CLS sur trois pages, deux fois et demie le budget de la CI. Une grille
       décide de la même chose avant tout chargement de police.
 
-      Sans bande, on garde exactement la disposition précédente : les trois
-      pages légales ne bougent pas d'un pixel.
+      Sans bande, on garde exactement la disposition précédente : le chemin
+      reste emprunté par toute page appelant le composant sans `media`.
     -->
     <div
       class="items-end gap-x-14 gap-y-6"
