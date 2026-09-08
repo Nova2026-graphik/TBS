@@ -319,7 +319,8 @@ npm run db:migrate      # applique 0001_large_boom_boom.sql
 
 ```
 app/
-  assets/css/main.css      Design tokens (@theme Tailwind v4) + base + utilitaires
+  assets/css/main.css      Les deux chartes + design tokens (@theme Tailwind v4)
+                           + base + utilitaires
   components/
     App/                   TopBar, Header, Footer, ContactDock
     Ui/                    Button, SectionHead, Tag, StatRow
@@ -333,7 +334,10 @@ app/
     Admin/                 StatusBadge — espace de suivi des devis
     Shared/                ProcessSteps, CtaBanner
     content/               CalculateurMateriel — composant appelé depuis un article
+  components/
+    Ui/ThemeSwitch.vue     Sélecteur de charte — bandeau supérieur et tiroir mobile
   composables/
+    useTheme.ts            Les deux chartes, et le basculement de l'une à l'autre
     useSiteContent.ts      Chargement dédupliqué du contenu + coordonnées
     useSiteData.ts         Blocs de présentation, assemblés depuis la langue active
     useSeo.ts              Meta par page, JSON-LD LocalBusiness / FAQPage / Breadcrumb
@@ -378,9 +382,9 @@ scripts/
   trace-logo.mjs           Vectorise le logo (favicon.svg, mask-icon.svg)
   install-hooks.mjs        Installe le crochet de pré-envoi
 tests/
-  unit/                    Vitest — validation, dépôt, limiteur, IP, admin, images
-  e2e/                     Playwright — devis, galerie, services, navigation mobile,
-                           en-têtes illustrés
+  unit/                    Vitest — validation, dépôt, limiteur, IP, admin, images,
+                           couleurs de branche
+  e2e/                     Playwright — devis, galerie, services, navigation mobile
 shared/
   types.ts                 Types partagés client / serveur
   utils/legalData.ts       Identité légale — le seul fichier à compléter
@@ -411,6 +415,77 @@ design/                    Maquette source + plaquettes commerciales (documentat
 
 Le dossier `design/` documente la provenance : d’où viennent les couleurs, les
 textes et les photos. Il n’est pas compilé par Nuxt.
+
+---
+
+## Les deux chartes
+
+Le site porte deux palettes, et un seul jeu de composants. Le visiteur passe de
+l'une à l'autre depuis le sélecteur du bandeau supérieur — repris dans le
+tiroir mobile, où le bandeau est masqué.
+
+| | Charte | Ancrage |
+| --- | --- | --- |
+| **Principale** (défaut) | Sable & Or | La charte historique héritée du template : brun-olive profond, or, pêche, crème, olive |
+| **Secondaire** | Bleu & Rouge | Le logotype : bleu `#3376ba` et rouge `#d83934`, relevés au pixel sur `public/images/logo-tbs.png` |
+
+### Comment ça marche
+
+Le mécanisme tient dans `app/assets/css/main.css`, en deux étages :
+
+1. les valeurs brutes vivent dans des variables `--tbs-*` posées sur `:root`,
+   que le sélecteur `:root[data-theme='logo']` réécrit ;
+2. les jetons `@theme` de Tailwind ne portent plus aucune couleur, seulement
+   une référence — `--color-gold: var(--tbs-accent)`.
+
+Toutes les classes déjà écrites — `bg-gold`, `text-ink/70`, `border-cream` —
+changent donc de couleur sans qu'une ligne de gabarit ne bouge. Le basculement
+se réduit à un attribut sur `<html>` : pas de rechargement, pas de seconde
+feuille de style, pas de composant qui ait à connaître le thème courant.
+
+Les pages étant pré-rendues, leur HTML est identique pour tout le monde : le
+serveur ne peut pas y écrire le thème retenu. L'attribut est donc posé par un
+script en ligne minuscule, en tête de `<head>` (`app/app.vue`), avant le
+premier rendu — sans quoi la page s'afficherait un instant en sable avant de
+virer au bleu. Le choix est mémorisé dans `localStorage` : une préférence
+d'affichage strictement locale, rien n'est envoyé au serveur, et la politique
+de confidentialité n'a pas à en parler.
+
+### Les contrastes, dans les deux thèmes
+
+La charte secondaire n'est pas une teinture : elle reprend les rapports de
+contraste de la première, valeur par valeur, et chaque jeton de `main.css`
+porte le sien en commentaire. Le bleu et le rouge du logo sont repris tels
+quels partout où ils servent d'aplat ou d'accent — ce sont eux qu'on vient
+reconnaître.
+
+Deux valeurs seulement s'en écartent, et pour la raison qui vaut déjà dans la
+charte principale : le rouge de marque plafonne à 4,61:1, sous le seuil dès
+qu'il passe sur fond sable, et le bleu clair de l'Agro est à 2,25:1. Comme la
+pêche et l'olive, ils ont une variante texte de même teinte à luminance
+abaissée. Le rouge de marque occupant par ailleurs le registre de l'alerte,
+l'encadré d'avertissement des pages légales bascule sur l'ambre dans ce
+thème — sans quoi il se confondrait avec la branche Events.
+
+### Ajouter ou changer une couleur
+
+Trois règles, et une épreuve qui les tient :
+
+- **jamais de couleur en dur dans un gabarit.** Une valeur hexadécimale écrite
+  dans une classe ou un attribut `style` échappe au basculement : la pastille
+  resterait pêche sur une page devenue bleue. Passer par un jeton ;
+- **une couleur ajoutée dans les données** (`shared/utils/siteData.ts`,
+  `server/data/content.ts`, base) reste hexadécimale — c'est ce que lisent le
+  semis, l'espace de suivi et les courriels, où aucune feuille de style n'est
+  chargée. Elle doit être reportée dans les deux tables de
+  `shared/utils/branchColors.ts`, qui la traduisent en jeton au rendu ;
+- **toute couleur de texte passe par `brandTextColor()`**, jamais par
+  `brandColor()` : c'est elle qui garantit les 4,5:1 de WCAG 1.4.3.
+
+`tests/unit/branchColors.spec.ts` vérifie les trois liens — couverture des
+couleurs de `BRANCH_TABS`, existence des jetons dans `main.css`, valeur de
+repli conforme. Une couleur oubliée y échoue, là où le rendu se contenterait
+d'avoir l'air un peu faux.
 
 ---
 
@@ -459,11 +534,13 @@ performance.
   vérifie qu'aucune n'expose de rôle `img`.
 - `prefers-reduced-motion` respecté : le contenu reste visible, les
   animations sont neutralisées.
-- **Contrastes conformes AA** (WCAG 1.4.3). Les couleurs de branche pêche et
-  olive sont décoratives : lisibles en pastille, elles tombent à 2,15:1 et
-  2,33:1 dès qu'on en fait du texte. `brandTextColor()`
-  (`shared/utils/branchColors.ts`) donne la variante texte — même teinte,
-  luminance abaissée. **Toute nouvelle couleur de texte doit passer par elle.**
+- **Contrastes conformes AA** (WCAG 1.4.3), dans les deux chartes. Les
+  couleurs de branche pêche et olive sont décoratives : lisibles en pastille,
+  elles tombent à 2,15:1 et 2,33:1 dès qu'on en fait du texte.
+  `brandTextColor()` (`shared/utils/branchColors.ts`) donne la variante
+  texte — même teinte, luminance abaissée. **Toute nouvelle couleur de texte
+  doit passer par elle** ; `brandColor()` fait le même travail pour les
+  aplats. Voir « Les deux chartes ».
 - **Cibles tactiles à 24 px** (WCAG 2.5.8), y compris les puces du carrousel :
   le trait reste fin, la zone cliquable fait 44 px de haut.
 - **Rotation du hero arrêtable** (WCAG 2.2.2) : pause au survol, au focus
@@ -942,10 +1019,11 @@ Tout est auto-hébergé (polices `/_fonts`, images `/_ipx`, scripts `/_nuxt`), l
 politique tient donc en `'self'` — seule exception, `frame-src` pour la carte
 OpenStreetMap de la page contact.
 
-Reste le cas des deux scripts que Nuxt sérialise dans chaque page pré-rendue
-(carte d'imports et `window.__NUXT__.config`). Une CSP bloquante sans leur
-empreinte coupe l'hydratation : le HTML s'affiche, plus rien ne réagit. D'où le
-défaut prudent — `Content-Security-Policy-Report-Only` — et la bascule en deux
+Reste le cas des scripts en ligne : les deux que Nuxt sérialise dans chaque
+page pré-rendue (carte d'imports et `window.__NUXT__.config`), et celui qui
+pose le thème de couleurs avant le premier rendu (voir « Les deux chartes »).
+Une CSP bloquante sans leur empreinte coupe l'hydratation, ou fait clignoter la
+page : le HTML s'affiche, plus rien ne réagit. D'où le défaut prudent — `Content-Security-Policy-Report-Only` — et la bascule en deux
 temps :
 
 ```bash
@@ -962,8 +1040,8 @@ NUXT_SECURITY_CSP_MODE=enforce
 
 Les empreintes changent à chaque build qui touche la configuration publique :
 `npm run security:csp-hashes` fait partie du déploiement. En attendant, le mode
-report-only signale les violations dans la console du navigateur — les deux
-scripts Nuxt y apparaissent, avec l'empreinte à autoriser.
+report-only signale les violations dans la console du navigateur — les trois
+scripts y apparaissent, avec l'empreinte à autoriser.
 
 ### Limitation de débit et adresse du client
 

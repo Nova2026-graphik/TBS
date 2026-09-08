@@ -23,10 +23,7 @@ const densitiesFull = DENSITIES_FULL
       height="900"
       class="absolute inset-0 size-full object-cover opacity-45"
     />
-    <div
-      class="absolute inset-0"
-      style="background: linear-gradient(90deg, rgb(62 53 36 / 0.94) 0%, rgb(62 53 36 / 0.72) 60%, rgb(62 53 36 / 0.55) 100%)"
-    />
+    <div class="u-scrim-banner absolute inset-0" />
 
     <div class="u-gutter relative flex flex-wrap items-end justify-between gap-x-16 gap-y-9 py-[clamp(3rem,7vw,6.5rem)]">
       <div v-reveal>

@@ -39,7 +39,7 @@ const sizesHalfMd = SIZES_HALF_MD
         <!-- Filet de branche : 2px au repos, 4px au survol. -->
         <span
           class="h-0.5 w-full transition-[height] duration-500 ease-[var(--ease-out-expo)] group-hover:h-1"
-          :style="{ background: branch.color }"
+          :style="{ background: brandColor(branch.color) }"
         />
 
         <div class="relative aspect-16/10 overflow-hidden bg-shell">
@@ -57,7 +57,7 @@ const sizesHalfMd = SIZES_HALF_MD
 
         <div class="flex flex-1 flex-col pt-[clamp(1.25rem,2.4vw,1.875rem)]">
           <span class="u-eyebrow">
-            <span class="size-[7px] rounded-full" :style="{ background: branch.color }" />
+            <span class="size-[7px] rounded-full" :style="{ background: brandColor(branch.color) }" />
             Branche {{ String(branch.index).padStart(2, '0') }}
           </span>
 
