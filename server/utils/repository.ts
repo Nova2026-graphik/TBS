@@ -132,6 +132,7 @@ export function getDomains(locale: ContentLocale = 'fr') {
       .orderBy(asc(schema.domains.position))
 
     return rows.map(r => ({
+      slug: r.slug as Domain['slug'],
       branch: r.branchSlug,
       title: r.title,
       description: r.description,
@@ -154,6 +155,7 @@ export function getGalleryItems(locale: ContentLocale = 'fr') {
       location: r.location,
       category: r.category,
       branch: r.branchSlug,
+      domain: (r.domainSlug ?? null) as GalleryItem['domain'],
       image: r.image,
       imageAlt: r.imageAlt,
     }))

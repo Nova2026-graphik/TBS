@@ -103,6 +103,11 @@ export const serviceBlocks = pgTable(
 /** Domaines d'intervention listés en page d'accueil. */
 export const domains = pgTable('domains', {
   id: serial('id').primaryKey(),
+  /**
+   * Identifiant stable, indépendant de l'intitulé et de la langue : c'est lui
+   * que porte `?domaine=` et qui relie une réalisation à son domaine.
+   */
+  slug: varchar('slug', { length: 60 }).notNull(),
   branchSlug: branchSlugEnum('branch_slug').notNull(),
   title: varchar('title', { length: 200 }).notNull(),
   description: text('description').notNull(),
@@ -119,6 +124,11 @@ export const galleryItems = pgTable(
     location: varchar('location', { length: 120 }),
     category: galleryCategoryEnum('category').notNull(),
     branchSlug: branchSlugEnum('branch_slug').notNull(),
+    /**
+     * Domaine précis, nullable : une vue d'ensemble relève d'une branche sans
+     * appartenir à l'un de ses domaines plutôt qu'à l'autre.
+     */
+    domainSlug: varchar('domain_slug', { length: 60 }),
     image: varchar('image', { length: 300 }).notNull(),
     imageAlt: varchar('image_alt', { length: 300 }).notNull(),
     eventDate: timestamp('event_date', { withTimezone: false }),
@@ -127,6 +137,7 @@ export const galleryItems = pgTable(
   },
   t => [
     uniqueIndex('gallery_items_ref_idx').on(t.ref),
+    index('gallery_items_domain_idx').on(t.domainSlug, t.position),
     index('gallery_items_category_idx').on(t.category, t.position),
   ],
 )

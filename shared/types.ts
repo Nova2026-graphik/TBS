@@ -75,6 +75,16 @@ export interface GalleryItem {
   location: string | null
   category: GalleryCategory
   branch: BranchSlug
+  /**
+   * Domaine précis, quand la réalisation en relève d'un seul.
+   *
+   * `null` est un état légitime, pas un oubli : une vue d'ensemble de salle
+   * relève de TBS Events sans appartenir à « Organisation & coordination »
+   * plutôt qu'à « Location de matériel ». Forcer un domaine sur chaque photo
+   * produirait des rattachements arbitraires, et un filtre qui ment coûte
+   * plus cher qu'un filtre absent.
+   */
+  domain: DomainSlug | null
   image: string
   imageAlt: string
 }
@@ -92,7 +102,25 @@ export interface FaqItem {
   answer: string
 }
 
+/**
+ * Identifiant stable d'un domaine.
+ *
+ * Il ne bouge ni d'une langue à l'autre, ni quand l'intitulé est reformulé :
+ * c'est lui qui porte `?domaine=` dans l'URL de la galerie et qui relie une
+ * réalisation à son domaine. L'intitulé, lui, se traduit.
+ */
+export type DomainSlug
+  = | 'mobilier-bureau'
+    | 'informatique'
+    | 'sante-laboratoire'
+    | 'roulant'
+    | 'location-reception'
+    | 'organisation'
+    | 'etudes-prestations'
+    | 'agro-industrie'
+
 export interface Domain {
+  slug: DomainSlug
   branch: BranchSlug
   title: string
   description: string
