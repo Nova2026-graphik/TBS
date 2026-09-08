@@ -112,7 +112,7 @@ const CHAMP
     </div>
 
     <label class="mt-6 flex items-center gap-3 text-[0.9375rem] text-ink-soft">
-      <input v-model="soiree" type="checkbox" class="size-4 accent-[#827148]">
+      <input v-model="soiree" type="checkbox" class="size-4 accent-gold">
       La réception se prolonge en soirée
     </label>
 

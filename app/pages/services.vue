@@ -74,7 +74,7 @@ useBreadcrumbSchema([{ name: 'Nos services', path: '/services' }])
         >
           <span
             class="size-1.5 rounded-full"
-            :style="{ background: active === tab.slug ? '#fff' : tab.color }"
+            :style="{ background: active === tab.slug ? '#fff' : brandColor(tab.color) }"
           />
           {{ tab.label }}
         </button>
@@ -103,7 +103,7 @@ useBreadcrumbSchema([{ name: 'Nos services', path: '/services' }])
 
         <SharedProcessSteps
           :eyebrow="activeProcess.eyebrow"
-          :dot="accent"
+          :dot="brandColor(accent)"
           :title="activeProcess.title"
           :accent="activeProcess.titleAccent"
           :steps="activeProcess.steps"

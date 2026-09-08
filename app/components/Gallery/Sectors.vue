@@ -117,7 +117,7 @@ const sizesHalfMd = SIZES_HALF_MD
         <!-- Filet de branche, comme sur les cartes de l'accueil. -->
         <span
           class="absolute inset-x-0 top-0 h-0.5 transition-[height] duration-500 ease-[var(--ease-out-expo)] md:group-hover:h-1"
-          :style="{ background: sector.color }"
+          :style="{ background: brandColor(sector.color) }"
         />
 
         <div class="absolute inset-0 z-10 flex flex-col justify-end p-[clamp(1rem,2vw,2rem)]">
@@ -131,7 +131,7 @@ const sizesHalfMd = SIZES_HALF_MD
             "
           >
             <span class="u-eyebrow text-white/80">
-              <span class="size-[7px] shrink-0 rounded-full" :style="{ background: sector.color }" />
+              <span class="size-[7px] shrink-0 rounded-full" :style="{ background: brandColor(sector.color) }" />
               {{ $t('gallery.sectors.branch', { index: String(sector.index).padStart(2, '0') }) }}
             </span>
 
