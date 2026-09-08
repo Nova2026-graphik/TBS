@@ -12,6 +12,12 @@ import type { Branch, Domain } from '#shared/types'
  * `/api/site-content` — les quatre branches et les huit domaines — sans en
  * inventer un troisième.
  *
+ * L'accordéon ne vaut qu'en largeur : en dessous de `md`, les quatre panneaux
+ * s'empilent et montrent tous leurs domaines. Le dépliement reposait sur le
+ * survol et le focus, deux gestes qu'un écran tactile n'a pas — trois secteurs
+ * sur quatre gardaient donc leurs domaines invisibles au doigt, et les toucher
+ * quittait la page. Supprimer le geste vaut mieux que le corriger.
+ *
  * Trois écarts avec l'accordéon d'origine, tous pour les mêmes raisons que le
  * reste du site :
  *
@@ -81,12 +87,21 @@ const sizesHalfMd = SIZES_HALF_MD
 
     <!-- Hauteur fixe : sans elle, le panneau déplié étirerait la section à
          chaque survol et ferait sauter le reste de la page. -->
-    <ul v-reveal class="flex h-[40rem] flex-col gap-1.5 md:h-[37.5rem] md:flex-row md:gap-2.5">
+    <!--
+      En dessous de `md`, ce n'est plus un accordéon : les quatre panneaux
+      s'empilent et montrent tous leurs domaines. Le dépliement reposait sur le
+      survol et la prise de focus — deux gestes qu'un écran tactile n'a pas.
+      Trois secteurs sur quatre gardaient donc leurs domaines invisibles au
+      doigt, et les toucher quittait la page. Supprimer le geste vaut mieux que
+      le corriger : la contrainte de largeur qui justifiait l'accordéon
+      n'existe pas sur une colonne.
+    -->
+    <ul v-reveal class="flex flex-col gap-1.5 md:h-[37.5rem] md:flex-row md:gap-2.5">
       <li
         v-for="sector in sectors"
         :key="sector.slug"
-        class="group relative min-h-0 overflow-hidden bg-shell transition-[flex] duration-[900ms] ease-[var(--ease-out-expo)]"
-        :class="active === sector.slug ? 'flex-[6] md:flex-[4]' : 'flex-[1]'"
+        class="group relative min-h-[29rem] overflow-hidden bg-shell transition-[flex] duration-[900ms] ease-[var(--ease-out-expo)] md:min-h-0"
+        :class="active === sector.slug ? 'md:flex-[4]' : 'md:flex-[1]'"
       >
         <NuxtImg
           :src="sector.image"
@@ -98,13 +113,13 @@ const sizesHalfMd = SIZES_HALF_MD
           width="1200"
           height="900"
           class="absolute inset-0 size-full object-cover transition-transform duration-[1.2s] ease-[var(--ease-out-expo)]"
-          :class="active === sector.slug ? 'scale-100' : 'scale-[1.08]'"
+          :class="active === sector.slug ? 'scale-100' : 'max-md:scale-100 scale-[1.08]'"
         />
 
         <!-- Voile de mise en retrait, sur les panneaux repliés. -->
         <span
           class="absolute inset-0 bg-ink/65 transition-opacity duration-500"
-          :class="active === sector.slug ? 'opacity-0' : 'opacity-100'"
+          :class="active === sector.slug ? 'opacity-0' : 'max-md:opacity-0 opacity-100'"
         />
         <!-- Dégradé de lisibilité, sur le panneau déplié : le texte se pose
              sur l'encre, pas sur la photo. Il est plus couvrant en mobile,
@@ -112,7 +127,7 @@ const sizesHalfMd = SIZES_HALF_MD
              remonterait sinon sur la partie claire de la photo. -->
         <span
           class="absolute inset-0 bg-gradient-to-t from-ink via-ink/85 to-ink/45 transition-opacity duration-500 md:via-ink/75 md:to-ink/25"
-          :class="active === sector.slug ? 'opacity-100' : 'opacity-0'"
+          :class="active === sector.slug ? 'opacity-100' : 'max-md:opacity-100 opacity-0'"
         />
         <!-- Filet de branche, comme sur les cartes de l'accueil. -->
         <span
@@ -127,7 +142,7 @@ const sizesHalfMd = SIZES_HALF_MD
             :class="
               active === sector.slug
                 ? 'translate-y-0 opacity-100 delay-150'
-                : 'translate-y-8 opacity-0'
+                : 'max-md:translate-y-0 max-md:opacity-100 translate-y-8 opacity-0'
             "
           >
             <span class="u-eyebrow text-white/80">
@@ -175,7 +190,7 @@ const sizesHalfMd = SIZES_HALF_MD
                colonne est trop étroite pour le nom à l'horizontale. -->
           <span
             aria-hidden="true"
-            class="pointer-events-none absolute inset-x-2 bottom-4 flex justify-center transition-opacity duration-500 md:bottom-8"
+            class="pointer-events-none absolute inset-x-2 bottom-4 hidden justify-center transition-opacity duration-500 md:bottom-8 md:flex"
             :class="active === sector.slug ? 'opacity-0' : 'opacity-100 delay-300'"
           >
             <span class="hidden whitespace-nowrap text-base uppercase tracking-[0.2em] text-white [writing-mode:vertical-rl] md:block">
