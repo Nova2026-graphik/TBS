@@ -764,6 +764,7 @@ les exécutions repartiront.
 | `npm run typecheck` | Types, sur les gabarits comme sur le code |
 | `npm test` | Tests unitaires (Vitest) |
 | `npm run test:e2e` | Parcours de bout en bout (Playwright) |
+| `npm run photos:check` | Noms, orientations et proportions de `public/images` — cf. `docs/reportage-photo.md` |
 
 ### Lint
 
