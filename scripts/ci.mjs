@@ -1,16 +1,20 @@
 /**
  * Rejoue localement la vérification d'intégration continue.
  *
- * `.github/workflows/ci.yml` est correct, mais GitHub Actions ne démarre
- * aucune exécution sur ce dépôt : les 66 exécutions enregistrées, tous
- * workflows confondus, échouent au démarrage sans produire de journal. Tant
- * que ce n'est pas débloqué côté compte, ce script est le filet — il enchaîne
- * exactement les mêmes étapes que le travail `qualite`.
+ * `.github/workflows/ci.yml` est correct, mais aucun travail ne s'exécute sur
+ * ce dépôt : les exécutions sont bien créées, puis rendent `failure` en une ou
+ * deux secondes sans enregistrer une seule étape. Un workflow ne contenant
+ * qu'un `echo` échoue de la même façon — la cause est au niveau du compte, pas
+ * du fichier. Voir le README, section « Intégration continue ». Tant que ce
+ * n'est pas débloqué, ce script est le filet.
  *
- *   npm run ci
+ *   npm run ci                # le travail `qualite`
+ *   npm run ci -- --parcours  # et les parcours Playwright par-dessus
  *
  * S'arrête à la première étape en échec et renvoie un code non nul, pour
- * pouvoir servir de crochet `pre-push`.
+ * pouvoir servir de crochet `pre-push`. Les parcours restent hors du chemin
+ * par défaut : ils demandent un navigateur installé et doublent l'attente,
+ * ce qui n'est pas un prix à payer à chaque envoi.
  */
 import { spawnSync } from 'node:child_process'
 import process from 'node:process'
@@ -30,6 +34,11 @@ const STEPS = [
   { name: 'Audit de sécurité', command: 'npm audit --audit-level=high --omit=dev' },
 ]
 
+/** Le travail `parcours` du workflow, joué seulement sur demande. */
+const PARCOURS = { name: 'Parcours', command: 'npm run test:e2e' }
+
+const steps = process.argv.includes('--parcours') ? [...STEPS, PARCOURS] : STEPS
+
 function duration(startedAt) {
   return `${((Date.now() - startedAt) / 1000).toFixed(1)} s`
 }
@@ -37,7 +46,7 @@ function duration(startedAt) {
 const results = []
 let failed = null
 
-for (const step of STEPS) {
+for (const step of steps) {
   const startedAt = Date.now()
   process.stdout.write(`\n── ${step.name} ${'─'.repeat(Math.max(4, 60 - step.name.length))}\n`)
 
