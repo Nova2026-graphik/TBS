@@ -1,10 +1,11 @@
 #!/bin/sh
 # Vérification avant envoi.
 #
-# GitHub Actions ne démarre aucune exécution sur ce dépôt — cf. l'issue #17 :
-# les exécutions échouent au démarrage, cause au niveau du compte. Tant que ce
-# n'est pas débloqué, ce crochet est le seul garde-fou automatique : il rejoue
-# localement les étapes du travail `qualite` avant que le code ne parte.
+# Aucun travail ne s'exécute sur ce dépôt — cf. l'issue #17 : les exécutions
+# sont créées, puis rendent `failure` en une ou deux secondes sans enregistrer
+# une seule étape, cause au niveau du compte. Tant que ce n'est pas débloqué,
+# ce crochet est le seul garde-fou automatique : il rejoue localement les
+# étapes du travail `qualite` avant que le code ne parte.
 #
 # Installation :  npm run hooks:install
 # Contournement : git push --no-verify   (à réserver aux cas où l'on sait ce
@@ -14,6 +15,29 @@
 
 if [ "$SKIP_PRE_PUSH" = "1" ]; then
   echo "pre-push : ignoré (SKIP_PRE_PUSH=1)"
+  exit 0
+fi
+
+# Une suppression de référence n'envoie aucun commit : il n'y a rien à
+# vérifier, et trois minutes de build pour effacer une branche sont trois
+# minutes perdues. Git écrit sur l'entrée standard une ligne par référence
+# poussée — « <réf locale> <sha local> <réf distante> <sha distant> » — et
+# donne un sha local entièrement nul quand la référence est supprimée.
+#
+# Entrée vide : on vérifie quand même. Le crochet appelé à la main hors de Git
+# doit se comporter comme si du code partait, jamais l'inverse.
+references=0
+code_a_verifier=0
+
+while read -r _ref_locale sha_local _ref_distante _sha_distant; do
+  references=$((references + 1))
+  case "$sha_local" in
+    *[!0]*) code_a_verifier=1 ;;
+  esac
+done
+
+if [ "$references" -gt 0 ] && [ "$code_a_verifier" -eq 0 ]; then
+  echo "pre-push : rien à vérifier (suppression de référence)"
   exit 0
 fi
 
