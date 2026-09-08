@@ -322,7 +322,8 @@ app/
   assets/css/main.css      Design tokens (@theme Tailwind v4) + base + utilitaires
   components/
     App/                   TopBar, Header, Footer, ContactDock
-    Ui/                    Button, SectionHead, Tag, StatRow, PageHero
+    Ui/                    Button, SectionHead, Tag, StatRow
+    Ui/PageHero.vue        En-tête de page + planche-contact illustrée (`media`)
     Home/                  Hero, Branches, Categories, Domains, Inspirations, Testimonials
     Services/              Block, Offers
     Gallery/               Lightbox, Sectors
@@ -378,7 +379,8 @@ scripts/
   install-hooks.mjs        Installe le crochet de pré-envoi
 tests/
   unit/                    Vitest — validation, dépôt, limiteur, IP, admin, images
-  e2e/                     Playwright — devis, galerie, services, navigation mobile
+  e2e/                     Playwright — devis, galerie, services, navigation mobile,
+                           en-têtes illustrés
 shared/
   types.ts                 Types partagés client / serveur
   utils/legalData.ts       Identité légale — le seul fichier à compléter
@@ -429,6 +431,16 @@ performance.
   catégorie.
 - **Barre « Aperçu Desktop / Tablet / Mobile » supprimée.** C'était un
   artefact de prototypage : le site est réellement responsive.
+- **En-têtes de page illustrés.** La maquette ouvrait chaque page intérieure
+  sur un bandeau sable et du texte, avec une moitié droite vide sous le chapô.
+  `UiPageHero` accepte désormais `media` : trois ou quatre vignettes carrées,
+  façon planche-contact, qui montrent de quoi la page parle avant qu'on ait lu
+  une ligne — les quatre familles de réalisations sur `/galerie`, les quatre
+  branches sur `/services`, le savoir-faire sur `/conseils`, l'entreprise sur
+  `/contact`, le matériel sur `/faq`. Elles entrent en cascade, avec un zoom
+  lent, et sont neutralisées sous `prefers-reduced-motion`.
+  Les trois pages légales n'en reçoivent pas : une mention légale n'a pas à
+  s'illustrer, et `media` y reste simplement absent.
 
 ### Accessibilité
 
@@ -441,6 +453,10 @@ performance.
 - Visionneuse de galerie : `role="dialog"`, focus déplacé, navigation aux
   flèches.
 - Anneau de focus visible et unique sur tous les éléments interactifs.
+- **Vignettes d'en-tête retirées de l'arbre d'accessibilité.** Elles sont
+  décoratives — les mêmes photos reviennent en pleine taille plus bas — et un
+  `alt` descriptif les ferait lire deux fois (WCAG 1.1.1). `tests/e2e/heros.spec.ts`
+  vérifie qu'aucune n'expose de rôle `img`.
 - `prefers-reduced-motion` respecté : le contenu reste visible, les
   animations sont neutralisées.
 - **Contrastes conformes AA** (WCAG 1.4.3). Les couleurs de branche pêche et
@@ -458,6 +474,11 @@ performance.
 
 - `<NuxtImg>` : WebP, `srcset` responsive, `loading="lazy"` hors hero.
   Le hero est préchargé — c'est le LCP.
+- **Aucun décalage sur les vignettes d'en-tête** : le cadre porte le rapport
+  d'aspect, pas l'image, et la hauteur est donc réservée avant le chargement.
+  Le budget CLS de la CI (0,1) reste tenu. `tests/e2e/heros.spec.ts` mesure en
+  outre la largeur réellement décodée, pour attraper le `srcset` dégénéré que
+  documente `app/utils/imageSizes.ts`.
 - Polices auto-hébergées par `@nuxt/fonts` (plus d'appel à Google Fonts au
   chargement).
 - Vignettes de galerie filtrées **retirées du DOM** au lieu d'être masquées en
