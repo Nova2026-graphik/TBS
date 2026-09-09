@@ -95,12 +95,14 @@
     "branches": {
       "eyebrow": "Une maison, quatre branches",
       "title": "Quatre métiers,",
-      "accent": "un seul interlocuteur"
+      "accent": "un seul interlocuteur",
+      "lead": "TBS Distribution S.A.R.L structure son activité en quatre branches complémentaires. Chacune a ses équipes et ses fournisseurs ; toutes partagent la même logistique et la même exigence de délai."
     },
     "categories": {
       "eyebrow": "TBS Events — nos catégories",
       "title": "Six univers,",
-      "accent": "une seule livraison"
+      "accent": "une seule livraison",
+      "refCount": "{count} réf."
     },
     "domains": {
       "eyebrow": "Nos domaines d'intervention",
@@ -116,7 +118,8 @@
     "testimonials": {
       "previous": "Témoignage précédent",
       "next": "Témoignage suivant",
-      "goTo": "Témoignage {n}"
+      "goTo": "Témoignage {n}",
+      "eyebrow": "Ils nous ont confié leur date"
     }
   },
   "services": {
@@ -199,7 +202,10 @@
         "Discrétion",
         "Une équipe présente, jamais dans le cadre"
       ]
-    ]
+    ],
+    "valuesEyebrow": "Nos valeurs",
+    "valuesTitle": "Trois engagements",
+    "valuesAccent": "non négociables"
   },
   "contact": {
     "eyebrow": "Contact",
@@ -232,7 +238,8 @@
       "mentions": "Mentions légales",
       "rental": "Conditions de location",
       "privacy": "Confidentialité"
-    }
+    },
+    "copyright": "© {year} TBS Distribution S.A.R.L — Tous droits réservés."
   },
   "dock": {
     "whatsapp": "Nous écrire sur WhatsApp",
