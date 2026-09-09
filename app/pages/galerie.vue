@@ -216,6 +216,17 @@ const HERO_MEDIA = [
       </div>
     </UiPageHero>
 
+    <!--
+      Les quatre secteurs ouvrent la page, avant les vignettes.
+      Ils la fermaient : le visiteur voyait d'abord vingt-trois photographies
+      de réception et pouvait quitter en croyant que TBS ne fait que cela —
+      alors que trois secteurs sur quatre n'ont presque aucune photo publiée.
+      Poser « qui fait quoi » d'entrée répond à la question avant qu'elle ne se
+      pose de travers, et les domaines mènent à la grille qui suit
+      immédiatement, filtrée.
+    -->
+    <GallerySectors :branches="data.branches" :domains="data.domains" />
+
     <section ref="grid" class="u-gutter u-section bg-white">
       <!--
         Filtre métier actif. Sans ce rappel, un visiteur arrivé par un lien
@@ -385,11 +396,6 @@ const HERO_MEDIA = [
         <UiButton to="/contact" size="lg">{{ $t('gallery.similar') }}</UiButton>
       </div>
     </section>
-
-    <!-- Les vignettes montrent des réceptions ; l'accordéon rappelle que la
-         même société couvre trois autres secteurs. Il ferme la page côté
-         « qui fait quoi », avant l'appel au devis. -->
-    <GallerySectors :branches="data.branches" :domains="data.domains" />
 
     <GalleryLightbox
       :items="visible"
