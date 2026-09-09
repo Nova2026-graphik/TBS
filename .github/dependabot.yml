@@ -11,6 +11,10 @@ version: 2
 updates:
   - package-ecosystem: npm
     directory: /
+    # Les pull requests visent `develop`, jamais `main` : `main` reste l'état
+    # livré au client et n'avance que par une fusion décidée. Sans cette ligne,
+    # Dependabot ouvre sur la branche par défaut du dépôt.
+    target-branch: develop
     schedule:
       interval: weekly
       day: monday
@@ -37,6 +41,7 @@ updates:
   # signalerait.
   - package-ecosystem: github-actions
     directory: /
+    target-branch: develop
     schedule:
       interval: weekly
       day: monday
