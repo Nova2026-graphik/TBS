@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { pageInteractive } from './utils'
 
 /**
  * Déduction de la branche à partir du type de demande.
@@ -11,6 +12,7 @@ import { expect, test } from '@playwright/test'
 test.describe('branche déduite du type de demande', () => {
   test('le sélecteur disparaît quand le type désigne la branche', async ({ page }) => {
     await page.goto('/contact')
+    await pageInteractive(page)
 
     await expect(page.locator('#field-requestType')).toHaveValue('Mariage')
     await expect(page.locator('#field-branch')).toHaveCount(0)
@@ -21,6 +23,7 @@ test.describe('branche déduite du type de demande', () => {
 
   test('il revient sur un type ambigu', async ({ page }) => {
     await page.goto('/contact')
+    await pageInteractive(page)
 
     await page.locator('#field-requestType').selectOption('Fourniture / marché public')
     await expect(page.locator('#field-branch')).toBeVisible()
@@ -34,6 +37,7 @@ test.describe('branche déduite du type de demande', () => {
 
   test('la valeur envoyée reste la chaîne d’origine', async ({ page }) => {
     await page.goto('/contact')
+    await pageInteractive(page)
 
     const envoi = page.waitForRequest(r => r.url().includes('/api/quotes') && r.method() === 'POST')
 
@@ -51,6 +55,7 @@ test.describe('branche déduite du type de demande', () => {
 
   test('un lien ?branche= prime et reste visible', async ({ page }) => {
     await page.goto('/contact?branche=agro')
+    await pageInteractive(page)
 
     // Une valeur imposée que le visiteur ne pourrait ni voir ni corriger
     // vaudrait moins que la question elle-même.

@@ -23,6 +23,20 @@ const NUXT_IMG_ONERROR_HASH = '\'sha256-bwK6T5wZVTANitXbrTsel7kl/PyCjCd/Dq5Qoz3i
 const OPENSTREETMAP_ORIGIN = 'https://www.openstreetmap.org'
 
 /**
+ * Où le navigateur poste les violations — cf. `server/api/csp-report.post.ts`.
+ *
+ * `report-uri` et non la *Reporting API* : la seconde exige un en-tête
+ * `Reporting-Endpoints` portant une URL **absolue**, donc l'origine du site —
+ * laquelle est justement fausse en production tant que l'issue #81 n'est pas
+ * traitée. Un chemin relatif ne dépend de rien, et `report-uri` reste compris
+ * par tous les navigateurs qui appliquent une CSP.
+ *
+ * Sans lui, `Report-Only` est décoratif : les violations partent dans la
+ * console du visiteur et personne ne les voit.
+ */
+const CSP_REPORT_PATH = '/api/csp-report'
+
+/**
  * Directives CSP. `'self'` partout : polices (`/_fonts`), images (`/_ipx`),
  * scripts et styles sont tous auto-hébergés, aucun CDN n'est sollicité.
  */
@@ -113,6 +127,8 @@ export function buildContentSecurityPolicy(options: SecurityHeadersOptions): str
   }
 
   const policy = Object.entries(directives).map(([name, values]) => `${name} ${values.join(' ')}`)
+
+  policy.push(`report-uri ${CSP_REPORT_PATH}`)
 
   // Les sous-ressources restent en HTTP si un lien absolu traîne : on force.
   // Le navigateur ignore cette directive dans une politique report-only et

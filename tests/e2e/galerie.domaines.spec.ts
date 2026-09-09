@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { pageInteractive } from './utils'
 
 /**
  * Filtrage de la galerie par branche et par domaine.
@@ -52,6 +53,7 @@ test.describe('galerie filtrée par métier', () => {
 
   test('les deux familles de filtre s’excluent', async ({ page }) => {
     await page.goto('/galerie?branche=equipements&domaine=roulant')
+    await pageInteractive(page)
     await page.getByRole('button', { name: 'Mariages' }).click()
 
     await expect(page).toHaveURL(/filtre=mariage/)
@@ -61,6 +63,7 @@ test.describe('galerie filtrée par métier', () => {
 
   test('le filtre se retire et rend le catalogue', async ({ page }) => {
     await page.goto('/galerie?branche=equipements&domaine=roulant')
+    await pageInteractive(page)
     await page.getByRole('button', { name: /Voir toute la galerie/ }).click()
 
     await expect(page).toHaveURL(/\/galerie$/)
@@ -69,6 +72,7 @@ test.describe('galerie filtrée par métier', () => {
 
   test('depuis les secteurs, un clic filtre la galerie', async ({ page }) => {
     await page.goto('/galerie')
+    await pageInteractive(page)
 
     const lien = page.getByRole('link', { name: /Matériel roulant/ }).first()
     await lien.scrollIntoViewIfNeeded()

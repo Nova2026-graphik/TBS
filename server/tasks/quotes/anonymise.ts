@@ -12,12 +12,15 @@
 import { QUOTE_RETENTION_MONTHS } from '#shared/utils/legalData'
 import { useDb } from '../../database/client'
 import { anonymiseExpiredQuotes } from '../../utils/quoteRetention'
+import { purgeAdminAttempts } from '../../utils/rateLimit'
 
 interface AnonymiseTaskResult {
   /** Renseigné quand la tâche n'avait rien à faire. */
   skipped?: string
   count?: number
   cutoff?: string
+  /** Tentatives de connexion effacées au même passage. */
+  tentatives?: number
   error?: string
 }
 
@@ -42,7 +45,19 @@ export default defineTask({
         )
       }
 
-      return { result: { count, cutoff: cutoff.toISOString() } }
+      // Les tentatives de connexion partent au même passage : elles ne
+      // servent qu'une fenêtre d'une heure, et ce sont aussi des empreintes
+      // d'adresses. Un échec ici ne doit pas priver l'anonymisation de son
+      // résultat, d'où le traitement séparé.
+      let tentatives: number | undefined
+      try {
+        tentatives = await purgeAdminAttempts(db)
+      }
+      catch (error) {
+        console.error('[admin] purge des tentatives impossible :', error)
+      }
+
+      return { result: { count, cutoff: cutoff.toISOString(), tentatives } }
     }
     catch (error) {
       // Une purge qui échoue ne doit pas faire tomber le serveur : elle
