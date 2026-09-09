@@ -156,7 +156,7 @@
     "sectors": {
       "eyebrow": "Sectors & fields",
       "title": "Four sectors,",
-      "accent": "eight fields",
+      "accent": "seventeen fields",
       "lead": "Receptions are only part of the work: here are the four sectors and the fields each one covers.",
       "branch": "Division {index}",
       "domains": "Fields covered",
@@ -170,7 +170,10 @@
     "emptyBody": "Our photographs do not yet cover everything we do. Tell us about your project and we will show you comparable references.",
     "emptyCta": "Describe my project",
     "sectorLink": "View projects — {domain}",
-    "emptyCategory": "No project in this category yet"
+    "emptyCategory": "No project in this category yet",
+    "equipmentTitle": "What this field covers — {count} references",
+    "equipmentLead": "This list is not a sales catalogue: it states what we supply.",
+    "equipmentCta": "Ask for a quote for your exact need."
   },
   "about": {
     "eyebrow": "Organisation",

@@ -7,7 +7,7 @@ import { pageInteractive } from './utils'
  * Les vignettes de la grille sont les `<li>` de la liste en grille — la page
  * en contient d'autres (filtres, secteurs), d'où le sélecteur précis.
  */
-const grille = 'section ul[class*=grid] > li'
+const grille = 'section ul[class*=grid] > li:has(img)'
 
 test.describe('galerie filtrée par métier', () => {
   test('un lien de domaine ne montre que ses réalisations', async ({ page }) => {
@@ -68,6 +68,35 @@ test.describe('galerie filtrée par métier', () => {
 
     await expect(page).toHaveURL(/\/galerie$/)
     await expect(page.locator(grille)).toHaveCount(9)
+  })
+
+  test('un domaine annonce ce qu’il couvre', async ({ page }) => {
+    await page.goto('/galerie?branche=equipements&domaine=roulant')
+    await pageInteractive(page)
+
+    await expect(page.getByRole('heading', { name: /Ce que ce domaine couvre/ })).toBeVisible()
+    await expect(page.getByText('Toyota Hilux 4×4 double cabine')).toBeVisible()
+    // La description accompagne la référence : un nom seul n'apprend rien.
+    await expect(page.getByText(/Pick-up double cabine/)).toBeVisible()
+  })
+
+  test('un domaine sans photo montre quand même ses références', async ({ page }) => {
+    // Outillage : quinze références, aucune réalisation publiée. C'est le cas
+    // qui justifie le bloc — la galerie seule n'aurait rien à montrer.
+    await page.goto('/galerie?branche=equipements&domaine=outillage')
+    await pageInteractive(page)
+
+    await expect(page.locator(grille)).toHaveCount(0)
+    await expect(page.getByText('Pince multimètre TRMS 700 A')).toBeVisible()
+  })
+
+  test('une branche seule ne déroule pas les références', async ({ page }) => {
+    // Treize domaines mêlés feraient une liste illisible : le bloc n'a de sens
+    // que sur un domaine précis.
+    await page.goto('/galerie?branche=equipements')
+    await pageInteractive(page)
+
+    await expect(page.getByRole('heading', { name: /Ce que ce domaine couvre/ })).toHaveCount(0)
   })
 
   test('depuis les secteurs, un clic filtre la galerie', async ({ page }) => {

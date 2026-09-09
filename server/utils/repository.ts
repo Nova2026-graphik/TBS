@@ -13,6 +13,7 @@ import * as contentEn from '../data/content.en'
 import type {
   Branch,
   Domain,
+  Equipment,
   FaqItem,
   GalleryItem,
   RentalCategory,
@@ -138,6 +139,30 @@ export function getDomains(locale: ContentLocale = 'fr') {
       description: r.description,
     }))
   }, statique(locale).domains)
+}
+
+/**
+ * Références du catalogue, dans l'ordre où elles ont été semées.
+ *
+ * Le tri par `position` puis par `id` importe : deux références d'un même
+ * domaine partagent leur position quand le seed les a insérées ensemble, et
+ * un ordre instable ferait sautiller la liste d'un rendu à l'autre.
+ */
+export function getEquipment(locale: ContentLocale = 'fr') {
+  return withFallback<Equipment>(async () => {
+    const db = useDb()!
+    const rows = await db
+      .select()
+      .from(schema.equipment)
+      .orderBy(asc(schema.equipment.position), asc(schema.equipment.id))
+
+    return rows.map(r => ({
+      domain: r.domainSlug as Equipment['domain'],
+      name: r.name,
+      description: r.description,
+      specs: r.specs ?? [],
+    }))
+  }, statique(locale).equipment)
 }
 
 export function getGalleryItems(locale: ContentLocale = 'fr') {
