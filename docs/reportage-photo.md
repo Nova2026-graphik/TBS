@@ -171,12 +171,32 @@ Aucune intervention sur le code n'est nécessaire, à trois conditions :
    la photo actuelle, pas la nouvelle. Une description fausse est pire
    qu'absente pour un lecteur d'écran.
 
+Ces trois conditions ne tiennent pas toutes seules. Une promesse écrite dans
+un document finit par être rompue le jour de la livraison, quand un fichier
+arrive en paysage là où le site attend un portrait. Elles sont donc vérifiées :
+
+```bash
+npm run photos:check
+```
+
+Le script compare `public/images` à `docs/photos-reference.json`, qui
+enregistre la géométrie attendue de chaque fichier. Il échoue si une image
+manque, change d'orientation, s'écarte de ses proportions de plus de 2 % ou
+perd en définition ; il signale aussi toute image citée dans le code sans
+exister sur le disque. Les fichiers encore sous 2400 px sont comptés, pas
+reprochés — ce sont les images de maquette, et c'est l'objet du reportage.
+
 Après remplacement :
 
 ```bash
-npm run icons:generate   # les cartes sociales reprennent les nouvelles photos
+npm run photos:check            # noms, orientations, proportions
+npm run photos:check -- --enregistrer   # une fois la livraison acceptée
+npm run icons:generate          # les cartes sociales reprennent les nouvelles photos
 npm run build
 ```
+
+La référence n'est réenregistrée **qu'après relecture** : la régénérer sans
+regarder reviendrait à valider d'avance tout ce que le script doit arrêter.
 
 ## Note sur la définition
 

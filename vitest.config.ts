@@ -13,6 +13,12 @@ import { defineConfig } from 'vitest/config'
 export default defineConfig({
   test: {
     environment: 'node',
+    /**
+     * Vitest 5 sait garder ses transformations d'un passage à l'autre. Elles
+     * pesaient 42 % du temps d'exécution, refaites à chaque fois pour un
+     * dossier de tests qui ne change pas entre deux relances.
+     */
+    fsModuleCache: true,
     include: ['tests/unit/**/*.spec.ts'],
     reporters: ['default'],
   },

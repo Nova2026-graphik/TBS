@@ -14,10 +14,10 @@ const localePath = useLocalePath()
 
 const NAV = computed(() => [
   { key: 'home', to: '/' },
-  { key: 'gallery', to: '/galerie' },
-  { key: 'services', to: '/services' },
   { key: 'about', to: '/a-propos' },
+  { key: 'services', to: '/services' },
   { key: 'advice', to: '/conseils' },
+  { key: 'gallery', to: '/galerie' },
   { key: 'contact', to: '/contact' },
   { key: 'faq', to: '/faq' },
 ].map(item => ({ ...item, label: t(`nav.${item.key}`), to: localePath(item.to) })))
