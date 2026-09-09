@@ -102,15 +102,14 @@ quand la photo existera.
 | `branche-agro.jpg` | Parcelle ou équipement agricole en usage | 3:2 |
 | `agro-transformation.jpg` | Unité de transformation, matériel en fonctionnement | 3:2 |
 
-### Dix-sept fichiers passent aussi en en-tête de page
+### Dix-huit fichiers passent aussi en en-tête de page
 
 Depuis que les en-têtes de page portent une planche-contact
-(`app/components/Ui/PageHero.vue`), dix-sept de ces fichiers apparaissent une
+(`app/components/Ui/PageHero.vue`), treize de ces fichiers apparaissent une
 seconde fois, en **vignette carrée d'environ 170 px**, tout en haut d'une page :
 
 | Page | Fichiers |
 | --- | --- |
-| `/galerie` | `galerie-mariage-adjovi`, `galerie-ceremonie-officielle`, `galerie-diner-gala`, `galerie-verrerie` |
 | `/services` | `branche-equipements`, `branche-events`, `branche-etudes`, `branche-agro` |
 | `/conseils` | `events-dressage-or`, `categorie-nappage`, `categorie-art-de-la-table` |
 | `/contact` | `apropos-equipe`, `apropos-entrepot`, `equipements-materiel-roulant` |
@@ -121,6 +120,26 @@ centré**. Un plan large où l'essentiel est sur un bord passera en pleine
 largeur plus bas dans la page, mais se retrouvera coupé en vignette. Cadrer en
 gardant le sujet au centre, quitte à laisser de l'air autour — le recadrage
 carré est automatique, il n'y a rien à livrer de plus.
+
+Cinq autres passent en **couverture de collection** sur `/galerie`, où
+`app/components/Gallery/Hero.vue` les affiche en grand, en fondu croisé :
+
+| Collection | Fichier |
+| --- | --- |
+| Mariages | `galerie-mariage-adjovi` |
+| Cérémonies | `galerie-ceremonie-officielle` |
+| Entreprise | `galerie-seminaire` |
+| Décor & détails | `galerie-verrerie` |
+| Fournitures & équipements | `equipements-informatique` |
+
+Ce sont **les premières de leur catégorie dans `server/data/content.ts`** : la
+couverture n'est pas un réglage à part, elle suit l'ordre des réalisations.
+Réordonner la liste change donc la photo d'ouverture.
+
+Le cadre, lui, va du **portrait 4:5 en téléphone au panoramique 2,7:1 en
+bureau** — la même image, recadrée par le centre dans les deux sens. Une
+couverture doit donc survivre aux deux : sujet au centre, rien d'essentiel
+dans les coins ni collé aux bords hauts et bas.
 
 ### 7. Ambiances — les plus remplaçables
 

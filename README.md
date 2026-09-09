@@ -328,6 +328,8 @@ app/
     Home/                  Hero, Branches, Categories, Domains, Inspirations, Testimonials
     Services/              Block, Offers
     Gallery/               Lightbox, Sectors
+    Gallery/Hero.vue       En-tête propre à /galerie — planche animée, une
+                           collection à la fois, la carte applique le filtre
     Faq/                   Accordion
     Contact/               Form
     Legal/                 Gabarit commun aux trois pages légales
@@ -516,6 +518,16 @@ performance.
   lent, et sont neutralisées sous `prefers-reduced-motion`.
   Les trois pages légales n'en reçoivent pas : une mention légale n'a pas à
   s'illustrer, et `media` y reste simplement absent.
+- **La galerie, elle, ouvre sur une planche animée.** `GalleryHero` y remplace
+  l'en-tête commun : un grand cadre fait défiler les collections — Mariages,
+  Cérémonies, Entreprise, Décor, Fournitures — une à la fois, photo de
+  couverture en fondu croisé et carte qui la nomme. **La carte est un bouton**
+  et applique le filtre correspondant ; la planche suit en retour le
+  `?filtre=` de l'URL et s'immobilise dès qu'un filtre est posé. Rotation de
+  six secondes, donc arrêt explicite exigé par WCAG 2.2.2 : bouton de pause,
+  arrêt au survol, au focus et en arrière-plan, rotation désactivée sous
+  `prefers-reduced-motion`. Seule la première photo est préchargée, les quatre
+  autres n'entrent dans le DOM qu'après l'événement `load`.
 
 ### Accessibilité
 
