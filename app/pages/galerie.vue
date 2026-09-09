@@ -87,6 +87,24 @@ const visible = computed(() => {
     : data.value.gallery.filter(i => i.category === (activeFilter.value as GalleryCategory))
 })
 
+/**
+ * Références du domaine filtré.
+ *
+ * Elles répondent à la question que la galerie laissait sans réponse : le
+ * visiteur qui clique « Matériel roulant » voyait des photographies, jamais
+ * la liste de ce que TBS fournit. Le bloc n'apparaît que sur un domaine
+ * précis — sur une branche entière, il mêlerait des familles sans rapport.
+ */
+const references = computed(() =>
+  activeDomain.value
+    // `?? []` et non une lecture directe : la réponse de `/api/site-content`
+    // est mise en cache au-delà d'un déploiement, et peut donc dater d'une
+    // version où ce champ n'existait pas. La clé de cache est versionnée pour
+    // cela, mais une page ne doit pas tomber parce qu'un champ manque.
+    ? (data.value.equipment ?? []).filter(e => e.domain === activeDomain.value)
+    : [],
+)
+
 /** Retire le filtre métier et revient au catalogue complet. */
 function clearSector() {
   const query = { ...route.query }
@@ -161,29 +179,23 @@ usePageSeo({
 useBreadcrumbSchema([{ name: 'Galerie', path: '/galerie' }])
 
 const sizesThird = SIZES_THIRD
-
-/**
- * Planche-contact de l'en-tête : une réalisation par famille, dans l'ordre des
- * filtres posés juste en dessous. Le visiteur voit ce qu'il va pouvoir trier.
- */
-const HERO_MEDIA = [
-  { src: '/images/galerie-mariage-adjovi.jpg', subject: 'Mariage — salle dressée' },
-  { src: '/images/galerie-ceremonie-officielle.jpg', subject: 'Cérémonie officielle' },
-  { src: '/images/galerie-diner-gala.jpg', subject: 'Dîner de gala — entreprise' },
-  { src: '/images/galerie-verrerie.jpg', subject: 'Verrerie — décor & détails' },
-]
 </script>
 
 <template>
   <div>
-    <UiPageHero
-      :eyebrow="$t('gallery.eyebrow')"
-      :title="$t('gallery.title')"
-      :accent="$t('gallery.accent')"
-      :lead="$t('gallery.lead')"
-      :media="HERO_MEDIA"
+    <!--
+      En-tête propre à la galerie : une planche animée qui fait défiler les
+      collections. Un filtre métier posé dans l'URL (`?branche=`) n'a pas
+      d'équivalent parmi les collections : la planche reprend alors sa
+      rotation plutôt que de s'arrêter sur une diapositive au hasard.
+    -->
+    <GalleryHero
+      :items="data.gallery"
+      :branches="data.branches"
+      :active="activeSector ? 'all' : activeFilter"
+      @select="setFilter"
     >
-      <div class="mt-[clamp(1.75rem,4vw,3rem)] flex flex-wrap gap-2.5">
+      <div class="mt-[clamp(1.75rem,4vw,3rem)] flex flex-wrap justify-center gap-2.5">
         <button
           v-for="filter in filters"
           :key="filter.value"
@@ -196,7 +208,18 @@ const HERO_MEDIA = [
           {{ filter.label }}
         </button>
       </div>
-    </UiPageHero>
+    </GalleryHero>
+
+    <!--
+      Les quatre secteurs ouvrent la page, avant les vignettes.
+      Ils la fermaient : le visiteur voyait d'abord vingt-trois photographies
+      de réception et pouvait quitter en croyant que TBS ne fait que cela —
+      alors que trois secteurs sur quatre n'ont presque aucune photo publiée.
+      Poser « qui fait quoi » d'entrée répond à la question avant qu'elle ne se
+      pose de travers, et les domaines mènent à la grille qui suit
+      immédiatement, filtrée.
+    -->
+    <GallerySectors :branches="data.branches" :domains="data.domains" />
 
     <section ref="grid" class="u-gutter u-section bg-white">
       <!--
@@ -223,6 +246,50 @@ const HERO_MEDIA = [
             <path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" />
           </svg>
         </button>
+      </div>
+
+      <!--
+        Ce que le domaine recouvre. La galerie montrait des photographies sans
+        jamais nommer les équipements : « Matériel roulant » ne citait aucun
+        véhicule. Les références viennent avant les photos, parce qu'elles
+        répondent d'abord — et parce qu'un domaine peut n'avoir aucune photo
+        publiée sans cesser d'être fourni.
+      -->
+      <div v-if="references.length" class="mb-12 border-t border-ink/10 pt-8">
+        <h2 class="text-[0.6875rem] uppercase tracking-[0.2em] text-ink-mute">
+          {{ $t('gallery.equipmentTitle', { count: references.length }) }}
+        </h2>
+
+        <ul class="mt-6 grid gap-x-10 gap-y-7 md:grid-cols-2 lg:grid-cols-3">
+          <li v-for="reference in references" :key="reference.name">
+            <p class="font-display text-[1.0625rem] leading-[1.35] text-ink">
+              {{ reference.name }}
+            </p>
+            <p class="mt-1.5 max-w-[46ch] text-sm leading-[1.65] text-ink-soft">
+              {{ reference.description }}
+            </p>
+            <!-- Les caractéristiques ne se filtrent pas : elles se lisent. -->
+            <ul v-if="reference.specs.length" class="mt-2.5 flex flex-wrap gap-1.5">
+              <li
+                v-for="spec in reference.specs"
+                :key="spec"
+                class="border border-ink/15 px-2 py-0.5 text-[0.6875rem] leading-[1.5] tracking-[0.04em] text-ink-mute"
+              >
+                {{ spec }}
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <p class="mt-8 text-sm leading-[1.7] text-ink-soft">
+          {{ $t('gallery.equipmentLead') }}
+          <NuxtLinkLocale
+            to="/contact"
+            class="underline underline-offset-4 transition-colors duration-400 hover:text-gold"
+          >
+            {{ $t('gallery.equipmentCta') }}
+          </NuxtLinkLocale>
+        </p>
       </div>
 
       <!-- Compteur : l'utilisateur voit immédiatement l'effet du filtre. -->
@@ -323,11 +390,6 @@ const HERO_MEDIA = [
         <UiButton to="/contact" size="lg">{{ $t('gallery.similar') }}</UiButton>
       </div>
     </section>
-
-    <!-- Les vignettes montrent des réceptions ; l'accordéon rappelle que la
-         même société couvre trois autres secteurs. Il ferme la page côté
-         « qui fait quoi », avant l'appel au devis. -->
-    <GallerySectors :branches="data.branches" :domains="data.domains" />
 
     <GalleryLightbox
       :items="visible"

@@ -63,7 +63,7 @@ jobs:
         run: npm audit --audit-level=high --omit=dev
 
       - name: Conserver la sortie du build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: output
           path: .output
@@ -95,7 +95,7 @@ jobs:
       # Le rapport ne sert qu'en cas d'échec : traces, captures et vidéos.
       - name: Conserver le rapport
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report
           path: playwright-report
@@ -123,7 +123,7 @@ jobs:
         run: npm ci
 
       - name: Récupérer la sortie du build
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: output
           path: .output
@@ -133,7 +133,7 @@ jobs:
 
       - name: Conserver les relevés
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: lighthouse
           path: .lighthouseci

@@ -12,6 +12,7 @@ import * as schema from './schema'
 import {
   branches as branchesContent,
   domains as domainsContent,
+  equipment as equipmentContent,
   faqItems as faqContent,
   galleryItems as galleryContent,
   rentalCategories as categoriesContent,
@@ -30,6 +31,7 @@ async function seed() {
 
   console.log('→ Nettoyage des tables de contenu…')
   await db.delete(schema.serviceBlocks)
+  await db.delete(schema.equipment)
   await db.delete(schema.domains)
   await db.delete(schema.galleryItems)
   await db.delete(schema.rentalCategories)
@@ -85,6 +87,17 @@ async function seed() {
       branchSlug: d.branch,
       title: d.title,
       description: d.description,
+      position: i,
+    })),
+  )
+
+  console.log('→ Références du catalogue…')
+  await db.insert(schema.equipment).values(
+    equipmentContent.map((e, i) => ({
+      domainSlug: e.domain,
+      name: e.name,
+      description: e.description,
+      specs: e.specs,
       position: i,
     })),
   )
