@@ -1081,9 +1081,42 @@ NUXT_SECURITY_CSP_MODE=enforce
 ```
 
 Les empreintes changent à chaque build qui touche la configuration publique :
-`npm run security:csp-hashes` fait partie du déploiement. En attendant, le mode
-report-only signale les violations dans la console du navigateur — les trois
-scripts y apparaissent, avec l'empreinte à autoriser.
+`npm run security:csp-hashes` fait partie du déploiement.
+
+#### Où arrivent les violations
+
+La politique désigne un point de collecte :
+
+```
+report-uri /api/csp-report
+```
+
+Sans lui, `Report-Only` était décoratif : le navigateur signalait dans la
+console du visiteur, et personne ne lisait cette console. `/api/csp-report`
+accepte les deux formats — l'ancien `report-uri` et la *Reporting API* — et
+journalise une ligne par violation :
+
+```
+[csp] script-src a refusé inline sur https://…/contact
+```
+
+Trois précautions, parce que l'adresse est publique et que le navigateur y
+poste sans que le site ne l'appelle :
+
+- **rien n'est cru** — ce qui n'est pas un rapport est ignoré, et la réponse
+  reste un 204 dans tous les cas, y compris sur un corps aberrant : distinguer
+  renseignerait qui sonde l'adresse ;
+- **on n'inonde pas** — une page cassée produit la même violation à chaque
+  visite ; la fenêtre de `errorReporter` n'en retient qu'une par quart d'heure
+  et par signature, la page n'entrant pas dans cette signature ;
+- **rien de personnel ne sort** — les URL sont réduites à leur chemin, la
+  chaîne de requête retirée. Elle peut porter un filtre de galerie ou un terme
+  de recherche.
+
+> `report-uri` plutôt que la *Reporting API* : celle-ci exige un en-tête
+> `Reporting-Endpoints` portant une URL **absolue**, donc l'origine du site —
+> laquelle est fausse en production tant que l'issue #81 n'est pas traitée. Un
+> chemin relatif ne dépend de rien.
 
 ### Limitation de débit et adresse du client
 
