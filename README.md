@@ -328,6 +328,8 @@ app/
     Home/                  Hero, Branches, Categories, Domains, Inspirations, Testimonials
     Services/              Block, Offers
     Gallery/               Lightbox, Sectors
+    Gallery/Hero.vue       En-tête propre à /galerie — planche animée, une
+                           collection à la fois, la carte applique le filtre
     Faq/                   Accordion
     Contact/               Form
     Legal/                 Gabarit commun aux trois pages légales
@@ -510,16 +512,26 @@ performance.
   sur un bandeau sable et du texte, avec une moitié droite vide sous le chapô.
   `UiPageHero` accepte désormais `media` : trois ou quatre vignettes carrées,
   façon planche-contact, qui montrent de quoi la page parle avant qu'on ait lu
-  une ligne — les quatre familles de réalisations sur `/galerie`, les quatre
-  branches sur `/services`, le savoir-faire sur `/conseils`, l'entreprise sur
-  `/contact`, le matériel sur `/faq`. Elles entrent en cascade, avec un zoom
-  lent, et sont neutralisées sous `prefers-reduced-motion`.
+  une ligne — les quatre branches sur `/services`, le savoir-faire sur
+  `/conseils`, l'entreprise sur `/contact`, le matériel sur `/faq`. Elles
+  entrent en cascade, avec un zoom lent, et sont neutralisées sous
+  `prefers-reduced-motion`.
   Les trois pages légales en reçoivent aussi, mais sur un autre principe : leur
   planche suit les temps de leur chapô — le siège, les bureaux et une
   photographie du site pour les mentions légales ; le parc, la livraison et le
   matériel en service pour les conditions de location ; le formulaire, les
   personnes et le siège pour la confidentialité. Un document qui engage la
   société n'a pas à se décorer, mais il gagne à montrer de quoi il traite.
+- **La galerie, elle, ouvre sur une planche animée.** `GalleryHero` y remplace
+  l'en-tête commun : un grand cadre fait défiler les collections — Mariages,
+  Cérémonies, Entreprise, Décor, Fournitures — une à la fois, photo de
+  couverture en fondu croisé et carte qui la nomme. **La carte est un bouton**
+  et applique le filtre correspondant ; la planche suit en retour le
+  `?filtre=` de l'URL et s'immobilise dès qu'un filtre est posé. Rotation de
+  six secondes, donc arrêt explicite exigé par WCAG 2.2.2 : bouton de pause,
+  arrêt au survol, au focus et en arrière-plan, rotation désactivée sous
+  `prefers-reduced-motion`. Seule la première photo est préchargée, les quatre
+  autres n'entrent dans le DOM qu'après l'événement `load`.
 
 ### Accessibilité
 

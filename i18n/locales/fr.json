@@ -140,6 +140,12 @@
     "accent": "salle par salle",
     "lead": "Une sélection de réceptions équipées par TBS Events et de livraisons réalisées par TBS Distribution entre 2024 et 2026. Filtrez par secteur.",
     "similar": "Un projet similaire ? Parlons-en",
+    "hero": {
+      "meta": "{count} réalisations · {branch}",
+      "metaOne": "{count} réalisation · {branch}",
+      "show": "Afficher {collection}",
+      "filter": "Filtrer la galerie sur {collection}"
+    },
     "filters": {
       "all": "Tout voir",
       "mariage": "Mariages",
@@ -156,7 +162,7 @@
     "sectors": {
       "eyebrow": "Secteurs & domaines",
       "title": "Quatre secteurs,",
-      "accent": "huit domaines",
+      "accent": "dix-sept domaines",
       "lead": "Les réceptions ne sont qu'une part du travail : voici les quatre secteurs et les domaines que chacun couvre.",
       "branch": "Branche {index}",
       "domains": "Domaines couverts",
@@ -170,7 +176,10 @@
     "emptyBody": "Nos photographies ne couvrent pas encore tout ce que nous faisons. Décrivez-nous votre projet : nous vous montrerons des références comparables.",
     "emptyCta": "Décrire mon projet",
     "sectorLink": "Voir les réalisations — {domain}",
-    "emptyCategory": "Aucune réalisation dans cette catégorie pour le moment"
+    "emptyCategory": "Aucune réalisation dans cette catégorie pour le moment",
+    "equipmentTitle": "Ce que ce domaine couvre — {count} références",
+    "equipmentLead": "Cette liste n’est pas un catalogue de vente : elle dit ce que nous fournissons.",
+    "equipmentCta": "Demandez un devis pour votre besoin précis."
   },
   "about": {
     "eyebrow": "Organisation",

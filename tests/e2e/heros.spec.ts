@@ -21,8 +21,12 @@ import { expect, test } from '@playwright/test'
  * le dépôt n'utilise pas d'attribut de test.
  */
 
+/**
+ * `/galerie` ne figure pas dans la liste : depuis `GalleryHero`, la page porte
+ * sa propre planche animée et n'utilise plus `UiPageHero`. Elle est couverte
+ * par `galerie.hero.spec.ts`.
+ */
 const PAGES = [
-  { path: '/galerie', frames: 4 },
   { path: '/services', frames: 4 },
   { path: '/conseils', frames: 3 },
   { path: '/contact', frames: 3 },

@@ -110,13 +110,26 @@ export interface FaqItem {
  * réalisation à son domaine. L'intitulé, lui, se traduit.
  */
 export type DomainSlug
+  // TBS Équipements — treize domaines, du mobilier au photovoltaïque.
   = | 'mobilier-bureau'
     | 'informatique'
     | 'sante-laboratoire'
     | 'roulant'
+    | 'outillage'
+    | 'controle-acces'
+    | 'chimie-reactifs'
+    | 'photovoltaique'
+    | 'generateurs'
+    | 'didactiques'
+    | 'branchement'
+    | 'electriques'
+    | 'manutention'
+    // TBS Events
     | 'location-reception'
     | 'organisation'
+    // TBS Études & Conseils
     | 'etudes-prestations'
+    // TBS Agro
     | 'agro-industrie'
 
 export interface Domain {
@@ -124,6 +137,32 @@ export interface Domain {
   branch: BranchSlug
   title: string
   description: string
+}
+
+/**
+ * Une référence du catalogue, rattachée à un domaine.
+ *
+ * Le site annonçait ses domaines sans jamais dire ce qu'ils recouvrent :
+ * « Matériel roulant » ne nommait aucun véhicule, « Outillage » aucun outil.
+ * Un visiteur qui cherche un groupe électrogène ne pouvait pas savoir que TBS
+ * en fournit.
+ *
+ * Ces entrées ne sont **pas** un catalogue marchand : ni prix, ni stock, ni
+ * panier. Elles disent ce que TBS fournit, et renvoient au devis — c'est le
+ * parcours que tout le site sert déjà.
+ */
+export interface Equipment {
+  /** Rattachement au domaine, qui porte `?domaine=` dans l'URL. */
+  domain: DomainSlug
+  name: string
+  /** Une phrase : ce que c'est, et pour qui. */
+  description: string
+  /**
+   * Caractéristiques telles qu'elles servent à décider — puissance, capacité,
+   * dimensions. Vide quand la référence n'en porte pas d'utile : une
+   * caractéristique inventée vaut moins que pas de caractéristique.
+   */
+  specs: string[]
 }
 
 export interface StatItem {

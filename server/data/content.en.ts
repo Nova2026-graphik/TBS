@@ -18,6 +18,7 @@
 import type {
   Branch,
   Domain,
+  Equipment,
   FaqItem,
   GalleryItem,
   RentalCategory,
@@ -91,6 +92,42 @@ export const domains: Domain[] = traduire(fr.domains, [
   {
     title: 'Vehicles & fleet',
     description: 'Service vehicles, vans, machinery, spare parts and fleet follow-up.',
+  },
+  {
+    title: 'Tools & workshop equipment',
+    description: 'Tool cases and kits, electrical measurement, cutting, welding, ladders and working-at-height equipment.',
+  },
+  {
+    title: 'Access control & security',
+    description: 'Barriers, badges, controllers and biometric time clocks, indoor and outdoor video surveillance.',
+  },
+  {
+    title: 'Chemicals & reagents',
+    description: 'Laboratory reagents, water treatment products and chemicals of analytical or food grade.',
+  },
+  {
+    title: 'Photovoltaic systems',
+    description: 'Panels, hybrid inverters, charge regulators, batteries and converters for off-grid or grid-backup sites.',
+  },
+  {
+    title: 'Generator sets',
+    description: 'Diesel and petrol sets, canopied or open frame, and self-contained welding units.',
+  },
+  {
+    title: 'Teaching equipment',
+    description: 'Renewable-energy training benches for technical colleges, training centres and universities.',
+  },
+  {
+    title: 'Connection equipment',
+    description: 'Water meters, fittings and pressure reducers for service connections and sub-metering.',
+  },
+  {
+    title: 'Electrical equipment',
+    description: 'Enclosures, modular boards and residual-current protection devices.',
+  },
+  {
+    title: 'Handling equipment',
+    description: 'Forklifts and manual or electric pallet trucks, for warehouse and loading bay.',
   },
   {
     title: 'Reception equipment rental',
@@ -296,5 +333,664 @@ export const faqItems: FaqItem[] = traduire(fr.faqItems, [
     question: 'What are the lead times for a supply order?',
     answer:
       'Items in stock ship within 48 hours. For equipment to be imported, allow two to six weeks depending on the nature of the goods; the lead time is committed to in the offer and tracked through to commissioning.',
+  },
+])
+
+/** Catalogue references — cf. `content.ts`. */
+export const equipment: Equipment[] = traduire(fr.equipment, [
+  // ── mobilier-bureau ─────────────────────────────────────────────
+  {
+    name: 'Wooden bookcase cabinet',
+    description:
+      'Tall storage for files and books, to stand behind an executive desk.',
+    specs: ['H 180 × W 90 × D 45 cm', 'Wood'],
+  },
+  {
+    name: 'Wooden cabinet with hinged doors',
+    description:
+      'Closed cabinet for current records, in an office or meeting room.',
+    specs: ['H 180 × W 80 × D 45 cm', 'Hinged doors'],
+  },
+  {
+    name: 'Cabinet with transparent sliding doors',
+    description:
+      'Tall cabinet with glazed sliding doors: contents stay visible without blocking the aisle.',
+    specs: ['Sliding doors', 'Tall model'],
+  },
+  {
+    name: 'ATLAS reception desk',
+    description:
+      'Reception station for a corporate or public-sector lobby, with a visitor counter.',
+    specs: ['Reception station'],
+  },
+  {
+    name: 'Straight desk, panel range',
+    description:
+      'Straight worktop on panel legs, for fitting out an open floor in series.',
+    specs: ['Straight top', 'Panel legs'],
+  },
+  {
+    name: 'Solano individual desk with return and pedestal',
+    description:
+      'Complete manager workstation: main top, side return and storage pedestal.',
+    specs: ['Side return', 'Pedestal included'],
+  },
+  {
+    name: 'Mobile desk pedestal',
+    description:
+      'Three-drawer mobile pedestal, to slide under the worktop.',
+    specs: ['3 drawers', 'On castors'],
+  },
+  {
+    name: 'Reversible convertible corner sofa',
+    description:
+      'Convertible waiting-area seating; the corner mounts left or right to suit the room.',
+    specs: ['4 seats', 'Convertible', 'Reversible corner'],
+  },
+  {
+    name: 'MAMAIA 3-seater sofa',
+    description:
+      'Velvet reception sofa for a waiting area or executive lounge.',
+    specs: ['3 seats', '177 × 92 × 78 cm', 'Velvet'],
+  },
+  {
+    name: 'Office reception sofa',
+    description:
+      'Comfortable seating for a waiting area, alongside a reception desk.',
+    specs: ['Waiting area'],
+  },
+  {
+    name: 'Leather executive chair',
+    description:
+      'High-back executive chair, leather upholstery.',
+    specs: ['High back', 'Leather'],
+  },
+  {
+    name: 'Dallas visitor chair',
+    description:
+      'Visitor chair with mesh back and sled base, stackable along a wall.',
+    specs: ['Mesh back', 'Sled base'],
+  },
+  {
+    name: 'Conference hall seating',
+    description:
+      'Fixed seating for an auditorium, training room or screening room.',
+    specs: ['Fitted hall'],
+  },
+  {
+    name: 'Complete 5-piece lounge set',
+    description:
+      'Lounge set for an executive office or waiting room.',
+    specs: ['5 pieces', 'Black / walnut'],
+  },
+  {
+    name: 'Complete 6-piece lounge set',
+    description:
+      'Larger lounge set, for a lobby or reception area.',
+    specs: ['6 pieces', 'White pine / brown oak'],
+  },
+  {
+    name: 'Woven resin garden set',
+    description:
+      'Outdoor set for a company terrace or break area.',
+    specs: ['Woven resin', 'White', 'Outdoor'],
+  },
+  {
+    name: 'Leather visitor chair',
+    description:
+      'Leather side chair, to face an executive desk.',
+    specs: ['Leather'],
+  },
+  {
+    name: 'Conference table for 12',
+    description:
+      'Meeting table for an executive committee or boardroom.',
+    specs: ['Seats 12'],
+  },
+  {
+    name: 'Solid wood meeting table',
+    description:
+      'Solid wood meeting table, for a committee room.',
+    specs: ['Solid wood'],
+  },
+  // ── informatique ────────────────────────────────────────────────
+  {
+    name: 'SpeechiTouch 65-inch interactive display',
+    description:
+      'Touch display for a training or meeting room, with no dedicated computer.',
+    specs: ['65 inches', '4K UHD', 'Android 8'],
+  },
+  {
+    name: 'HP LaserJet Pro MFP M479fdw',
+    description:
+      'Colour laser all-in-one for a department or small floor: print, copy, scan, fax.',
+    specs: ['Colour laser', 'Duplex', 'Wi-Fi'],
+  },
+  {
+    name: 'HP ProBook 450 G8',
+    description:
+      'Business laptop for a mobile office workstation.',
+    specs: ['Core i7-1165G7', '8 GB', '512 GB SSD'],
+  },
+  {
+    name: 'HP Spectre x360',
+    description:
+      'Premium convertible laptop, for executives and travel.',
+    specs: ['Core i7-1065G7', '16 GB', '1 TB SSD', 'Convertible'],
+  },
+  // ── sante-laboratoire ───────────────────────────────────────────
+  {
+    name: 'EA-2000B electrolyte analyser',
+    description:
+      'Blood electrolyte measurement in a medical analysis laboratory.',
+    specs: ['Electrolytes'],
+  },
+  {
+    name: 'Automatic coagulation analyser',
+    description:
+      'Haemostasis analyser for a hospital or community laboratory.',
+    specs: ['Automatic', 'Haemostasis'],
+  },
+  {
+    name: 'Immunochromatographic analyser',
+    description:
+      'Reader for rapid immunochromatographic tests.',
+    specs: ['Rapid tests'],
+  },
+  {
+    name: 'High-filtration protective masks',
+    description:
+      'Respiratory protection for care and laboratory staff.',
+    specs: ['High filtration'],
+  },
+  {
+    name: 'EDAN C3(A)/C6(A) video colposcope',
+    description:
+      'Video colposcope for gynaecological consultation.',
+    specs: ['Video', 'EDAN'],
+  },
+  {
+    name: 'Diamedica Baby CPAP oxygen concentrator',
+    description:
+      'Neonatal respiratory support with continuous positive airway pressure.',
+    specs: ['Neonatal', 'CPAP'],
+  },
+  {
+    name: 'HANNA HI 9835 conductivity meter',
+    description:
+      'Conductivity, TDS and salinity measurement, in the lab or in the field.',
+    specs: ['Conductivity', 'TDS', 'Salinity'],
+  },
+  {
+    name: 'Colson Cardi 6 multichannel ECG',
+    description:
+      'Multichannel touchscreen electrocardiograph for practice and hospital ward.',
+    specs: ['Multichannel', 'Touchscreen'],
+  },
+  {
+    name: 'Newborn phototherapy lamp',
+    description:
+      'Treatment of newborn jaundice in a maternity unit.',
+    specs: ['Neonatal', 'Phototherapy'],
+  },
+  {
+    name: 'Automatic microplate washer 670',
+    description:
+      'Automated microplate washing for ELISA workflows.',
+    specs: ['Microplates', 'ELISA'],
+  },
+  {
+    name: 'Celestron digital biological microscope',
+    description:
+      'Microscope with digital output for laboratory and teaching use.',
+    specs: ['Digital', 'Biological'],
+  },
+  {
+    name: 'M-9000-E patient monitor',
+    description:
+      'Vital-signs monitoring in theatre, intensive care or recovery.',
+    specs: ['12.1 inches', 'Multiparameter'],
+  },
+  {
+    name: 'ECG paper for Colson / Cardiette',
+    description:
+      'Thermal consumable for electrocardiographs.',
+    specs: ['Consumable', 'Thermal'],
+  },
+  {
+    name: 'Multiparameter pH meter',
+    description:
+      'pH and related parameter control, in the laboratory or in water treatment.',
+    specs: ['Multiparameter'],
+  },
+  {
+    name: '280Z AA atomic absorption spectrometer',
+    description:
+      'Trace metal measurement, for environmental or food analysis.',
+    specs: ['Atomic absorption', 'Graphite furnace'],
+  },
+  {
+    name: 'Heine Gamma GP sphygmomanometer',
+    description:
+      'Clinical-grade manual blood-pressure monitor, for practice and ward.',
+    specs: ['Manual', 'Clinical'],
+  },
+  {
+    name: 'Thermoflash Pro LX-261E',
+    description:
+      'Non-contact forehead thermometer, for reception and care areas.',
+    specs: ['Non-contact', 'Infrared'],
+  },
+  // ── roulant ─────────────────────────────────────────────────────
+  {
+    name: 'Toyota Fortuner turbo',
+    description:
+      'Seven-seat SUV for field missions and team transport.',
+    specs: ['7 seats', 'Turbo', '4×4'],
+  },
+  {
+    name: 'Toyota Hilux 4×4 double cab',
+    description:
+      'Double-cab pick-up, the reference workhorse for sites and upcountry projects.',
+    specs: ['Double cab', '4×4', 'Pick-up'],
+  },
+  {
+    name: 'Toyota Land Cruiser Prado',
+    description:
+      'Rugged SUV for long missions and difficult tracks.',
+    specs: ['4×4'],
+  },
+  {
+    name: 'Toyota Rush',
+    description:
+      'Compact crossover for urban service travel.',
+    specs: ['Compact'],
+  },
+  {
+    name: 'Toyota Hilux fuel filter housing',
+    description:
+      'Complete housing with filter, for scheduled Hilux servicing.',
+    specs: ['Toyota Hilux', 'Filter included'],
+  },
+  {
+    name: 'Toyota Hilux fuel filter',
+    description:
+      'Replacement filter for fleet servicing.',
+    specs: ['Toyota Hilux'],
+  },
+  {
+    name: '4×4 aluminium wheel',
+    description:
+      'Aluminium wheel for off-road vehicles.',
+    specs: ['Aluminium', '4×4'],
+  },
+  {
+    name: 'Toyota Hilux pick-up tyres',
+    description:
+      'Replacement tyres for pick-ups.',
+    specs: ['Toyota Hilux'],
+  },
+  // ── outillage ───────────────────────────────────────────────────
+  {
+    name: '198-piece tool case',
+    description:
+      'Complete repair kit for the workshop or on-site work.',
+    specs: ['198 pieces'],
+  },
+  {
+    name: 'Wall rack with 44 bins',
+    description:
+      'Wall storage system with bins, for fasteners and small workshop parts.',
+    specs: ['44 bins', '115 × 78 cm'],
+  },
+  {
+    name: 'Empty 5-compartment tool box',
+    description:
+      'Empty compartmented tool box, to fill according to the trade.',
+    specs: ['5 compartments', 'Empty'],
+  },
+  {
+    name: 'Service rope',
+    description:
+      'Working rope for manoeuvring and light lifting.',
+    specs: ['Working at height'],
+  },
+  {
+    name: 'Ratchet cable cutter Ø 52 mm',
+    description:
+      'Insulated cable cutter for live work, up to 52 mm diameter.',
+    specs: ['Ø 52 mm', '1000 V insulated', 'Ratchet'],
+  },
+  {
+    name: 'Two-section sliding ladder',
+    description:
+      'Two-section ladder with rope mechanism, for work at height.',
+    specs: ['2 sections', 'Rope mechanism'],
+  },
+  {
+    name: 'Scheppach CSP2540 petrol pruner',
+    description:
+      'Petrol pruner for grounds maintenance and line clearing.',
+    specs: ['25 cm', '25 cc', 'Petrol'],
+  },
+  {
+    name: 'Pole climbing irons',
+    description:
+      'Lineman climbers for round or hexagonal poles.',
+    specs: ['Round or hexagonal poles'],
+  },
+  {
+    name: 'Phase sequence indicator',
+    description:
+      'Checks phase rotation before commissioning.',
+    specs: ['Three-phase'],
+  },
+  {
+    name: '700 A TRMS clamp meter',
+    description:
+      'True-RMS current measurement, up to 700 amperes.',
+    specs: ['700 A', 'TRMS'],
+  },
+  {
+    name: 'Welding set',
+    description:
+      'Workshop welding set for repair and fabrication.',
+    specs: ['Workshop'],
+  },
+  {
+    name: 'Hacksaws',
+    description:
+      'Hand saws for cutting sections and tubes.',
+    specs: ['Metals'],
+  },
+  {
+    name: 'Constructor metal cut-off saw',
+    description:
+      'Bench cut-off saw for bars and sections.',
+    specs: ['2300 W', 'Metals'],
+  },
+  {
+    name: '6-inch cordless chainsaw',
+    description:
+      'Battery garden chainsaw, supplied with two batteries and two chains.',
+    specs: ['6 inches', '2 batteries', '2 chains'],
+  },
+  {
+    name: 'Expert PRIMO maintenance case',
+    description:
+      'Complete maintenance case, for a field technician.',
+    specs: ['145 tools'],
+  },
+  // ── controle-acces ──────────────────────────────────────────────
+  {
+    name: 'MAXIMA ULTRA 68 access barrier',
+    description:
+      'Rising barrier for a site entrance, corporate or public-sector car park.',
+    specs: ['Rising barrier'],
+  },
+  {
+    name: 'TERRA 180 access barrier',
+    description:
+      'Rising barrier for a wide opening and sustained traffic.',
+    specs: ['Rising barrier', 'Wide opening'],
+  },
+  {
+    name: 'PVC magnetic-stripe badge cards',
+    description:
+      'Customisable access badges, the consumable of the control system.',
+    specs: ['PVC', 'Magnetic stripe'],
+  },
+  {
+    name: 'inBIO 160/260/460 access controller',
+    description:
+      'Access management controller, one to four doors depending on model.',
+    specs: ['1 to 4 doors', 'Biometrics'],
+  },
+  {
+    name: 'Fail-safe electric strike',
+    description:
+      'Fail-safe strike: the door releases if power is lost.',
+    specs: ['Fail-safe'],
+  },
+  {
+    name: 'ZKTeco K40 biometric time clock',
+    description:
+      'Fingerprint time clock for attendance management.',
+    specs: ['Fingerprint', 'Attendance'],
+  },
+  {
+    name: 'TimeMoto TM-828 SC time clock',
+    description:
+      'Clocking terminal for a mid-sized workforce, with tracking software.',
+    specs: ['Attendance'],
+  },
+  {
+    name: '4 MP indoor dome camera',
+    description:
+      'Indoor surveillance camera, discreet and vandal-resistant.',
+    specs: ['4 MP', 'Indoor', 'Dome'],
+  },
+  {
+    name: '4 MP outdoor bullet camera',
+    description:
+      'Full HD+ outdoor surveillance camera, for perimeter and car park.',
+    specs: ['4 MP', 'Full HD+', 'Outdoor'],
+  },
+  // ── chimie-reactifs ─────────────────────────────────────────────
+  {
+    name: '2-Propanol',
+    description:
+      'Laboratory and technical cleaning solvent.',
+    specs: ['Solvent'],
+  },
+  {
+    name: 'Ethyl acetate',
+    description:
+      'Extraction and chromatography solvent.',
+    specs: ['99.8 %+'],
+  },
+  {
+    name: 'Propionic acid',
+    description:
+      'Pure organic acid, for laboratory and preservation use.',
+    specs: ['99.5 %+', 'Pure'],
+  },
+  {
+    name: 'Succinic acid',
+    description:
+      'Food-grade organic acid.',
+    specs: ['99.5 %+', 'Food grade'],
+  },
+  {
+    name: 'Sulfuric acid 98 %',
+    description:
+      'Concentrated mineral acid for laboratory and industrial treatment.',
+    specs: ['98 %'],
+  },
+  {
+    name: 'Barium carbonate (BaCO₃)',
+    description:
+      'High-purity salt for analysis and technical use.',
+    specs: ['High purity'],
+  },
+  {
+    name: 'Potassium carbonate',
+    description:
+      'FCC food-grade salt, powder form.',
+    specs: ['99.9 %+', 'FCC food grade', 'Powder'],
+  },
+  {
+    name: 'Granular activated carbon',
+    description:
+      'Filter medium for water treatment and dechlorination.',
+    specs: ['Granular', 'Water treatment'],
+  },
+  {
+    name: '1,10-phenanthroline hydrochloride',
+    description:
+      'Reagent for colorimetric iron determination.',
+    specs: ['Monohydrate', 'Reagent'],
+  },
+  {
+    name: 'Magnesium sulfate heptahydrate',
+    description:
+      'Food-grade salt, for laboratory and industrial use.',
+    specs: ['99 %+', 'Food grade'],
+  },
+  // ── photovoltaique ──────────────────────────────────────────────
+  {
+    name: '12 V / 18 Ah lead battery',
+    description:
+      'Storage battery for a small off-grid installation or inverter.',
+    specs: ['12 V / 18 Ah', '216 Wh', 'M5 terminals'],
+  },
+  {
+    name: '12 V / 10 W solar charger',
+    description:
+      'Trickle charge for a vehicle battery left standing.',
+    specs: ['12 V', '10 W'],
+  },
+  {
+    name: '12 V to 230 V converter',
+    description:
+      'Runs mains appliances from a battery, with a USB outlet.',
+    specs: ['300 W', 'USB 2.1 A'],
+  },
+  {
+    name: '3500 W hybrid solar inverter',
+    description:
+      'Hybrid inverter with MPPT regulator, remotely managed over a Wi-Fi module.',
+    specs: ['3500 W', 'MPPT 12/24 V', 'Wi-Fi'],
+  },
+  {
+    name: 'Flexible monocrystalline solar panel',
+    description:
+      'Flexible panel to bond to a curved surface, for vehicles or light installations.',
+    specs: ['100 W', 'Monocrystalline', 'ETFE/EVA'],
+  },
+  {
+    name: '260 W portable solar panel',
+    description:
+      'Transportable panel to power a site or a mission.',
+    specs: ['260 W', 'Portable'],
+  },
+  {
+    name: 'Solar charge regulator',
+    description:
+      'Protects the battery against overcharge and deep discharge.',
+    specs: ['Charge regulation'],
+  },
+  {
+    name: 'Hybrid solar / wind voltage regulator',
+    description:
+      'Regulation for an installation combining panels and a wind turbine.',
+    specs: ['Hybrid solar / wind'],
+  },
+  // ── generateurs ─────────────────────────────────────────────────
+  {
+    name: '180 A welding generator',
+    description:
+      'Self-contained engine-driven welding set, for sites without mains power.',
+    specs: ['180 A', 'Honda engine', '4.5 kVA'],
+  },
+  {
+    name: 'Ayerbe canopied generator set',
+    description:
+      'Canopied set for noise-sensitive sites: offices, clinics, hotels.',
+    specs: ['40 kVA', 'Canopied', 'AY-1500-40-TX-LOMB'],
+  },
+  {
+    name: 'GENELEC diesel generator set',
+    description:
+      'Standby diesel set for a building or technical installation.',
+    specs: ['Diesel'],
+  },
+  {
+    name: 'KOHLER SDMO diesel generator set',
+    description:
+      'Standby diesel set, professional range.',
+    specs: ['Diesel', 'KOHLER SDMO'],
+  },
+  // ── didactiques ─────────────────────────────────────────────────
+  {
+    name: 'Teaching solar plant',
+    description:
+      'Training bench covering both cases: grid feed-in and off-grid.',
+    specs: ['Grid feed-in', 'Off-grid'],
+  },
+  {
+    name: 'Wind turbine simulator',
+    description:
+      'Training bench for wind generation with grid feed-in.',
+    specs: ['Grid feed-in'],
+  },
+  {
+    name: 'Solar pumping station',
+    description:
+      'Training bench for panel-powered pumping.',
+    specs: ['Solar pumping'],
+  },
+  {
+    name: 'Solar tracker with battery',
+    description:
+      'Sun-tracking bench, with storage.',
+    specs: ['Sun tracking', 'Battery'],
+  },
+  // ── branchement ─────────────────────────────────────────────────
+  {
+    name: 'Universal DN15 sub-meter',
+    description:
+      'Cold-water sub-metering by premises or by use.',
+    specs: ['DN15', 'Cold water'],
+  },
+  {
+    name: 'DN15 volumetric meter',
+    description:
+      'Volumetric cold-water metering, accurate at low flow.',
+    specs: ['DN15', 'Cold water', 'Volumetric'],
+  },
+  {
+    name: 'Water meter fitting 25-33/42',
+    description:
+      'Installation fitting for a water meter.',
+    specs: ['25-33/42'],
+  },
+  {
+    name: 'FF 3/4 pressure reducer',
+    description:
+      'Stabilises the inlet pressure of an indoor network.',
+    specs: ['FF 3/4'],
+  },
+  // ── electriques ─────────────────────────────────────────────────
+  {
+    name: '13-module enclosure, 2 rows',
+    description:
+      'Modular board for a plant room or small building.',
+    specs: ['13 modules', '2 rows', 'Schneider Resi9'],
+  },
+  {
+    name: '1P+N residual current breaker',
+    description:
+      'Residual-current protection for a final circuit.',
+    specs: ['1P+N', 'C 10 A', '4500 A breaking capacity'],
+  },
+  // ── manutention ─────────────────────────────────────────────────
+  {
+    name: 'VMAX forklift',
+    description:
+      'Forklift for warehouse and loading bay.',
+    specs: ['Forklift'],
+  },
+  {
+    name: 'Electric pallet truck',
+    description:
+      'Power-assisted pallet truck, for sustained turnover.',
+    specs: ['Electric'],
+  },
+  {
+    name: '2.5 t manual pallet truck',
+    description:
+      'Manual pallet truck for moving pallets.',
+    specs: ['2.5 tonnes', 'Manual'],
   },
 ])
