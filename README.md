@@ -778,6 +778,7 @@ les exécutions repartiront.
 | `npm run typecheck` | Types, sur les gabarits comme sur le code |
 | `npm test` | Tests unitaires (Vitest) |
 | `npm run test:e2e` | Parcours de bout en bout (Playwright) |
+| `npm run photos:check` | Noms, orientations et proportions de `public/images` — cf. `docs/reportage-photo.md` |
 
 ### Lint
 
@@ -1025,15 +1026,34 @@ chaque lundi.
 
 ## Sécurité
 
-`server/plugins/security-headers.ts` pose les en-têtes de protection sur
-**toutes** les réponses : pages pré-rendues, assets et routes `/api`. La
-politique elle-même vit dans `server/utils/securityHeaders.ts`.
+La politique vit dans `server/utils/securityHeaders.ts`, et elle est posée à
+**deux endroits**, parce qu'une seule ne suffisait pas.
 
-> Un plugin Nitro, et non un middleware `server/middleware/` : Nitro enregistre
-> le gestionnaire d'assets publics comme premier middleware, si bien qu'un
-> middleware applicatif n'est jamais atteint pour `/`, `/contact` ou tout autre
-> document pré-rendu. Le hook `request` du plugin, lui, court avant toute la
-> pile.
+| Où | Ce que ça couvre |
+| --- | --- |
+| `server/plugins/security-headers.ts` | tout ce qui traverse Nitro : routes `/api`, rendu à la volée, développement |
+| `routeRules` dans `nuxt.config.ts` | ce qui ne le traverse pas : les pages **pré-rendues**, servies telles quelles par le CDN |
+
+> Le plugin seul a laissé le site sans protection pendant des semaines. Mesure
+> faite en production le 8 septembre 2026 : `/api/health` portait les cinq
+> en-têtes, `/` n'en portait aucun. Une page pré-rendue est écrite au build et
+> servie comme un fichier ; elle n'entre jamais dans le serveur. Toute la
+> surface qu'un navigateur interprète comme du HTML était donc découverte, et
+> la seule surface protégée rendait du JSON.
+
+Les deux runtimes ne traitent pas les règles de la même façon, et cela se
+vérifie plutôt que se suppose :
+
+- **Nitro les fusionne** — une image reçoit aussi celles de `/**` ;
+- **la table de routage de Vercel s'arrête** à la première qui correspond, si
+  bien que `/(.*)` n'est jamais atteint pour `/images/**` ou `/_ipx/**`.
+
+D'où des en-têtes portés par chaque règle plutôt que délégués à `/**`. Le
+résultat se lit en clair dans `.vercel/output/config.json` après un
+`NITRO_PRESET=vercel npm run build`.
+
+La CSP, elle, n'accompagne que les documents : un navigateur l'ignore sur une
+réponse qui n'en est pas un.
 
 | En-tête | Valeur | Ce qu'il empêche |
 | --- | --- | --- |
@@ -1075,9 +1095,42 @@ NUXT_SECURITY_CSP_MODE=enforce
 ```
 
 Les empreintes changent à chaque build qui touche la configuration publique :
-`npm run security:csp-hashes` fait partie du déploiement. En attendant, le mode
-report-only signale les violations dans la console du navigateur — les trois
-scripts y apparaissent, avec l'empreinte à autoriser.
+`npm run security:csp-hashes` fait partie du déploiement.
+
+#### Où arrivent les violations
+
+La politique désigne un point de collecte :
+
+```
+report-uri /api/csp-report
+```
+
+Sans lui, `Report-Only` était décoratif : le navigateur signalait dans la
+console du visiteur, et personne ne lisait cette console. `/api/csp-report`
+accepte les deux formats — l'ancien `report-uri` et la *Reporting API* — et
+journalise une ligne par violation :
+
+```
+[csp] script-src a refusé inline sur https://…/contact
+```
+
+Trois précautions, parce que l'adresse est publique et que le navigateur y
+poste sans que le site ne l'appelle :
+
+- **rien n'est cru** — ce qui n'est pas un rapport est ignoré, et la réponse
+  reste un 204 dans tous les cas, y compris sur un corps aberrant : distinguer
+  renseignerait qui sonde l'adresse ;
+- **on n'inonde pas** — une page cassée produit la même violation à chaque
+  visite ; la fenêtre de `errorReporter` n'en retient qu'une par quart d'heure
+  et par signature, la page n'entrant pas dans cette signature ;
+- **rien de personnel ne sort** — les URL sont réduites à leur chemin, la
+  chaîne de requête retirée. Elle peut porter un filtre de galerie ou un terme
+  de recherche.
+
+> `report-uri` plutôt que la *Reporting API* : celle-ci exige un en-tête
+> `Reporting-Endpoints` portant une URL **absolue**, donc l'origine du site —
+> laquelle est fausse en production tant que l'issue #81 n'est pas traitée. Un
+> chemin relatif ne dépend de rien.
 
 ### Limitation de débit et adresse du client
 
@@ -1210,33 +1263,25 @@ curl -sI http://127.0.0.1:3000/ | grep -iE 'content-security|strict-transport|x-
 En ligne, viser A ou A+ sur <https://securityheaders.com> (A tant que la CSP
 reste en report-only, A+ une fois passée en `enforce`).
 
-### L'exception du contrôle de types
+### Le contrôle de types, sans dérogation
 
-`npm run typecheck` passe par [`scripts/typecheck.mjs`](scripts/typecheck.mjs),
-qui tolère **une** erreur et une seule : `TS2537` dans
-`node_modules/@nuxt/image/dist/runtime/components/NuxtPicture.vue`, une
-incompatibilité entre `@nuxt/image` 1.11 et les types `@unhead` livrés avec
-Nuxt 4. Le composant `<NuxtPicture>` n'est pas utilisé ici et le build n'est
-pas affecté.
+`npm run typecheck` appelle `nuxt typecheck`, et rien d'autre.
 
-Ni `skipLibCheck` ni un `exclude` de tsconfig ne couvrent ce cas :
-`skipLibCheck` ne vaut que pour les `.d.ts`, et le composant est tiré
-transitivement par les types de composants globaux.
+Il a longtemps passé par un script intermédiaire qui tolérait **une** erreur :
+`TS2537` dans `NuxtPicture.vue`, une incompatibilité entre `@nuxt/image` 1.11
+et les types `@unhead` livrés avec Nuxt 4. Ni `skipLibCheck` ni un `exclude`
+de tsconfig ne couvraient le cas.
 
-La dérogation se périme d'elle-même. Le script échoue :
+Cette dérogation a été écrite pour se périmer d'elle-même : le script échouait
+sur toute autre erreur, **et** le jour où l'erreur tolérée disparaissait. Elle
+a tenu parole. `@nuxt/image` 2.1 corrige la signature, le script l'a signalé
+au premier passage, et il a été supprimé avec elle.
 
-- sur **toute autre** erreur de type, qu'il liste ;
-- **et** le jour où l'erreur tolérée disparaît — c'est alors le signal de
-  mettre à jour `@nuxt/image` et de supprimer le script.
+> ✖ L'exception tolérée par scripts/typecheck.mjs n'apparaît plus.
+>   Supprimez l'exception et rendez `typecheck` à `nuxt typecheck`.
 
-Sans cette seconde condition, une exception muette survivrait à son motif et
-finirait par masquer de vraies erreurs. `npm run typecheck:brut` donne la
-sortie sans filtre.
-
-**Levée de l'exception** : `@nuxt/image` 2.x corrige la signature. La montée
-de version est une majeure — elle touche le rendu des images, donc le LCP de
-l'accueil — et mérite d'être vérifiée pour elle-même plutôt que glissée dans
-un correctif d'outillage.
+C'est la seule forme d'exception qui vaille : une exception muette survit à son
+motif et finit par masquer de vraies erreurs.
 
 ---
 

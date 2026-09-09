@@ -171,8 +171,7 @@ const HERO_MEDIA = [
               </UiButton>
             </div>
             <p class="max-w-[34ch] text-xs leading-[1.6] text-ink-mute">
-              L'affichage envoie une requête à OpenStreetMap, qui reçoit alors
-              votre adresse IP.
+              {{ $t('contact.map.notice') }}
               <a
                 :href="mapLink"
                 target="_blank"

@@ -1,14 +1,6 @@
 import type { Page } from '@playwright/test'
 import { expect, test } from '@playwright/test'
-
-/**
- * Le hero est piloté par un minuteur côté client : le balisage vient du
- * pré-rendu, mais rien ne tourne avant que Vue n'ait repris la main. On
- * attend donc que le réseau se taise — fichier de langue compris.
- */
-async function pageInteractive(page: Page) {
-  await page.waitForLoadState('networkidle')
-}
+import { pageInteractive } from './utils'
 
 /**
  * Libellé de la puce en cours : la seule marque fiable de la diapositive

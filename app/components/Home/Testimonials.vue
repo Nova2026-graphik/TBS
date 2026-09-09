@@ -49,7 +49,7 @@ function onScroll() {
     <div v-reveal class="mb-[clamp(1.875rem,4vw,3.25rem)] flex flex-wrap items-end justify-between gap-6">
       <span class="u-eyebrow text-cream/70">
         <span class="u-rule" />
-        Ils nous ont confié leur date
+        {{ $t('home.testimonials.eyebrow') }}
       </span>
 
       <div class="flex gap-2">
