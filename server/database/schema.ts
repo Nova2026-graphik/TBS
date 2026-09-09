@@ -202,6 +202,33 @@ export const quoteRequests = pgTable(
   ],
 )
 
+/**
+ * Tentatives d'ouverture de session sur l'espace de suivi.
+ *
+ * L'espace tient sur un mot de passe unique, sans second facteur : le
+ * limiteur de débit est donc la seule barrière contre l'essai systématique.
+ * Il comptait en mémoire, ce qui ne vaut rien en serverless — chaque instance
+ * a la sienne, et un démarrage à froid la remet à zéro.
+ *
+ * Seuls les **échecs** sont écrits. Compter les réussites verrouillerait
+ * l'accès à qui s'en sert normalement, ce qui est le plus sûr moyen de faire
+ * désactiver la protection.
+ *
+ * Les lignes sont purgées après 24 h par la tâche planifiée : la fenêtre de
+ * comptage ne remonte qu'à une heure, et conserver des empreintes d'adresses
+ * au-delà de leur usage n'a pas de justification.
+ */
+export const adminAttempts = pgTable(
+  'admin_attempts',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    /** SHA-256 tronqué de l'adresse — jamais l'adresse elle-même. */
+    ipHash: varchar('ip_hash', { length: 64 }).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  t => [index('admin_attempts_ip_idx').on(t.ipHash, t.createdAt)],
+)
+
 /* ── Relations ────────────────────────────────────────────────────────────── */
 
 export const branchesRelations = relations(branches, ({ many }) => ({
