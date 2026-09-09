@@ -97,7 +97,11 @@ const visible = computed(() => {
  */
 const references = computed(() =>
   activeDomain.value
-    ? data.value.equipment.filter(e => e.domain === activeDomain.value)
+    // `?? []` et non une lecture directe : la réponse de `/api/site-content`
+    // est mise en cache au-delà d'un déploiement, et peut donc dater d'une
+    // version où ce champ n'existait pas. La clé de cache est versionnée pour
+    // cela, mais une page ne doit pas tomber parce qu'un champ manque.
+    ? (data.value.equipment ?? []).filter(e => e.domain === activeDomain.value)
     : [],
 )
 
