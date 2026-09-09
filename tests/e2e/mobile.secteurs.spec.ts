@@ -17,7 +17,8 @@ test.describe('secteurs de la galerie sur téléphone', () => {
     await expect(panneaux).toHaveCount(4)
 
     // Le nombre de domaines vient des données : 4, 2, 1 et 1.
-    for (const [i, attendu] of [4, 2, 1, 1].entries()) {
+    // TBS Équipements couvre treize domaines depuis l'ajout du catalogue.
+    for (const [i, attendu] of [13, 2, 1, 1].entries()) {
       const chips = panneaux.nth(i).locator('ul li')
       await expect(chips).toHaveCount(attendu)
       await expect(chips.first()).toBeVisible()

@@ -29,6 +29,13 @@
       "when": 1788940917644,
       "tag": "0003_glossy_jubilee",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1788955899061,
+      "tag": "0004_sturdy_vermin",
+      "breakpoints": true
     }
   ]
 }
