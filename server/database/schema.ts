@@ -114,6 +114,30 @@ export const domains = pgTable('domains', {
   position: integer('position').notNull().default(0),
 })
 
+/**
+ * Références du catalogue, rattachées à un domaine.
+ *
+ * `domain_slug` n'est pas une clé étrangère vers `domains` : celle-ci n'a pas
+ * de contrainte d'unicité sur `slug`, faute d'avoir pu la poser lors de la
+ * migration 0002 sur une table déjà peuplée. Le rattachement est donc tenu par
+ * le type `DomainSlug` côté application, comme pour `gallery_items`.
+ *
+ * Les caractéristiques sont un tableau de chaînes courtes, stocké en JSON :
+ * elles ne se filtrent ni ne se trient, elles s'affichent.
+ */
+export const equipment = pgTable(
+  'equipment',
+  {
+    id: serial('id').primaryKey(),
+    domainSlug: varchar('domain_slug', { length: 60 }).notNull(),
+    name: varchar('name', { length: 200 }).notNull(),
+    description: text('description').notNull(),
+    specs: jsonb('specs').$type<string[]>().notNull().default([]),
+    position: integer('position').notNull().default(0),
+  },
+  t => [index('equipment_domain_idx').on(t.domainSlug, t.position)],
+)
+
 /** Réalisations affichées dans la galerie. */
 export const galleryItems = pgTable(
   'gallery_items',
