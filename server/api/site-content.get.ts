@@ -8,6 +8,7 @@
 import {
   getBranches,
   getDomains,
+  getEquipment,
   getFaqItems,
   getGalleryItems,
   getRentalCategories,
@@ -20,12 +21,13 @@ export default defineCachedEventHandler(
   async (event) => {
     const locale = parseLocale(getQuery(event).locale)
 
-    const [branches, categories, services, domains, gallery, testimonials, faq]
+    const [branches, categories, services, domains, equipment, gallery, testimonials, faq]
       = await Promise.all([
         getBranches(locale),
         getRentalCategories(locale),
         getServiceBlocks(locale),
         getDomains(locale),
+        getEquipment(locale),
         getGalleryItems(locale),
         getTestimonials(locale),
         getFaqItems(locale),
@@ -36,6 +38,7 @@ export default defineCachedEventHandler(
       categories: categories.data,
       services: services.data,
       domains: domains.data,
+      equipment: equipment.data,
       gallery: gallery.data,
       testimonials: testimonials.data,
       faq: faq.data,
