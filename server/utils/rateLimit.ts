@@ -17,7 +17,7 @@
  * que pour un processus unique, mais dans cette configuration il n'y a de
  * toute façon rien à écrire : la demande n'est que journalisée.
  */
-import { and, eq, gt, sql } from 'drizzle-orm'
+import { and, eq, gt, lt, sql } from 'drizzle-orm'
 import type { useDb } from '../database/client'
 import * as schema from '../database/schema'
 
@@ -46,19 +46,28 @@ const memoryBuckets = new Map<string, number[]>()
  * c'est la ligne insérée qui fera le compte au coup suivant.
  */
 export function isRateLimitedInMemory(key: string, limit: number, now = Date.now()): RateLimitResult {
+  const previous = countInMemory(key, now)
+  recordInMemory(key, now)
+
+  return { limited: previous >= limit, scope: 'memory', hits: previous }
+}
+
+/** Coups retenus dans la fenêtre, sans rien y ajouter. */
+function countInMemory(key: string, now: number): number {
+  return (memoryBuckets.get(key) ?? []).filter(t => now - t < WINDOW_MS).length
+}
+
+/** Ajoute un coup, et purge par occasion pour borner la croissance de la Map. */
+function recordInMemory(key: string, now: number): void {
   const hits = (memoryBuckets.get(key) ?? []).filter(t => now - t < WINDOW_MS)
-  const previous = hits.length
   hits.push(now)
   memoryBuckets.set(key, hits)
 
-  // Purge opportuniste pour éviter une croissance non bornée de la Map.
   if (memoryBuckets.size > 5000) {
     for (const [k, v] of memoryBuckets) {
       if (!v.some(t => now - t < WINDOW_MS)) memoryBuckets.delete(k)
     }
   }
-
-  return { limited: previous >= limit, scope: 'memory', hits: previous }
 }
 
 /** Remet le compteur en mémoire à zéro (tests). */
@@ -106,4 +115,87 @@ export async function isQuoteRateLimited(
     console.error('[devis] comptage du quota impossible, repli en mémoire :', error)
     return isRateLimitedInMemory(ipHash, limit, now.getTime())
   }
+}
+
+/* ── Ouverture de session sur l'espace de suivi ────────────────────────────── */
+
+/**
+ * Tentatives de connexion échouées dans la fenêtre.
+ *
+ * Le comptage porte sur les **échecs seuls**. Une réussite ne consomme rien :
+ * dix ouvertures de session légitimes dans l'heure — deux personnes, quelques
+ * onglets, un cookie expiré — verrouillaient l'accès, et un garde-fou qui
+ * punit l'usage normal finit par être désactivé.
+ */
+export async function isAdminRateLimited(
+  db: Database | null,
+  ipHash: string,
+  limit: number,
+  now: Date = new Date(),
+): Promise<RateLimitResult> {
+  if (!db) {
+    const hits = countInMemory(ipHash, now.getTime())
+    return { limited: hits >= limit, scope: 'memory', hits }
+  }
+
+  try {
+    const since = new Date(now.getTime() - WINDOW_MS)
+    const [row] = await db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(schema.adminAttempts)
+      .where(and(eq(schema.adminAttempts.ipHash, ipHash), gt(schema.adminAttempts.createdAt, since)))
+
+    const hits = row?.count ?? 0
+    return { limited: hits >= limit, scope: 'database', hits }
+  }
+  catch (error) {
+    // Une base qui tousse ne doit pas ouvrir la porte en grand.
+    console.error('[admin] comptage des tentatives impossible, repli en mémoire :', error)
+    const hits = countInMemory(ipHash, now.getTime())
+    return { limited: hits >= limit, scope: 'memory', hits }
+  }
+}
+
+/**
+ * Enregistre un échec d'authentification.
+ *
+ * Ne lève jamais : le refus d'accès a déjà eu lieu, et une écriture manquée ne
+ * doit pas transformer un 401 en 500 — ce qui apprendrait à l'attaquant que
+ * quelque chose s'est passé.
+ */
+export async function recordAdminFailure(
+  db: Database | null,
+  ipHash: string,
+  now: Date = new Date(),
+): Promise<void> {
+  recordInMemory(ipHash, now.getTime())
+
+  if (!db) return
+
+  try {
+    await db.insert(schema.adminAttempts).values({ ipHash })
+  }
+  catch (error) {
+    console.error('[admin] tentative non enregistrée :', error)
+  }
+}
+
+/**
+ * Purge les tentatives passées.
+ *
+ * La fenêtre de comptage ne remonte qu'à une heure : conserver des empreintes
+ * d'adresses au-delà de leur usage n'a pas de justification. Vingt-quatre
+ * heures laissent de quoi constater une attaque en cours avant l'effacement.
+ */
+export async function purgeAdminAttempts(
+  db: Database,
+  now: Date = new Date(),
+): Promise<number> {
+  const cutoff = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+  const supprimees = await db
+    .delete(schema.adminAttempts)
+    .where(lt(schema.adminAttempts.createdAt, cutoff))
+    .returning({ id: schema.adminAttempts.id })
+
+  return supprimees.length
 }

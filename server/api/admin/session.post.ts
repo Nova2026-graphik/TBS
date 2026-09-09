@@ -4,6 +4,11 @@
  * Limité en débit par adresse : sans cela, un mot de passe unique se casse à
  * l'essai. Le refus ne distingue jamais « mot de passe faux » de « aucun mot
  * de passe fourni ».
+ *
+ * Le compte est tenu en base — partagé par toutes les instances — et ne
+ * retient que les **échecs**. En mémoire, il ne valait rien en serverless ; et
+ * en comptant aussi les réussites, dix connexions légitimes dans l'heure
+ * verrouillaient l'accès à qui s'en sert normalement.
  */
 import { createHash } from 'node:crypto'
 import { z } from 'zod'
@@ -13,8 +18,9 @@ import {
   SESSION_COOKIE,
   SESSION_TTL_MS,
 } from '../../utils/adminSession'
+import { useDb } from '../../database/client'
 import { getClientIp, parseTrustedProxy } from '../../utils/clientIp'
-import { isRateLimitedInMemory } from '../../utils/rateLimit'
+import { isAdminRateLimited, recordAdminFailure } from '../../utils/rateLimit'
 import { requireAdminEnabled } from '../../utils/requireAdmin'
 
 /** Dix essais par heure et par adresse : large pour un humain, court pour un robot. */
@@ -32,7 +38,9 @@ export default defineEventHandler(async (event) => {
   }) ?? 'inconnue'
   const key = `admin:${createHash('sha256').update(ip).digest('hex').slice(0, 32)}`
 
-  if (isRateLimitedInMemory(key, MAX_ATTEMPTS_PER_HOUR).limited) {
+  const db = useDb()
+
+  if ((await isAdminRateLimited(db, key, MAX_ATTEMPTS_PER_HOUR)).limited) {
     throw createError({
       statusCode: 429,
       statusMessage: 'Trop de tentatives. Réessayez dans une heure.',
@@ -41,6 +49,7 @@ export default defineEventHandler(async (event) => {
 
   const parsed = schema.safeParse(await readBody(event))
   if (!parsed.success || !isPasswordValid(parsed.data.password, password)) {
+    await recordAdminFailure(db, key)
     throw createError({ statusCode: 401, statusMessage: 'Mot de passe incorrect' })
   }
 
