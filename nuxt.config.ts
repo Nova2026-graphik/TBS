@@ -1,4 +1,62 @@
 import tailwindcss from '@tailwindcss/vite'
+import {
+  buildContentSecurityPolicy,
+  buildSecurityHeaders,
+  contentSecurityPolicyHeaderName,
+} from './server/utils/securityHeaders'
+
+/**
+ * En-têtes de sécurité des réponses **statiques**.
+ *
+ * `server/plugins/security-headers.ts` les pose sur chaque réponse qui
+ * traverse Nitro. Sur Vercel, les pages pré-rendues n'en traversent aucune :
+ * elles sont écrites au build et servies par le CDN. Résultat mesuré en
+ * production le 8 septembre 2026 — `/api/health` portait les cinq en-têtes,
+ * `/` n'en portait aucun. Toute la surface qu'un navigateur interprète comme
+ * du HTML était sans protection ; la seule surface protégée rendait du JSON.
+ *
+ * `routeRules` est la réponse : le préréglage Vercel les inscrit dans
+ * `.vercel/output/config.json`, qui s'applique aux fichiers statiques. Le
+ * dépôt en avait déjà la preuve — le `cache-control` des images passe par là
+ * et arrive bien.
+ *
+ * Les valeurs sont calculées à la construction, donc lues dans
+ * `process.env` : `routeRules` est figé dans la sortie du build, il ne peut
+ * pas dépendre de `runtimeConfig`. Pour des pages elles-mêmes figées au build,
+ * ce n'est pas une concession.
+ */
+function buildEnTetesStatiques(): Record<string, string> {
+  // `nuxt dev` n'écrit pas de sortie statique, et X-Frame-Options casserait
+  // l'iframe des DevTools : on ne pose rien hors production.
+  if (process.env.NODE_ENV !== 'production') return {}
+
+  const options = {
+    dev: false,
+    cspMode: process.env.NUXT_SECURITY_CSP_MODE ?? 'report-only',
+    cspScriptHashes: process.env.NUXT_SECURITY_CSP_SCRIPT_HASHES ?? '',
+    analyticsOrigin: process.env.NUXT_PUBLIC_ANALYTICS_HOST ?? '',
+  }
+
+  return buildSecurityHeaders(options)
+}
+
+/** La CSP seule, à réserver aux documents — cf. `shouldSendContentSecurityPolicy`. */
+function buildCspStatique(): Record<string, string> {
+  if (process.env.NODE_ENV !== 'production') return {}
+
+  const options = {
+    dev: false,
+    cspMode: process.env.NUXT_SECURITY_CSP_MODE ?? 'report-only',
+    cspScriptHashes: process.env.NUXT_SECURITY_CSP_SCRIPT_HASHES ?? '',
+    analyticsOrigin: process.env.NUXT_PUBLIC_ANALYTICS_HOST ?? '',
+  }
+
+  const nom = contentSecurityPolicyHeaderName(options)
+  return nom ? { [nom]: buildContentSecurityPolicy(options) } : {}
+}
+
+const enTetesStatiques = buildEnTetesStatiques()
+const enTetesDocuments = { ...enTetesStatiques, ...buildCspStatique() }
 
 export default defineNuxtConfig({
 
@@ -150,9 +208,28 @@ export default defineNuxtConfig({
    * trente jours laissent une purge possible.
    */
   routeRules: {
+    /**
+     * En-têtes de sécurité — cf. `buildEnTetesStatiques()` en tête de fichier.
+     *
+     * Chaque règle porte les siens, sans compter sur `/**` pour compléter :
+     * dans la table de routage produite pour Vercel, une règle d'asset qui
+     * correspond **arrête** le routage, et `/(.*)` n'est jamais atteint. Le
+     * vérifier vaut mieux que le supposer — `.vercel/output/config.json` le
+     * montre en clair.
+     *
+     * La CSP ne va qu'aux documents : un navigateur l'ignore sur une réponse
+     * qui n'en est pas un, et c'est déjà la règle que suit le plugin Nitro
+     * (`shouldSendContentSecurityPolicy`). Deux points d'application, une
+     * seule politique.
+     */
+    '/**': { headers: enTetesDocuments },
     '/admin/**': { prerender: false },
-    '/_ipx/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
-    '/images/**': { headers: { 'cache-control': 'public, max-age=2592000' } },
+    '/_ipx/**': {
+      headers: { ...enTetesStatiques, 'cache-control': 'public, max-age=31536000, immutable' },
+    },
+    '/images/**': {
+      headers: { ...enTetesStatiques, 'cache-control': 'public, max-age=2592000' },
+    },
   },
   future: { compatibilityVersion: 4 },
 

@@ -8,9 +8,12 @@
  * aucun en-tête. Le hook `request` du plugin, lui, court en amont de toute la
  * pile : documents pré-rendus, assets et routes `/api` sont couverts.
  *
- * Attention : en génération entièrement statique (`npm run generate`), aucun
- * serveur Nitro ne tourne. Les en-têtes doivent alors être posés par
- * l'hébergeur (Netlify `_headers`, Nginx, Cloudflare) — cf. README.
+ * Attention : ce plugin ne couvre que ce qui traverse Nitro. Une page
+ * pré-rendue servie directement par un CDN — le cas de Vercel, et celui de
+ * `npm run generate` — n'y passe jamais. Ces réponses-là sont couvertes par
+ * `routeRules` dans `nuxt.config.ts`, qui écrit les mêmes en-têtes dans la
+ * sortie du build. Les deux mécanismes lisent la même politique, ici et dans
+ * `utils/securityHeaders.ts` : une seule vérité, deux points d'application.
  */
 import {
   buildContentSecurityPolicy,
