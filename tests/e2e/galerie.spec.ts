@@ -11,11 +11,11 @@ test.describe('galerie', () => {
     // comparaison porterait sinon sur deux graphies du même texte.
     const avant = (await compteur.textContent())?.trim() ?? ''
 
-    await page.getByRole('button', { name: 'Mariages' }).click()
-    await expect(page.getByRole('button', { name: 'Mariages' })).toHaveAttribute('aria-pressed', 'true')
+    await page.getByRole('button', { name: 'Mariages', exact: true }).click()
+    await expect(page.getByRole('button', { name: 'Mariages', exact: true })).toHaveAttribute('aria-pressed', 'true')
     await expect(compteur).not.toHaveText(avant)
 
-    await page.getByRole('button', { name: 'Tout voir' }).click()
+    await page.getByRole('button', { name: 'Tout voir', exact: true }).click()
     await expect(compteur).toHaveText(avant)
   })
 

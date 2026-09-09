@@ -140,6 +140,12 @@
     "accent": "hall by hall",
     "lead": "A selection of receptions equipped by TBS Events and deliveries carried out by TBS Distribution between 2024 and 2026. Filter by sector.",
     "similar": "A similar project? Let's talk",
+    "hero": {
+      "meta": "{count} projects · {branch}",
+      "metaOne": "{count} project · {branch}",
+      "show": "Show {collection}",
+      "filter": "Filter the gallery by {collection}"
+    },
     "filters": {
       "all": "View all",
       "mariage": "Weddings",
