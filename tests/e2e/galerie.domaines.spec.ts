@@ -54,7 +54,7 @@ test.describe('galerie filtrée par métier', () => {
   test('les deux familles de filtre s’excluent', async ({ page }) => {
     await page.goto('/galerie?branche=equipements&domaine=roulant')
     await pageInteractive(page)
-    await page.getByRole('button', { name: 'Mariages' }).click()
+    await page.getByRole('button', { name: 'Mariages', exact: true }).click()
 
     await expect(page).toHaveURL(/filtre=mariage/)
     await expect(page).not.toHaveURL(/branche=/)

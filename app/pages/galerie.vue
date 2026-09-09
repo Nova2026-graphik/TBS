@@ -179,29 +179,23 @@ usePageSeo({
 useBreadcrumbSchema([{ name: 'Galerie', path: '/galerie' }])
 
 const sizesThird = SIZES_THIRD
-
-/**
- * Planche-contact de l'en-tête : une réalisation par famille, dans l'ordre des
- * filtres posés juste en dessous. Le visiteur voit ce qu'il va pouvoir trier.
- */
-const HERO_MEDIA = [
-  { src: '/images/galerie-mariage-adjovi.jpg', subject: 'Mariage — salle dressée' },
-  { src: '/images/galerie-ceremonie-officielle.jpg', subject: 'Cérémonie officielle' },
-  { src: '/images/galerie-diner-gala.jpg', subject: 'Dîner de gala — entreprise' },
-  { src: '/images/galerie-verrerie.jpg', subject: 'Verrerie — décor & détails' },
-]
 </script>
 
 <template>
   <div>
-    <UiPageHero
-      :eyebrow="$t('gallery.eyebrow')"
-      :title="$t('gallery.title')"
-      :accent="$t('gallery.accent')"
-      :lead="$t('gallery.lead')"
-      :media="HERO_MEDIA"
+    <!--
+      En-tête propre à la galerie : une planche animée qui fait défiler les
+      collections. Un filtre métier posé dans l'URL (`?branche=`) n'a pas
+      d'équivalent parmi les collections : la planche reprend alors sa
+      rotation plutôt que de s'arrêter sur une diapositive au hasard.
+    -->
+    <GalleryHero
+      :items="data.gallery"
+      :branches="data.branches"
+      :active="activeSector ? 'all' : activeFilter"
+      @select="setFilter"
     >
-      <div class="mt-[clamp(1.75rem,4vw,3rem)] flex flex-wrap gap-2.5">
+      <div class="mt-[clamp(1.75rem,4vw,3rem)] flex flex-wrap justify-center gap-2.5">
         <button
           v-for="filter in filters"
           :key="filter.value"
@@ -214,7 +208,7 @@ const HERO_MEDIA = [
           {{ filter.label }}
         </button>
       </div>
-    </UiPageHero>
+    </GalleryHero>
 
     <!--
       Les quatre secteurs ouvrent la page, avant les vignettes.
