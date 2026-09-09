@@ -1,6 +1,7 @@
 import type {
   Branch,
   Domain,
+  Equipment,
   FaqItem,
   GalleryItem,
   RentalCategory,
@@ -13,6 +14,7 @@ interface SiteContent {
   categories: RentalCategory[]
   services: ServiceBlock[]
   domains: Domain[]
+  equipment: Equipment[]
   gallery: GalleryItem[]
   testimonials: Testimonial[]
   faq: FaqItem[]
@@ -47,6 +49,7 @@ export function useSiteContent() {
         categories: [],
         services: [],
         domains: [],
+        equipment: [],
         gallery: [],
         testimonials: [],
         faq: [],
