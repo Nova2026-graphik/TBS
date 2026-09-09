@@ -1012,15 +1012,34 @@ chaque lundi.
 
 ## Sécurité
 
-`server/plugins/security-headers.ts` pose les en-têtes de protection sur
-**toutes** les réponses : pages pré-rendues, assets et routes `/api`. La
-politique elle-même vit dans `server/utils/securityHeaders.ts`.
+La politique vit dans `server/utils/securityHeaders.ts`, et elle est posée à
+**deux endroits**, parce qu'une seule ne suffisait pas.
 
-> Un plugin Nitro, et non un middleware `server/middleware/` : Nitro enregistre
-> le gestionnaire d'assets publics comme premier middleware, si bien qu'un
-> middleware applicatif n'est jamais atteint pour `/`, `/contact` ou tout autre
-> document pré-rendu. Le hook `request` du plugin, lui, court avant toute la
-> pile.
+| Où | Ce que ça couvre |
+| --- | --- |
+| `server/plugins/security-headers.ts` | tout ce qui traverse Nitro : routes `/api`, rendu à la volée, développement |
+| `routeRules` dans `nuxt.config.ts` | ce qui ne le traverse pas : les pages **pré-rendues**, servies telles quelles par le CDN |
+
+> Le plugin seul a laissé le site sans protection pendant des semaines. Mesure
+> faite en production le 8 septembre 2026 : `/api/health` portait les cinq
+> en-têtes, `/` n'en portait aucun. Une page pré-rendue est écrite au build et
+> servie comme un fichier ; elle n'entre jamais dans le serveur. Toute la
+> surface qu'un navigateur interprète comme du HTML était donc découverte, et
+> la seule surface protégée rendait du JSON.
+
+Les deux runtimes ne traitent pas les règles de la même façon, et cela se
+vérifie plutôt que se suppose :
+
+- **Nitro les fusionne** — une image reçoit aussi celles de `/**` ;
+- **la table de routage de Vercel s'arrête** à la première qui correspond, si
+  bien que `/(.*)` n'est jamais atteint pour `/images/**` ou `/_ipx/**`.
+
+D'où des en-têtes portés par chaque règle plutôt que délégués à `/**`. Le
+résultat se lit en clair dans `.vercel/output/config.json` après un
+`NITRO_PRESET=vercel npm run build`.
+
+La CSP, elle, n'accompagne que les documents : un navigateur l'ignore sur une
+réponse qui n'en est pas un.
 
 | En-tête | Valeur | Ce qu'il empêche |
 | --- | --- | --- |
