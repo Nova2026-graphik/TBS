@@ -137,6 +137,16 @@ export interface Domain {
   branch: BranchSlug
   title: string
   description: string
+  /**
+   * Visuel illustrant le domaine, quand il en existe un honnête.
+   *
+   * Facultatif, et il faut que cela le reste : sept des dix-sept domaines
+   * n'ont pas de photographie libre de droits qui montre réellement ce
+   * qu'ils recouvrent. Mieux vaut aucune image qu'une image qui ment sur ce
+   * qu'elle représente — c'est le défaut que l'issue #22 combat déjà.
+   */
+  image?: string
+  imageAlt?: string
 }
 
 /**

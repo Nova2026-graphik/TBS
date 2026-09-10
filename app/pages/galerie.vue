@@ -179,6 +179,7 @@ usePageSeo({
 useBreadcrumbSchema([{ name: 'Galerie', path: '/galerie' }])
 
 const sizesThird = SIZES_THIRD
+const sizesFull = SIZES_FULL
 </script>
 
 <template>
@@ -256,6 +257,25 @@ const sizesThird = SIZES_THIRD
         publiée sans cesser d'être fourni.
       -->
       <div v-if="references.length" class="mb-12 border-t border-ink/10 pt-8">
+        <!--
+          Visuel du domaine, quand il en existe un honnete. Sept domaines sur
+          dix-sept n'en ont pas : aucune photographie libre de droits ne montre
+          reellement ce qu'ils recouvrent, et une image approximative vaut
+          moins que pas d'image. Le bloc s'en passe donc sans trou.
+        -->
+        <NuxtImg
+          v-if="activeSector?.domaine?.image"
+          :src="activeSector.domaine.image"
+          :alt="activeSector.domaine.imageAlt ?? ''"
+          preset="card"
+          loading="lazy"
+          fetchpriority="low"
+          :sizes="sizesFull"
+          width="1200"
+          height="900"
+          class="mb-8 aspect-[16/7] w-full object-cover"
+        />
+
         <h2 class="text-[0.6875rem] uppercase tracking-[0.2em] text-ink-mute">
           {{ $t('gallery.equipmentTitle', { count: references.length }) }}
         </h2>

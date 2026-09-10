@@ -80,6 +80,7 @@ export const domains: Domain[] = traduire(fr.domains, [
   {
     title: 'Office furniture & equipment',
     description: 'Desks, chairs, cabinets, reception counters and complete floor fit-outs.',
+    imageAlt: 'Meeting chairs lined up in a bright room',
   },
   {
     title: 'IT equipment',
@@ -92,22 +93,27 @@ export const domains: Domain[] = traduire(fr.domains, [
   {
     title: 'Vehicles & fleet',
     description: 'Service vehicles, vans, machinery, spare parts and fleet follow-up.',
+    imageAlt: 'Toyota Hilux double-cab pick-up on a track',
   },
   {
     title: 'Tools & workshop equipment',
     description: 'Tool cases and kits, electrical measurement, cutting, welding, ladders and working-at-height equipment.',
+    imageAlt: 'Hand-tool set laid out flat',
   },
   {
     title: 'Access control & security',
     description: 'Barriers, badges, controllers and biometric time clocks, indoor and outdoor video surveillance.',
+    imageAlt: 'Surveillance cameras on a pole',
   },
   {
     title: 'Chemicals & reagents',
     description: 'Laboratory reagents, water treatment products and chemicals of analytical or food grade.',
+    imageAlt: 'Labelled laboratory reagent bottles',
   },
   {
     title: 'Photovoltaic systems',
     description: 'Panels, hybrid inverters, charge regulators, batteries and converters for off-grid or grid-backup sites.',
+    imageAlt: 'Photovoltaic panels installed on a roof',
   },
   {
     title: 'Generator sets',
