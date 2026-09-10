@@ -7,7 +7,15 @@ import { pageInteractive } from './utils'
  * Les vignettes de la grille sont les `<li>` de la liste en grille — la page
  * en contient d'autres (filtres, secteurs), d'où le sélecteur précis.
  */
-const grille = 'section ul[class*=grid] > li:has(img)'
+/**
+ * Une vignette est un element de liste qu'on peut ouvrir : c'est le bouton qui
+ * declenche la visionneuse. Ce selecteur a casse deux fois pour avoir vise plus
+ * large — d'abord `> li`, qui attrapait les liens de branche du pied de page,
+ * puis `li:has(img)`, qui a cesse de discriminer le jour ou les references du
+ * catalogue ont recu leur propre image. Le bouton, lui, n'appartient qu'aux
+ * vignettes.
+ */
+const grille = 'section ul[class*=grid] > li:has(button)'
 
 test.describe('galerie filtrée par métier', () => {
   test('un lien de domaine ne montre que ses réalisations', async ({ page }) => {
