@@ -1259,6 +1259,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'didactiques',
     name: 'Centrale solaire didactique',
+    image: '/images/references/centrale-solaire-didactique.jpg',
     description:
       'Banc pédagogique couvrant les deux cas : restitution réseau et site isolé.',
     specs: ['Restitution réseau', 'Site isolé'],
@@ -1313,6 +1314,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'branchement',
     name: 'Réducteur de pression FF 3/4',
+    image: '/images/references/reducteur-de-pression-ff-3-4.jpg',
     description:
       'Stabilisation de la pression d\'entrée d\'un réseau intérieur.',
     specs: ['FF 3/4'],
