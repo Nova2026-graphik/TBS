@@ -7,7 +7,15 @@ import { pageInteractive } from './utils'
  * Les vignettes de la grille sont les `<li>` de la liste en grille — la page
  * en contient d'autres (filtres, secteurs), d'où le sélecteur précis.
  */
-const grille = 'section ul[class*=grid] > li:has(img)'
+/**
+ * Une vignette est un element de liste qu'on peut ouvrir : c'est le bouton qui
+ * declenche la visionneuse. Ce selecteur a casse deux fois pour avoir vise plus
+ * large — d'abord `> li`, qui attrapait les liens de branche du pied de page,
+ * puis `li:has(img)`, qui a cesse de discriminer le jour ou les references du
+ * catalogue ont recu leur propre image. Le bouton, lui, n'appartient qu'aux
+ * vignettes.
+ */
+const grille = 'section ul[class*=grid] > li:has(button)'
 
 test.describe('galerie filtrée par métier', () => {
   test('un lien de domaine ne montre que ses réalisations', async ({ page }) => {
@@ -88,6 +96,25 @@ test.describe('galerie filtrée par métier', () => {
 
     await expect(page.locator(grille)).toHaveCount(0)
     await expect(page.getByText('Pince multimètre TRMS 700 A')).toBeVisible()
+  })
+
+  test('un domaine illustré montre son visuel', async ({ page }) => {
+    await page.goto('/galerie?branche=equipements&domaine=roulant')
+    await pageInteractive(page)
+
+    const visuel = page.getByRole('img', { name: /Pick-up Toyota Hilux/ })
+    await expect(visuel).toBeVisible()
+  })
+
+  test('un domaine sans visuel garde son bloc intact', async ({ page }) => {
+    // Sept domaines sur dix-sept n'ont pas de photographie libre de droits qui
+    // montre vraiment ce qu'ils recouvrent. Le bloc doit s'en passer sans trou
+    // ni erreur — c'est le champ facultatif qui est ici vérifié.
+    await page.goto('/galerie?branche=equipements&domaine=generateurs')
+    await pageInteractive(page)
+
+    await expect(page.getByRole('heading', { name: /Ce que ce domaine couvre/ })).toBeVisible()
+    await expect(page.getByText('Groupe électrogène diesel KOHLER SDMO')).toBeVisible()
   })
 
   test('une branche seule ne déroule pas les références', async ({ page }) => {
