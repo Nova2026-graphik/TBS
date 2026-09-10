@@ -282,6 +282,25 @@ const sizesFull = SIZES_FULL
 
         <ul class="mt-6 grid gap-x-10 gap-y-7 md:grid-cols-2 lg:grid-cols-3">
           <li v-for="reference in references" :key="reference.name">
+            <!--
+              `alt` vide, et c'est voulu : l'image est collee au nom et a la
+              description qui la decrivent deja. Un texte alternatif qui repete
+              le titre voisin fait entendre deux fois la meme chose a un lecteur
+              d'ecran. Vingt-quatre references sur cent sept n'ont pas de
+              visuel : la carte s'en passe sans trou.
+            -->
+            <NuxtImg
+              v-if="reference.image"
+              :src="reference.image"
+              alt=""
+              preset="card"
+              loading="lazy"
+              fetchpriority="low"
+              :sizes="sizesThird"
+              width="800"
+              height="600"
+              class="mb-3.5 aspect-[4/3] w-full object-cover"
+            />
             <p class="font-display text-[1.0625rem] leading-[1.35] text-ink">
               {{ reference.name }}
             </p>

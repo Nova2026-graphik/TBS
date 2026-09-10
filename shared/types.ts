@@ -173,6 +173,20 @@ export interface Equipment {
    * caractéristique inventée vaut moins que pas de caractéristique.
    */
   specs: string[]
+  /**
+   * Visuel de la référence, quand il en existe un réutilisable.
+   *
+   * Facultatif : vingt-quatre références sur cent sept n'ont aucune
+   * photographie libre de droits qui montre l'objet. Le champ absent est un
+   * état normal, pas un oubli à combler par une image approximative.
+   *
+   * Sans texte alternatif associé : l'image est adjacente au nom et à la
+   * description de la référence, qui la décrivent déjà. Un `alt` qui répète
+   * le titre voisin fait entendre deux fois la même chose à un lecteur
+   * d'écran — d'où l'`alt` vide, qui est le traitement correct d'une
+   * illustration légendée.
+   */
+  image?: string
 }
 
 export interface StatItem {
