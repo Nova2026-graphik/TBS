@@ -134,6 +134,8 @@ export const domains: Domain[] = [
     title: 'Mobilier & matériel de bureau',
     description:
       'Bureaux, fauteuils, armoires, banques d\'accueil et aménagement complet de plateaux.',
+    image: '/images/domaines/mobilier-bureau.jpg',
+    imageAlt: 'Sièges de réunion alignés dans une salle claire',
   },
   {
     slug: 'informatique',
@@ -155,6 +157,8 @@ export const domains: Domain[] = [
     title: 'Matériel roulant',
     description:
       'Véhicules de service, utilitaires, engins, pièces détachées et suivi de flotte.',
+    image: '/images/domaines/roulant.jpg',
+    imageAlt: 'Pick-up Toyota Hilux double cabine sur piste',
   },
   {
     slug: 'outillage',
@@ -162,6 +166,8 @@ export const domains: Domain[] = [
     title: 'Outillage & équipement d\'atelier',
     description:
       'Mallettes et coffrets, mesure électrique, découpe, soudure, échelles et équipement de travail en hauteur.',
+    image: '/images/domaines/outillage.jpg',
+    imageAlt: 'Jeu d\'outils à main disposé à plat',
   },
   {
     slug: 'controle-acces',
@@ -169,6 +175,8 @@ export const domains: Domain[] = [
     title: 'Contrôle d\'accès & sécurité',
     description:
       'Barrières, badges, centrales et pointeuses biométriques, vidéosurveillance intérieure et extérieure.',
+    image: '/images/domaines/controle-acces.jpg',
+    imageAlt: 'Caméras de vidéosurveillance sur un mât',
   },
   {
     slug: 'chimie-reactifs',
@@ -176,6 +184,8 @@ export const domains: Domain[] = [
     title: 'Produits chimiques & réactifs',
     description:
       'Réactifs de laboratoire, produits de traitement de l\'eau et produits chimiques de qualité analytique ou alimentaire.',
+    image: '/images/domaines/chimie-reactifs.jpg',
+    imageAlt: 'Flacons de réactifs de laboratoire étiquetés',
   },
   {
     slug: 'photovoltaique',
@@ -183,6 +193,8 @@ export const domains: Domain[] = [
     title: 'Système photovoltaïque',
     description:
       'Panneaux, onduleurs hybrides, régulateurs de charge, batteries et convertisseurs pour site isolé ou appoint réseau.',
+    image: '/images/domaines/photovoltaique.jpg',
+    imageAlt: 'Panneaux photovoltaïques installés en toiture',
   },
   {
     slug: 'generateurs',
