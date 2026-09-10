@@ -90,6 +90,25 @@ test.describe('galerie filtrée par métier', () => {
     await expect(page.getByText('Pince multimètre TRMS 700 A')).toBeVisible()
   })
 
+  test('un domaine illustré montre son visuel', async ({ page }) => {
+    await page.goto('/galerie?branche=equipements&domaine=roulant')
+    await pageInteractive(page)
+
+    const visuel = page.getByRole('img', { name: /Pick-up Toyota Hilux/ })
+    await expect(visuel).toBeVisible()
+  })
+
+  test('un domaine sans visuel garde son bloc intact', async ({ page }) => {
+    // Sept domaines sur dix-sept n'ont pas de photographie libre de droits qui
+    // montre vraiment ce qu'ils recouvrent. Le bloc doit s'en passer sans trou
+    // ni erreur — c'est le champ facultatif qui est ici vérifié.
+    await page.goto('/galerie?branche=equipements&domaine=generateurs')
+    await pageInteractive(page)
+
+    await expect(page.getByRole('heading', { name: /Ce que ce domaine couvre/ })).toBeVisible()
+    await expect(page.getByText('Groupe électrogène diesel KOHLER SDMO')).toBeVisible()
+  })
+
   test('une branche seule ne déroule pas les références', async ({ page }) => {
     // Treize domaines mêlés feraient une liste illisible : le bloc n'a de sens
     // que sur un domaine précis.
