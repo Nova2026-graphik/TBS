@@ -184,15 +184,33 @@ function fichierPour(nom) {
 
 const nettoie = v => (v?.value ?? '').replace(/<[^>]*>/g, '').trim()
 
+/**
+ * Année d'une photographie, lue dans ses métadonnées.
+ *
+ * `DateTimeOriginal` est la date de prise de vue, écrite par l'appareil ;
+ * `DateTime` celle du fichier. La première vaut mieux, mais elle manque
+ * souvent — d'où le repli. Sans date lisible, `0` : le fichier passe en
+ * dernier plutôt que d'être écarté, car une bonne image sans métadonnée reste
+ * une bonne image.
+ */
+function annee(extmetadata) {
+  const brut = nettoie(extmetadata?.DateTimeOriginal) || nettoie(extmetadata?.DateTime)
+  const trouve = brut.match(/\b(19|20)\d{2}\b/)
+  return trouve ? Number(trouve[0]) : 0
+}
+
+/** En deçà, le matériel photographié n'a plus grand-chose de commun avec l'actuel. */
+const ANNEE_PLANCHER = 2010
+
 async function chercher(requete) {
   const url = 'https://commons.wikimedia.org/w/api.php?action=query&format=json'
-    + '&generator=search&gsrnamespace=6&gsrlimit=10'
+    + '&generator=search&gsrnamespace=6&gsrlimit=30'
     + `&gsrsearch=${encodeURIComponent(requete)}`
     + '&prop=imageinfo&iiprop=url|extmetadata|mime&iiurlwidth=900'
 
   const donnees = await (await fetch(url, { headers: { 'User-Agent': AGENT } })).json()
 
-  return Object.values(donnees.query?.pages ?? {})
+  const candidats = Object.values(donnees.query?.pages ?? {})
     .map((page) => {
       const info = page.imageinfo?.[0]
       if (!info) return null
@@ -203,9 +221,24 @@ async function chercher(requete) {
         licence: nettoie(info.extmetadata?.LicenseShortName),
         auteur: nettoie(info.extmetadata?.Artist),
         page: info.descriptionurl,
+        annee: annee(info.extmetadata),
       }
     })
     .filter(f => f && /jpeg|png/.test(f.mime) && LIBRES.test(f.licence) && f.auteur)
+
+  /*
+   * Les récentes d'abord, puis les autres.
+   *
+   * Trier bêtement par date passerait devant une photographie parfaitement
+   * pertinente parce qu'une autre, plus récente et hors sujet, la devance.
+   * On garde donc l'ordre de pertinence à l'intérieur de chaque groupe : le
+   * moteur de Commons sait mieux que nous ce qui répond à la requête, la date
+   * n'arbitre qu'entre des réponses également valables.
+   */
+  const recentes = candidats.filter(f => f.annee >= ANNEE_PLANCHER)
+  const reste = candidats.filter(f => f.annee < ANNEE_PLANCHER)
+
+  return [...recentes, ...reste]
 }
 
 mkdirSync(SORTIE, { recursive: true })
@@ -259,7 +292,7 @@ for (const item of equipment) {
 
 const lignes = credits
   .filter(c => !c.deja)
-  .map(c => `| ${c.nom} | [${c.titre}](${c.page}) | ${c.auteur} | ${c.licence} |`)
+  .map(c => `| ${c.nom} | [${c.titre}](${c.page}) | ${c.auteur} | ${c.licence} | ${c.annee || '—'} |`)
   .join('\n')
 
 writeFileSync('docs/credits-references.md', `# Crédits des visuels de référence
@@ -291,8 +324,8 @@ site de collection, où la provenance est introuvable.
 
 ${credits.length} référence(s) illustrée(s) sur ${equipment.length}.
 
-| Référence | Fichier | Auteur | Licence |
-| --- | --- | --- | --- |
+| Référence | Fichier | Auteur | Licence | Année |
+| --- | --- | --- | --- | ---: |
 ${lignes}
 
 ${sans.length ? `## Sans visuel\n\n${sans.map(([n, r]) => `- **${n}** — ${r}`).join('\n')}\n` : ''}
