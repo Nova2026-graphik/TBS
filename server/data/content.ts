@@ -134,6 +134,8 @@ export const domains: Domain[] = [
     title: 'Mobilier & matériel de bureau',
     description:
       'Bureaux, fauteuils, armoires, banques d\'accueil et aménagement complet de plateaux.',
+    image: '/images/domaines/mobilier-bureau.jpg',
+    imageAlt: 'Sièges de réunion alignés dans une salle claire',
   },
   {
     slug: 'informatique',
@@ -155,6 +157,8 @@ export const domains: Domain[] = [
     title: 'Matériel roulant',
     description:
       'Véhicules de service, utilitaires, engins, pièces détachées et suivi de flotte.',
+    image: '/images/domaines/roulant.jpg',
+    imageAlt: 'Pick-up Toyota Hilux double cabine sur piste',
   },
   {
     slug: 'outillage',
@@ -162,6 +166,8 @@ export const domains: Domain[] = [
     title: 'Outillage & équipement d\'atelier',
     description:
       'Mallettes et coffrets, mesure électrique, découpe, soudure, échelles et équipement de travail en hauteur.',
+    image: '/images/domaines/outillage.jpg',
+    imageAlt: 'Jeu d\'outils à main disposé à plat',
   },
   {
     slug: 'controle-acces',
@@ -169,6 +175,8 @@ export const domains: Domain[] = [
     title: 'Contrôle d\'accès & sécurité',
     description:
       'Barrières, badges, centrales et pointeuses biométriques, vidéosurveillance intérieure et extérieure.',
+    image: '/images/domaines/controle-acces.jpg',
+    imageAlt: 'Caméras de vidéosurveillance sur un mât',
   },
   {
     slug: 'chimie-reactifs',
@@ -176,6 +184,8 @@ export const domains: Domain[] = [
     title: 'Produits chimiques & réactifs',
     description:
       'Réactifs de laboratoire, produits de traitement de l\'eau et produits chimiques de qualité analytique ou alimentaire.',
+    image: '/images/domaines/chimie-reactifs.jpg',
+    imageAlt: 'Flacons de réactifs de laboratoire étiquetés',
   },
   {
     slug: 'photovoltaique',
@@ -183,6 +193,8 @@ export const domains: Domain[] = [
     title: 'Système photovoltaïque',
     description:
       'Panneaux, onduleurs hybrides, régulateurs de charge, batteries et convertisseurs pour site isolé ou appoint réseau.',
+    image: '/images/domaines/photovoltaique.jpg',
+    imageAlt: 'Panneaux photovoltaïques installés en toiture',
   },
   {
     slug: 'generateurs',
@@ -505,6 +517,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'mobilier-bureau',
     name: 'Armoire bibliothèque en bois',
+    image: '/images/references/armoire-bibliotheque-en-bois.jpg',
     description:
       'Rangement haut pour documents et ouvrages, à poser derrière un poste de direction.',
     specs: ['H 180 × L 90 × P 45 cm', 'Bois'],
@@ -512,6 +525,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'mobilier-bureau',
     name: 'Armoire en bois à portes battantes',
+    image: '/images/references/armoire-en-bois-a-portes-battantes.jpg',
     description:
       'Armoire fermée pour archives courantes, dans un bureau ou une salle de réunion.',
     specs: ['H 180 × L 80 × P 45 cm', 'Portes battantes'],
@@ -519,6 +533,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'mobilier-bureau',
     name: 'Armoire à portes coulissantes transparentes',
+    image: '/images/references/armoire-a-portes-coulissantes-transparentes.jpg',
     description:
       'Armoire haute à portes vitrées coulissantes : le contenu reste visible sans encombrer le passage.',
     specs: ['Portes coulissantes', 'Modèle haut'],
@@ -526,6 +541,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'mobilier-bureau',
     name: 'Banque d\'accueil ATLAS',
+    image: '/images/references/banque-d-accueil-atlas.jpg',
     description:
       'Poste d\'accueil pour hall d\'entreprise ou d\'administration, avec plan de dépose visiteur.',
     specs: ['Poste d\'accueil'],
@@ -533,6 +549,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'mobilier-bureau',
     name: 'Bureau droit, gamme panneaux',
+    image: '/images/references/bureau-droit-gamme-panneaux.jpg',
     description:
       'Plan de travail droit sur piètement panneaux, pour aménagement de plateau en série.',
     specs: ['Plateau droit', 'Piètement panneaux'],
@@ -540,6 +557,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'mobilier-bureau',
     name: 'Bureau individuel Solano avec retour et caisson',
+    image: '/images/references/bureau-individuel-solano-avec-retour-et-caisson.jpg',
     description:
       'Poste complet pour cadre : plan principal, retour latéral et caisson de rangement.',
     specs: ['Retour latéral', 'Caisson inclus'],
@@ -547,6 +565,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'mobilier-bureau',
     name: 'Caisson de bureau à roulettes',
+    image: '/images/references/caisson-de-bureau-a-roulettes.jpg',
     description:
       'Caisson mobile à trois tiroirs, à glisser sous le plan de travail.',
     specs: ['3 tiroirs', 'Sur roulettes'],
@@ -554,6 +573,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'mobilier-bureau',
     name: 'Canapé d\'angle convertible réversible',
+    image: '/images/references/canape-d-angle-convertible-reversible.jpg',
     description:
       'Assise d\'attente convertible, l\'angle se monte à droite ou à gauche selon la pièce.',
     specs: ['4 places', 'Convertible', 'Angle réversible'],
@@ -561,6 +581,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'mobilier-bureau',
     name: 'Canapé MAMAIA 3 places',
+    image: '/images/references/canape-mamaia-3-places.jpg',
     description:
       'Canapé d\'accueil en velours pour espace d\'attente ou salon de direction.',
     specs: ['3 places', '177 × 92 × 78 cm', 'Velours'],
@@ -568,6 +589,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'mobilier-bureau',
     name: 'Canapé d\'accueil de bureau',
+    image: '/images/references/canape-d-accueil-de-bureau.jpg',
     description:
       'Assise confortable pour zone d\'attente, en complément d\'une banque d\'accueil.',
     specs: ['Espace d\'attente'],
@@ -575,6 +597,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'mobilier-bureau',
     name: 'Fauteuil de direction en cuir',
+    image: '/images/references/fauteuil-de-direction-en-cuir.jpg',
     description:
       'Siège de direction à dossier haut, garnissage cuir.',
     specs: ['Dossier haut', 'Cuir'],
@@ -589,6 +612,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'mobilier-bureau',
     name: 'Fauteuils de salle de conférence',
+    image: '/images/references/fauteuils-de-salle-de-conference.jpg',
     description:
       'Sièges de salle pour amphithéâtre, salle de formation ou de projection.',
     specs: ['Salle équipée'],
@@ -596,6 +620,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'mobilier-bureau',
     name: 'Salon complet 5 pièces',
+    image: '/images/references/salon-complet-5-pieces.jpg',
     description:
       'Ensemble de salon pour bureau de direction ou salle d\'attente.',
     specs: ['5 pièces', 'Noir / noyer'],
@@ -617,6 +642,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'mobilier-bureau',
     name: 'Siège visiteur en cuir',
+    image: '/images/references/siege-visiteur-en-cuir.jpg',
     description:
       'Siège d\'appoint en cuir, à poser face à un bureau de direction.',
     specs: ['Cuir'],
@@ -624,6 +650,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'mobilier-bureau',
     name: 'Table de conférence 12 personnes',
+    image: '/images/references/table-de-conference-12-personnes.jpg',
     description:
       'Table de réunion pour comité de direction ou salle de conseil.',
     specs: ['12 personnes'],
@@ -631,6 +658,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'mobilier-bureau',
     name: 'Table de réunion en bois massif',
+    image: '/images/references/table-de-reunion-en-bois-massif.jpg',
     description:
       'Table de réunion en bois massif, pour salle de commission.',
     specs: ['Bois massif'],
@@ -646,6 +674,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'informatique',
     name: 'HP LaserJet Pro MFP M479fdw',
+    image: '/images/references/hp-laserjet-pro-mfp-m479fdw.jpg',
     description:
       'Multifonction laser couleur pour service ou petit plateau : impression, copie, scan, fax.',
     specs: ['Laser couleur', 'Recto-verso', 'Wi-Fi'],
@@ -653,6 +682,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'informatique',
     name: 'HP ProBook 450 G8',
+    image: '/images/references/hp-probook-450-g8.jpg',
     description:
       'Portable professionnel pour poste bureautique mobile.',
     specs: ['Core i7-1165G7', '8 Go', '512 Go SSD'],
@@ -668,6 +698,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'sante-laboratoire',
     name: 'Analyseur d\'électrolytes EA-2000B',
+    image: '/images/references/analyseur-d-electrolytes-ea-2000b.jpg',
     description:
       'Dosage des électrolytes sanguins en laboratoire d\'analyses médicales.',
     specs: ['Électrolytes'],
@@ -675,6 +706,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'sante-laboratoire',
     name: 'Analyseur de coagulation automatique',
+    image: '/images/references/analyseur-de-coagulation-automatique.jpg',
     description:
       'Automate d\'hémostase pour laboratoire hospitalier ou de ville.',
     specs: ['Automatique', 'Hémostase'],
@@ -689,6 +721,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'sante-laboratoire',
     name: 'Bavettes de protection haute filtration',
+    image: '/images/references/bavettes-de-protection-haute-filtration.jpg',
     description:
       'Masques de protection respiratoire pour personnel soignant et laboratoire.',
     specs: ['Haute filtration'],
@@ -703,6 +736,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'sante-laboratoire',
     name: 'Concentrateur d\'oxygène Diamedica Bébé CPAP',
+    image: '/images/references/concentrateur-d-oxygene-diamedica-bebe-cpap.jpg',
     description:
       'Assistance respiratoire néonatale en pression positive continue.',
     specs: ['Néonatal', 'CPAP'],
@@ -710,6 +744,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'sante-laboratoire',
     name: 'Conductimètre HANNA HI 9835',
+    image: '/images/references/conductimetre-hanna-hi-9835.jpg',
     description:
       'Mesure de conductivité, TDS et salinité, au laboratoire ou sur le terrain.',
     specs: ['Conductivité', 'TDS', 'Salinité'],
@@ -717,6 +752,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'sante-laboratoire',
     name: 'ECG Colson Cardi 6 multipistes',
+    image: '/images/references/ecg-colson-cardi-6-multipistes.jpg',
     description:
       'Électrocardiographe tactile multipistes pour cabinet et service hospitalier.',
     specs: ['Multipistes', 'Écran tactile'],
@@ -724,6 +760,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'sante-laboratoire',
     name: 'Lampe de photothérapie nouveau-né',
+    image: '/images/references/lampe-de-phototherapie-nouveau-ne.jpg',
     description:
       'Traitement de l\'ictère du nouveau-né en maternité.',
     specs: ['Néonatal', 'Photothérapie'],
@@ -738,6 +775,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'sante-laboratoire',
     name: 'Microscope biologique numérique Celestron',
+    image: '/images/references/microscope-biologique-numerique-celestron.jpg',
     description:
       'Microscope à sortie numérique pour laboratoire et enseignement.',
     specs: ['Numérique', 'Biologique'],
@@ -745,6 +783,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'sante-laboratoire',
     name: 'Moniteur patient M-9000-E',
+    image: '/images/references/moniteur-patient-m-9000-e.jpg',
     description:
       'Surveillance des paramètres vitaux au bloc, en réanimation ou en salle de réveil.',
     specs: ['12,1 pouces', 'Multiparamétrique'],
@@ -752,6 +791,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'sante-laboratoire',
     name: 'Papier pour ECG Colson / Cardiette',
+    image: '/images/references/papier-pour-ecg-colson-cardiette.jpg',
     description:
       'Consommable thermique pour électrocardiographe.',
     specs: ['Consommable', 'Thermique'],
@@ -759,6 +799,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'sante-laboratoire',
     name: 'pH-mètre multiparamètre',
+    image: '/images/references/ph-metre-multiparametre.jpg',
     description:
       'Contrôle du pH et des paramètres associés, en laboratoire ou en traitement de l\'eau.',
     specs: ['Multiparamètre'],
@@ -766,6 +807,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'sante-laboratoire',
     name: 'Spectromètre d\'absorption atomique 280Z AA',
+    image: '/images/references/spectrometre-d-absorption-atomique-280z-aa.jpg',
     description:
       'Dosage des métaux à l\'état de traces, en analyse environnementale ou agroalimentaire.',
     specs: ['Absorption atomique', 'Four graphite'],
@@ -773,6 +815,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'sante-laboratoire',
     name: 'Tensiomètre Heine Gamma GP',
+    image: '/images/references/tensiometre-heine-gamma-gp.jpg',
     description:
       'Tensiomètre manuel de qualité clinique, pour cabinet et service.',
     specs: ['Manuel', 'Clinique'],
@@ -780,6 +823,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'sante-laboratoire',
     name: 'Thermoflash Pro LX-261E',
+    image: '/images/references/thermoflash-pro-lx-261e.jpg',
     description:
       'Thermomètre frontal sans contact, pour accueil et service de soins.',
     specs: ['Sans contact', 'Infrarouge'],
@@ -788,6 +832,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'roulant',
     name: 'Toyota Fortuner turbo',
+    image: '/images/references/toyota-fortuner-turbo.jpg',
     description:
       'Tout-terrain sept places pour mission de terrain et transport d\'équipe.',
     specs: ['7 places', 'Turbo', '4×4'],
@@ -795,6 +840,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'roulant',
     name: 'Toyota Hilux 4×4 double cabine',
+    image: '/images/references/toyota-hilux-4-4-double-cabine.jpg',
     description:
       'Pick-up double cabine, l\'utilitaire de référence pour chantier et projet en région.',
     specs: ['Double cabine', '4×4', 'Pick-up'],
@@ -802,6 +848,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'roulant',
     name: 'Toyota Land Cruiser Prado',
+    image: '/images/references/toyota-land-cruiser-prado.jpg',
     description:
       'Tout-terrain robuste pour missions longues et pistes difficiles.',
     specs: ['4×4'],
@@ -809,6 +856,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'roulant',
     name: 'Toyota Rush',
+    image: '/images/references/toyota-rush.jpg',
     description:
       'Petit tout-chemin urbain, pour déplacement de service.',
     specs: ['Compact'],
@@ -830,6 +878,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'roulant',
     name: 'Jante aluminium 4×4',
+    image: '/images/references/jante-aluminium-4-4.jpg',
     description:
       'Jante aluminium pour véhicule tout-terrain.',
     specs: ['Aluminium', '4×4'],
@@ -837,6 +886,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'roulant',
     name: 'Pneus Toyota Hilux Pick-up',
+    image: '/images/references/pneus-toyota-hilux-pick-up.jpg',
     description:
       'Pneumatiques de remplacement pour pick-up.',
     specs: ['Toyota Hilux'],
@@ -845,6 +895,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'outillage',
     name: 'Mallette à outils 198 pièces',
+    image: '/images/references/mallette-a-outils-198-pieces.jpg',
     description:
       'Coffret de réparation complet pour atelier ou intervention sur site.',
     specs: ['198 pièces'],
@@ -859,6 +910,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'outillage',
     name: 'Coffret à outils vide 5 compartiments',
+    image: '/images/references/coffret-a-outils-vide-5-compartiments.jpg',
     description:
       'Caisse à outils vide à compartiments, à composer selon le métier.',
     specs: ['5 compartiments', 'Vide'],
@@ -866,6 +918,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'outillage',
     name: 'Corde de service',
+    image: '/images/references/corde-de-service.jpg',
     description:
       'Corde de travail pour manœuvre et levage léger.',
     specs: ['Travail en hauteur'],
@@ -873,6 +926,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'outillage',
     name: 'Coupe-câble à crémaillère Ø 52 mm',
+    image: '/images/references/coupe-cable-a-cremaillere-52-mm.jpg',
     description:
       'Coupe-câble isolé pour intervention sous tension, jusqu\'à 52 mm de diamètre.',
     specs: ['Ø 52 mm', 'Isolé 1000 V', 'Crémaillère'],
@@ -880,6 +934,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'outillage',
     name: 'Échelle coulissante 2 plans',
+    image: '/images/references/echelle-coulissante-2-plans.jpg',
     description:
       'Échelle à deux plans à mécanisme à corde, pour intervention en hauteur.',
     specs: ['2 plans', 'Mécanisme à corde'],
@@ -887,6 +942,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'outillage',
     name: 'Élagueuse thermique Scheppach CSP2540',
+    image: '/images/references/elagueuse-thermique-scheppach-csp2540.jpg',
     description:
       'Élagueuse thermique pour entretien d\'espaces verts et dégagement de lignes.',
     specs: ['25 cm', '25 cm³', 'Thermique'],
@@ -901,6 +957,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'outillage',
     name: 'Indicateur d\'ordre de phases',
+    image: '/images/references/indicateur-d-ordre-de-phases.jpg',
     description:
       'Vérification du sens de rotation des phases avant mise en service.',
     specs: ['Triphasé'],
@@ -908,6 +965,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'outillage',
     name: 'Pince multimètre TRMS 700 A',
+    image: '/images/references/pince-multimetre-trms-700-a.jpg',
     description:
       'Mesure de courant en valeur efficace vraie, jusqu\'à 700 ampères.',
     specs: ['700 A', 'TRMS'],
@@ -915,6 +973,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'outillage',
     name: 'Poste de soudure',
+    image: '/images/references/poste-de-soudure.jpg',
     description:
       'Poste de soudure d\'atelier pour réparation et fabrication.',
     specs: ['Atelier'],
@@ -922,6 +981,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'outillage',
     name: 'Scies à métaux',
+    image: '/images/references/scies-a-metaux.jpg',
     description:
       'Scies à main pour découpe de profilés et tubes.',
     specs: ['Métaux'],
@@ -929,6 +989,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'outillage',
     name: 'Tronçonneuse à métaux Constructor',
+    image: '/images/references/tronconneuse-a-metaux-constructor.jpg',
     description:
       'Tronçonneuse d\'établi pour découpe de barres et profilés.',
     specs: ['2300 W', 'Métaux'],
@@ -936,6 +997,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'outillage',
     name: 'Tronçonneuse sans fil 6 pouces',
+    image: '/images/references/tronconneuse-sans-fil-6-pouces.jpg',
     description:
       'Tronçonneuse de jardin sur batterie, livrée avec deux batteries et deux chaînes.',
     specs: ['6 pouces', '2 batteries', '2 chaînes'],
@@ -943,6 +1005,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'outillage',
     name: 'Valise de maintenance Expert PRIMO',
+    image: '/images/references/valise-de-maintenance-expert-primo.jpg',
     description:
       'Valise de maintenance complète, pour technicien itinérant.',
     specs: ['145 outils'],
@@ -951,6 +1014,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'controle-acces',
     name: 'Barrière de contrôle d\'accès MAXIMA ULTRA 68',
+    image: '/images/references/barriere-de-controle-d-acces-maxima-ultra-68.jpg',
     description:
       'Barrière levante pour entrée de site, parking d\'entreprise ou d\'administration.',
     specs: ['Barrière levante'],
@@ -958,6 +1022,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'controle-acces',
     name: 'Barrière de contrôle d\'accès TERRA 180',
+    image: '/images/references/barriere-de-controle-d-acces-terra-180.jpg',
     description:
       'Barrière levante pour passage large et trafic soutenu.',
     specs: ['Barrière levante', 'Passage large'],
@@ -965,6 +1030,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'controle-acces',
     name: 'Cartes badges PVC à piste magnétique',
+    image: '/images/references/cartes-badges-pvc-a-piste-magnetique.jpg',
     description:
       'Badges d\'accès personnalisables, consommable du système de contrôle.',
     specs: ['PVC', 'Piste magnétique'],
@@ -972,6 +1038,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'controle-acces',
     name: 'Centrale de contrôle d\'accès inBIO 160/260/460',
+    image: '/images/references/centrale-de-controle-d-acces-inbio-160-260-460.jpg',
     description:
       'Centrale de gestion des accès, de une à quatre portes selon le modèle.',
     specs: ['1 à 4 portes', 'Biométrie'],
@@ -979,6 +1046,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'controle-acces',
     name: 'Gâche électrique à sécurité intégrée',
+    image: '/images/references/gache-electrique-a-securite-integree.jpg',
     description:
       'Gâche à sécurité positive : la porte se libère en cas de coupure d\'alimentation.',
     specs: ['Sécurité intégrée'],
@@ -986,6 +1054,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'controle-acces',
     name: 'Pointeuse biométrique ZKTeco K40',
+    image: '/images/references/pointeuse-biometrique-zkteco-k40.jpg',
     description:
       'Pointeuse à empreinte digitale pour gestion des temps de présence.',
     specs: ['Empreinte digitale', 'Temps de présence'],
@@ -1000,6 +1069,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'controle-acces',
     name: 'Caméra dôme 4 MP intérieure',
+    image: '/images/references/camera-dome-4-mp-interieure.jpg',
     description:
       'Caméra de surveillance intérieure, discrète et résistante au vandalisme.',
     specs: ['4 MP', 'Intérieur', 'Dôme'],
@@ -1015,6 +1085,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'chimie-reactifs',
     name: '2-Propanol',
+    image: '/images/references/2-propanol.jpg',
     description:
       'Solvant de laboratoire et de nettoyage technique.',
     specs: ['Solvant'],
@@ -1029,6 +1100,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'chimie-reactifs',
     name: 'Acide propionique',
+    image: '/images/references/acide-propionique.jpg',
     description:
       'Acide organique pur, usage laboratoire et conservation.',
     specs: ['99,5 %+', 'Pur'],
@@ -1036,6 +1108,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'chimie-reactifs',
     name: 'Acide succinique',
+    image: '/images/references/acide-succinique.jpg',
     description:
       'Acide organique de qualité alimentaire.',
     specs: ['99,5 %+', 'Qualité alimentaire'],
@@ -1057,6 +1130,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'chimie-reactifs',
     name: 'Carbonate de potassium',
+    image: '/images/references/carbonate-de-potassium.jpg',
     description:
       'Sel de qualité alimentaire FCC, en poudre.',
     specs: ['99,9 %+', 'Qualité alimentaire FCC', 'Poudre'],
@@ -1064,6 +1138,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'chimie-reactifs',
     name: 'Charbon actif granulé',
+    image: '/images/references/charbon-actif-granule.jpg',
     description:
       'Média filtrant pour traitement de l\'eau et déchloration.',
     specs: ['Granulé', 'Traitement de l\'eau'],
@@ -1071,6 +1146,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'chimie-reactifs',
     name: 'Chlorhydrate de 1,10-phénanthroline',
+    image: '/images/references/chlorhydrate-de-1-10-phenanthroline.jpg',
     description:
       'Réactif de dosage du fer par colorimétrie.',
     specs: ['Monohydraté', 'Réactif'],
@@ -1078,6 +1154,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'chimie-reactifs',
     name: 'Sulfate de magnésium heptahydraté',
+    image: '/images/references/sulfate-de-magnesium-heptahydrate.jpg',
     description:
       'Sel de qualité alimentaire, usage laboratoire et industriel.',
     specs: ['99 %+', 'Qualité alimentaire'],
@@ -1086,6 +1163,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'photovoltaique',
     name: 'Batterie plomb 12 V / 18 Ah',
+    image: '/images/references/batterie-plomb-12-v-18-ah.jpg',
     description:
       'Batterie de stockage pour petite installation autonome ou onduleur.',
     specs: ['12 V / 18 Ah', '216 Wh', 'Cosses M5'],
@@ -1093,6 +1171,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'photovoltaique',
     name: 'Chargeur solaire 12 V / 10 W',
+    image: '/images/references/chargeur-solaire-12-v-10-w.jpg',
     description:
       'Maintien de charge d\'une batterie de véhicule à l\'arrêt prolongé.',
     specs: ['12 V', '10 W'],
@@ -1100,6 +1179,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'photovoltaique',
     name: 'Convertisseur 12 V vers 230 V',
+    image: '/images/references/convertisseur-12-v-vers-230-v.jpg',
     description:
       'Alimentation d\'appareils secteur depuis une batterie, avec prise USB.',
     specs: ['300 W', 'USB 2,1 A'],
@@ -1107,6 +1187,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'photovoltaique',
     name: 'Onduleur solaire hybride 3500 W',
+    image: '/images/references/onduleur-solaire-hybride-3500-w.jpg',
     description:
       'Onduleur hybride à régulateur MPPT, pilotable à distance par module Wi-Fi.',
     specs: ['3500 W', 'MPPT 12/24 V', 'Wi-Fi'],
@@ -1114,6 +1195,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'photovoltaique',
     name: 'Panneau solaire souple monocristallin',
+    image: '/images/references/panneau-solaire-souple-monocristallin.jpg',
     description:
       'Panneau souple à coller sur surface courbe, pour véhicule ou installation légère.',
     specs: ['100 W', 'Monocristallin', 'ETFE/EVA'],
@@ -1121,6 +1203,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'photovoltaique',
     name: 'Panneau solaire mobile 260 W',
+    image: '/images/references/panneau-solaire-mobile-260-w.jpg',
     description:
       'Panneau transportable pour alimentation de chantier ou de mission.',
     specs: ['260 W', 'Mobile'],
@@ -1128,6 +1211,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'photovoltaique',
     name: 'Régulateur de charge solaire',
+    image: '/images/references/regulateur-de-charge-solaire.jpg',
     description:
       'Protection de la batterie contre la surcharge et la décharge profonde.',
     specs: ['Régulation de charge'],
@@ -1135,6 +1219,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'photovoltaique',
     name: 'Régulateur de tension hybride solaire / éolien',
+    image: '/images/references/regulateur-de-tension-hybride-solaire-eolien.jpg',
     description:
       'Régulation d\'une installation combinant panneaux et éolienne.',
     specs: ['Hybride solaire / éolien'],
@@ -1157,6 +1242,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'generateurs',
     name: 'Groupe électrogène diesel GENELEC',
+    image: '/images/references/groupe-electrogene-diesel-genelec.jpg',
     description:
       'Groupe diesel de secours pour bâtiment ou installation technique.',
     specs: ['Diesel'],
@@ -1164,6 +1250,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'generateurs',
     name: 'Groupe électrogène diesel KOHLER SDMO',
+    image: '/images/references/groupe-electrogene-diesel-kohler-sdmo.jpg',
     description:
       'Groupe diesel de secours, gamme professionnelle.',
     specs: ['Diesel', 'KOHLER SDMO'],
@@ -1179,6 +1266,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'didactiques',
     name: 'Simulateur d\'éolienne',
+    image: '/images/references/simulateur-d-eolienne.jpg',
     description:
       'Banc pédagogique de production éolienne avec restitution réseau.',
     specs: ['Restitution réseau'],
@@ -1186,6 +1274,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'didactiques',
     name: 'Station de pompage solaire',
+    image: '/images/references/station-de-pompage-solaire.jpg',
     description:
       'Banc pédagogique de pompage alimenté par panneaux.',
     specs: ['Pompage solaire'],
@@ -1193,6 +1282,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'didactiques',
     name: 'Tracker solaire avec batterie',
+    image: '/images/references/tracker-solaire-avec-batterie.jpg',
     description:
       'Banc de suivi de course du soleil, avec stockage.',
     specs: ['Suivi solaire', 'Batterie'],
@@ -1208,6 +1298,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'branchement',
     name: 'Compteur volumétrique DN15',
+    image: '/images/references/compteur-volumetrique-dn15.jpg',
     description:
       'Comptage volumétrique d\'eau froide, précis à faible débit.',
     specs: ['DN15', 'Eau froide', 'Volumétrique'],
@@ -1237,6 +1328,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'electriques',
     name: 'Disjoncteur différentiel 1P+N',
+    image: '/images/references/disjoncteur-differentiel-1p-n.jpg',
     description:
       'Protection différentielle d\'un départ terminal.',
     specs: ['1P+N', 'C 10 A', 'Pouvoir de coupure 4500 A'],
@@ -1245,6 +1337,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'manutention',
     name: 'Chariot élévateur VMAX',
+    image: '/images/references/chariot-elevateur-vmax.jpg',
     description:
       'Chariot élévateur pour entrepôt et quai de chargement.',
     specs: ['Élévateur'],
@@ -1252,6 +1345,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'manutention',
     name: 'Transpalette électrique',
+    image: '/images/references/transpalette-electrique.jpg',
     description:
       'Transpalette à assistance électrique, pour rotations soutenues.',
     specs: ['Électrique'],
@@ -1259,6 +1353,7 @@ export const equipment: Equipment[] = [
   {
     domain: 'manutention',
     name: 'Transpalette manuel 2,5 t',
+    image: '/images/references/transpalette-manuel-2-5-t.jpg',
     description:
       'Transpalette manuel pour déplacement de palettes.',
     specs: ['2,5 tonnes', 'Manuel'],
