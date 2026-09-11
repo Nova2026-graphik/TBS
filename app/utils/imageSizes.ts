@@ -46,6 +46,16 @@ export const SIZES_THIRD = buildSizes('100vw', { sm: '50vw', lg: '33vw' })
 export const SIZES_THIRD_MD = buildSizes('100vw', { md: '33vw' })
 
 /**
+ * Grille des références d'un domaine : deux colonnes en mobile, trois à
+ * partir de `md`, quatre à partir de `lg`. La carte ne dépasse donc jamais le
+ * quart de la largeur utile, et les 219 visuels tiennent leur poids.
+ */
+export const SIZES_QUARTER = buildSizes('50vw', { md: '33vw', lg: '25vw' })
+
+/** Vignette de domaine dans la barre latérale : 42 px, quelle que soit la largeur. */
+export const SIZES_THUMBNAIL = buildSizes('42px')
+
+/**
  * Planche-contact des en-têtes de page (`UiPageHero`). La bande occupe toute
  * la largeur en mobile et un tiers environ en bureau ; divisée par trois ou
  * quatre cadres, chaque vignette ne dépasse jamais 200 px de large.
