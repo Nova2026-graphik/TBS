@@ -53,7 +53,7 @@ export const PROCESS_BY_BRANCH: Record<string, ProcessBlock> = {
   },
 
   events: {
-    eyebrow: 'TBS Events — comment ça marche',
+    eyebrow: 'TBS Événementiel — comment ça marche',
     title: 'Louez en',
     titleAccent: 'quatre étapes',
     steps: [
@@ -110,7 +110,7 @@ export const PROCESS_BY_BRANCH: Record<string, ProcessBlock> = {
   },
 
   agro: {
-    eyebrow: 'TBS Agro — accompagnement',
+    eyebrow: 'TBS Agro Business — accompagnement',
     title: 'Du champ',
     titleAccent: 'au marché',
     steps: [
