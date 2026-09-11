@@ -42,9 +42,9 @@ test.describe('secteurs de la galerie sur téléphone', () => {
 
     // `branche=agro` seul attrape aussi les étiquettes de domaine, qui mènent
     // à la galerie filtrée : c'est la destination qui identifie ce lien.
-    const lien = page.locator('a[href*="/services?branche=agro"]').first()
+    const lien = page.locator('a[href*="/services?branche=agro-business"]').first()
     await lien.scrollIntoViewIfNeeded()
     await lien.click()
-    await expect(page).toHaveURL(/\/services\?branche=agro/)
+    await expect(page).toHaveURL(/\/services\?branche=agro-business/)
   })
 })

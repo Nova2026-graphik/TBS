@@ -48,7 +48,7 @@ test.describe('galerie', () => {
 
     const agro = panneaux.filter({ hasText: 'TBS Agro' })
     await expect(agro.locator('a[href^="/services?branche="]'))
-      .toHaveAttribute('href', '/services?branche=agro')
+      .toHaveAttribute('href', '/services?branche=agro-business')
 
     // Replié, le panneau vaut une part sur sept ; déplié, quatre.
     const replie = (await agro.boundingBox())?.width ?? 0
