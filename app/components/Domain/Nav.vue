@@ -40,7 +40,14 @@ const sizesThumbnail = SIZES_THUMBNAIL
 </script>
 
 <template>
-  <nav :aria-label="$t('domain.nav.label')">
+  <!--
+    `min-w-0` n'est pas décoratif : cet élément est une cellule de grille, et
+    une cellule vaut par défaut `min-width: auto` — elle refuse de devenir
+    plus étroite que son contenu. Le bandeau de dix-sept domaines élargissait
+    donc la colonne au lieu de défiler, et poussait la page à 1350 px de
+    débordement latéral sur téléphone.
+  -->
+  <nav class="min-w-0" :aria-label="$t('domain.nav.label')">
     <!-- ── Bandeau mobile ─────────────────────────────────────────────── -->
     <div
       class="sticky top-[4.25rem] z-30 -mx-[var(--spacing-gutter)] border-b border-ink/10 bg-white/95 backdrop-blur lg:hidden"

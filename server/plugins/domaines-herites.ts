@@ -31,14 +31,22 @@
  *    légitime de la galerie — il montre les réalisations d'une branche
  *    entière, ce qu'aucune page domaine ne fait ;
  *  - `?filtre=` et tout autre paramètre sont conservés et repassés ;
- *  - les valeurs ne sont pas confrontées aux données : un couple inventé part
- *    vers une page qui répondra 404, ce qui est la réponse juste pour une
- *    adresse n'ayant jamais désigné un domaine. Les vérifier demanderait de
- *    charger le contenu à chaque requête, pour remplacer un 404 par un autre.
+ *  - **le couple est vérifié** contre les données avant toute redirection. Un
+ *    premier jet se contentait d'un slug plausible, et envoyait donc
+ *    `?branche=nimportequoi&domaine=nimportequoi` vers un 404 — alors que
+ *    cette adresse rendait jusqu'ici la galerie complète. Transformer en
+ *    erreur une page qui marchait, pour un lien mal recopié, est une
+ *    régression et non une rigueur. Les couples inconnus ou incohérents
+ *    (`events` + `roulant`) restent donc à la galerie, qui les ignore déjà.
  */
+import { domains } from '../data/content'
 
-/** Un slug plausible : rien d'autre n'a jamais été écrit dans ces paramètres. */
-const SLUG = /^[a-z0-9-]{2,60}$/
+/**
+ * Les couples `branche/domaine` qui existent réellement, figés au démarrage.
+ * Le contenu statique est la source du repli du site : le lire ici ne coûte
+ * rien à l'exécution.
+ */
+const COUPLES = new Set(domains.map(d => `${d.branch}/${d.slug}`))
 
 /** `/galerie` et `/en/galerie`, avec ou sans barre finale. */
 const GALERIE = /^\/(?:en\/)?galerie\/?$/
@@ -50,7 +58,7 @@ export default defineNitroPlugin((nitroApp) => {
 
     const branche = url.searchParams.get('branche')
     const domaine = url.searchParams.get('domaine')
-    if (!branche || !domaine || !SLUG.test(branche) || !SLUG.test(domaine)) return
+    if (!branche || !domaine || !COUPLES.has(`${branche}/${domaine}`)) return
 
     url.searchParams.delete('branche')
     url.searchParams.delete('domaine')

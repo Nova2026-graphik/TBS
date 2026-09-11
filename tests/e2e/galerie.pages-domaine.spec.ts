@@ -38,8 +38,9 @@ test.describe('page domaine', () => {
 
     // Le filtre restreint réellement : moins que les douze de la page pleine.
     const cartes = page.locator('ul li button:has-text("Aperçu")')
-    await expect(await cartes.count()).toBeLessThan(12)
-    await expect(page.locator('main')).toContainText('SIÈGES')
+    expect(await cartes.count()).toBeLessThan(12)
+    // Le DOM porte « Sièges » : les capitales viennent de la feuille de style.
+    await expect(page.locator('[data-refs], ul').filter({ hasText: 'Sièges' }).first()).toBeVisible()
   })
 
   test('la fiche rapide s’ouvre, se parcourt et se ferme', async ({ page }) => {
