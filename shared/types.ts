@@ -155,6 +155,12 @@ export interface Domain {
    * chose à deux échelles, ce qui est la raison d'être des deux champs.
    */
   intro?: string
+  /**
+   * Intitulé court, pour les listes où le titre complet déborde — la barre
+   * latérale et le bandeau mobile. « Mobilier & bureau » plutôt que
+   * « Mobilier & matériel de bureau ».
+   */
+  short?: string
   /** Familles de filtre proposées au-dessus de la grille. Vide = pas de filtre. */
   families?: string[]
   /** Objet détouré qui représente le domaine dans les listes et la bannière. */

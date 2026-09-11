@@ -175,11 +175,12 @@
     "emptyTitle": "No project published for this field yet",
     "emptyBody": "Our photographs do not yet cover everything we do. Tell us about your project and we will show you comparable references.",
     "emptyCta": "Describe my project",
-    "sectorLink": "View projects — {domain}",
+    "sectorLink": "View references — {domain}",
     "emptyCategory": "No project in this category yet",
     "equipmentTitle": "What this field covers — {count} references",
     "equipmentLead": "This list is not a sales catalogue: it states what we supply.",
-    "equipmentCta": "Ask for a quote for your exact need."
+    "equipmentCta": "Ask for a quote for your exact need.",
+    "equipmentQuoteIntro": "Enquiry about: {domain}."
   },
   "about": {
     "eyebrow": "Organisation",
@@ -576,5 +577,51 @@
     "title": "Let's talk about your",
     "accent": "next date",
     "lead": "Date, venue, number of guests: you receive a costed proposal within 24 hours."
+  },
+  "domain": {
+    "nav": {
+      "label": "Fields in this division",
+      "count": "{n} field | {n} fields",
+      "helpTitle": "A specific need?",
+      "helpBody": "Tell us about it: costed proposal within 24 hours, tracked delivery."
+    },
+    "hero": {
+      "references": "{n} reference | {n} references",
+      "rank": "Field {i} / {n}"
+    },
+    "filters": {
+      "all": "All"
+    },
+    "grid": {
+      "count": "{n} reference | {n} references",
+      "page": "page {i}/{n}",
+      "paginationLabel": "Reference pages",
+      "nextPage": "Next page"
+    },
+    "card": {
+      "preview": "Preview",
+      "nonContractual": "Illustration only",
+      "toCutOut": "Photo — to be cut out",
+      "comingSoon": "Visual to come"
+    },
+    "quickView": {
+      "close": "Close the card",
+      "position": "Reference {i} / {n}",
+      "availability": "Availability: on quotation · delivery across Togo",
+      "previous": "Previous reference",
+      "next": "Next reference",
+      "source": "Source listing"
+    },
+    "quote": {
+      "intro": "Enquiry about: {name} ({domain}).",
+      "whatsapp": "Hello TBS, I would like a quote for: {name}."
+    },
+    "works": {
+      "title": "Projects in this field",
+      "empty": "No project published for this field yet. Current work will appear here once the client agrees."
+    },
+    "seo": {
+      "title": "{domain} — {branch}"
+    }
   }
 }
