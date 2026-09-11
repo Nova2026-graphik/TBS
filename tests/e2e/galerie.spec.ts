@@ -67,11 +67,13 @@ test.describe('galerie', () => {
     await expect.poll(async () => (await equipements.boundingBox())?.width ?? 0)
       .toBeGreaterThan(replie * 2)
 
-    // Et les domaines du secteur déplié mènent chacun à la galerie filtrée.
-    // On vise le lien plutôt que son libellé : celui-ci est porté par deux
-    // éléments — un pour les lecteurs d'écran, un pour l'œil — et le chercher
-    // par son texte en trouverait deux ou aucun selon la normalisation.
-    const domaine = equipements.locator('a[href*="domaine=mobilier-bureau"]')
+    // Et les domaines du secteur déplié mènent chacun à leur page produits —
+    // ils menaient à la galerie filtrée, qui ajoutait une liste sous les
+    // photographies. On vise le lien plutôt que son libellé : celui-ci est
+    // porté par deux éléments — un pour les lecteurs d'écran, un pour l'œil —
+    // et le chercher par son texte en trouverait deux ou aucun selon la
+    // normalisation.
+    const domaine = equipements.locator('a[href$="/galerie/equipements/mobilier-bureau"]')
     await expect(domaine).toBeVisible()
     await expect(domaine).toContainText('Mobilier & matériel de bureau')
 

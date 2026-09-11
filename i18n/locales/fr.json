@@ -175,11 +175,12 @@
     "emptyTitle": "Aucune réalisation publiée pour ce domaine",
     "emptyBody": "Nos photographies ne couvrent pas encore tout ce que nous faisons. Décrivez-nous votre projet : nous vous montrerons des références comparables.",
     "emptyCta": "Décrire mon projet",
-    "sectorLink": "Voir les réalisations — {domain}",
+    "sectorLink": "Voir les références — {domain}",
     "emptyCategory": "Aucune réalisation dans cette catégorie pour le moment",
     "equipmentTitle": "Ce que ce domaine couvre — {count} références",
     "equipmentLead": "Cette liste n’est pas un catalogue de vente : elle dit ce que nous fournissons.",
-    "equipmentCta": "Demandez un devis pour votre besoin précis."
+    "equipmentCta": "Demandez un devis pour votre besoin précis.",
+    "equipmentQuoteIntro": "Demande concernant : {domain}."
   },
   "about": {
     "eyebrow": "Organisation",
@@ -576,5 +577,51 @@
     "title": "Parlons de votre",
     "accent": "prochaine date",
     "lead": "Date, lieu, nombre d'invités : vous recevez une proposition chiffrée sous 24 heures."
+  },
+  "domain": {
+    "nav": {
+      "label": "Domaines de la branche",
+      "count": "{n} domaine | {n} domaines",
+      "helpTitle": "Un besoin précis ?",
+      "helpBody": "Décrivez-le nous : proposition chiffrée sous 24 heures, livraison suivie."
+    },
+    "hero": {
+      "references": "{n} référence | {n} références",
+      "rank": "Domaine {i} / {n}"
+    },
+    "filters": {
+      "all": "Tous"
+    },
+    "grid": {
+      "count": "{n} référence | {n} références",
+      "page": "page {i}/{n}",
+      "paginationLabel": "Pages de références",
+      "nextPage": "Page suivante"
+    },
+    "card": {
+      "preview": "Aperçu",
+      "nonContractual": "Visuel non contractuel",
+      "toCutOut": "Photo — à détourer",
+      "comingSoon": "Visuel à venir"
+    },
+    "quickView": {
+      "close": "Fermer la fiche",
+      "position": "Référence {i} / {n}",
+      "availability": "Disponibilité : sur devis · livraison au Togo",
+      "previous": "Référence précédente",
+      "next": "Référence suivante",
+      "source": "Fiche source"
+    },
+    "quote": {
+      "intro": "Demande concernant : {name} ({domain}).",
+      "whatsapp": "Bonjour TBS, je souhaite un devis pour : {name}."
+    },
+    "works": {
+      "title": "Réalisations dans ce domaine",
+      "empty": "Aucune réalisation publiée pour ce domaine à ce jour. Les chantiers en cours y figureront après accord du client."
+    },
+    "seo": {
+      "title": "{domain} — {branch}"
+    }
   }
 }

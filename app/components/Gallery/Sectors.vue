@@ -43,6 +43,8 @@ import type { Branch, Domain } from '#shared/types'
  */
 const props = defineProps<{ branches: Branch[], domains: Domain[] }>()
 
+const sizesThumbnail = SIZES_THUMBNAIL
+
 /** Chaque secteur reçoit les domaines qui lui sont rattachés. */
 const sectors = computed(() =>
   props.branches.map((branch) => {
@@ -179,17 +181,38 @@ const sizesHalfMd = SIZES_HALF_MD
               <ul class="mt-2 flex flex-wrap gap-1.5">
                 <li v-for="domain in sector.domains" :key="domain.slug">
                   <!--
-                    Chaque domaine mène à la galerie filtrée. Les étiquettes
+                    Chaque domaine mène à sa page produits. Les étiquettes
                     avaient déjà l'apparence de boutons sans en avoir le
                     comportement : on essayait de cliquer, il ne se passait
-                    rien. Le `min-h-11` porte la cible tactile à 44 px.
+                    rien. Elles menaient ensuite à la galerie filtrée, qui
+                    ajoutait une liste sous les photographies — hors de vue.
+                    Elles mènent maintenant à une page entière.
+
+                    La vignette détournée à gauche dit de quoi le domaine
+                    parle avant qu'on ait lu son intitulé. Le `min-h-11` porte
+                    la cible tactile à 44 px.
                   -->
                   <NuxtLinkLocale
-                    :to="{ path: '/galerie', query: { branche: sector.slug, domaine: domain.slug } }"
-                    class="inline-flex min-h-11 items-center border border-white/25 bg-white/10 px-2.5 py-1 text-[0.6875rem] leading-[1.4] tracking-[0.06em] text-white transition-colors duration-400 hover:border-white hover:bg-white/20 focus-visible:outline-offset-[-2px]"
+                    :to="`/galerie/${sector.slug}/${domain.slug}`"
+                    class="group/dom inline-flex min-h-11 items-center gap-2 border border-white/25 bg-white/10 py-1 pl-1.5 pr-2.5 text-[0.6875rem] leading-[1.4] tracking-[0.06em] text-white transition-colors duration-400 hover:border-white hover:bg-white/20 focus-visible:outline-offset-[-2px]"
                   >
                     <span class="sr-only">{{ $t('gallery.sectorLink', { domain: domain.title }) }}</span>
+                    <NuxtImg
+                      v-if="domain.thumbnail"
+                      :src="domain.thumbnail"
+                      alt=""
+                      preset="card"
+                      loading="lazy"
+                      :sizes="sizesThumbnail"
+                      width="84"
+                      height="84"
+                      class="size-[2.625rem] shrink-0 object-contain"
+                    />
                     <span aria-hidden="true">{{ domain.title }}</span>
+                    <span
+                      aria-hidden="true"
+                      class="opacity-0 transition-opacity duration-400 group-hover/dom:opacity-100 group-focus-visible/dom:opacity-100"
+                    >&rarr;</span>
                   </NuxtLinkLocale>
                 </li>
               </ul>

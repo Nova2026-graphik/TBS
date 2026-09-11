@@ -2,11 +2,19 @@ import { expect, test } from '@playwright/test'
 import { pageInteractive } from './utils'
 
 /**
- * Filtrage de la galerie par branche et par domaine.
+ * Filtrage de la galerie par branche, et sort réservé aux anciens liens.
  *
- * Les vignettes de la grille sont les `<li>` de la liste en grille — la page
- * en contient d'autres (filtres, secteurs), d'où le sélecteur précis.
+ * Ce fichier couvrait aussi le filtrage par domaine et la liste de références
+ * injectée sous les photographies. Les deux ont disparu : un domaine a
+ * maintenant sa page, et `?branche=…&domaine=…` y redirige. Ce qui les
+ * concernait vit désormais dans `galerie.pages-domaine.spec.ts` — le garder
+ * ici aurait laissé des tests qui décrivent une page morte.
+ *
+ * Reste ce que la galerie fait encore, et qui vaut d'être tenu : le filtre par
+ * branche seule, et surtout le sort des adresses bancales — car une adresse
+ * bancale ne doit pas devenir une erreur.
  */
+
 /**
  * Une vignette est un element de liste qu'on peut ouvrir : c'est le bouton qui
  * declenche la visionneuse. Ce selecteur a casse deux fois pour avoir vise plus
@@ -18,13 +26,6 @@ import { pageInteractive } from './utils'
 const grille = 'section ul[class*=grid] > li:has(button)'
 
 test.describe('galerie filtrée par métier', () => {
-  test('un lien de domaine ne montre que ses réalisations', async ({ page }) => {
-    await page.goto('/galerie?branche=equipements&domaine=informatique')
-
-    await expect(page.locator(grille)).toHaveCount(1)
-    await expect(page.getByText(/Réalisations de TBS Équipements — Matériel informatique/)).toBeVisible()
-  })
-
   test('une branche seule regroupe tous ses domaines', async ({ page }) => {
     await page.goto('/galerie?branche=equipements')
 
@@ -32,45 +33,43 @@ test.describe('galerie filtrée par métier', () => {
     await expect(page.locator(grille)).toHaveCount(4)
   })
 
-  test('un domaine sans réalisation explique au lieu d’afficher le vide', async ({ page }) => {
-    // La branche Études n'a aucune réalisation publiée — c'est le cas réel, pas
-    // une hypothèse : l'écran vide doit donc être soigné.
-    await page.goto('/galerie?branche=etudes&domaine=etudes-prestations')
-
-    await expect(page.locator(grille)).toHaveCount(0)
-    await expect(page.getByRole('heading', { name: /Aucune réalisation publiée/ })).toBeVisible()
-    await expect(page.getByRole('link', { name: /Décrire mon projet/ })).toBeVisible()
-  })
-
+  /**
+   * Le cas qui a fait revoir la redirection.
+   *
+   * Un premier jet redirigeait dès que les deux paramètres ressemblaient à des
+   * slugs, sans les confronter aux données : cette adresse partait donc vers un
+   * 404. Elle rendait pourtant la galerie complète depuis toujours. Faire d'une
+   * page qui marche une erreur, pour un lien mal recopié, est une régression.
+   */
   test('une valeur inconnue ramène au catalogue complet', async ({ page }) => {
     await page.goto('/galerie?branche=nimportequoi&domaine=nimportequoi')
 
-    // Premier lot de neuf vignettes, aucun bandeau de filtre.
+    await expect(page).toHaveURL(/\/galerie\?/)
     await expect(page.locator(grille)).toHaveCount(9)
     await expect(page.getByRole('button', { name: /Voir toute la galerie/ })).toHaveCount(0)
   })
 
-  test('un domaine hors de sa branche est ignoré', async ({ page }) => {
+  test('un domaine hors de sa branche ne redirige pas et reste ignoré', async ({ page }) => {
     // `roulant` appartient à Équipements : le préciser sur Events ne décrit
-    // rien, et la branche seule doit l'emporter.
+    // rien. Le couple n'existant pas, la galerie garde la main.
     await page.goto('/galerie?branche=events&domaine=roulant')
 
+    await expect(page).toHaveURL(/branche=events/)
     await expect(page.locator(grille)).toHaveCount(9)
     await expect(page.getByText(/Réalisations de TBS Events$/)).toBeVisible()
   })
 
   test('les deux familles de filtre s’excluent', async ({ page }) => {
-    await page.goto('/galerie?branche=equipements&domaine=roulant')
+    await page.goto('/galerie?branche=equipements')
     await pageInteractive(page)
     await page.getByRole('button', { name: 'Mariages', exact: true }).click()
 
     await expect(page).toHaveURL(/filtre=mariage/)
     await expect(page).not.toHaveURL(/branche=/)
-    await expect(page.getByRole('button', { name: /Voir toute la galerie/ })).toHaveCount(0)
   })
 
   test('le filtre se retire et rend le catalogue', async ({ page }) => {
-    await page.goto('/galerie?branche=equipements&domaine=roulant')
+    await page.goto('/galerie?branche=equipements')
     await pageInteractive(page)
     await page.getByRole('button', { name: /Voir toute la galerie/ }).click()
 
@@ -78,63 +77,13 @@ test.describe('galerie filtrée par métier', () => {
     await expect(page.locator(grille)).toHaveCount(9)
   })
 
-  test('un domaine annonce ce qu’il couvre', async ({ page }) => {
-    await page.goto('/galerie?branche=equipements&domaine=roulant')
-    await pageInteractive(page)
-
-    await expect(page.getByRole('heading', { name: /Ce que ce domaine couvre/ })).toBeVisible()
-    await expect(page.getByText('Toyota Hilux 4×4 double cabine')).toBeVisible()
-    // La description accompagne la référence : un nom seul n'apprend rien.
-    await expect(page.getByText(/Pick-up double cabine/)).toBeVisible()
-  })
-
-  test('un domaine sans photo montre quand même ses références', async ({ page }) => {
-    // Outillage : quinze références, aucune réalisation publiée. C'est le cas
-    // qui justifie le bloc — la galerie seule n'aurait rien à montrer.
-    await page.goto('/galerie?branche=equipements&domaine=outillage')
-    await pageInteractive(page)
+  test('une branche sans réalisation explique au lieu d’afficher le vide', async ({ page }) => {
+    // La branche Études n'a aucune réalisation publiée — c'est le cas réel, pas
+    // une hypothèse : l'écran vide doit donc être soigné.
+    await page.goto('/galerie?branche=etudes')
 
     await expect(page.locator(grille)).toHaveCount(0)
-    await expect(page.getByText('Pince multimètre TRMS 700 A')).toBeVisible()
-  })
-
-  test('un domaine illustré montre son visuel', async ({ page }) => {
-    await page.goto('/galerie?branche=equipements&domaine=roulant')
-    await pageInteractive(page)
-
-    const visuel = page.getByRole('img', { name: /Pick-up Toyota Hilux/ })
-    await expect(visuel).toBeVisible()
-  })
-
-  test('un domaine sans visuel garde son bloc intact', async ({ page }) => {
-    // Sept domaines sur dix-sept n'ont pas de photographie libre de droits qui
-    // montre vraiment ce qu'ils recouvrent. Le bloc doit s'en passer sans trou
-    // ni erreur — c'est le champ facultatif qui est ici vérifié.
-    await page.goto('/galerie?branche=equipements&domaine=generateurs')
-    await pageInteractive(page)
-
-    await expect(page.getByRole('heading', { name: /Ce que ce domaine couvre/ })).toBeVisible()
-    await expect(page.getByText('Groupe électrogène diesel KOHLER SDMO')).toBeVisible()
-  })
-
-  test('une branche seule ne déroule pas les références', async ({ page }) => {
-    // Treize domaines mêlés feraient une liste illisible : le bloc n'a de sens
-    // que sur un domaine précis.
-    await page.goto('/galerie?branche=equipements')
-    await pageInteractive(page)
-
-    await expect(page.getByRole('heading', { name: /Ce que ce domaine couvre/ })).toHaveCount(0)
-  })
-
-  test('depuis les secteurs, un clic filtre la galerie', async ({ page }) => {
-    await page.goto('/galerie')
-    await pageInteractive(page)
-
-    const lien = page.getByRole('link', { name: /Matériel roulant/ }).first()
-    await lien.scrollIntoViewIfNeeded()
-    await lien.click()
-
-    await expect(page).toHaveURL(/branche=equipements&domaine=roulant/)
-    await expect(page.locator(grille)).toHaveCount(1)
+    await expect(page.getByRole('heading', { name: /Aucune réalisation publiée/ })).toBeVisible()
+    await expect(page.getByRole('link', { name: /Décrire mon projet/ })).toBeVisible()
   })
 })
