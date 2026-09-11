@@ -137,6 +137,17 @@ export function getDomains(locale: ContentLocale = 'fr') {
       branch: r.branchSlug,
       title: r.title,
       description: r.description,
+      // `?? undefined` et non `?? null` : le type dit « absent », pas « vide ».
+      // Une chaîne nulle rendue telle quelle produirait `src="null"`.
+      intro: r.intro ?? undefined,
+      meta: r.meta ?? undefined,
+      image: r.image ?? undefined,
+      imageAlt: r.imageAlt ?? undefined,
+      thumbnail: r.thumbnail ?? undefined,
+      thumbnailHover: r.thumbnailHover ?? undefined,
+      families: r.families ?? [],
+      exampleNote: r.exampleNote ?? undefined,
+      medallion: r.medallion,
     }))
   }, statique(locale).domains)
 }
@@ -161,6 +172,12 @@ export function getEquipment(locale: ContentLocale = 'fr') {
       name: r.name,
       description: r.description,
       specs: r.specs ?? [],
+      family: r.family ?? undefined,
+      kind: r.kind as Equipment['kind'],
+      image: r.image ?? undefined,
+      imageHover: r.imageHover ?? undefined,
+      nonContractual: r.nonContractual,
+      source: r.source ?? undefined,
     }))
   }, statique(locale).equipment)
 }

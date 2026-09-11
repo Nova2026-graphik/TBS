@@ -105,12 +105,34 @@ export const domains = pgTable('domains', {
   id: serial('id').primaryKey(),
   /**
    * Identifiant stable, indépendant de l'intitulé et de la langue : c'est lui
-   * que porte `?domaine=` et qui relie une réalisation à son domaine.
+   * que porte l'URL `/galerie/<branche>/<domaine>` et qui relie une
+   * réalisation à son domaine.
    */
   slug: varchar('slug', { length: 60 }).notNull(),
   branchSlug: branchSlugEnum('branch_slug').notNull(),
   title: varchar('title', { length: 200 }).notNull(),
   description: text('description').notNull(),
+  /**
+   * Paragraphe d'ouverture de la page domaine, et méta-description de la page.
+   * `description` tient en une ligne pour le panneau des secteurs.
+   */
+  intro: text('intro'),
+  meta: varchar('meta', { length: 200 }),
+  /**
+   * Bannière et vignettes.
+   *
+   * Ces colonnes manquaient : le type `Domain` portait déjà `image` et
+   * `imageAlt`, mais la table non — une installation avec base de données
+   * servait donc des domaines sans visuel, en silence, alors que le repli
+   * statique les affichait. La page domaine en a besoin pour exister.
+   */
+  image: varchar('image', { length: 300 }),
+  imageAlt: varchar('image_alt', { length: 300 }),
+  thumbnail: varchar('thumbnail', { length: 300 }),
+  thumbnailHover: varchar('thumbnail_hover', { length: 300 }),
+  families: jsonb('families').$type<string[]>().notNull().default([]),
+  exampleNote: text('example_note'),
+  medallion: boolean('medallion').notNull().default(false),
   position: integer('position').notNull().default(0),
 })
 
@@ -133,6 +155,20 @@ export const equipment = pgTable(
     name: varchar('name', { length: 200 }).notNull(),
     description: text('description').notNull(),
     specs: jsonb('specs').$type<string[]>().notNull().default([]),
+    /** Famille de filtre, prise parmi les `families` du domaine. */
+    family: varchar('family', { length: 120 }),
+    /**
+     * Nature du visuel — `cut`, `png`, `photo`, `med` ou `ghost`. Stockée en
+     * `varchar` plutôt qu'en `pgEnum` : la liste s'allongera quand les photos
+     * de l'issue #22 remplaceront les objets détourés, et une valeur nouvelle
+     * ne doit pas demander une migration d'énumération.
+     */
+    kind: varchar('kind', { length: 20 }).notNull().default('ghost'),
+    image: varchar('image', { length: 300 }),
+    imageHover: varchar('image_hover', { length: 300 }),
+    /** Le visuel montre un modèle équivalent, pas l'article livré. */
+    nonContractual: boolean('non_contractual').notNull().default(false),
+    source: varchar('source', { length: 300 }),
     position: integer('position').notNull().default(0),
   },
   t => [index('equipment_domain_idx').on(t.domainSlug, t.position)],
