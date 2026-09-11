@@ -55,7 +55,7 @@ const sizesThumbnail = SIZES_THUMBNAIL
       <ul class="flex snap-x gap-2 overflow-x-auto px-[var(--spacing-gutter)] py-3">
         <li v-for="domaine in freres" :key="domaine.slug" class="snap-start">
           <NuxtLinkLocale
-            :to="`/galerie/${branch.slug}/${domaine.slug}`"
+            :to="`/galerie/${versUrl(branch.slug)}/${domaine.slug}`"
             class="flex min-h-11 items-center gap-2 whitespace-nowrap border px-3 py-1.5 text-[0.8125rem] transition-colors duration-400"
             :class="domaine.slug === active
               ? 'border-ink bg-ink text-white'
@@ -78,7 +78,7 @@ const sizesThumbnail = SIZES_THUMBNAIL
       <ul class="mt-4 border-t border-ink/10">
         <li v-for="domaine in freres" :key="domaine.slug">
           <NuxtLinkLocale
-            :to="`/galerie/${branch.slug}/${domaine.slug}`"
+            :to="`/galerie/${versUrl(branch.slug)}/${domaine.slug}`"
             class="flex items-center gap-3 border-b border-ink/10 py-3 pl-3 pr-2 transition-colors duration-400"
             :class="domaine.slug === active
               ? 'border-l-2 border-l-gold bg-shell/60 text-ink'
@@ -108,7 +108,7 @@ const sizesThumbnail = SIZES_THUMBNAIL
       <ul class="mt-8">
         <li v-for="autre in autres" :key="autre.slug">
           <NuxtLinkLocale
-            :to="{ path: '/galerie', query: { branche: autre.slug } }"
+            :to="{ path: '/galerie', query: { branche: versUrl(autre.slug) } }"
             class="flex min-h-11 items-center gap-2.5 border-b border-ink/10 text-[0.6875rem] uppercase tracking-[0.14em] text-ink-soft transition-colors duration-400 hover:text-gold"
           >
             <span
