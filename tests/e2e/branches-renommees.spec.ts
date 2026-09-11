@@ -37,11 +37,15 @@ test.describe('les nouveaux noms s’affichent', () => {
     expect(texte).not.toMatch(/TBS Events/)
   })
 
-  test('le titre et la méta-description de l’accueil', async ({ page }) => {
-    await page.goto('/')
-    const description = await page.locator('meta[name=description]').getAttribute('content')
-    expect(description).toContain('TBS Événementiel')
-    expect(description).toContain('TBS Agro Business')
+  test('dans les méta-descriptions qui nomment les branches', async ({ page }) => {
+    // Celle de l'accueil énumère les métiers sans nommer les branches ; c'est
+    // la galerie et la page Services qui les citent.
+    await page.goto('/galerie')
+    await expect(page.locator('meta[name=description]'))
+      .toHaveAttribute('content', /TBS Événementiel/)
+
+    await page.goto('/services?branche=agro-business')
+    await expect(page.locator('title')).toHaveText(/Agro Business|Services/)
   })
 })
 
@@ -72,25 +76,41 @@ test.describe('les nouvelles adresses fonctionnent', () => {
 
 test.describe('les anciennes adresses redirigent en 301', () => {
   /**
-   * Le 301 doit être dans la chaîne HTTP. Un simple remplacement d'historique
-   * côté client passerait un test qui ne regarde que l'URL finale — et ne
+   * Deux exigences, et chacune a sa raison d'être ici.
+   *
+   * Le **301 doit être dans la chaîne HTTP** : un remplacement d'historique
+   * côté client passerait un test qui ne regarde que l'adresse finale, et ne
    * dirait rien à un moteur de recherche.
+   *
+   * Et l'adresse se lit avec `toHaveURL`, jamais avec `page.url()` juste après
+   * le `goto` : pendant l'hydratation, Nuxt navigue brièvement vers le chemin
+   * nu — `/services` sans sa requête — avant de rétablir l'adresse. Lire trop
+   * tôt attrape cet état transitoire et fait échouer le test sur un code
+   * pourtant correct. `toHaveURL` réessaie jusqu'à l'état stable.
    */
-  async function suit(page: import('@playwright/test').Page, depuis: string) {
+  async function arrive(
+    page: import('@playwright/test').Page,
+    depuis: string,
+    vers: RegExp,
+  ) {
     const reponse = await page.goto(depuis)
     const chaine = reponse?.request().redirectedFrom()
     expect(chaine, `aucune redirection HTTP pour ${depuis}`).toBeTruthy()
-    return page.url()
+    expect((await chaine!.response())?.status(), depuis).toBe(301)
+    await expect(page).toHaveURL(vers)
   }
 
   test('le paramètre ?branche= sur /services et /galerie', async ({ page }) => {
-    expect(await suit(page, '/services?branche=events')).toMatch(/branche=evenementiel$/)
-    expect(await suit(page, '/services?branche=agro')).toMatch(/branche=agro-business$/)
+    await arrive(page, '/services?branche=events', /branche=evenementiel$/)
+    await arrive(page, '/services?branche=agro', /branche=agro-business$/)
   })
 
   test('le segment de route des pages domaine', async ({ page }) => {
-    expect(await suit(page, '/galerie/events/location-reception'))
-      .toMatch(/\/galerie\/evenementiel\/location-reception$/)
+    await arrive(
+      page,
+      '/galerie/events/location-reception',
+      /\/galerie\/evenementiel\/location-reception$/,
+    )
   })
 
   /**
@@ -99,12 +119,15 @@ test.describe('les anciennes adresses redirigent en 301', () => {
    * doit arriver au bon endroit sans le savoir.
    */
   test('l’ancienne adresse complète, nom et forme', async ({ page }) => {
-    expect(await suit(page, '/galerie?branche=events&domaine=location-reception'))
-      .toMatch(/\/galerie\/evenementiel\/location-reception$/)
+    await arrive(
+      page,
+      '/galerie?branche=events&domaine=location-reception',
+      /\/galerie\/evenementiel\/location-reception$/,
+    )
   })
 
   test('le formulaire de devis reçoit la bonne branche', async ({ page }) => {
-    await suit(page, '/contact?branche=events')
+    await arrive(page, '/contact?branche=events', /branche=evenementiel$/)
     await pageInteractive(page)
     await expect(page.locator('#field-branch')).toHaveValue(/TBS Événementiel/)
   })

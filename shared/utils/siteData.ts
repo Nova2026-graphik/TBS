@@ -209,9 +209,9 @@ export const ABOUT_STATS: StatItem[] = [
 /** Libellés courts des branches, réutilisés dans les filtres et le formulaire. */
 export const BRANCH_TABS = [
   { slug: 'equipements', label: 'Équipements', color: '#827148' },
-  { slug: 'events', label: 'Events', color: '#E8A07C' },
+  { slug: 'events', label: 'Événementiel', color: '#E8A07C' },
   { slug: 'etudes', label: 'Études & Conseils', color: '#3E3524' },
-  { slug: 'agro', label: 'Agro', color: '#A5AF79' },
+  { slug: 'agro', label: 'Agro Business', color: '#A5AF79' },
 ] as const
 
 /** Filtres de la galerie. */

@@ -101,7 +101,7 @@ const diapositives = computed<Diapositive[]>(() => [
       color: brandColor(branche.color),
       image: branche.image,
       imageAlt: branche.imageAlt,
-      to: `/services?branche=${branche.slug}`,
+      to: `/services?branche=${versUrl(branche.slug)}`,
     })),
 ])
 
