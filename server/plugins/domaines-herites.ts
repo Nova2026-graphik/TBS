@@ -40,13 +40,19 @@
  *    (`events` + `roulant`) restent donc à la galerie, qui les ignore déjà.
  */
 import { domains } from '../data/content'
+import { versUrl } from '../../shared/utils/branchSlugs'
 
 /**
  * Les couples `branche/domaine` qui existent réellement, figés au démarrage.
  * Le contenu statique est la source du repli du site : le lire ici ne coûte
  * rien à l'exécution.
+ *
+ * La clé porte le **nom public** de la branche, pas son identifiant interne :
+ * c'est ce que l'URL transmet. `events` arrive donc ici sous la forme
+ * `evenementiel`, et l'ancienne forme est traduite en amont par
+ * `branches-renommees.ts`.
  */
-const COUPLES = new Set(domains.map(d => `${d.branch}/${d.slug}`))
+const COUPLES = new Set(domains.map(d => `${versUrl(d.branch)}/${d.slug}`))
 
 /** `/galerie` et `/en/galerie`, avec ou sans barre finale. */
 const GALERIE = /^\/(?:en\/)?galerie\/?$/

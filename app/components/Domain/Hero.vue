@@ -66,7 +66,7 @@ const densitesFull = DENSITIES_FULL
           <li aria-hidden="true">/</li>
           <li>
             <NuxtLinkLocale
-              :to="{ path: '/galerie', query: { branche: branch.slug } }"
+              :to="{ path: '/galerie', query: { branche: versUrl(branch.slug) } }"
               class="transition-colors duration-400 hover:text-cream"
             >
               {{ branch.name }}

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { BranchSlug } from '#shared/types'
+
 const info = useSiteInfo()
 const year = new Date().getFullYear()
 
@@ -16,7 +18,7 @@ const branchLinks = computed(() => [
 ].map(branche => ({
   ...branche,
   label: `TBS ${t(`topbar.branches.${branche.key}`)}`,
-  to: { path: '/services', query: { branche: branche.key } },
+  to: { path: '/services', query: { branche: versUrl(branche.key as BranchSlug) } },
 })))
 
 const { t } = useI18n()
