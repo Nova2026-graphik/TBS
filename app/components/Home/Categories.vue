@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { RentalCategory } from '#shared/types'
 
-/** Les six univers du parc locatif TBS Events. */
+/** Les six univers du parc locatif TBS Événementiel. */
 defineProps<{ categories: RentalCategory[] }>()
 
 const sizesThird = SIZES_THIRD

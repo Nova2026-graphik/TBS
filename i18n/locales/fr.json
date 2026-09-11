@@ -40,9 +40,9 @@
   "topbar": {
     "branches": {
       "equipements": "Équipements",
-      "events": "Events",
+      "events": "Événementiel",
       "etudes": "Études & Conseils",
-      "agro": "Agro"
+      "agro": "Agro Business"
     },
     "language": "Langue",
     "switchTo": "Version anglaise"
@@ -82,7 +82,7 @@
       "etudes": "Études techniques, conseil en organisation, formation et montage de dossiers d'appels d'offres.",
       "agro": "Intrants, petits équipements agricoles et matériel de transformation, pour exploitations et coopératives."
     },
-    "imageAlt": "Salle de réception dressée par TBS Events, plan large",
+    "imageAlt": "Salle de réception dressée par TBS Événementiel, plan large",
     "house": {
       "name": "TBS Distribution",
       "tagline": "Quatre branches, un seul interlocuteur"
@@ -99,7 +99,7 @@
       "lead": "TBS Distribution S.A.R.L structure son activité en quatre branches complémentaires. Chacune a ses équipes et ses fournisseurs ; toutes partagent la même logistique et la même exigence de délai."
     },
     "categories": {
-      "eyebrow": "TBS Events — nos catégories",
+      "eyebrow": "TBS Événementiel — nos catégories",
       "title": "Six univers,",
       "accent": "une seule livraison",
       "refCount": "{count} réf."
@@ -126,7 +126,7 @@
     "eyebrow": "Nos services",
     "title": "Quatre branches,",
     "accent": "un seul interlocuteur",
-    "lead": "TBS Équipements fournit et installe. TBS Events loue et organise. TBS Études & Conseils accompagne. TBS Agro cultive et transforme. Choisissez la branche qui vous concerne.",
+    "lead": "TBS Équipements fournit et installe. TBS Événementiel loue et organise. TBS Études & Conseils accompagne. TBS Agro Business cultive et transforme. Choisissez la branche qui vous concerne.",
     "tablist": "Branches d'activité",
     "offers": {
       "eyebrow": "Formules",
@@ -138,7 +138,7 @@
     "eyebrow": "Galerie",
     "title": "Nos réceptions,",
     "accent": "salle par salle",
-    "lead": "Une sélection de réceptions équipées par TBS Events et de livraisons réalisées par TBS Distribution entre 2024 et 2026. Filtrez par secteur.",
+    "lead": "Une sélection de réceptions équipées par TBS Événementiel et de livraisons réalisées par TBS Distribution entre 2024 et 2026. Filtrez par secteur.",
     "similar": "Un projet similaire ? Parlons-en",
     "hero": {
       "meta": "{count} réalisations · {branch}",
@@ -237,7 +237,7 @@
     "lead": "Vous ne trouvez pas votre réponse ? Appelez-nous, on répond vite."
   },
   "footer": {
-    "tagline": "Quatre branches : Équipements, Events, Études & Conseils, Agro. Fourniture, location, conseil et agro-industrie. Agôè-Démakpoè, Lomé — Togo.",
+    "tagline": "Quatre branches : Équipements, Événementiel, Études & Conseils, Agro Business. Fourniture, location, conseil et agro-industrie. Agôè-Démakpoè, Lomé — Togo.",
     "branches": "Branches",
     "pages": "Pages",
     "contact": "Coordonnées",
@@ -296,9 +296,9 @@
     },
     "branches": [
       "TBS Équipements — fourniture de matériels & équipements",
-      "TBS Events — location de matériel de réception",
+      "TBS Événementiel — location de matériel de réception",
       "TBS Études & Conseils — études & prestations intellectuelles",
-      "TBS Agro — agriculture & agro-industrie",
+      "TBS Agro Business — agriculture & agro-industrie",
       "Plusieurs branches"
     ],
     "requestTypes": [
@@ -325,7 +325,7 @@
     },
     "gallery": {
       "title": "Galerie — nos réceptions et livraisons",
-      "description": "Une sélection de réceptions équipées par TBS Events et de livraisons réalisées par TBS Distribution entre 2024 et 2026, à Lomé et partout au Togo."
+      "description": "Une sélection de réceptions équipées par TBS Événementiel et de livraisons réalisées par TBS Distribution entre 2024 et 2026, à Lomé et partout au Togo."
     },
     "home": {
       "title": "Équipements, réception, études et agro à Lomé",
@@ -333,7 +333,7 @@
     },
     "services": {
       "title": "Nos services — équipements, réception, études, agro",
-      "description": "TBS Équipements fournit et installe. TBS Events loue et organise. TBS Études & Conseils accompagne. TBS Agro cultive et transforme. Quatre branches, un seul interlocuteur à Lomé."
+      "description": "TBS Équipements fournit et installe. TBS Événementiel loue et organise. TBS Études & Conseils accompagne. TBS Agro Business cultive et transforme. Quatre branches, un seul interlocuteur à Lomé."
     }
   },
   "data": {
@@ -363,7 +363,7 @@
         "footnote": "TBS Distribution S.A.R.L répond également aux consultations et appels d'offres publics et privés : dossier administratif à jour, offre technique et financière, factures normalisées."
       },
       "events": {
-        "eyebrow": "TBS Events — comment ça marche",
+        "eyebrow": "TBS Événementiel — comment ça marche",
         "title": "Louez en",
         "titleAccent": "quatre étapes",
         "steps": [
@@ -405,7 +405,7 @@
         ]
       },
       "agro": {
-        "eyebrow": "TBS Agro — accompagnement",
+        "eyebrow": "TBS Agro Business — accompagnement",
         "title": "Du champ",
         "titleAccent": "au marché",
         "steps": [
@@ -493,9 +493,9 @@
     ],
     "branchTabs": {
       "equipements": "Équipements",
-      "events": "Events",
+      "events": "Événementiel",
       "etudes": "Études & Conseils",
-      "agro": "Agro"
+      "agro": "Agro Business"
     },
     "branchDetails": {
       "equipements": [

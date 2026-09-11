@@ -58,11 +58,11 @@ export const branches: Branch[] = traduire(fr.branches, [
     tags: ['Studies', 'Consulting', 'Training', 'Project support'],
   },
   {
-    name: 'TBS Agri-business',
+    name: 'TBS Agro Business',
     tagline: 'Farming & agri-industry',
     description:
       'Inputs, small farming equipment and processing machinery. We support cooperatives, farms and agri-industrial development projects.',
-    imageAlt: 'Farm supported by TBS Agri-business',
+    imageAlt: 'Farm supported by TBS Agro Business',
     tags: ['Inputs', 'Equipment', 'Processing', 'Cooperatives'],
   },
 ])
@@ -411,13 +411,13 @@ export const faqItems: FaqItem[] = traduire(fr.faqItems, [
       'Of course. Our warehouses in Agôè-Démakpoè can be visited Monday to Saturday by appointment: you see the chairs, the tableware ranges and the linen in person before confirming.',
   },
   {
-    group: 'TBS Equipment, Studies & Agri-business',
+    group: 'TBS Equipment, Studies & Agro Business',
     question: 'Do you respond to public tenders?',
     answer:
       'Yes, across all four divisions. TBS Distribution S.A.R.L takes part in public and private consultations and tenders: administrative file up to date, technical and financial offer, standardised invoices and verifiable references.',
   },
   {
-    group: 'TBS Equipment, Studies & Agri-business',
+    group: 'TBS Equipment, Studies & Agro Business',
     question: 'What are the lead times for a supply order?',
     answer:
       'Items in stock ship within 48 hours. For equipment to be imported, allow two to six weeks depending on the nature of the goods; the lead time is committed to in the offer and tracked through to commissioning.',
