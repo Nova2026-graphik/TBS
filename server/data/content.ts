@@ -136,6 +136,7 @@ export const domains: Domain[] = [
       'Bureaux, fauteuils, armoires, banques d\'accueil et aménagement complet de plateaux.',
     intro:
       'Aménagement complet de plateaux : bureaux, fauteuils ergonomiques, armoires, caissons et banques d’accueil. Nous chiffrons, livrons et montons sur site.',
+    short: 'Mobilier & bureau',
     image: '/images/domaines/mobilier-bureau.jpg',
     imageAlt: 'Sièges de réunion alignés dans une salle claire',
     thumbnail: '/images/references/pngw/B-01.webp',
@@ -149,6 +150,7 @@ export const domains: Domain[] = [
     description: 'Postes de travail, portables, imprimantes, réseau, consommables et maintenance.',
     intro:
       'Postes fixes et portables, imprimantes et copieurs, réseau et onduleurs, consommables. Installation, paramétrage et contrat de maintenance en option.',
+    short: 'Informatique',
     thumbnail: '/images/references/pngw/B-03.webp',
     thumbnailHover: '/images/references/pngw/B-04.webp',
     families: ['Postes de travail', 'Impression', 'Affichage'],
@@ -161,6 +163,7 @@ export const domains: Domain[] = [
       'Mobilier médical, appareillage, réactifs et consommables pour cliniques et laboratoires.',
     intro:
       'Mobilier médical, appareillage de diagnostic, verrerie, réactifs et consommables pour cliniques, cabinets et laboratoires. Livraison suivie et réapprovisionnement programmé.',
+    short: 'Santé & laboratoire',
     thumbnail: '/images/references/pngw/B-07.webp',
     thumbnailHover: '/images/references/pngw/B-08.webp',
     families: ['Laboratoire', 'Appareillage médical', 'Consommables'],
@@ -186,6 +189,7 @@ export const domains: Domain[] = [
       'Mallettes et coffrets, mesure électrique, découpe, soudure, échelles et équipement de travail en hauteur.',
     intro:
       'Mallettes et coffrets, mesure électrique, découpe, soudure, échelles et équipement de travail en hauteur.',
+    short: 'Outillage & atelier',
     image: '/images/domaines/outillage.jpg',
     imageAlt: 'Jeu d\'outils à main disposé à plat',
     thumbnail: '/images/references/pngw/B-12.webp',
@@ -199,6 +203,7 @@ export const domains: Domain[] = [
       'Barrières, badges, centrales et pointeuses biométriques, vidéosurveillance intérieure et extérieure.',
     intro:
       'Barrières, badges, centrales et pointeuses biométriques, vidéosurveillance intérieure et extérieure, équipements de protection.',
+    short: 'Contrôle d’accès',
     image: '/images/domaines/controle-acces.jpg',
     imageAlt: 'Caméras de vidéosurveillance sur un mât',
     thumbnail: '/images/references/web/075-camera-de-surveillance-dome-4m-indoor.webp',
@@ -212,6 +217,7 @@ export const domains: Domain[] = [
       'Réactifs de laboratoire, produits de traitement de l\'eau et produits chimiques de qualité analytique ou alimentaire.',
     intro:
       'Réactifs de laboratoire, produits de traitement de l’eau et produits chimiques de qualité analytique ou alimentaire.',
+    short: 'Chimie & réactifs',
     image: '/images/domaines/chimie-reactifs.jpg',
     imageAlt: 'Flacons de réactifs de laboratoire étiquetés',
     thumbnail: '/images/references/web/063-2-propanol.webp',
@@ -224,6 +230,7 @@ export const domains: Domain[] = [
       'Panneaux, onduleurs hybrides, régulateurs de charge, batteries et convertisseurs pour site isolé ou appoint réseau.',
     intro:
       'Panneaux, onduleurs hybrides, régulateurs de charge, batteries et convertisseurs pour site isolé ou appoint réseau.',
+    short: 'Photovoltaïque',
     image: '/images/domaines/photovoltaique.jpg',
     imageAlt: 'Panneaux photovoltaïques installés en toiture',
     thumbnail: '/images/references/web/029-panneau-solaire-mobile-260-w.webp',
@@ -246,6 +253,7 @@ export const domains: Domain[] = [
       'Bancs pédagogiques en énergies renouvelables pour lycées techniques, centres de formation et universités.',
     intro:
       'Bancs pédagogiques en énergies renouvelables pour lycées techniques, centres de formation et universités.',
+    short: 'Didactiques',
     thumbnail: '/images/references/web/037-simulateur-dune-eolienne-restitution-reseau.webp',
   },
   {
@@ -256,6 +264,7 @@ export const domains: Domain[] = [
       'Compteurs d\'eau, raccords et réducteurs de pression pour raccordement et sous-comptage.',
     intro:
       'Compteurs d’eau, raccords et réducteurs de pression pour raccordement et sous-comptage.',
+    short: 'Branchement',
     thumbnail: '/images/references/web/012-compteur-volumetrique-dn15-eau-froide.webp',
   },
   {
@@ -264,6 +273,7 @@ export const domains: Domain[] = [
     title: 'Matériels électriques',
     description: 'Coffrets, tableaux modulaires et appareillage de protection différentielle.',
     intro: 'Coffrets, tableaux modulaires et appareillage de protection différentielle.',
+    short: 'Électrique',
     thumbnail: '/images/references/web/010-coffret-13-modules-2-rangees.webp',
   },
   {
@@ -274,6 +284,7 @@ export const domains: Domain[] = [
       'Chariots élévateurs et transpalettes manuels ou électriques, pour entrepôt et quai de chargement.',
     intro:
       'Chariots élévateurs et transpalettes manuels ou électriques, pour entrepôt et quai de chargement.',
+    short: 'Manutention',
     thumbnail: '/images/references/web/009-chariot-elevateur-tout-nouveau-modele-vmax.webp',
   },
   {
@@ -283,6 +294,7 @@ export const domains: Domain[] = [
     description: 'Mobilier, art de la table, nappage, décor, son et lumière — livrés et installés.',
     intro:
       'Mobilier, art de la table, nappage, décoration, son et lumière, tentes et structures : livrés, installés et repris. Six univers, une seule livraison.',
+    short: 'Location de matériel',
     image: '/images/ambiance-blanc-or.jpg',
     imageAlt: 'Salle de réception dressée sous les lustres',
     thumbnail: '/images/references/ev/E28.webp',
@@ -295,6 +307,8 @@ export const domains: Domain[] = [
       'Son & lumière',
       'Tentes & structures',
     ],
+    exampleNote:
+      'Références d’exemple, reprises d’un catalogue de location type — à confronter à votre parc réel avant mise en ligne',
   },
   {
     slug: 'organisation',
@@ -303,11 +317,13 @@ export const domains: Domain[] = [
     description: 'Scénographie, plan de salle, prestataires et présence le jour J.',
     intro:
       'Scénographie, plan de salle, prestataires et présence le jour J : nous coordonnons la réception de la première visite à la reprise du matériel.',
+    short: 'Organisation',
     image: '/images/ambiance-cocktail.jpg',
     imageAlt: 'Table de cocktail dressée avant l’arrivée des invités',
     thumbnail: '/images/references/ev/E44.webp',
     thumbnailHover: '/images/references/ev/E60.webp',
     families: ['Avant l’événement', 'Jour J', 'Après l’événement'],
+    exampleNote: 'Prestations d’exemple — les étapes et les familles restent à arrêter avec vous',
   },
   {
     slug: 'etudes-prestations',
@@ -317,6 +333,7 @@ export const domains: Domain[] = [
       'Études techniques, conseil en organisation, formation et assistance à maîtrise d\'ouvrage.',
     intro:
       'Études techniques et de faisabilité, conseil en organisation, formation, assistance à maîtrise d’ouvrage et montage de dossiers d’appels d’offres.',
+    short: 'Études & conseils',
     meta: 'Lomé & tout le Togo · sur devis',
     image: '/images/branche-etudes.jpg',
     imageAlt: 'Plans et documents d’étude sur une table de travail',
@@ -334,6 +351,7 @@ export const domains: Domain[] = [
       'Intrants, petits équipements, matériel de transformation et appui aux coopératives.',
     intro:
       'Intrants, petits équipements agricoles et matériel de transformation. Nous accompagnons coopératives, exploitations et projets de développement agro-industriel.',
+    short: 'Agro',
     meta: 'Coopératives & exploitations · tout le Togo',
     image: '/images/branche-agro.jpg',
     imageAlt: 'Champ cultivé au lever du jour',

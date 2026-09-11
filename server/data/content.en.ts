@@ -82,6 +82,7 @@ export const domains: Domain[] = traduire(fr.domains, [
     description: 'Desks, chairs, cabinets, reception counters and complete floor fit-outs.',
     intro:
       'Complete floor fit-outs: desks, ergonomic chairs, cabinets, pedestals and reception counters. We cost, deliver and assemble on site.',
+    short: 'Furniture & office',
     imageAlt: 'Meeting chairs lined up in a bright room',
     families: ['Desks & tables', 'Seating', 'Storage', 'Reception', 'Lounge sets'],
   },
@@ -90,6 +91,7 @@ export const domains: Domain[] = traduire(fr.domains, [
     description: 'Workstations, laptops, printers, networking, consumables and maintenance.',
     intro:
       'Workstations, laptops, printers and copiers, networking and UPS units, consumables. Installation, setup and an optional maintenance contract.',
+    short: 'IT',
     families: ['Workstations', 'Printing', 'Displays'],
   },
   {
@@ -98,6 +100,7 @@ export const domains: Domain[] = traduire(fr.domains, [
       'Medical furniture, instruments, reagents and consumables for clinics and laboratories.',
     intro:
       'Medical furniture, diagnostic instruments, reagents and consumables for clinics, laboratories and health centres.',
+    short: 'Health & laboratory',
     families: ['Laboratory', 'Medical devices', 'Consumables'],
   },
   {
@@ -114,6 +117,7 @@ export const domains: Domain[] = traduire(fr.domains, [
       'Tool cases and kits, electrical measurement, cutting, welding, ladders and working-at-height equipment.',
     intro:
       'Hand and power tools, measuring instruments and workshop fit-out, for maintenance teams and site crews.',
+    short: 'Tools & workshop',
     imageAlt: 'Hand-tool set laid out flat',
   },
   {
@@ -122,6 +126,7 @@ export const domains: Domain[] = traduire(fr.domains, [
       'Barriers, badges, controllers and biometric time clocks, indoor and outdoor video surveillance.',
     intro:
       'Access control, video surveillance, barriers and safety equipment for premises, sites and public buildings.',
+    short: 'Access control',
     imageAlt: 'Surveillance cameras on a pole',
     families: ['Access control', 'Video surveillance', 'Safety equipment'],
   },
@@ -131,6 +136,7 @@ export const domains: Domain[] = traduire(fr.domains, [
       'Laboratory reagents, water treatment products and chemicals of analytical or food grade.',
     intro:
       'Laboratory reagents, solvents and industrial chemicals, supplied with their safety data sheets.',
+    short: 'Chemicals & reagents',
     imageAlt: 'Labelled laboratory reagent bottles',
   },
   {
@@ -139,6 +145,7 @@ export const domains: Domain[] = traduire(fr.domains, [
       'Panels, hybrid inverters, charge regulators, batteries and converters for off-grid or grid-backup sites.',
     intro:
       'Panels, inverters, batteries and mounting kits — sizing, supply and installation of solar systems.',
+    short: 'Photovoltaic',
     imageAlt: 'Photovoltaic panels installed on a roof',
   },
   {
@@ -152,6 +159,7 @@ export const domains: Domain[] = traduire(fr.domains, [
     description:
       'Renewable-energy training benches for technical colleges, training centres and universities.',
     intro: 'Teaching benches and training equipment for technical schools and vocational centres.',
+    short: 'Teaching equipment',
   },
   {
     title: 'Connection equipment',
@@ -159,16 +167,19 @@ export const domains: Domain[] = traduire(fr.domains, [
       'Water meters, fittings and pressure reducers for service connections and sub-metering.',
     intro:
       'Connection accessories for water and electricity networks: fittings, meters and meter boxes.',
+    short: 'Connections',
   },
   {
     title: 'Electrical equipment',
     description: 'Enclosures, modular boards and residual-current protection devices.',
     intro: 'Electrical equipment for low-voltage installations and distribution boards.',
+    short: 'Electrical',
   },
   {
     title: 'Handling equipment',
     description: 'Forklifts and manual or electric pallet trucks, for warehouse and loading bay.',
     intro: 'Pallet trucks, stackers and handling equipment for warehouses and storage areas.',
+    short: 'Handling',
   },
   {
     title: 'Reception equipment rental',
@@ -176,6 +187,7 @@ export const domains: Domain[] = traduire(fr.domains, [
       'Furniture, tableware, linen, décor, sound and lighting — delivered and installed.',
     intro:
       'Furniture, tableware, linen, décor, sound and lighting, tents and structures — delivered, set up and collected.',
+    short: 'Equipment hire',
     imageAlt: 'Reception hall set up under chandeliers',
     families: [
       'Furniture',
@@ -185,14 +197,18 @@ export const domains: Domain[] = traduire(fr.domains, [
       'Sound & lighting',
       'Tents & structures',
     ],
+    exampleNote:
+      'Sample references, taken from a typical hire catalogue — to be checked against your actual stock before going live',
   },
   {
     title: 'Event management & coordination',
     description: 'Staging, floor plans, supplier coordination and presence on the day.',
     intro:
       'Coordination of your event from planning to strike: schedule, suppliers, on-the-day supervision.',
+    short: 'Coordination',
     imageAlt: 'Cocktail table set before guests arrive',
     families: ['Before the event', 'On the day', 'After the event'],
+    exampleNote: 'Sample services — the stages and categories are still to be settled with you',
   },
   {
     title: 'Studies & advisory services',
@@ -200,19 +216,22 @@ export const domains: Domain[] = traduire(fr.domains, [
       'Technical studies, organisational consulting, training and client-side project support.',
     intro:
       'Studies, advisory work, training and project support — for public bodies, NGOs and companies.',
+    short: 'Studies & advisory',
     imageAlt: 'Study documents and plans on a working table',
     families: ['Studies', 'Advisory', 'Training', 'Project support & tenders'],
     exampleNote:
-      'Sample services — the site does not yet display a settled catalogue for this field.',
+      'Sample services — the site shows no list for this division yet: labels and categories to be confirmed with you',
   },
   {
     title: 'Farming & agri-industry',
     description: 'Inputs, small equipment, processing machinery and support for cooperatives.',
     intro:
       'Inputs, agricultural equipment, processing units and support for value chains and cooperatives.',
+    short: 'Agri',
     imageAlt: 'Cultivated field at daybreak',
     families: ['Inputs', 'Equipment', 'Processing', 'Value chains & cooperatives'],
-    exampleNote: 'Sample references and illustrative photographs (Pixabay, free licence).',
+    exampleNote:
+      'Sample references and illustrative photographs (Pixabay, commercial licence) — to be replaced by your own field photos and articles',
   },
 ])
 
