@@ -512,12 +512,16 @@ performance.
   sur un bandeau sable et du texte, avec une moitié droite vide sous le chapô.
   `UiPageHero` accepte désormais `media` : trois ou quatre vignettes carrées,
   façon planche-contact, qui montrent de quoi la page parle avant qu'on ait lu
-  une ligne — les quatre familles de réalisations sur `/galerie`, les quatre
-  branches sur `/services`, le savoir-faire sur `/conseils`, l'entreprise sur
-  `/contact`, le matériel sur `/faq`. Elles entrent en cascade, avec un zoom
-  lent, et sont neutralisées sous `prefers-reduced-motion`.
-  Les trois pages légales n'en reçoivent pas : une mention légale n'a pas à
-  s'illustrer, et `media` y reste simplement absent.
+  une ligne — les quatre branches sur `/services`, le savoir-faire sur
+  `/conseils`, l'entreprise sur `/contact`, le matériel sur `/faq`. Elles
+  entrent en cascade, avec un zoom lent, et sont neutralisées sous
+  `prefers-reduced-motion`.
+  Les trois pages légales en reçoivent aussi, mais sur un autre principe : leur
+  planche suit les temps de leur chapô — le siège, les bureaux et une
+  photographie du site pour les mentions légales ; le parc, la livraison et le
+  matériel en service pour les conditions de location ; le formulaire, les
+  personnes et le siège pour la confidentialité. Un document qui engage la
+  société n'a pas à se décorer, mais il gagne à montrer de quoi il traite.
 - **La galerie, elle, ouvre sur une planche animée.** `GalleryHero` y remplace
   l'en-tête commun : un grand cadre fait défiler les collections — Mariages,
   Cérémonies, Entreprise, Décor, Fournitures — une à la fois, photo de
@@ -673,16 +677,26 @@ lignes sont à ajouter dans `nuxt.config.ts`.
 > **ni le fichier ni le dépôt ne sont en cause**. Passer le dépôt en public n'y
 > a rien changé non plus, ce qui écarte le quota de minutes des dépôts privés.
 >
-> Restent deux causes, toutes deux hors du dépôt et hors de portée de qui n'en
-> est pas administrateur :
+> Restaient deux causes, toutes deux hors du dépôt : une politique désactivant
+> Actions au niveau du compte, ou un blocage de facturation.
+> `gh api repos/Nova2026-graphik/TBS/actions/permissions` les départagerait,
+> mais répond `403` à un compte qui n'a que le droit de pousser. Les
+> annotations du *check-run*, elles, se lisent sans droit particulier — et
+> elles portent le motif en clair :
 >
-> 1. **Actions désactivé par une politique** du compte ou de l'organisation —
->    *Settings → Actions → General* ;
-> 2. **un blocage de facturation** — moyen de paiement expiré, limite de
->    dépense à zéro — *Settings → Billing*.
+> ```bash
+> run=$(gh api "repos/Nova2026-graphik/TBS/actions/runs?per_page=1" --jq '.workflow_runs[0].id')
+> job=$(gh api "repos/Nova2026-graphik/TBS/actions/runs/$run/jobs" --jq '.jobs[0].id')
+> gh api "repos/Nova2026-graphik/TBS/check-runs/$job/annotations" --jq '.[0].message'
+> ```
 >
-> L'API le dirait (`gh api repos/Nova2026-graphik/TBS/actions/permissions`),
-> mais elle répond `403` à un compte qui n'a que le droit de pousser.
+> > The job was not started because your account is locked due to a billing issue.
+>
+> C'est donc la seconde, et ce n'est plus une hypothèse. L'annotation est la
+> même, au mot près, sur les exécutions de branches Dependabot sans rapport
+> entre elles : c'est le compte qui est bloqué, pas ce dépôt. Le déblocage se
+> fait dans **Settings → Billing** — moyen de paiement à régulariser, puis
+> limite de dépense à fixer. Rien dans le dépôt n'y changera quoi que ce soit.
 >
 > **En attendant, `npm run ci` rejoue localement le travail `qualite`** :
 >

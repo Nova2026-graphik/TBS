@@ -30,6 +30,18 @@ useBreadcrumbSchema([{ name: 'Conditions de location', path: '/conditions-de-loc
  * valide dans les deux langues.
  */
 defineI18nRoute({ locales: ['fr'] })
+
+/**
+ * Planche-contact de l'en-tête : ce dont le contrat parle, dans l'ordre où il
+ * en parle — le parc que l'on réserve, le camion qui livre et reprend, la
+ * salle où le matériel sert. Un document de cinq écrans se lit mieux quand on
+ * a vu de quoi il traite.
+ */
+const HERO_MEDIA = [
+  { src: '/images/categorie-mobilier.jpg', subject: 'Le parc — chaises et tables' },
+  { src: '/images/equipements-materiel-roulant.jpg', subject: 'Livraison et reprise' },
+  { src: '/images/hero-reception.jpg', subject: 'Le matériel en service' },
+]
 </script>
 
 <template>
@@ -39,6 +51,7 @@ defineI18nRoute({ locales: ['fr'] })
       title="Conditions"
       accent="de location"
       lead="Ce qui est convenu quand vous louez du matériel de réception : réservation, livraison, reprise, casse et annulation."
+      :media="HERO_MEDIA"
     />
 
     <section class="u-gutter u-section bg-white">

@@ -31,6 +31,22 @@ useBreadcrumbSchema([{ name: 'Mentions légales', path: '/mentions-legales' }])
  * valide dans les deux langues.
  */
 defineI18nRoute({ locales: ['fr'] })
+
+/**
+ * Planche-contact de l'en-tête : le siège, les bureaux d'où le site est publié,
+ * puis une des photographies dont la page traite précisément la propriété.
+ *
+ * Le chapô annonce trois temps — qui édite, qui héberge, à qui appartiennent
+ * les contenus — et l'hébergeur n'a pas d'image : ce n'est pas TBS, et la
+ * photothèque n'a rien qui le dise honnêtement. La vignette du milieu montre
+ * donc le directeur de la publication à son poste, ce que la page nomme juste
+ * en dessous.
+ */
+const HERO_MEDIA = [
+  { src: '/images/apropos-entrepot.jpg', subject: 'Le siège d\'Agôè-Démakpoè — l\'éditeur' },
+  { src: '/images/branche-etudes.jpg', subject: 'Les bureaux — la direction de la publication' },
+  { src: '/images/galerie-centre-de-table.jpg', subject: 'Une photographie du site — les contenus' },
+]
 </script>
 
 <template>
@@ -40,6 +56,7 @@ defineI18nRoute({ locales: ['fr'] })
       title="Mentions"
       accent="légales"
       lead="Qui édite ce site, qui l'héberge, et à qui appartiennent les contenus."
+      :media="HERO_MEDIA"
     />
 
     <section class="u-gutter u-section bg-white">
