@@ -147,7 +147,52 @@ export interface Domain {
    */
   image?: string
   imageAlt?: string
+  /**
+   * Paragraphe d'ouverture de la page domaine.
+   *
+   * `description` tient en une ligne pour le panneau des secteurs ; `intro`
+   * peut respirer, et sert aussi de méta-description. Les deux disent la même
+   * chose à deux échelles, ce qui est la raison d'être des deux champs.
+   */
+  intro?: string
+  /**
+   * Intitulé court, pour les listes où le titre complet déborde — la barre
+   * latérale et le bandeau mobile. « Mobilier & bureau » plutôt que
+   * « Mobilier & matériel de bureau ».
+   */
+  short?: string
+  /** Familles de filtre proposées au-dessus de la grille. Vide = pas de filtre. */
+  families?: string[]
+  /** Objet détouré qui représente le domaine dans les listes et la bannière. */
+  thumbnail?: string
+  /** Second détouré, révélé au survol de la vignette. */
+  thumbnailHover?: string
+  /** Précision de portée affichée sous le titre (« Lomé & tout le Togo »). */
+  meta?: string
+  /**
+   * Avertissement affiché sous l'introduction quand les références du domaine
+   * sont encore des exemples. Mieux vaut le dire que laisser croire à un
+   * catalogue arrêté.
+   */
+  exampleNote?: string
+  /** Rendu en médaillons ronds plutôt qu'en objets détourés (Agro). */
+  medallion?: boolean
 }
+
+/**
+ * Nature du visuel d'une référence — elle commande le rendu de la carte.
+ *
+ *  - `cut`   objet détouré du catalogue STEA, posé sur le blanc ;
+ *  - `png`   objet détouré PurePNG, même traitement ;
+ *  - `photo` photographie non détourée, sur fond `shell` et signalée comme telle ;
+ *  - `med`   médaillon rond (Agro) ;
+ *  - `ghost` visuel encore absent : filigrane de la vignette du domaine.
+ *
+ * `ghost` est un état assumé, pas un trou : treize références n'ont pas
+ * encore de visuel, et une carte vide qui le dit vaut mieux qu'une image
+ * empruntée qui ment.
+ */
+export type ReferenceKind = 'cut' | 'png' | 'photo' | 'med' | 'ghost'
 
 /**
  * Une référence du catalogue, rattachée à un domaine.
@@ -187,6 +232,21 @@ export interface Equipment {
    * illustration légendée.
    */
   image?: string
+  /** Famille de filtre, prise parmi les `families` du domaine. */
+  family?: string
+  /** Second visuel, fondu au survol de la carte. Vingt et une références en ont un. */
+  imageHover?: string
+  /** Commande le rendu de la carte — voir `ReferenceKind`. */
+  kind: ReferenceKind
+  /**
+   * Affiche « Visuel non contractuel ».
+   *
+   * Le visuel montre alors un modèle équivalent et non l'article livré : le
+   * dire sur la carte évite une réclamation à la livraison.
+   */
+  nonContractual?: boolean
+  /** Fiche du catalogue d'origine, quand la référence en vient. */
+  source?: string
 }
 
 export interface StatItem {
