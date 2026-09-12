@@ -47,7 +47,7 @@ const lignes = computed(() => calculerMateriel(options.value))
 // `NuxtLink` lit la chaîne de requête d'une URL relative sans difficulté.
 const lienDevis = computed(() => {
   const query = new URLSearchParams({
-    branche: 'events',
+    branche: versUrl('events'),
     invites: String(invitesValides.value),
     message: messageDevis(options.value, lignes.value),
   })

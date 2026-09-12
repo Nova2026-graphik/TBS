@@ -66,7 +66,7 @@ export const branches = pgTable('branches', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
-/** Catégories du parc locatif TBS Events (mobilier, nappage…). */
+/** Catégories du parc locatif TBS Événementiel (mobilier, nappage…). */
 export const rentalCategories = pgTable(
   'rental_categories',
   {

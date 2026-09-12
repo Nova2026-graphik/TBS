@@ -23,7 +23,11 @@ const { data } = await useSiteContent()
 const brancheParam = computed(() => String(route.params.branche ?? ''))
 const domaineParam = computed(() => String(route.params.domaine ?? ''))
 
-const branch = computed(() => data.value.branches.find(b => b.slug === brancheParam.value) ?? null)
+/** Le segment porte le nom public : `/galerie/evenementiel/…` → `events`. */
+const brancheInterne = computed(() => depuisUrl(brancheParam.value))
+const branch = computed(() =>
+  data.value.branches.find(b => b.slug === brancheInterne.value) ?? null,
+)
 const domain = computed(() => data.value.domains.find(d => d.slug === domaineParam.value) ?? null)
 
 /**

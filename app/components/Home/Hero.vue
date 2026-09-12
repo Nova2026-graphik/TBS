@@ -6,8 +6,8 @@ import type { Branch } from '#shared/types'
  *
  * La première présente **TBS Distribution**, la maison qui réunit les quatre
  * branches ; les quatre suivantes présentent chaque branche. Sans elle, un
- * visiteur qui arrivait pendant la rotation ne voyait jamais que « TBS Agro »
- * ou « TBS Events » : l'ensemble n'était nommé nulle part au-dessus de la
+ * visiteur qui arrivait pendant la rotation ne voyait jamais que « TBS Agro Business »
+ * ou « TBS Événementiel » : l'ensemble n'était nommé nulle part au-dessus de la
  * ligne de flottaison, alors que c'est la promesse du site — un seul
  * interlocuteur pour quatre métiers.
  *
@@ -101,7 +101,7 @@ const diapositives = computed<Diapositive[]>(() => [
       color: brandColor(branche.color),
       image: branche.image,
       imageAlt: branche.imageAlt,
-      to: `/services?branche=${branche.slug}`,
+      to: `/services?branche=${versUrl(branche.slug)}`,
     })),
 ])
 
