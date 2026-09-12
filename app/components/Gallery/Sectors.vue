@@ -193,7 +193,7 @@ const sizesHalfMd = SIZES_HALF_MD
                     la cible tactile à 44 px.
                   -->
                   <NuxtLinkLocale
-                    :to="`/galerie/${sector.slug}/${domain.slug}`"
+                    :to="`/galerie/${versUrl(sector.slug)}/${domain.slug}`"
                     class="group/dom inline-flex min-h-11 items-center gap-2 border border-white/25 bg-white/10 py-1 pl-1.5 pr-2.5 text-[0.6875rem] leading-[1.4] tracking-[0.06em] text-white transition-colors duration-400 hover:border-white hover:bg-white/20 focus-visible:outline-offset-[-2px]"
                   >
                     <span class="sr-only">{{ $t('gallery.sectorLink', { domain: domain.title }) }}</span>
@@ -224,7 +224,7 @@ const sizesHalfMd = SIZES_HALF_MD
               lien dans un lien n'est pas du HTML valide.
             -->
             <NuxtLinkLocale
-              :to="{ path: '/services', query: { branche: sector.slug } }"
+              :to="{ path: '/services', query: { branche: versUrl(sector.slug) } }"
               class="mt-1 inline-flex min-h-11 items-center gap-2 text-[0.6875rem] uppercase tracking-[0.2em] text-white transition-colors duration-400 hover:text-cream focus-visible:outline-offset-[-2px]"
             >
               <span class="sr-only">{{ $t('gallery.sectors.ctaLabel', { sector: sector.name }) }}</span>

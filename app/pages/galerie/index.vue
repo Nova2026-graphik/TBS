@@ -51,10 +51,10 @@ function setFilter(value: string) {
  * doit ramener le visiteur au catalogue complet, pas à un écran vide.
  */
 const activeBranch = computed<BranchSlug | null>(() => {
-  const raw = route.query.branche
-  const value = Array.isArray(raw) ? raw[0] : raw
-  const connue = data.value.branches.some(b => b.slug === value)
-  return connue ? (value as BranchSlug) : null
+  // L'URL porte le nom public — `?branche=evenementiel` — et non
+  // l'identifiant interne. Une valeur inconnue rend `null`, donc le catalogue.
+  const slug = depuisUrl(route.query.branche)
+  return slug && data.value.branches.some(b => b.slug === slug) ? slug : null
 })
 
 const activeDomain = computed<DomainSlug | null>(() => {
@@ -256,7 +256,10 @@ const sizesThird = SIZES_THIRD
           {{ $t('gallery.emptyBody') }}
         </p>
         <div class="mt-8 flex flex-wrap items-center gap-4">
-          <UiButton :to="{ path: '/contact', query: { branche: activeBranch ?? undefined } }" size="lg">
+          <UiButton
+            :to="{ path: '/contact', query: { branche: activeBranch ? versUrl(activeBranch) : undefined } }"
+            size="lg"
+          >
             {{ $t('gallery.emptyCta') }}
           </UiButton>
           <UiButton variant="ghost" @click="activeSector ? clearSector() : setFilter('all')">

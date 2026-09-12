@@ -4,7 +4,7 @@ import { pageInteractive } from './utils'
 /**
  * Déduction de la branche à partir du type de demande.
  *
- * Les deux listes se recouvraient : « Mariage » implique TBS Events, et le
+ * Les deux listes se recouvraient : « Mariage » implique TBS Événementiel, et le
  * confirmer en dessous était une question pour rien. Ces tests gardent les
  * trois cas qui comptent — la déduction, l'ambiguïté qui ramène le champ, et
  * le lien qui prime sur la déduction.
@@ -49,20 +49,20 @@ test.describe('branche déduite du type de demande', () => {
 
     const corps = JSON.parse((await envoi).postData() ?? '{}')
     // Les demandes déjà enregistrées doivent rester comparables aux nouvelles.
-    expect(corps.branch).toBe('TBS Events — location de matériel de réception')
+    expect(corps.branch).toBe('TBS Événementiel — location de matériel de réception')
     expect(corps.requestType).toBe('Mariage')
   })
 
   test('un lien ?branche= prime et reste visible', async ({ page }) => {
-    await page.goto('/contact?branche=agro')
+    await page.goto('/contact?branche=agro-business')
     await pageInteractive(page)
 
     // Une valeur imposée que le visiteur ne pourrait ni voir ni corriger
     // vaudrait moins que la question elle-même.
     await expect(page.locator('#field-branch')).toBeVisible()
-    await expect(page.locator('#field-branch')).toHaveValue(/TBS Agro/)
+    await expect(page.locator('#field-branch')).toHaveValue(/TBS Agro Business/)
 
     await page.locator('#field-requestType').selectOption('Mariage')
-    await expect(page.locator('#field-branch')).toHaveValue(/TBS Agro/)
+    await expect(page.locator('#field-branch')).toHaveValue(/TBS Agro Business/)
   })
 })

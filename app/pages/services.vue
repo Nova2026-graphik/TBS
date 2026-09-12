@@ -16,17 +16,16 @@ const router = useRouter()
 const { data } = await useSiteContent()
 
 const { process, branchTabs: tabs } = useSiteData()
-/** Les slugs valides viennent de la structure, pas de la traduction. */
-const VALID = BRANCH_TABS.map(tab => tab.slug) as readonly string[]
 
-const active = computed<BranchSlug>(() => {
-  const raw = route.query.branche
-  const value = Array.isArray(raw) ? raw[0] : raw
-  return (typeof value === 'string' && VALID.includes(value) ? value : 'equipements') as BranchSlug
-})
+/**
+ * L'URL porte le nom public de la branche, l'état garde l'identifiant
+ * interne : `?branche=evenementiel` désigne la branche `events`. Une valeur
+ * inconnue retombe sur Équipements plutôt que de vider la page.
+ */
+const active = computed<BranchSlug>(() => depuisUrl(route.query.branche) ?? 'equipements')
 
-function select(slug: string) {
-  router.replace({ query: { ...route.query, branche: slug } })
+function select(slug: BranchSlug) {
+  router.replace({ query: { ...route.query, branche: versUrl(slug) } })
 }
 
 const activeBranch = computed(() => data.value.branches.find(b => b.slug === active.value))
