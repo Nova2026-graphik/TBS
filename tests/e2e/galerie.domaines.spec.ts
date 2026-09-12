@@ -52,11 +52,11 @@ test.describe('galerie filtrée par métier', () => {
   test('un domaine hors de sa branche ne redirige pas et reste ignoré', async ({ page }) => {
     // `roulant` appartient à Équipements : le préciser sur Events ne décrit
     // rien. Le couple n'existant pas, la galerie garde la main.
-    await page.goto('/galerie?branche=events&domaine=roulant')
+    await page.goto('/galerie?branche=evenementiel&domaine=roulant')
 
-    await expect(page).toHaveURL(/branche=events/)
+    await expect(page).toHaveURL(/branche=evenementiel/)
     await expect(page.locator(grille)).toHaveCount(9)
-    await expect(page.getByText(/Réalisations de TBS Events$/)).toBeVisible()
+    await expect(page.getByText(/Réalisations de TBS Événementiel$/)).toBeVisible()
   })
 
   test('les deux familles de filtre s’excluent', async ({ page }) => {

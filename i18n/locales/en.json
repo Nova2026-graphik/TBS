@@ -42,7 +42,7 @@
       "equipements": "Equipment",
       "events": "Events",
       "etudes": "Studies & Consulting",
-      "agro": "Agri-business"
+      "agro": "Agro Business"
     },
     "language": "Language",
     "switchTo": "Version française"
@@ -126,7 +126,7 @@
     "eyebrow": "Our services",
     "title": "Four divisions,",
     "accent": "one point of contact",
-    "lead": "TBS Equipment supplies and installs. TBS Events rents and organises. TBS Studies & Consulting advises. TBS Agri-business grows and processes. Choose the division that concerns you.",
+    "lead": "TBS Equipment supplies and installs. TBS Events rents and organises. TBS Studies & Consulting advises. TBS Agro Business grows and processes. Choose the division that concerns you.",
     "tablist": "Business divisions",
     "offers": {
       "eyebrow": "Packages",
@@ -237,7 +237,7 @@
     "lead": "Can't find your answer? Give us a call — we reply quickly."
   },
   "footer": {
-    "tagline": "Four divisions: Equipment, Events, Studies & Consulting, Agri-business. Supply, rental, consulting and agri-business. Agôè-Démakpoè, Lomé — Togo.",
+    "tagline": "Four divisions: Equipment, Events, Studies & Consulting, Agro Business. Supply, rental, consulting and agri-business. Agôè-Démakpoè, Lomé — Togo.",
     "branches": "Divisions",
     "pages": "Pages",
     "contact": "Contact details",
@@ -298,7 +298,7 @@
       "TBS Equipment — supply of materials & equipment",
       "TBS Events — reception equipment rental",
       "TBS Studies & Consulting — studies & advisory services",
-      "TBS Agri-business — farming & agri-industry",
+      "TBS Agro Business — farming & agri-industry",
       "Several divisions"
     ],
     "requestTypes": [
@@ -333,7 +333,7 @@
     },
     "services": {
       "title": "Our services — equipment, events, consulting, agri-business",
-      "description": "TBS Equipment supplies and installs. TBS Events rents and organises. TBS Studies & Consulting advises. TBS Agri-business grows and processes. Four divisions, one point of contact in Lomé."
+      "description": "TBS Equipment supplies and installs. TBS Events rents and organises. TBS Studies & Consulting advises. TBS Agro Business grows and processes. Four divisions, one point of contact in Lomé."
     }
   },
   "data": {
@@ -405,7 +405,7 @@
         ]
       },
       "agro": {
-        "eyebrow": "TBS Agri-business — support",
+        "eyebrow": "TBS Agro Business — support",
         "title": "From the field",
         "titleAccent": "to the market",
         "steps": [
@@ -495,7 +495,7 @@
       "equipements": "Equipment",
       "events": "Events",
       "etudes": "Studies & Consulting",
-      "agro": "Agri-business"
+      "agro": "Agro Business"
     },
     "branchDetails": {
       "equipements": [
