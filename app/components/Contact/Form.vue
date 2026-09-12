@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { BranchSlug } from '#shared/types'
+
 /**
  * Formulaire de demande de devis.
  *
@@ -14,11 +16,19 @@
  */
 const BRANCH_OPTIONS = [
   'TBS Équipements — fourniture de matériels & équipements',
-  'TBS Events — location de matériel de réception',
+  'TBS Événementiel — location de matériel de réception',
   'TBS Études & Conseils — études & prestations intellectuelles',
-  'TBS Agro — agriculture & agro-industrie',
+  'TBS Agro Business — agriculture & agro-industrie',
   'Plusieurs branches',
 ]
+
+/** Rang de chaque branche dans la liste ci-dessus. */
+const BRANCH_INDEX: Record<BranchSlug, number> = {
+  equipements: 0,
+  events: 1,
+  etudes: 2,
+  agro: 3,
+}
 
 const REQUEST_TYPES = [
   'Mariage',
@@ -180,12 +190,19 @@ watch(() => form.requestType, (type) => {
 })
 
 onMounted(() => {
-  const branche = route.query.branche
-  const match = BRANCH_OPTIONS.find(option =>
-    typeof branche === 'string' && option.toLowerCase().includes(branche.toLowerCase()),
-  )
-  if (match) {
-    form.branch = match
+  /**
+   * La branche arrive par son nom public — `?branche=evenementiel` — et se
+   * résout par la table, non plus en cherchant le slug dans le libellé.
+   *
+   * Cette recherche par sous-chaîne ne marchait déjà qu'à moitié :
+   * `'TBS Équipements — …'.toLowerCase().includes('equipements')` vaut `false`,
+   * un « É » accentué ne s'écrivant pas « e ». Deux branches sur quatre
+   * échouaient donc en silence, et le renommage aurait ajouté
+   * « Événementiel » à la liste des perdantes.
+   */
+  const slug = depuisUrl(route.query.branche)
+  if (slug) {
+    form.branch = BRANCH_OPTIONS[BRANCH_INDEX[slug]]!
     // Le lien vient d'une page de branche : ce choix prime sur la déduction.
     brancheImposee.value = true
   }

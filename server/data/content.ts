@@ -26,9 +26,9 @@ export const BRANCH_COLORS: Record<string, string> = {
 
 export const BRANCH_LABELS: Record<string, string> = {
   equipements: 'TBS Équipements',
-  events: 'TBS Events',
+  events: 'TBS Événementiel',
   etudes: 'TBS Études & Conseils',
-  agro: 'TBS Agro',
+  agro: 'TBS Agro Business',
 }
 
 export const branches: Branch[] = [
@@ -47,13 +47,13 @@ export const branches: Branch[] = [
   {
     slug: 'events',
     index: 2,
-    name: 'TBS Events',
+    name: 'TBS Événementiel',
     tagline: 'Location de matériel de réception & événementiel',
     description:
       'Mobilier, art de la table, décoration, son et lumière : nous équipons, installons et reprenons mariages, cérémonies, réceptions privées et événements d\'entreprise, de 20 à 2 000 invités.',
     color: BRANCH_COLORS.events!,
     image: '/images/branche-events.jpg',
-    imageAlt: 'Salle de réception dressée par TBS Events',
+    imageAlt: 'Salle de réception dressée par TBS Événementiel',
     tags: ['Mariages', 'Cérémonies', 'Entreprise', 'Clé en main'],
   },
   {
@@ -71,13 +71,13 @@ export const branches: Branch[] = [
   {
     slug: 'agro',
     index: 4,
-    name: 'TBS Agro',
+    name: 'TBS Agro Business',
     tagline: 'Agriculture & agro-industrie',
     description:
       'Intrants, petits équipements agricoles et matériel de transformation. Nous accompagnons coopératives, exploitations et projets de développement agro-industriel.',
     color: BRANCH_COLORS.agro!,
     image: '/images/branche-agro.jpg',
-    imageAlt: 'Exploitation agricole accompagnée par TBS Agro',
+    imageAlt: 'Exploitation agricole accompagnée par TBS Agro Business',
     tags: ['Intrants', 'Équipements', 'Transformation', 'Coopératives'],
   },
 ]
@@ -406,7 +406,7 @@ export const serviceBlocks: ServiceBlock[] = [
     imageAlt: 'Matériel roulant — véhicules de service',
   },
 
-  // ── TBS Events ───────────────────────────────────────────────────────────
+  // ── TBS Événementiel ───────────────────────────────────────────────────────────
   {
     branch: 'events',
     eyebrow: '01 — Mobilier',
@@ -470,7 +470,7 @@ export const serviceBlocks: ServiceBlock[] = [
     imageAlt: 'Formation et conseil en organisation',
   },
 
-  // ── TBS Agro ─────────────────────────────────────────────────────────────
+  // ── TBS Agro Business ─────────────────────────────────────────────────────────────
   {
     branch: 'agro',
     eyebrow: '01 — Intrants & équipements',
@@ -543,42 +543,42 @@ export const testimonials: Testimonial[] = [
 export const faqItems: FaqItem[] = [
   {
     id: 'faq-1',
-    group: 'TBS Events',
+    group: 'TBS Événementiel',
     question: 'Combien de temps à l\'avance faut-il réserver ?',
     answer:
       'Deux à quatre semaines pour un mariage ou une grande réception, surtout en saison sèche. Pour les demandes urgentes, appelez-nous : nous vérifions la disponibilité du stock immédiatement.',
   },
   {
     id: 'faq-2',
-    group: 'TBS Events',
+    group: 'TBS Événementiel',
     question: 'La livraison et le montage sont-ils inclus ?',
     answer:
       'La livraison est incluse dans le Grand Lomé à partir d’un certain montant de location. Le montage et la mise en place sont chiffrés selon le volume et la configuration de la salle, et toujours indiqués sur le devis.',
   },
   {
     id: 'faq-3',
-    group: 'TBS Events',
+    group: 'TBS Événementiel',
     question: 'Intervenez-vous en dehors de Lomé ?',
     answer:
       'Oui, sur tout le territoire togolais. Un forfait transport est ajouté selon la distance et le volume de matériel ; nous le calculons dès le premier échange.',
   },
   {
     id: 'faq-4',
-    group: 'TBS Events',
+    group: 'TBS Événementiel',
     question: 'Faut-il rendre la vaisselle lavée ?',
     answer:
       'Non. Rendez le matériel débarrassé, nous nous occupons du lavage : chaque pièce repart contrôlée et propre pour la location suivante.',
   },
   {
     id: 'faq-5',
-    group: 'TBS Events',
+    group: 'TBS Événementiel',
     question: 'Que se passe-t-il en cas de casse ?',
     answer:
       'Une caution est prévue au contrat. Les pièces cassées ou manquantes sont facturées au tarif de remplacement indiqué à l\'avance sur le devis, sans surprise après l\'événement.',
   },
   {
     id: 'faq-6',
-    group: 'TBS Events',
+    group: 'TBS Événementiel',
     question: 'Peut-on visiter le stock avant de choisir ?',
     answer:
       'Bien sûr. Nos entrepôts d’Agôè-Démakpoè se visitent du lundi au samedi sur rendez-vous : vous voyez les chaises, les lignes de vaisselle et les nappages en vrai avant de valider.',

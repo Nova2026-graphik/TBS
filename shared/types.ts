@@ -79,7 +79,7 @@ export interface GalleryItem {
    * Domaine précis, quand la réalisation en relève d'un seul.
    *
    * `null` est un état légitime, pas un oubli : une vue d'ensemble de salle
-   * relève de TBS Events sans appartenir à « Organisation & coordination »
+   * relève de TBS Événementiel sans appartenir à « Organisation & coordination »
    * plutôt qu'à « Location de matériel ». Forcer un domaine sur chaque photo
    * produirait des rattachements arbitraires, et un filtre qui ment coûte
    * plus cher qu'un filtre absent.
@@ -124,12 +124,12 @@ export type DomainSlug
     | 'branchement'
     | 'electriques'
     | 'manutention'
-    // TBS Events
+    // TBS Événementiel
     | 'location-reception'
     | 'organisation'
     // TBS Études & Conseils
     | 'etudes-prestations'
-    // TBS Agro
+    // TBS Agro Business
     | 'agro-industrie'
 
 export interface Domain {

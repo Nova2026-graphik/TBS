@@ -62,7 +62,7 @@ const { t } = useI18n()
 const lienDevis = computed(() => ({
   path: '/contact',
   query: {
-    branche: props.domain.branch,
+    branche: versUrl(props.domain.branch),
     message: courante.value
       ? t('domain.quote.intro', { name: courante.value.name, domain: props.domain.title })
       : undefined,

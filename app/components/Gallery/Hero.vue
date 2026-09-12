@@ -16,7 +16,7 @@ import { DENSITIES_FULL, SIZES_FULL } from '~/utils/imageSizes'
  *
  * Ce qui tourne : une **collection** à la fois, c'est-à-dire une des
  * catégories de la galerie. Chaque diapositive montre sa photo de couverture
- * et une carte qui la nomme — « Mariages · 6 réalisations · TBS Events ».
+ * et une carte qui la nomme — « Mariages · 6 réalisations · TBS Événementiel ».
  *
  * Trois partis pris :
  *
