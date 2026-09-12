@@ -16,12 +16,20 @@ test.describe('secteurs de la galerie sur téléphone', () => {
     const panneaux = page.locator('section ul > li').filter({ has: page.locator('h3') })
     await expect(panneaux).toHaveCount(4)
 
-    // Le nombre de domaines vient des données : 4, 2, 1 et 1.
-    // TBS Équipements couvre treize domaines depuis l'ajout du catalogue.
+    /**
+     * Le nombre de domaines vient des données : 13, 2, 1 et 1.
+     *
+     * On compte les tuiles par leur étiquette, et non les `<li>` de la
+     * grille : celle-ci en porte une de plus, l'appel à l'action qui occupe
+     * les cases restantes de la dernière rangée.
+     */
     for (const [i, attendu] of [13, 2, 1, 1].entries()) {
-      const chips = panneaux.nth(i).locator('ul li')
-      await expect(chips).toHaveCount(attendu)
-      await expect(chips.first()).toBeVisible()
+      const tuiles = panneaux.nth(i).locator('a[aria-label*="références"]')
+      await expect(tuiles).toHaveCount(attendu)
+      await expect(tuiles.first()).toBeVisible()
+
+      // Et l'appel à l'action, qui remplace le trou de fin de rangée.
+      await expect(panneaux.nth(i).locator('a[href*="/contact"]')).toHaveCount(1)
     }
   })
 
