@@ -167,7 +167,18 @@
       "branch": "Division {index}",
       "domains": "Fields covered",
       "cta": "See the services",
-      "ctaLabel": "{sector} — see the services"
+      "ctaLabel": "{sector} — see the services",
+      "countDomains": "{n} field | {n} fields",
+      "countRefs": "{n} reference | {n} references",
+      "tileUnit": "ref.",
+      "tileLabel": "{domain} — {count} references",
+      "allBranch": "The whole division",
+      "blurb": {
+        "equipements": "{n} references · delivery and installation across Togo",
+        "events": "Rental and coordination, from 20 to 2,000 guests",
+        "etudes": "Studies, advisory, training, project support",
+        "agro": "Inputs, equipment, processing"
+      }
     },
     "sectorFilter": "Projects from {sector}",
     "sectorFilterDomain": "Projects from {sector} — {domain}",
