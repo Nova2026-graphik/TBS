@@ -38,14 +38,22 @@ test.describe('les nouveaux noms s’affichent', () => {
   })
 
   test('dans les méta-descriptions qui nomment les branches', async ({ page }) => {
-    // Celle de l'accueil énumère les métiers sans nommer les branches ; c'est
-    // la galerie et la page Services qui les citent.
+    // Toutes ne les nomment pas : celle de l'accueil énumère les métiers sans
+    // citer les marques. On vérifie donc les deux qui les citent vraiment.
     await page.goto('/galerie')
     await expect(page.locator('meta[name=description]'))
       .toHaveAttribute('content', /TBS Événementiel/)
 
-    await page.goto('/services?branche=agro-business')
-    await expect(page.locator('title')).toHaveText(/Agro Business|Services/)
+    await page.goto('/services')
+    await expect(page.locator('meta[name=description]'))
+      .toHaveAttribute('content', /TBS Événementiel.*TBS Agro Business/s)
+
+    // Un `<title>` vit dans le `<head>` : il n'a pas de texte rendu, et
+    // `toHaveText` y lirait une chaîne vide. `toHaveTitle` lit le document.
+    await page.goto('/conditions-de-location')
+    await expect(page).toHaveTitle(/TBS Distribution/)
+    await expect(page.locator('meta[name=description]'))
+      .toHaveAttribute('content', /TBS Événementiel/)
   })
 })
 
