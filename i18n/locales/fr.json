@@ -167,7 +167,18 @@
       "branch": "Branche {index}",
       "domains": "Domaines couverts",
       "cta": "Voir les prestations",
-      "ctaLabel": "{sector} — voir les prestations"
+      "ctaLabel": "{sector} — voir les prestations",
+      "countDomains": "{n} domaine | {n} domaines",
+      "countRefs": "{n} référence | {n} références",
+      "tileUnit": "réf.",
+      "tileLabel": "{domain} — {count} références",
+      "allBranch": "Toute la branche",
+      "blurb": {
+        "equipements": "{n} références · livraison et installation au Togo",
+        "events": "Location et organisation, de 20 à 2 000 invités",
+        "etudes": "Études, conseil, formation, AMO",
+        "agro": "Intrants, équipements, transformation"
+      }
     },
     "sectorFilter": "Réalisations de {sector}",
     "sectorFilterDomain": "Réalisations de {sector} — {domain}",

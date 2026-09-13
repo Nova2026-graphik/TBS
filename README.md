@@ -655,34 +655,39 @@ lignes sont à ajouter dans `nuxt.config.ts`.
 
 ## Intégration continue
 
-> ### ⚠ Aucun travail ne s'exécute sur ce dépôt
+> ### ⚠ Le compte GitHub est bloqué pour un motif de facturation
 >
-> Les exécutions sont désormais **créées** — ce n'était pas le cas tant que le
-> dépôt était privé — mais aucune n'exécute quoi que ce soit : elles passent à
-> `failure` en une à deux secondes, **sans enregistrer une seule étape**. Pas
-> même « Set up job ».
+> **La cause est connue, et c'est GitHub qui la nomme.** Chaque exécution
+> porte la même annotation :
 >
-> | Exécution | Durée | Étapes |
+> ```
+> The job was not started because your account is locked due to a billing issue.
+> ```
+>
+> Le workflow `CI` n'a **jamais abouti une seule fois** : 83 échecs, aucun
+> succès. Les travaux passent à `failure` en trois à quatre secondes sans
+> enregistrer une seule étape, pas même « Set up job » — ils ne démarrent pas.
+>
+> Le détail qui confirme tout : **un seul workflow réussit**, et c'est
+> `Dependabot Updates`, 15 fois sur 15. Il est le seul à ne pas demander de
+> machine facturée — il tourne sur l'infrastructure de Dependabot. Dès qu'un
+> travail réclame un runner hébergé, le verrou tombe.
+>
+> Tout le reste a été écarté, vérification à l'appui :
+>
+> | Hypothèse | Vérification | Résultat |
 > | --- | --- | --- |
-> | `34220621882` — CI sur `main` | 4 s | 0 |
-> | la même, rejouée à la main | 1 s | 0 |
-> | `34222898257` — un workflow ne contenant qu'un `echo` | 2 s | 0 |
+> | Actions désactivé par une politique | `gh api repos/…/actions/permissions` | `enabled: true`, `allowed_actions: all` |
+> | Quota des dépôts privés | Le dépôt est public | minutes illimitées, et rien n'a changé |
+> | Version d'action inexistante | Les quatre tags interrogés un par un | `checkout@v7`, `setup-node@v4`, `upload-artifact@v7`, `download-artifact@v8` existent |
+> | YAML invalide | GitHub enregistre le workflow et crée les exécutions | valide |
 >
-> La dernière ligne tranche la question. Un workflow de six lignes, sans
-> dépendance, sans secret, sans cache, échoue exactement comme la CI complète :
-> **ni le fichier ni le dépôt ne sont en cause**. Passer le dépôt en public n'y
-> a rien changé non plus, ce qui écarte le quota de minutes des dépôts privés.
->
-> Restent deux causes, toutes deux hors du dépôt et hors de portée de qui n'en
-> est pas administrateur :
->
-> 1. **Actions désactivé par une politique** du compte ou de l'organisation —
->    *Settings → Actions → General* ;
-> 2. **un blocage de facturation** — moyen de paiement expiré, limite de
->    dépense à zéro — *Settings → Billing*.
->
-> L'API le dirait (`gh api repos/Nova2026-graphik/TBS/actions/permissions`),
-> mais elle répond `403` à un compte qui n'a que le droit de pousser.
+> **Le correctif est hors du dépôt** : ouvrir
+> <https://github.com/settings/billing> sur le compte `Nova2026-graphik` et
+> régler ce qui bloque — solde impayé, moyen de paiement expiré, ou limite de
+> dépense à zéro. Aucune modification du dépôt n'y changera quoi que ce soit,
+> et rien d'autre ne reste à corriger : le jour où le compte est débloqué, le
+> pipeline part tel quel.
 >
 > **En attendant, `npm run ci` rejoue localement le travail `qualite`** :
 >

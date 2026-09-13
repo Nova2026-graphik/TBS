@@ -201,7 +201,7 @@ const sizesThird = SIZES_THIRD
       pose de travers, et les domaines mènent à la grille qui suit
       immédiatement, filtrée.
     -->
-    <GallerySectors :branches="data.branches" :domains="data.domains" />
+    <GallerySectors :branches="data.branches" :domains="data.domains" :equipment="data.equipment ?? []" />
 
     <section ref="grid" class="u-gutter u-section bg-white">
       <!--
