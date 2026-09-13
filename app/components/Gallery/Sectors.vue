@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Branch, Domain } from '#shared/types'
+import type { Branch, Domain, Equipment } from '#shared/types'
 
 /**
  * Accordéon horizontal des quatre secteurs, chacun dépliant ses domaines.
@@ -41,17 +41,43 @@ import type { Branch, Domain } from '#shared/types'
  * Le repli des mouvements réduits est déjà global (`main.css`) : sous
  * `prefers-reduced-motion`, les panneaux basculent sans transition.
  */
-const props = defineProps<{ branches: Branch[], domains: Domain[] }>()
+const props = defineProps<{
+  branches: Branch[]
+  domains: Domain[]
+  /** Le catalogue entier : les compteurs s'en déduisent, rien n'est écrit en dur. */
+  equipment: Equipment[]
+}>()
 
-const sizesThumbnail = SIZES_THUMBNAIL
+/**
+ * Voile du panneau ouvert : dégradé **horizontal**, opaque à gauche où se
+ * pose le texte, ouvert à droite pour laisser respirer la photographie. Le
+ * voile vertical d'avant couvrait toute la largeur et éteignait l'image.
+ *
+ * `color-mix` sur `--color-ink` plutôt qu'une couleur écrite : l'encre change
+ * d'une charte à l'autre — brun en « Sable & Or », bleu nuit en « Bleu &
+ * Rouge » — et le dégradé doit suivre.
+ */
+const VOILE_OUVERT = [
+  'linear-gradient(90deg',
+  'color-mix(in srgb, var(--color-ink) 97%, transparent) 0%',
+  'color-mix(in srgb, var(--color-ink) 92%, transparent) 58%',
+  'color-mix(in srgb, var(--color-ink) 62%, transparent) 100%)',
+].join(', ')
 
-/** Chaque secteur reçoit les domaines qui lui sont rattachés. */
+/** Chaque secteur reçoit les domaines qui lui sont rattachés, et leurs comptes. */
 const sectors = computed(() =>
   props.branches.map((branch) => {
-    const domains = props.domains.filter(domain => domain.branch === branch.slug)
+    const domains = props.domains
+      .filter(domain => domain.branch === branch.slug)
+      .map(domain => ({
+        ...domain,
+        total: props.equipment.filter(e => e.domain === domain.slug).length,
+      }))
     return {
       ...branch,
       domains,
+      /** Total de la branche, somme de ses domaines — jamais un nombre écrit. */
+      total: domains.reduce((somme, domain) => somme + domain.total, 0),
       /**
        * Études et Agro n'ont qu'un domaine, et son intitulé reprend mot pour
        * mot la baseline de la branche. Les afficher l'un sous l'autre passe
@@ -101,7 +127,7 @@ const sizesHalfMd = SIZES_HALF_MD
       le corriger : la contrainte de largeur qui justifiait l'accordéon
       n'existe pas sur une colonne.
     -->
-    <ul v-reveal class="flex flex-col gap-1.5 md:h-[37.5rem] md:flex-row md:gap-2.5">
+    <ul v-reveal class="flex flex-col gap-1.5 xl:flex-row xl:gap-2.5">
       <!--
         `mouseenter` et `focusin` sur le `<li>` : ils ne font que déplier le
         panneau survolé, et le repli des autres dépend de l'état de la liste
@@ -114,8 +140,8 @@ const sizesHalfMd = SIZES_HALF_MD
       <li
         v-for="sector in sectors"
         :key="sector.slug"
-        class="group relative min-h-[29rem] overflow-hidden bg-shell transition-[flex] duration-[900ms] ease-[var(--ease-out-expo)] md:min-h-0"
-        :class="active === sector.slug ? 'md:flex-[4]' : 'md:flex-[1]'"
+        class="group relative overflow-hidden bg-shell transition-[flex] duration-[900ms] ease-[var(--ease-out-expo)] xl:min-h-0 xl:min-w-0"
+        :class="active === sector.slug ? 'xl:flex-[4]' : 'xl:flex-[1]'"
         @mouseenter="chosen = sector.slug"
         @focusin="chosen = sector.slug"
       >
@@ -129,36 +155,49 @@ const sizesHalfMd = SIZES_HALF_MD
           width="1200"
           height="900"
           class="absolute inset-0 size-full object-cover transition-transform duration-[1.2s] ease-[var(--ease-out-expo)]"
-          :class="active === sector.slug ? 'scale-100' : 'max-md:scale-100 scale-[1.08]'"
+          :class="active === sector.slug ? 'scale-100' : 'max-xl:scale-100 scale-[1.08]'"
         />
 
         <!-- Voile de mise en retrait, sur les panneaux repliés. -->
         <span
           class="absolute inset-0 bg-ink/65 transition-opacity duration-500"
-          :class="active === sector.slug ? 'opacity-0' : 'max-md:opacity-0 opacity-100'"
+          :class="active === sector.slug ? 'opacity-0' : 'max-xl:opacity-0 opacity-100'"
         />
         <!-- Dégradé de lisibilité, sur le panneau déplié : le texte se pose
              sur l'encre, pas sur la photo. Il est plus couvrant en mobile,
              où le texte occupe presque toute la hauteur du panneau et
              remonterait sinon sur la partie claire de la photo. -->
         <span
-          class="absolute inset-0 bg-gradient-to-t from-ink via-ink/85 to-ink/45 transition-opacity duration-500 md:via-ink/75 md:to-ink/25"
-          :class="active === sector.slug ? 'opacity-100' : 'max-md:opacity-100 opacity-0'"
+          class="absolute inset-0 bg-gradient-to-t from-ink via-ink/85 to-ink/45 transition-opacity duration-500 xl:hidden"
+          :class="active === sector.slug ? 'opacity-100' : 'max-xl:opacity-100 opacity-0'"
+        />
+        <span
+          class="absolute inset-0 hidden transition-opacity duration-500 xl:block"
+          :style="{ background: VOILE_OUVERT }"
+          :class="active === sector.slug ? 'opacity-100' : 'opacity-0'"
         />
         <!-- Filet de branche, comme sur les cartes de l'accueil. -->
         <span
-          class="absolute inset-x-0 top-0 h-0.5 transition-[height] duration-500 ease-[var(--ease-out-expo)] md:group-hover:h-1"
+          class="absolute inset-x-0 top-0 h-0.5 transition-[height] duration-500 ease-[var(--ease-out-expo)] xl:group-hover:h-1"
           :style="{ background: brandColor(sector.color) }"
         />
 
-        <div class="absolute inset-0 z-10 flex flex-col justify-end p-[clamp(1rem,2vw,2rem)]">
+        <!--
+          Le contenu était en `absolute inset-0` dans un panneau
+          `overflow-hidden` : treize puces ne tenaient pas dans la hauteur
+          fixe, et la première passait sous le bord supérieur — visible à
+          moitié, plus cliquable en entier. Il est maintenant dans le flux, et
+          c'est lui qui donne sa hauteur au panneau. La photographie et le
+          voile restent en absolu derrière.
+        -->
+        <div class="@container relative z-10 flex min-h-full flex-col p-[clamp(1rem,2vw,2rem)] xl:min-h-[43.75rem] xl:p-[2.375rem_2.5rem_2.125rem]">
           <!-- Contenu du panneau déplié. -->
           <div
-            class="flex flex-col items-start gap-3 transition-[opacity,transform] duration-500 ease-[var(--ease-out-expo)]"
+            class="flex min-h-0 flex-1 flex-col items-start gap-3 transition-[opacity,transform] duration-500 ease-[var(--ease-out-expo)]"
             :class="
               active === sector.slug
                 ? 'translate-y-0 opacity-100 delay-150'
-                : 'max-md:translate-y-0 max-md:opacity-100 translate-y-8 opacity-0'
+                : 'max-xl:translate-y-0 max-xl:opacity-100 translate-y-8 opacity-0'
             "
           >
             <span class="u-eyebrow text-white/80">
@@ -172,51 +211,80 @@ const sizesHalfMd = SIZES_HALF_MD
               {{ sector.tagline }}
             </p>
 
-            <!-- Les domaines, raison d'être de la section : ils sont tous
-                 nommés, y compris quand la branche n'en porte qu'un. -->
-            <div v-if="sector.domains.length" class="max-w-[46ch]">
-              <p class="text-[0.625rem] uppercase tracking-[0.22em] text-white/60">
-                {{ $t('gallery.sectors.domains') }}
-              </p>
-              <ul class="mt-2 flex flex-wrap gap-1.5">
-                <li v-for="domain in sector.domains" :key="domain.slug">
-                  <!--
-                    Chaque domaine mène à sa page produits. Les étiquettes
-                    avaient déjà l'apparence de boutons sans en avoir le
-                    comportement : on essayait de cliquer, il ne se passait
-                    rien. Elles menaient ensuite à la galerie filtrée, qui
-                    ajoutait une liste sous les photographies — hors de vue.
-                    Elles mènent maintenant à une page entière.
-
-                    La vignette détournée à gauche dit de quoi le domaine
-                    parle avant qu'on ait lu son intitulé. Le `min-h-11` porte
-                    la cible tactile à 44 px.
-                  -->
-                  <NuxtLinkLocale
-                    :to="`/galerie/${versUrl(sector.slug)}/${domain.slug}`"
-                    class="group/dom inline-flex min-h-11 items-center gap-2 border border-white/25 bg-white/10 py-1 pl-1.5 pr-2.5 text-[0.6875rem] leading-[1.4] tracking-[0.06em] text-white transition-colors duration-400 hover:border-white hover:bg-white/20 focus-visible:outline-offset-[-2px]"
-                  >
-                    <span class="sr-only">{{ $t('gallery.sectorLink', { domain: domain.title }) }}</span>
-                    <NuxtImg
-                      v-if="domain.thumbnail"
-                      :src="domain.thumbnail"
-                      alt=""
-                      preset="card"
-                      loading="lazy"
-                      :sizes="sizesThumbnail"
-                      width="84"
-                      height="84"
-                      class="size-[2.625rem] shrink-0 object-contain"
-                    />
-                    <span aria-hidden="true">{{ domain.title }}</span>
-                    <span
-                      aria-hidden="true"
-                      class="opacity-0 transition-opacity duration-400 group-hover/dom:opacity-100 group-focus-visible/dom:opacity-100"
-                    >&rarr;</span>
-                  </NuxtLinkLocale>
-                </li>
-              </ul>
+            <!--
+              Ligne de section : ce que la branche couvre, chiffré. Les deux
+              nombres sont comptés dans les données — les écrire aurait fait
+              mentir la page au premier domaine ajouté. Le filet occupe la
+              largeur restante plutôt qu'une longueur fixe.
+            -->
+            <div
+              class="mt-[1.875rem] mb-[1.125rem] flex w-full items-center gap-3.5 text-[0.65625rem] uppercase tracking-[0.24em] text-cream/62"
+            >
+              <span>
+                {{ $t('gallery.sectors.domains') }} ·
+                {{ $t('gallery.sectors.countDomains', { n: sector.domains.length }, sector.domains.length) }} ·
+                {{ $t('gallery.sectors.countRefs', { n: sector.total }, sector.total) }}
+              </span>
+              <span aria-hidden="true" class="h-px flex-1 bg-white/16" />
             </div>
+
+            <!--
+              Grille fixe plutôt que puces à largeur variable. Trois colonnes
+              au-delà de 1200 px, deux entre 768 et 1199, une seule en dessous.
+              Elle est masquée — `display:none`, pas `opacity:0` — sur les
+              panneaux repliés au-delà de `md` : repliée, une colonne de
+              treize tuiles mesurerait plus de mille pixels et étirerait la
+              rangée entière.
+            -->
+            <!--
+              Le nombre de colonnes suit la largeur **du panneau**, pas celle
+              de l'écran — d'où `@container` sur le contenu.
+              L'accordéon n'accorde au panneau ouvert que quatre septièmes de
+              la rangée : à 1280 px d'écran il ne fait que 610 px, et trois
+              colonnes y laisseraient 65 px au nom du domaine. Des seuils pris
+              sur la fenêtre donnaient exactement le défaut qu'on corrige —
+              « Équipements hospitaliers & de laboratoire » s'écrivant une
+              lettre par ligne. À 1920 px, largeur de la maquette, le panneau
+              atteint 977 px et la grille tombe bien sur trois colonnes.
+            -->
+            <ul
+              v-if="sector.domains.length"
+              class="grid w-full grid-cols-1 gap-3 @lg:grid-cols-2 @4xl:grid-cols-3"
+              :class="active === sector.slug ? 'xl:grid' : 'xl:hidden'"
+            >
+              <li v-for="(domain, i) in sector.domains" :key="domain.slug">
+                <GalleryDomainTile
+                  :domain="domain"
+                  :index="i + 1"
+                  :total="domain.total"
+                  :branch-url="versUrl(sector.slug)"
+                />
+              </li>
+
+              <!--
+                Les cases restantes de la dernière rangée deviennent l'appel à
+                l'action, au lieu de laisser un trou. `span 2` la fait tenir
+                dans ce qui reste, quel que soit le nombre de domaines.
+              -->
+              <li class="@lg:col-span-2">
+                <NuxtLinkLocale
+                  :to="{ path: '/contact', query: { branche: versUrl(sector.slug) } }"
+                  class="flex h-[4.375rem] items-center justify-between gap-3 border border-dashed border-white/20 bg-gold/18 py-2 pl-4 pr-3.5 text-white transition-colors duration-250 hover:border-white/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white max-md:h-auto max-md:flex-wrap max-md:py-3"
+                >
+                  <span class="min-w-0 text-[0.84375rem] leading-[1.25]">
+                    <span class="mb-[3px] block text-[0.625rem] uppercase tracking-[0.18em] text-cream/60">
+                      {{ $t('gallery.sectors.allBranch') }}
+                    </span>
+                    {{ $t(`gallery.sectors.blurb.${sector.slug}`, { n: sector.total }) }}
+                  </span>
+                  <span
+                    class="whitespace-nowrap border border-white/75 px-[1.125rem] py-[0.6875rem] text-[0.6875rem] uppercase tracking-[0.2em]"
+                  >
+                    {{ $t('common.quote') }}
+                  </span>
+                </NuxtLinkLocale>
+              </li>
+            </ul>
 
             <!--
               Le lien vers les prestations, désormais dans le flux plutôt qu'en
@@ -225,7 +293,7 @@ const sizesHalfMd = SIZES_HALF_MD
             -->
             <NuxtLinkLocale
               :to="{ path: '/services', query: { branche: versUrl(sector.slug) } }"
-              class="mt-1 inline-flex min-h-11 items-center gap-2 text-[0.6875rem] uppercase tracking-[0.2em] text-white transition-colors duration-400 hover:text-cream focus-visible:outline-offset-[-2px]"
+              class="mt-auto inline-flex min-h-11 items-center gap-2 pt-5 text-[0.6875rem] uppercase tracking-[0.2em] text-white transition-colors duration-400 hover:text-cream focus-visible:outline-offset-[-2px]"
             >
               <span class="sr-only">{{ $t('gallery.sectors.ctaLabel', { sector: sector.name }) }}</span>
               <span aria-hidden="true">{{ $t('gallery.sectors.cta') }}</span>
@@ -239,13 +307,13 @@ const sizesHalfMd = SIZES_HALF_MD
                colonne est trop étroite pour le nom à l'horizontale. -->
           <span
             aria-hidden="true"
-            class="pointer-events-none absolute inset-x-2 bottom-4 hidden justify-center transition-opacity duration-500 md:bottom-8 md:flex"
+            class="pointer-events-none absolute inset-x-2 bottom-4 hidden justify-center transition-opacity duration-500 xl:bottom-8 xl:flex"
             :class="active === sector.slug ? 'opacity-0' : 'opacity-100 delay-300'"
           >
-            <span class="hidden whitespace-nowrap text-base uppercase tracking-[0.2em] text-white [writing-mode:vertical-rl] md:block">
+            <span class="hidden whitespace-nowrap text-base uppercase tracking-[0.2em] text-white [writing-mode:vertical-rl] xl:block">
               {{ sector.name }}
             </span>
-            <span class="block truncate text-xs uppercase tracking-[0.16em] text-white md:hidden">
+            <span class="block truncate text-xs uppercase tracking-[0.16em] text-white xl:hidden">
               {{ sector.name }}
             </span>
           </span>
