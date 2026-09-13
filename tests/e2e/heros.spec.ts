@@ -31,6 +31,9 @@ const PAGES = [
   { path: '/conseils', frames: 3 },
   { path: '/contact', frames: 3 },
   { path: '/faq', frames: 3 },
+  { path: '/mentions-legales', frames: 3 },
+  { path: '/conditions-de-location', frames: 3 },
+  { path: '/confidentialite', frames: 3 },
 ] as const
 
 function heroOf(page: Page) {

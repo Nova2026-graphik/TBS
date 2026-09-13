@@ -512,12 +512,16 @@ performance.
   sur un bandeau sable et du texte, avec une moitié droite vide sous le chapô.
   `UiPageHero` accepte désormais `media` : trois ou quatre vignettes carrées,
   façon planche-contact, qui montrent de quoi la page parle avant qu'on ait lu
-  une ligne — les quatre familles de réalisations sur `/galerie`, les quatre
-  branches sur `/services`, le savoir-faire sur `/conseils`, l'entreprise sur
-  `/contact`, le matériel sur `/faq`. Elles entrent en cascade, avec un zoom
-  lent, et sont neutralisées sous `prefers-reduced-motion`.
-  Les trois pages légales n'en reçoivent pas : une mention légale n'a pas à
-  s'illustrer, et `media` y reste simplement absent.
+  une ligne — les quatre branches sur `/services`, le savoir-faire sur
+  `/conseils`, l'entreprise sur `/contact`, le matériel sur `/faq`. Elles
+  entrent en cascade, avec un zoom lent, et sont neutralisées sous
+  `prefers-reduced-motion`.
+  Les trois pages légales en reçoivent aussi, mais sur un autre principe : leur
+  planche suit les temps de leur chapô — le siège, les bureaux et une
+  photographie du site pour les mentions légales ; le parc, la livraison et le
+  matériel en service pour les conditions de location ; le formulaire, les
+  personnes et le siège pour la confidentialité. Un document qui engage la
+  société n'a pas à se décorer, mais il gagne à montrer de quoi il traite.
 - **La galerie, elle, ouvre sur une planche animée.** `GalleryHero` y remplace
   l'en-tête commun : un grand cadre fait défiler les collections — Mariages,
   Cérémonies, Entreprise, Décor, Fournitures — une à la fois, photo de
@@ -662,6 +666,16 @@ lignes sont à ajouter dans `nuxt.config.ts`.
 >
 > ```
 > The job was not started because your account is locked due to a billing issue.
+> ```
+>
+> La page d'exécution, elle, n'affiche rien : ni journal, ni message. Pour
+> relire l'annotation — la seule trace du motif — il faut l'API, et cet
+> appel-là répond même à un compte qui n'a que le droit de pousser :
+>
+> ```bash
+> run=$(gh api "repos/Nova2026-graphik/TBS/actions/runs?per_page=1" --jq '.workflow_runs[0].id')
+> job=$(gh api "repos/Nova2026-graphik/TBS/actions/runs/$run/jobs" --jq '.jobs[0].id')
+> gh api "repos/Nova2026-graphik/TBS/check-runs/$job/annotations" --jq '.[0].message'
 > ```
 >
 > Le workflow `CI` n'a **jamais abouti une seule fois** : 83 échecs, aucun

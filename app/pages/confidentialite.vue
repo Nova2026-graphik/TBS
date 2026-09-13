@@ -41,6 +41,21 @@ useBreadcrumbSchema([{ name: 'Confidentialité', path: '/confidentialite' }])
  * valide dans les deux langues.
  */
 defineI18nRoute({ locales: ['fr'] })
+
+/**
+ * Planche-contact de l'en-tête : le trajet d'une demande de devis, seul objet
+ * de cette page — le formulaire qu'on remplit, les personnes qui le lisent, le
+ * siège où il est conservé le temps annoncé.
+ *
+ * Les deux dernières vignettes sont celles de `/contact`, et c'est voulu : les
+ * deux pages parlent de la même demande, l'une pour l'envoyer, l'autre pour
+ * dire ce qu'elle devient.
+ */
+const HERO_MEDIA = [
+  { src: '/images/etudes-formation.jpg', subject: 'La demande de devis' },
+  { src: '/images/apropos-equipe.jpg', subject: 'Les personnes qui la lisent' },
+  { src: '/images/apropos-entrepot.jpg', subject: 'Le siège — la conservation' },
+]
 </script>
 
 <template>
@@ -50,6 +65,7 @@ defineI18nRoute({ locales: ['fr'] })
       title="Politique de"
       accent="confidentialité"
       lead="Ce que nous enregistrons quand vous demandez un devis, pourquoi, pour combien de temps, et comment le faire effacer."
+      :media="HERO_MEDIA"
     />
 
     <section class="u-gutter u-section bg-white">

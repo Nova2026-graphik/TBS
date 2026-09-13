@@ -102,10 +102,10 @@ quand la photo existera.
 | `branche-agro.jpg` | Parcelle ou équipement agricole en usage | 3:2 |
 | `agro-transformation.jpg` | Unité de transformation, matériel en fonctionnement | 3:2 |
 
-### Dix-huit fichiers passent aussi en en-tête de page
+### Seize fichiers passent aussi en en-tête de page
 
 Depuis que les en-têtes de page portent une planche-contact
-(`app/components/Ui/PageHero.vue`), treize de ces fichiers apparaissent une
+(`app/components/Ui/PageHero.vue`), seize de ces fichiers apparaissent une
 seconde fois, en **vignette carrée d'environ 170 px**, tout en haut d'une page :
 
 | Page | Fichiers |
@@ -114,6 +114,9 @@ seconde fois, en **vignette carrée d'environ 170 px**, tout en haut d'une page 
 | `/conseils` | `events-dressage-or`, `categorie-nappage`, `categorie-art-de-la-table` |
 | `/contact` | `apropos-equipe`, `apropos-entrepot`, `equipements-materiel-roulant` |
 | `/faq` | `categorie-tentes`, `categorie-mobilier`, `categorie-son-lumiere` |
+| `/mentions-legales` | `apropos-entrepot`, `branche-etudes`, `galerie-centre-de-table` |
+| `/conditions-de-location` | `categorie-mobilier`, `equipements-materiel-roulant`, `hero-reception` |
+| `/confidentialite` | `etudes-formation`, `apropos-equipe`, `apropos-entrepot` |
 
 Une seule conséquence pour le tournage : **le sujet doit tenir dans un carré
 centré**. Un plan large où l'essentiel est sur un bord passera en pleine
