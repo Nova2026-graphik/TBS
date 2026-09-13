@@ -51,10 +51,10 @@ function setFilter(value: string) {
  * doit ramener le visiteur au catalogue complet, pas à un écran vide.
  */
 const activeBranch = computed<BranchSlug | null>(() => {
-  const raw = route.query.branche
-  const value = Array.isArray(raw) ? raw[0] : raw
-  const connue = data.value.branches.some(b => b.slug === value)
-  return connue ? (value as BranchSlug) : null
+  // L'URL porte le nom public — `?branche=evenementiel` — et non
+  // l'identifiant interne. Une valeur inconnue rend `null`, donc le catalogue.
+  const slug = depuisUrl(route.query.branche)
+  return slug && data.value.branches.some(b => b.slug === slug) ? slug : null
 })
 
 const activeDomain = computed<DomainSlug | null>(() => {
@@ -86,24 +86,6 @@ const visible = computed(() => {
     ? data.value.gallery
     : data.value.gallery.filter(i => i.category === (activeFilter.value as GalleryCategory))
 })
-
-/**
- * Références du domaine filtré.
- *
- * Elles répondent à la question que la galerie laissait sans réponse : le
- * visiteur qui clique « Matériel roulant » voyait des photographies, jamais
- * la liste de ce que TBS fournit. Le bloc n'apparaît que sur un domaine
- * précis — sur une branche entière, il mêlerait des familles sans rapport.
- */
-const references = computed(() =>
-  activeDomain.value
-    // `?? []` et non une lecture directe : la réponse de `/api/site-content`
-    // est mise en cache au-delà d'un déploiement, et peut donc dater d'une
-    // version où ce champ n'existait pas. La clé de cache est versionnée pour
-    // cela, mais une page ne doit pas tomber parce qu'un champ manque.
-    ? (data.value.equipment ?? []).filter(e => e.domain === activeDomain.value)
-    : [],
-)
 
 /** Retire le filtre métier et revient au catalogue complet. */
 function clearSector() {
@@ -219,7 +201,7 @@ const sizesThird = SIZES_THIRD
       pose de travers, et les domaines mènent à la grille qui suit
       immédiatement, filtrée.
     -->
-    <GallerySectors :branches="data.branches" :domains="data.domains" />
+    <GallerySectors :branches="data.branches" :domains="data.domains" :equipment="data.equipment ?? []" />
 
     <section ref="grid" class="u-gutter u-section bg-white">
       <!--
@@ -248,50 +230,6 @@ const sizesThird = SIZES_THIRD
         </button>
       </div>
 
-      <!--
-        Ce que le domaine recouvre. La galerie montrait des photographies sans
-        jamais nommer les équipements : « Matériel roulant » ne citait aucun
-        véhicule. Les références viennent avant les photos, parce qu'elles
-        répondent d'abord — et parce qu'un domaine peut n'avoir aucune photo
-        publiée sans cesser d'être fourni.
-      -->
-      <div v-if="references.length" class="mb-12 border-t border-ink/10 pt-8">
-        <h2 class="text-[0.6875rem] uppercase tracking-[0.2em] text-ink-mute">
-          {{ $t('gallery.equipmentTitle', { count: references.length }) }}
-        </h2>
-
-        <ul class="mt-6 grid gap-x-10 gap-y-7 md:grid-cols-2 lg:grid-cols-3">
-          <li v-for="reference in references" :key="reference.name">
-            <p class="font-display text-[1.0625rem] leading-[1.35] text-ink">
-              {{ reference.name }}
-            </p>
-            <p class="mt-1.5 max-w-[46ch] text-sm leading-[1.65] text-ink-soft">
-              {{ reference.description }}
-            </p>
-            <!-- Les caractéristiques ne se filtrent pas : elles se lisent. -->
-            <ul v-if="reference.specs.length" class="mt-2.5 flex flex-wrap gap-1.5">
-              <li
-                v-for="spec in reference.specs"
-                :key="spec"
-                class="border border-ink/15 px-2 py-0.5 text-[0.6875rem] leading-[1.5] tracking-[0.04em] text-ink-mute"
-              >
-                {{ spec }}
-              </li>
-            </ul>
-          </li>
-        </ul>
-
-        <p class="mt-8 text-sm leading-[1.7] text-ink-soft">
-          {{ $t('gallery.equipmentLead') }}
-          <NuxtLinkLocale
-            to="/contact"
-            class="underline underline-offset-4 transition-colors duration-400 hover:text-gold"
-          >
-            {{ $t('gallery.equipmentCta') }}
-          </NuxtLinkLocale>
-        </p>
-      </div>
-
       <!-- Compteur : l'utilisateur voit immédiatement l'effet du filtre. -->
       <p class="mb-8 text-[0.6875rem] uppercase tracking-[0.2em] text-ink-mute" aria-live="polite">
         <template v-if="remaining > 0">
@@ -318,7 +256,10 @@ const sizesThird = SIZES_THIRD
           {{ $t('gallery.emptyBody') }}
         </p>
         <div class="mt-8 flex flex-wrap items-center gap-4">
-          <UiButton :to="{ path: '/contact', query: { branche: activeBranch ?? undefined } }" size="lg">
+          <UiButton
+            :to="{ path: '/contact', query: { branche: activeBranch ? versUrl(activeBranch) : undefined } }"
+            size="lg"
+          >
             {{ $t('gallery.emptyCta') }}
           </UiButton>
           <UiButton variant="ghost" @click="activeSector ? clearSector() : setFilter('all')">

@@ -33,7 +33,7 @@ test.describe('hero d\'accueil', () => {
     await expect(cta).toHaveAttribute('href', '/services')
 
     await puces.nth(2).click()
-    await expect(cta).toHaveAttribute('href', '/services?branche=events')
+    await expect(cta).toHaveAttribute('href', '/services?branche=evenementiel')
   })
 
   test('change de diapositive au bout de cinq secondes', async ({ page }) => {

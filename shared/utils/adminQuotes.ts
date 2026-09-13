@@ -34,7 +34,7 @@ export function quoteStatusTone(status: QuoteStatus): string {
   return QUOTE_STATUS_LABELS.find(s => s.value === status)?.tone ?? '#8B8069'
 }
 
-/** « TBS Events — location de matériel » → « TBS Events ». */
+/** « TBS Événementiel — location de matériel » → « TBS Événementiel ». */
 export function shortBranchLabel(branch: string): string {
   return (branch.split('—')[0] ?? branch).trim()
 }

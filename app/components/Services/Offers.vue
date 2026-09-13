@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Les trois formules TBS Events.
+ * Les trois formules TBS Événementiel.
  *
  * Ajout par rapport à la maquette : la formule la plus demandée est
  * réellement mise en avant (fond sombre, badge) au lieu d'être une carte

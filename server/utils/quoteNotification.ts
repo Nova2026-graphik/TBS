@@ -61,7 +61,7 @@ function escapeHtml(value: string): string {
     .replaceAll('\'', '&#39;')
 }
 
-/** « TBS Events — location de matériel » → « TBS Events », pour l'objet. */
+/** « TBS Événementiel — location de matériel » → « TBS Événementiel », pour l'objet. */
 function shortBranch(branch: string): string {
   return (branch.split('—')[0] ?? branch).trim()
 }

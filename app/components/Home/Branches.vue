@@ -77,7 +77,7 @@ const sizesHalfMd = SIZES_HALF_MD
           <UiTag :items="branch.tags" class="mb-6" />
 
           <NuxtLinkLocale
-            :to="{ path: '/services', query: { branche: branch.slug } }"
+            :to="{ path: '/services', query: { branche: versUrl(branch.slug) } }"
             class="u-link-underline mt-auto self-start after:bg-current"
             :style="{ '--tw-text-opacity': 1 }"
           >

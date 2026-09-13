@@ -154,7 +154,7 @@ useBreadcrumbSchema([{ name: 'À propos', path: '/a-propos' }])
             </div>
           </dl>
 
-          <NuxtLinkLocale :to="`/services?branche=${branch.slug}`" class="u-link-underline mt-8 self-start">
+          <NuxtLinkLocale :to="`/services?branche=${versUrl(branch.slug)}`" class="u-link-underline mt-8 self-start">
             Voir les prestations<span class="sr-only"> de {{ branch.name }}</span>
           </NuxtLinkLocale>
         </article>

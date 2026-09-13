@@ -31,6 +31,8 @@
     "security:csp-hashes": "node scripts/csp-hashes.mjs",
     "icons:generate": "node scripts/generate-icons.mjs",
     "icons:trace": "node scripts/trace-logo.mjs",
+    "images:domaines": "node scripts/images-domaines.mjs",
+    "images:references": "node scripts/images-references.mjs",
     "//photos": "Vérifie que public/images tient les promesses du cahier de tournage : noms conservés, orientations et proportions conservées, aucune image citée mais absente. `-- --enregistrer` réenregistre la référence, une fois une livraison acceptée.",
     "photos:check": "node scripts/check-photos.mjs"
   },
