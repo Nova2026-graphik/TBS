@@ -42,7 +42,7 @@
       "equipements": "Equipment",
       "events": "Events",
       "etudes": "Studies & Consulting",
-      "agro": "Agri-business"
+      "agro": "Agro Business"
     },
     "language": "Language",
     "switchTo": "Version française"
@@ -126,7 +126,7 @@
     "eyebrow": "Our services",
     "title": "Four divisions,",
     "accent": "one point of contact",
-    "lead": "TBS Equipment supplies and installs. TBS Events rents and organises. TBS Studies & Consulting advises. TBS Agri-business grows and processes. Choose the division that concerns you.",
+    "lead": "TBS Equipment supplies and installs. TBS Events rents and organises. TBS Studies & Consulting advises. TBS Agro Business grows and processes. Choose the division that concerns you.",
     "tablist": "Business divisions",
     "offers": {
       "eyebrow": "Packages",
@@ -167,7 +167,18 @@
       "branch": "Division {index}",
       "domains": "Fields covered",
       "cta": "See the services",
-      "ctaLabel": "{sector} — see the services"
+      "ctaLabel": "{sector} — see the services",
+      "countDomains": "{n} field | {n} fields",
+      "countRefs": "{n} reference | {n} references",
+      "tileUnit": "ref.",
+      "tileLabel": "{domain} — {count} references",
+      "allBranch": "The whole division",
+      "blurb": {
+        "equipements": "{n} references · delivery and installation across Togo",
+        "events": "Rental and coordination, from 20 to 2,000 guests",
+        "etudes": "Studies, advisory, training, project support",
+        "agro": "Inputs, equipment, processing"
+      }
     },
     "sectorFilter": "Projects from {sector}",
     "sectorFilterDomain": "Projects from {sector} — {domain}",
@@ -175,11 +186,12 @@
     "emptyTitle": "No project published for this field yet",
     "emptyBody": "Our photographs do not yet cover everything we do. Tell us about your project and we will show you comparable references.",
     "emptyCta": "Describe my project",
-    "sectorLink": "View projects — {domain}",
+    "sectorLink": "View references — {domain}",
     "emptyCategory": "No project in this category yet",
     "equipmentTitle": "What this field covers — {count} references",
     "equipmentLead": "This list is not a sales catalogue: it states what we supply.",
-    "equipmentCta": "Ask for a quote for your exact need."
+    "equipmentCta": "Ask for a quote for your exact need.",
+    "equipmentQuoteIntro": "Enquiry about: {domain}."
   },
   "about": {
     "eyebrow": "Organisation",
@@ -236,7 +248,7 @@
     "lead": "Can't find your answer? Give us a call — we reply quickly."
   },
   "footer": {
-    "tagline": "Four divisions: Equipment, Events, Studies & Consulting, Agri-business. Supply, rental, consulting and agri-business. Agôè-Démakpoè, Lomé — Togo.",
+    "tagline": "Four divisions: Equipment, Events, Studies & Consulting, Agro Business. Supply, rental, consulting and agri-business. Agôè-Démakpoè, Lomé — Togo.",
     "branches": "Divisions",
     "pages": "Pages",
     "contact": "Contact details",
@@ -297,7 +309,7 @@
       "TBS Equipment — supply of materials & equipment",
       "TBS Events — reception equipment rental",
       "TBS Studies & Consulting — studies & advisory services",
-      "TBS Agri-business — farming & agri-industry",
+      "TBS Agro Business — farming & agri-industry",
       "Several divisions"
     ],
     "requestTypes": [
@@ -332,7 +344,7 @@
     },
     "services": {
       "title": "Our services — equipment, events, consulting, agri-business",
-      "description": "TBS Equipment supplies and installs. TBS Events rents and organises. TBS Studies & Consulting advises. TBS Agri-business grows and processes. Four divisions, one point of contact in Lomé."
+      "description": "TBS Equipment supplies and installs. TBS Events rents and organises. TBS Studies & Consulting advises. TBS Agro Business grows and processes. Four divisions, one point of contact in Lomé."
     }
   },
   "data": {
@@ -404,7 +416,7 @@
         ]
       },
       "agro": {
-        "eyebrow": "TBS Agri-business — support",
+        "eyebrow": "TBS Agro Business — support",
         "title": "From the field",
         "titleAccent": "to the market",
         "steps": [
@@ -494,7 +506,7 @@
       "equipements": "Equipment",
       "events": "Events",
       "etudes": "Studies & Consulting",
-      "agro": "Agri-business"
+      "agro": "Agro Business"
     },
     "branchDetails": {
       "equipements": [
@@ -576,5 +588,51 @@
     "title": "Let's talk about your",
     "accent": "next date",
     "lead": "Date, venue, number of guests: you receive a costed proposal within 24 hours."
+  },
+  "domain": {
+    "nav": {
+      "label": "Fields in this division",
+      "count": "{n} field | {n} fields",
+      "helpTitle": "A specific need?",
+      "helpBody": "Tell us about it: costed proposal within 24 hours, tracked delivery."
+    },
+    "hero": {
+      "references": "{n} reference | {n} references",
+      "rank": "Field {i} / {n}"
+    },
+    "filters": {
+      "all": "All"
+    },
+    "grid": {
+      "count": "{n} reference | {n} references",
+      "page": "page {i}/{n}",
+      "paginationLabel": "Reference pages",
+      "nextPage": "Next page"
+    },
+    "card": {
+      "preview": "Preview",
+      "nonContractual": "Illustration only",
+      "toCutOut": "Photo — to be cut out",
+      "comingSoon": "Visual to come"
+    },
+    "quickView": {
+      "close": "Close the card",
+      "position": "Reference {i} / {n}",
+      "availability": "Availability: on quotation · delivery across Togo",
+      "previous": "Previous reference",
+      "next": "Next reference",
+      "source": "Source listing"
+    },
+    "quote": {
+      "intro": "Enquiry about: {name} ({domain}).",
+      "whatsapp": "Hello TBS, I would like a quote for: {name}."
+    },
+    "works": {
+      "title": "Projects in this field",
+      "empty": "No project published for this field yet. Current work will appear here once the client agrees."
+    },
+    "seo": {
+      "title": "{domain} — {branch}"
+    }
   }
 }

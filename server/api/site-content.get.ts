@@ -54,15 +54,26 @@ export default defineCachedEventHandler(
      * La langue entre dans la clé : sans elle, la première réponse mise en
      * cache serait servie aux deux versions du site.
      *
-     * Le préfixe de version est là pour être **incrémenté dès que la forme du
-     * payload change**. Ce cache survit aux déploiements : sans ce geste, le
-     * pré-rendu du build suivant reçoit une réponse de la veille, à laquelle
-     * manque le champ tout juste ajouté — et la page qui le lit échoue au
-     * rendu. C'est exactement ce qui a fait tomber le déploiement de l'ajout
-     * du catalogue.
+     * L'identifiant du build y entre aussi, et c'est le point important : ce
+     * cache **survit aux déploiements**. Une réponse d'hier, à laquelle manque
+     * un champ ajouté depuis, était donc servie au pré-rendu du build suivant
+     * — qui la scellait dans le payload de la page. Le client la relit ensuite
+     * par `getCachedData` sans jamais redemander : la donnée neuve existait
+     * dans l'API, mais aucune page ne la montrait.
      *
-     * v2 : ajout de `equipment`.
+     * Ce préfixe fut d'abord une version écrite à la main, `v1` puis `v2`, à
+     * incrémenter à chaque changement de forme. Le procédé a tenu une seule
+     * livraison : l'ajout des visuels aux références l'a oublié, et le site a
+     * servi pendant une heure des références sans image. Une règle qui dépend
+     * de la mémoire de qui livre n'est pas une règle.
+     *
+     * `buildId` change à chaque build. Le cache garde donc tout son intérêt —
+     * ne pas recalculer la même réponse sous la charge — sans jamais franchir
+     * une mise en production.
      */
-    getKey: event => `v2-${parseLocale(getQuery(event).locale)}`,
+    getKey: (event) => {
+      const { app } = useRuntimeConfig(event)
+      return `${app.buildId}-${parseLocale(getQuery(event).locale)}`
+    },
   },
 )

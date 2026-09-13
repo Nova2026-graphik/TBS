@@ -79,7 +79,7 @@ export interface GalleryItem {
    * Domaine précis, quand la réalisation en relève d'un seul.
    *
    * `null` est un état légitime, pas un oubli : une vue d'ensemble de salle
-   * relève de TBS Events sans appartenir à « Organisation & coordination »
+   * relève de TBS Événementiel sans appartenir à « Organisation & coordination »
    * plutôt qu'à « Location de matériel ». Forcer un domaine sur chaque photo
    * produirait des rattachements arbitraires, et un filtre qui ment coûte
    * plus cher qu'un filtre absent.
@@ -124,12 +124,12 @@ export type DomainSlug
     | 'branchement'
     | 'electriques'
     | 'manutention'
-    // TBS Events
+    // TBS Événementiel
     | 'location-reception'
     | 'organisation'
     // TBS Études & Conseils
     | 'etudes-prestations'
-    // TBS Agro
+    // TBS Agro Business
     | 'agro-industrie'
 
 export interface Domain {
@@ -137,7 +137,62 @@ export interface Domain {
   branch: BranchSlug
   title: string
   description: string
+  /**
+   * Visuel illustrant le domaine, quand il en existe un honnête.
+   *
+   * Facultatif, et il faut que cela le reste : sept des dix-sept domaines
+   * n'ont pas de photographie libre de droits qui montre réellement ce
+   * qu'ils recouvrent. Mieux vaut aucune image qu'une image qui ment sur ce
+   * qu'elle représente — c'est le défaut que l'issue #22 combat déjà.
+   */
+  image?: string
+  imageAlt?: string
+  /**
+   * Paragraphe d'ouverture de la page domaine.
+   *
+   * `description` tient en une ligne pour le panneau des secteurs ; `intro`
+   * peut respirer, et sert aussi de méta-description. Les deux disent la même
+   * chose à deux échelles, ce qui est la raison d'être des deux champs.
+   */
+  intro?: string
+  /**
+   * Intitulé court, pour les listes où le titre complet déborde — la barre
+   * latérale et le bandeau mobile. « Mobilier & bureau » plutôt que
+   * « Mobilier & matériel de bureau ».
+   */
+  short?: string
+  /** Familles de filtre proposées au-dessus de la grille. Vide = pas de filtre. */
+  families?: string[]
+  /** Objet détouré qui représente le domaine dans les listes et la bannière. */
+  thumbnail?: string
+  /** Second détouré, révélé au survol de la vignette. */
+  thumbnailHover?: string
+  /** Précision de portée affichée sous le titre (« Lomé & tout le Togo »). */
+  meta?: string
+  /**
+   * Avertissement affiché sous l'introduction quand les références du domaine
+   * sont encore des exemples. Mieux vaut le dire que laisser croire à un
+   * catalogue arrêté.
+   */
+  exampleNote?: string
+  /** Rendu en médaillons ronds plutôt qu'en objets détourés (Agro). */
+  medallion?: boolean
 }
+
+/**
+ * Nature du visuel d'une référence — elle commande le rendu de la carte.
+ *
+ *  - `cut`   objet détouré du catalogue STEA, posé sur le blanc ;
+ *  - `png`   objet détouré PurePNG, même traitement ;
+ *  - `photo` photographie non détourée, sur fond `shell` et signalée comme telle ;
+ *  - `med`   médaillon rond (Agro) ;
+ *  - `ghost` visuel encore absent : filigrane de la vignette du domaine.
+ *
+ * `ghost` est un état assumé, pas un trou : treize références n'ont pas
+ * encore de visuel, et une carte vide qui le dit vaut mieux qu'une image
+ * empruntée qui ment.
+ */
+export type ReferenceKind = 'cut' | 'png' | 'photo' | 'med' | 'ghost'
 
 /**
  * Une référence du catalogue, rattachée à un domaine.
@@ -163,6 +218,35 @@ export interface Equipment {
    * caractéristique inventée vaut moins que pas de caractéristique.
    */
   specs: string[]
+  /**
+   * Visuel de la référence, quand il en existe un réutilisable.
+   *
+   * Facultatif : vingt-quatre références sur cent sept n'ont aucune
+   * photographie libre de droits qui montre l'objet. Le champ absent est un
+   * état normal, pas un oubli à combler par une image approximative.
+   *
+   * Sans texte alternatif associé : l'image est adjacente au nom et à la
+   * description de la référence, qui la décrivent déjà. Un `alt` qui répète
+   * le titre voisin fait entendre deux fois la même chose à un lecteur
+   * d'écran — d'où l'`alt` vide, qui est le traitement correct d'une
+   * illustration légendée.
+   */
+  image?: string
+  /** Famille de filtre, prise parmi les `families` du domaine. */
+  family?: string
+  /** Second visuel, fondu au survol de la carte. Vingt et une références en ont un. */
+  imageHover?: string
+  /** Commande le rendu de la carte — voir `ReferenceKind`. */
+  kind: ReferenceKind
+  /**
+   * Affiche « Visuel non contractuel ».
+   *
+   * Le visuel montre alors un modèle équivalent et non l'article livré : le
+   * dire sur la carte évite une réclamation à la livraison.
+   */
+  nonContractual?: boolean
+  /** Fiche du catalogue d'origine, quand la référence en vient. */
+  source?: string
 }
 
 export interface StatItem {

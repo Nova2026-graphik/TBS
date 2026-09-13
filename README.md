@@ -659,30 +659,18 @@ lignes sont à ajouter dans `nuxt.config.ts`.
 
 ## Intégration continue
 
-> ### ⚠ Aucun travail ne s'exécute sur ce dépôt
+> ### ⚠ Le compte GitHub est bloqué pour un motif de facturation
 >
-> Les exécutions sont désormais **créées** — ce n'était pas le cas tant que le
-> dépôt était privé — mais aucune n'exécute quoi que ce soit : elles passent à
-> `failure` en une à deux secondes, **sans enregistrer une seule étape**. Pas
-> même « Set up job ».
+> **La cause est connue, et c'est GitHub qui la nomme.** Chaque exécution
+> porte la même annotation :
 >
-> | Exécution | Durée | Étapes |
-> | --- | --- | --- |
-> | `34220621882` — CI sur `main` | 4 s | 0 |
-> | la même, rejouée à la main | 1 s | 0 |
-> | `34222898257` — un workflow ne contenant qu'un `echo` | 2 s | 0 |
+> ```
+> The job was not started because your account is locked due to a billing issue.
+> ```
 >
-> La dernière ligne tranche la question. Un workflow de six lignes, sans
-> dépendance, sans secret, sans cache, échoue exactement comme la CI complète :
-> **ni le fichier ni le dépôt ne sont en cause**. Passer le dépôt en public n'y
-> a rien changé non plus, ce qui écarte le quota de minutes des dépôts privés.
->
-> Restaient deux causes, toutes deux hors du dépôt : une politique désactivant
-> Actions au niveau du compte, ou un blocage de facturation.
-> `gh api repos/Nova2026-graphik/TBS/actions/permissions` les départagerait,
-> mais répond `403` à un compte qui n'a que le droit de pousser. Les
-> annotations du *check-run*, elles, se lisent sans droit particulier — et
-> elles portent le motif en clair :
+> La page d'exécution, elle, n'affiche rien : ni journal, ni message. Pour
+> relire l'annotation — la seule trace du motif — il faut l'API, et cet
+> appel-là répond même à un compte qui n'a que le droit de pousser :
 >
 > ```bash
 > run=$(gh api "repos/Nova2026-graphik/TBS/actions/runs?per_page=1" --jq '.workflow_runs[0].id')
@@ -690,13 +678,30 @@ lignes sont à ajouter dans `nuxt.config.ts`.
 > gh api "repos/Nova2026-graphik/TBS/check-runs/$job/annotations" --jq '.[0].message'
 > ```
 >
-> > The job was not started because your account is locked due to a billing issue.
+> Le workflow `CI` n'a **jamais abouti une seule fois** : 83 échecs, aucun
+> succès. Les travaux passent à `failure` en trois à quatre secondes sans
+> enregistrer une seule étape, pas même « Set up job » — ils ne démarrent pas.
 >
-> C'est donc la seconde, et ce n'est plus une hypothèse. L'annotation est la
-> même, au mot près, sur les exécutions de branches Dependabot sans rapport
-> entre elles : c'est le compte qui est bloqué, pas ce dépôt. Le déblocage se
-> fait dans **Settings → Billing** — moyen de paiement à régulariser, puis
-> limite de dépense à fixer. Rien dans le dépôt n'y changera quoi que ce soit.
+> Le détail qui confirme tout : **un seul workflow réussit**, et c'est
+> `Dependabot Updates`, 15 fois sur 15. Il est le seul à ne pas demander de
+> machine facturée — il tourne sur l'infrastructure de Dependabot. Dès qu'un
+> travail réclame un runner hébergé, le verrou tombe.
+>
+> Tout le reste a été écarté, vérification à l'appui :
+>
+> | Hypothèse | Vérification | Résultat |
+> | --- | --- | --- |
+> | Actions désactivé par une politique | `gh api repos/…/actions/permissions` | `enabled: true`, `allowed_actions: all` |
+> | Quota des dépôts privés | Le dépôt est public | minutes illimitées, et rien n'a changé |
+> | Version d'action inexistante | Les quatre tags interrogés un par un | `checkout@v7`, `setup-node@v4`, `upload-artifact@v7`, `download-artifact@v8` existent |
+> | YAML invalide | GitHub enregistre le workflow et crée les exécutions | valide |
+>
+> **Le correctif est hors du dépôt** : ouvrir
+> <https://github.com/settings/billing> sur le compte `Nova2026-graphik` et
+> régler ce qui bloque — solde impayé, moyen de paiement expiré, ou limite de
+> dépense à zéro. Aucune modification du dépôt n'y changera quoi que ce soit,
+> et rien d'autre ne reste à corriger : le jour où le compte est débloqué, le
+> pipeline part tel quel.
 >
 > **En attendant, `npm run ci` rejoue localement le travail `qualite`** :
 >
