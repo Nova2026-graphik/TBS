@@ -218,6 +218,12 @@ export const faqItems = pgTable(
   {
     id: serial('id').primaryKey(),
     ref: varchar('ref', { length: 40 }).notNull(),
+    /**
+     * Branche de la question. Le libellé de groupe seul ne permettait ni de
+     * compter les questions par branche, ni de les filtrer. Nullable pour la
+     * migration : les lignes existantes sont rattachées au moment du seed.
+     */
+    branchSlug: branchSlugEnum('branch_slug'),
     groupLabel: varchar('group_label', { length: 160 }).notNull(),
     question: text('question').notNull(),
     answer: text('answer').notNull(),
