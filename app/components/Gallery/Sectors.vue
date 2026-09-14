@@ -190,7 +190,44 @@ const sizesHalfMd = SIZES_HALF_MD
           c'est lui qui donne sa hauteur au panneau. La photographie et le
           voile restent en absolu derrière.
         -->
-        <div class="@container relative z-10 flex min-h-full flex-col p-[clamp(1rem,2vw,2rem)] xl:min-h-[43.75rem] xl:p-[2.375rem_2.5rem_2.125rem]">
+        <!--
+          Sous `md`, chaque panneau est un accordéon : une barre de 64 px avec
+          le nom à l'horizontale et une flèche, qui déplie le contenu en
+          dessous. Quatre panneaux entièrement dépliés faisaient une colonne
+          de plus de trois mille pixels sur un téléphone — l'étiquette
+          verticale des grands écrans, elle, ne se lit pas au doigt.
+        -->
+        <button
+          type="button"
+          class="relative z-10 flex h-16 w-full items-center justify-between gap-4 px-5 text-left text-white md:hidden"
+          :aria-expanded="active === sector.slug"
+          :aria-controls="`secteur-${sector.slug}`"
+          @click="chosen = sector.slug"
+        >
+          <span class="min-w-0">
+            <span class="block text-[0.625rem] uppercase tracking-[0.2em] text-cream/70">
+              {{ $t('gallery.sectors.branch', { index: String(sector.index).padStart(2, '0') }) }}
+            </span>
+            <span class="block truncate font-display text-[1.25rem] leading-tight">{{ sector.name }}</span>
+          </span>
+          <svg
+            viewBox="0 0 24 24"
+            class="size-5 shrink-0 transition-transform duration-300 motion-reduce:transition-none"
+            :class="active === sector.slug ? 'rotate-180' : ''"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            aria-hidden="true"
+          >
+            <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <div
+          :id="`secteur-${sector.slug}`"
+          class="@container relative z-10 flex min-h-full flex-col p-[clamp(1rem,2vw,2rem)] xl:min-h-[43.75rem] xl:p-[2.375rem_2.5rem_2.125rem]"
+          :class="active === sector.slug ? '' : 'max-md:hidden'"
+        >
           <!-- Contenu du panneau déplié. -->
           <div
             class="flex min-h-0 flex-1 flex-col items-start gap-3 transition-[opacity,transform] duration-500 ease-[var(--ease-out-expo)]"
@@ -229,62 +266,25 @@ const sizesHalfMd = SIZES_HALF_MD
             </div>
 
             <!--
-              Grille fixe plutôt que puces à largeur variable. Trois colonnes
-              au-delà de 1200 px, deux entre 768 et 1199, une seule en dessous.
-              Elle est masquée — `display:none`, pas `opacity:0` — sur les
-              panneaux repliés au-delà de `md` : repliée, une colonne de
-              treize tuiles mesurerait plus de mille pixels et étirerait la
-              rangée entière.
+              La grille est un composant partagé avec la page Services et
+              l'accueil. Elle est masquée — `display:none`, pas `opacity:0` —
+              sur les panneaux repliés au-delà de `md` : repliée, une colonne
+              de treize tuiles mesurerait plus de mille pixels et étirerait la
+              rangée entière. Le nombre de colonnes suit la largeur du panneau
+              (`@container` sur le contenu), voir `DomainGrid`.
             -->
-            <!--
-              Le nombre de colonnes suit la largeur **du panneau**, pas celle
-              de l'écran — d'où `@container` sur le contenu.
-              L'accordéon n'accorde au panneau ouvert que quatre septièmes de
-              la rangée : à 1280 px d'écran il ne fait que 610 px, et trois
-              colonnes y laisseraient 65 px au nom du domaine. Des seuils pris
-              sur la fenêtre donnaient exactement le défaut qu'on corrige —
-              « Équipements hospitaliers & de laboratoire » s'écrivant une
-              lettre par ligne. À 1920 px, largeur de la maquette, le panneau
-              atteint 977 px et la grille tombe bien sur trois colonnes.
-            -->
-            <ul
+            <div
               v-if="sector.domains.length"
-              class="grid w-full grid-cols-1 gap-3 @lg:grid-cols-2 @4xl:grid-cols-3"
-              :class="active === sector.slug ? 'xl:grid' : 'xl:hidden'"
+              class="w-full"
+              :class="active === sector.slug ? 'xl:block' : 'xl:hidden'"
             >
-              <li v-for="(domain, i) in sector.domains" :key="domain.slug">
-                <GalleryDomainTile
-                  :domain="domain"
-                  :index="i + 1"
-                  :total="domain.total"
-                  :branch-url="versUrl(sector.slug)"
-                />
-              </li>
-
-              <!--
-                Les cases restantes de la dernière rangée deviennent l'appel à
-                l'action, au lieu de laisser un trou. `span 2` la fait tenir
-                dans ce qui reste, quel que soit le nombre de domaines.
-              -->
-              <li class="@lg:col-span-2">
-                <NuxtLinkLocale
-                  :to="{ path: '/contact', query: { branche: versUrl(sector.slug) } }"
-                  class="flex h-[4.375rem] items-center justify-between gap-3 border border-dashed border-white/20 bg-gold/18 py-2 pl-4 pr-3.5 text-white transition-colors duration-250 hover:border-white/60 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white max-md:h-auto max-md:flex-wrap max-md:py-3"
-                >
-                  <span class="min-w-0 text-[0.84375rem] leading-[1.25]">
-                    <span class="mb-[3px] block text-[0.625rem] uppercase tracking-[0.18em] text-cream/60">
-                      {{ $t('gallery.sectors.allBranch') }}
-                    </span>
-                    {{ $t(`gallery.sectors.blurb.${sector.slug}`, { n: sector.total }) }}
-                  </span>
-                  <span
-                    class="whitespace-nowrap border border-white/75 px-[1.125rem] py-[0.6875rem] text-[0.6875rem] uppercase tracking-[0.2em]"
-                  >
-                    {{ $t('common.quote') }}
-                  </span>
-                </NuxtLinkLocale>
-              </li>
-            </ul>
+              <DomainGrid
+                :branch="branches.find(b => b.slug === sector.slug)!"
+                :domains="domains"
+                :equipment="equipment"
+                tone="dark"
+              />
+            </div>
 
             <!--
               Le lien vers les prestations, désormais dans le flux plutôt qu'en

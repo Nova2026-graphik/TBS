@@ -146,6 +146,7 @@ async function seed() {
   await db.insert(schema.faqItems).values(
     faqContent.map((f, i) => ({
       ref: f.id,
+      branchSlug: f.branch,
       groupLabel: f.group,
       question: f.question,
       answer: f.answer,
