@@ -543,6 +543,7 @@ export const testimonials: Testimonial[] = [
 export const faqItems: FaqItem[] = [
   {
     id: 'faq-1',
+    branch: 'events',
     group: 'TBS Événementiel',
     question: 'Combien de temps à l\'avance faut-il réserver ?',
     answer:
@@ -550,6 +551,7 @@ export const faqItems: FaqItem[] = [
   },
   {
     id: 'faq-2',
+    branch: 'events',
     group: 'TBS Événementiel',
     question: 'La livraison et le montage sont-ils inclus ?',
     answer:
@@ -557,6 +559,7 @@ export const faqItems: FaqItem[] = [
   },
   {
     id: 'faq-3',
+    branch: 'events',
     group: 'TBS Événementiel',
     question: 'Intervenez-vous en dehors de Lomé ?',
     answer:
@@ -564,6 +567,7 @@ export const faqItems: FaqItem[] = [
   },
   {
     id: 'faq-4',
+    branch: 'events',
     group: 'TBS Événementiel',
     question: 'Faut-il rendre la vaisselle lavée ?',
     answer:
@@ -571,6 +575,7 @@ export const faqItems: FaqItem[] = [
   },
   {
     id: 'faq-5',
+    branch: 'events',
     group: 'TBS Événementiel',
     question: 'Que se passe-t-il en cas de casse ?',
     answer:
@@ -578,6 +583,7 @@ export const faqItems: FaqItem[] = [
   },
   {
     id: 'faq-6',
+    branch: 'events',
     group: 'TBS Événementiel',
     question: 'Peut-on visiter le stock avant de choisir ?',
     answer:
@@ -585,6 +591,7 @@ export const faqItems: FaqItem[] = [
   },
   {
     id: 'faq-7',
+    branch: 'equipements',
     group: 'TBS Équipements, Études & Agro',
     question: 'Répondez-vous aux appels d\'offres ?',
     answer:
@@ -592,6 +599,7 @@ export const faqItems: FaqItem[] = [
   },
   {
     id: 'faq-8',
+    branch: 'equipements',
     group: 'TBS Équipements, Études & Agro',
     question: 'Quels délais pour une commande de fournitures ?',
     answer:

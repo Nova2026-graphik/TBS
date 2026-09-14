@@ -31,21 +31,8 @@ function go(delta: number) {
   emit('navigate', (props.index + delta + props.references.length) % props.references.length)
 }
 
-watch(
-  () => props.index,
-  async (valeur) => {
-    if (import.meta.server) return
-    document.documentElement.style.overflow = valeur === null ? '' : 'hidden'
-    if (valeur !== null) {
-      await nextTick()
-      dialog.value?.focus()
-    }
-  },
-)
-
-onBeforeUnmount(() => {
-  if (import.meta.client) document.documentElement.style.overflow = ''
-})
+// Focus déplacé, piégé, puis rendu ; défilement verrouillé — voir le composable.
+useDialogueFocus(dialog, computed(() => props.index !== null))
 
 onKeyStroke('Escape', () => props.index !== null && emit('close'))
 onKeyStroke('ArrowLeft', () => props.index !== null && go(-1))

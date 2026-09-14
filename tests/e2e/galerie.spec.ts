@@ -11,11 +11,11 @@ test.describe('galerie', () => {
     // comparaison porterait sinon sur deux graphies du même texte.
     const avant = (await compteur.textContent())?.trim() ?? ''
 
-    await page.getByRole('button', { name: 'Mariages', exact: true }).click()
-    await expect(page.getByRole('button', { name: 'Mariages', exact: true })).toHaveAttribute('aria-pressed', 'true')
+    await page.getByRole('button', { name: /^Mariages \d+$/ }).click()
+    await expect(page.getByRole('button', { name: /^Mariages \d+$/ })).toHaveAttribute('aria-pressed', 'true')
     await expect(compteur).not.toHaveText(avant)
 
-    await page.getByRole('button', { name: 'Tout voir', exact: true }).click()
+    await page.getByRole('button', { name: /^Tout voir \d+$/ }).click()
     await expect(compteur).toHaveText(avant)
   })
 
@@ -23,7 +23,9 @@ test.describe('galerie', () => {
     await page.goto('/galerie')
     await pageInteractive(page)
 
-    await page.locator('section li button').first().click()
+    // Une vignette est le bouton qui porte une image : la barre de l'accordéon
+    // des secteurs est aussi un bouton dans un `li`, mais sans image.
+    await page.locator('section li button:has(img)').first().click()
 
     const visionneuse = page.getByRole('dialog')
     await expect(visionneuse).toBeVisible()
