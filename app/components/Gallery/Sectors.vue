@@ -190,7 +190,44 @@ const sizesHalfMd = SIZES_HALF_MD
           c'est lui qui donne sa hauteur au panneau. La photographie et le
           voile restent en absolu derrière.
         -->
-        <div class="@container relative z-10 flex min-h-full flex-col p-[clamp(1rem,2vw,2rem)] xl:min-h-[43.75rem] xl:p-[2.375rem_2.5rem_2.125rem]">
+        <!--
+          Sous `md`, chaque panneau est un accordéon : une barre de 64 px avec
+          le nom à l'horizontale et une flèche, qui déplie le contenu en
+          dessous. Quatre panneaux entièrement dépliés faisaient une colonne
+          de plus de trois mille pixels sur un téléphone — l'étiquette
+          verticale des grands écrans, elle, ne se lit pas au doigt.
+        -->
+        <button
+          type="button"
+          class="relative z-10 flex h-16 w-full items-center justify-between gap-4 px-5 text-left text-white md:hidden"
+          :aria-expanded="active === sector.slug"
+          :aria-controls="`secteur-${sector.slug}`"
+          @click="chosen = sector.slug"
+        >
+          <span class="min-w-0">
+            <span class="block text-[0.625rem] uppercase tracking-[0.2em] text-cream/70">
+              {{ $t('gallery.sectors.branch', { index: String(sector.index).padStart(2, '0') }) }}
+            </span>
+            <span class="block truncate font-display text-[1.25rem] leading-tight">{{ sector.name }}</span>
+          </span>
+          <svg
+            viewBox="0 0 24 24"
+            class="size-5 shrink-0 transition-transform duration-300 motion-reduce:transition-none"
+            :class="active === sector.slug ? 'rotate-180' : ''"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.6"
+            aria-hidden="true"
+          >
+            <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        <div
+          :id="`secteur-${sector.slug}`"
+          class="@container relative z-10 flex min-h-full flex-col p-[clamp(1rem,2vw,2rem)] xl:min-h-[43.75rem] xl:p-[2.375rem_2.5rem_2.125rem]"
+          :class="active === sector.slug ? '' : 'max-md:hidden'"
+        >
           <!-- Contenu du panneau déplié. -->
           <div
             class="flex min-h-0 flex-1 flex-col items-start gap-3 transition-[opacity,transform] duration-500 ease-[var(--ease-out-expo)]"
