@@ -2,7 +2,12 @@
 import type { Domain } from '#shared/types'
 
 /**
- * Tuile d'un domaine dans le panneau des secteurs.
+ * Tuile d'un domaine — panneau des secteurs, page Services, accueil.
+ *
+ * Deux tons, parce que deux fonds : `dark` sur le voile bleu nuit du panneau
+ * de la galerie, `light` sur le sable ou le blanc des autres pages. La
+ * géométrie, le contenu et les états sont les mêmes ; seules les couleurs
+ * changent, et toutes viennent des variables de charte.
  *
  * Elle remplace les puces en `flex-wrap` dont la largeur suivait la longueur
  * du texte : « Matériel roulant » faisait une puce courte, « Équipements
@@ -25,7 +30,29 @@ const props = defineProps<{
   total: number
   /** Segment d'URL public de la branche. */
   branchUrl: string
+  /** Sur fond sombre (panneau de la galerie) ou clair (sable, blanc). */
+  tone?: 'dark' | 'light'
 }>()
+
+const sombre = computed(() => (props.tone ?? 'dark') === 'dark')
+
+/**
+ * Classes par ton, en un seul endroit. Le survol sur fond clair reprend la
+ * maquette : fond sable, filet accent, ombre à l'encre.
+ */
+const classes = computed(() => sombre.value
+  ? {
+      tuile: 'border-white/20 bg-white/[0.07] text-white hover:border-white/60 hover:bg-white/[0.18] hover:shadow-[0_14px_24px_-14px_rgba(0,0,0,0.6)] focus-visible:border-white/60 focus-visible:bg-white/[0.18] focus-visible:outline-white',
+      numero: 'text-white/55',
+      unite: 'text-white/60',
+      nombre: 'text-white',
+    }
+  : {
+      tuile: 'border-ink/14 bg-white text-ink hover:border-gold hover:bg-sand hover:shadow-[0_14px_24px_-16px_var(--color-ink)] focus-visible:border-gold focus-visible:bg-sand focus-visible:outline-ink',
+      numero: 'text-ink-mute',
+      unite: 'text-ink-mute',
+      nombre: 'text-ink',
+    })
 
 const { t } = useI18n()
 
@@ -43,7 +70,8 @@ const sizesThumbnail = SIZES_THUMBNAIL
   <NuxtLinkLocale
     :to="`/galerie/${branchUrl}/${domain.slug}`"
     :aria-label="etiquette"
-    class="group/tuile flex h-[4.375rem] items-center gap-3 border border-white/20 bg-white/[0.07] py-2 pl-2 pr-3 text-white transition-[background-color,border-color,transform,box-shadow] duration-250 ease-out hover:border-white/60 hover:bg-white/[0.18] hover:shadow-[0_14px_24px_-14px_rgba(0,0,0,0.6)] focus-visible:border-white/60 focus-visible:bg-white/[0.18] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white max-md:h-16 md:hover:-translate-y-0.5 md:focus-visible:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
+    class="group/tuile flex h-[4.375rem] items-center gap-3 border py-2 pl-2 pr-3 transition-[background-color,border-color,transform,box-shadow] duration-250 ease-out focus-visible:outline-2 focus-visible:outline-offset-2 max-md:h-16 md:hover:-translate-y-0.5 md:focus-visible:-translate-y-0.5 motion-reduce:transform-none motion-reduce:transition-none"
+    :class="classes.tuile"
   >
     <!--
       Le carré clair sert de fond aux objets détourés : posés sur le voile
@@ -69,7 +97,7 @@ const sizesThumbnail = SIZES_THUMBNAIL
 
     <!-- `min-w-0` : sans lui, le plus long intitulé élargirait les colonnes. -->
     <span aria-hidden="true" class="min-w-0 flex-1">
-      <span class="mb-[3px] block text-[0.625rem] uppercase tracking-[0.18em] text-white/55">
+      <span class="mb-[3px] block text-[0.625rem] uppercase tracking-[0.18em]" :class="classes.numero">
         {{ String(index).padStart(2, '0') }}
       </span>
       <!--
@@ -83,8 +111,8 @@ const sizesThumbnail = SIZES_THUMBNAIL
       </span>
     </span>
 
-    <span aria-hidden="true" class="flex-none text-right text-[0.6875rem] uppercase leading-[1.3] tracking-[0.14em] text-white/60">
-      <b class="block text-[0.9375rem] font-normal tracking-normal text-white">
+    <span aria-hidden="true" class="flex-none text-right text-[0.6875rem] uppercase leading-[1.3] tracking-[0.14em]" :class="classes.unite">
+      <b class="block text-[0.9375rem] font-normal tracking-normal" :class="classes.nombre">
         {{ total }}<span
           class="inline-block w-0 overflow-hidden opacity-0 transition-[width,opacity] duration-250 group-hover/tuile:w-[1.1em] group-hover/tuile:opacity-100 group-focus-visible/tuile:w-[1.1em] group-focus-visible/tuile:opacity-100"
         >&nbsp;&rarr;</span>

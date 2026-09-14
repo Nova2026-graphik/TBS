@@ -1,140 +1,126 @@
 <script setup lang="ts">
-import { SIZES_HERO_STRIP } from '~/utils/imageSizes'
-
 /**
- * En-tête des pages intérieures (Galerie, Services, Conseils, Contact, FAQ,
- * pages légales). Le fil d'Ariane visible double le JSON-LD BreadcrumbList.
+ * Bandeau des pages intérieures — À propos, Services, Conseils, Contact, FAQ
+ * et les trois pages légales.
  *
- * `media` ajoute une bande de vignettes sous le chapô : trois ou quatre
- * cadres alignés, façon planche-contact, qui donnent à voir de quoi la page
- * parle avant qu'on ait lu une ligne. Elle occupe le vide qui s'étendait
- * jusqu'ici à droite du titre.
+ * Photographie sous un voile **dégradé horizontal** : opaque à gauche, où se
+ * pose le texte, ouvert à droite pour laisser respirer l'image. Le voile
+ * uniforme d'avant éteignait la photo ; celui-ci la montre. `color-mix` sur
+ * l'encre de la charte plutôt qu'une couleur écrite : brun en « Sable & Or »,
+ * bleu nuit en « Bleu & Rouge », et le dégradé suit.
  *
- * Deux partis pris :
+ * Deux choses ont disparu par rapport à la version précédente, et c'est
+ * voulu :
  *
- *  - **les vignettes sont décoratives.** Elles n'apportent aucune information
- *    que le texte ne donne déjà, et les mêmes photos se retrouvent en pleine
- *    taille plus bas dans la page. Un `alt` descriptif ferait donc lire deux
- *    fois la même chose à un lecteur d'écran : la bande est retirée de l'arbre
- *    d'accessibilité (`aria-hidden`), conformément à WCAG 1.1.1 pour une image
- *    de pure décoration ;
- *  - **le cadre porte le rapport d'aspect, pas l'image.** La hauteur est donc
- *    réservée avant le chargement : aucun décalage de mise en page, et le
- *    budget CLS de la CI (0,1) reste tenu.
+ *  - **la planche-contact** de trois ou quatre vignettes. Elle occupait la
+ *    droite du bandeau sans rien dire que le texte ne disait ; la maquette y
+ *    met à la place ce qui sert la page — onglets, filtres, recherche, liens
+ *    de branche — via l'emplacement `aside` ;
+ *  - **le fond sable**. Toutes les pages ouvrent désormais sur le même bandeau
+ *    sombre que la galerie et l'accueil ; un visiteur sait d'un coup d'œil
+ *    qu'il est encore sur le même site.
  *
- * Sans `media`, le rendu est exactement celui d'avant — les trois pages
- * légales n'ont pas à s'illustrer.
+ * Une seule balise `h1` par page : c'est ce composant qui la porte. Sans
+ * photographie, le bandeau tient sur le seul aplat d'encre — c'est le cas des
+ * pages légales, et il n'y a pas de trou.
  */
-export interface HeroMedia {
-  src: string
-  /**
-   * Sujet de la vignette. Jamais rendu en `alt` — la bande est décorative —
-   * mais exigé à l'appel : il documente le choix de la photo pour qui
-   * reprendra la page, là où un chemin de fichier ne dit pas grand-chose.
-   */
-  subject: string
-}
-
 const props = defineProps<{
   eyebrow: string
   title: string
+  /** Seconde partie du titre, en italique. */
   accent?: string
   lead?: string
-  /** Deux à quatre vignettes. Au-delà, les cadres deviennent illisibles. */
-  media?: HeroMedia[]
+  image?: string
+  /**
+   * Hauteur minimale sur ordinateur, prise dans la maquette de chaque page :
+   * 300 pour Contact, 330 pour la FAQ, 340 pour Conseils, 360 pour Services,
+   * 400 pour À propos. Sur téléphone, toutes plafonnent à 260.
+   */
+  height?: 300 | 330 | 340 | 360 | 400
 }>()
 
-const strip = computed(() => (props.media ?? []).slice(0, 4))
+const hauteur = computed(() => `${props.height ?? 360}px`)
 
 /**
- * Une colonne par vignette, sur toutes les tailles d'écran. La bande fait
- * environ un tiers de la largeur en bureau et toute la largeur en mobile,
- * d'où les deux valeurs de `sizes`.
+ * Le voile. `--color-ink` plutôt qu'une couleur écrite : la charte change
+ * l'encre, et le dégradé doit changer avec elle.
  */
-const stripColumns = computed(() => `repeat(${strip.value.length}, minmax(0, 1fr))`)
+const VOILE = [
+  'linear-gradient(90deg',
+  'color-mix(in srgb, var(--color-ink) 96%, transparent) 0%',
+  'color-mix(in srgb, var(--color-ink) 85%, transparent) 52%',
+  'color-mix(in srgb, var(--color-ink) 45%, transparent) 100%)',
+].join(', ')
+
+const sizesFull = SIZES_FULL
+const densitiesFull = DENSITIES_FULL
 </script>
 
 <template>
-  <section class="u-gutter border-b border-ink/8 bg-sand pb-[clamp(2.25rem,5vw,4rem)] pt-[clamp(2.5rem,6vw,5.5rem)]">
-    <nav :aria-label="$t('common.breadcrumb')" class="mb-8 flex items-center gap-2 text-[0.6875rem] uppercase tracking-[0.2em] text-ink-mute">
-      <NuxtLinkLocale to="/" class="transition-colors hover:text-gold">{{ $t('nav.home') }}</NuxtLinkLocale>
-      <span aria-hidden="true">/</span>
-      <span class="text-ink-soft">{{ eyebrow }}</span>
-    </nav>
+  <section
+    class="relative isolate flex items-end overflow-hidden bg-ink text-cream max-md:min-h-0 max-md:py-2"
+    :style="{ minHeight: hauteur }"
+  >
+    <NuxtImg
+      v-if="image"
+      :src="image"
+      alt=""
+      aria-hidden="true"
+      preset="hero"
+      preload
+      fetchpriority="high"
+      :sizes="sizesFull"
+      :densities="densitiesFull"
+      width="1400"
+      height="933"
+      class="absolute inset-0 size-full object-cover opacity-55"
+    />
+    <div aria-hidden="true" class="absolute inset-0" :style="{ background: VOILE }" />
 
-    <!--
-      Deux colonnes explicites dès `lg` quand la bande est là, et non un
-      `flex-wrap` comme sans elle.
-
-      La raison est mesurable : avec `flex-wrap`, le passage à la ligne se
-      décide sur la largeur intrinsèque du titre, qui change quand Cormorant
-      Garamond remplace la police de repli. La colonne de droite commençait
-      donc sous le titre puis remontait à côté de lui vers 150 ms — 0,25 de
-      CLS sur trois pages, deux fois et demie le budget de la CI. Une grille
-      décide de la même chose avant tout chargement de police.
-
-      Sans bande, on garde exactement la disposition précédente : les trois
-      pages légales ne bougent pas d'un pixel.
-    -->
     <div
-      class="items-end gap-x-14 gap-y-6"
-      :class="strip.length
-        ? 'grid grid-cols-1 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]'
-        : 'flex flex-wrap justify-between'"
+      class="u-gutter relative grid w-full items-end gap-x-10 gap-y-7 pb-[clamp(1.75rem,3.5vw,2.75rem)] pt-[clamp(1.5rem,2.5vw,2.125rem)] lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]"
     >
-      <div v-reveal>
-        <span class="u-eyebrow">
-          <span class="u-rule" />
-          {{ eyebrow }}
-        </span>
-        <h1 class="mt-4 max-w-[16ch] text-h1">
-          {{ title }}
-          <span v-if="accent" class="italic">{{ accent }}</span>
-        </h1>
-      </div>
+      <div v-reveal class="min-w-0">
+        <nav
+          :aria-label="$t('common.breadcrumb')"
+          class="mb-[1.375rem] flex flex-wrap items-center gap-2.5 text-[0.6875rem] uppercase tracking-[0.2em] text-cream/70"
+        >
+          <NuxtLinkLocale
+            to="/"
+            class="inline-flex min-h-11 items-center transition-colors duration-400 hover:text-white"
+          >
+            {{ $t('nav.home') }}
+          </NuxtLinkLocale>
+          <span aria-hidden="true">/</span>
+          <span class="inline-flex min-h-11 items-center text-cream" aria-current="page">{{ eyebrow }}</span>
+        </nav>
 
-      <div
-        v-if="lead || strip.length"
-        class="flex min-w-0 flex-col gap-[clamp(1.25rem,2.5vw,2rem)]"
-        :class="strip.length ? '' : 'flex-[0_1_34rem]'"
-      >
-        <p v-if="lead" v-reveal="90" class="max-w-[52ch] text-[0.9375rem] leading-[1.72]">
+        <span class="block text-[0.6875rem] uppercase tracking-[0.22em] text-gold">{{ eyebrow }}</span>
+
+        <h1 class="mt-3 max-w-[16ch] font-display text-[clamp(2.125rem,5vw,3.75rem)] leading-[1.06] text-white">
+          {{ title }}
+          <template v-if="accent">
+            <br class="max-sm:hidden"><em class="italic">{{ accent }}</em>
+          </template>
+        </h1>
+
+        <p v-if="lead" v-reveal="90" class="mt-[1.125rem] max-w-[52ch] text-[0.96875rem] leading-[1.72] text-cream/85">
           {{ lead }}
         </p>
 
-        <!--
-          Planche-contact. Chaque cadre entre avec 110 ms de décalage sur le
-          précédent : la bande se compose de gauche à droite plutôt que
-          d'apparaître d'un bloc. Le zoom lent de `animate-ken-burns` fait le
-          reste — les deux sont neutralisés sous `prefers-reduced-motion`.
-        -->
-        <div
-          v-if="strip.length"
-          class="grid gap-[clamp(0.5rem,1vw,0.875rem)]"
-          :style="{ gridTemplateColumns: stripColumns }"
-          aria-hidden="true"
-        >
-          <div
-            v-for="(item, i) in strip"
-            :key="item.src"
-            v-reveal="140 + i * 110"
-            class="aspect-square overflow-hidden bg-shell"
-          >
-            <NuxtImg
-              :src="item.src"
-              alt=""
-              preset="card"
-              :sizes="SIZES_HERO_STRIP"
-              width="800"
-              height="800"
-              loading="eager"
-              class="animate-ken-burns size-full object-cover"
-            />
-          </div>
+        <!-- Ce qui suit l'introduction : boutons, onglets, filtres, recherche. -->
+        <div v-if="$slots.default" v-reveal="140" class="mt-6">
+          <slot />
         </div>
       </div>
-    </div>
 
-    <slot />
+      <!--
+        L'emplacement de droite : les quatre liens de branche sur À propos,
+        rien sur les pages légales. Aligné en bas de la grille, comme le titre.
+      -->
+      <div v-if="$slots.aside" v-reveal="120" class="min-w-0 lg:justify-self-end">
+        <slot name="aside" />
+      </div>
+    </div>
   </section>
 </template>

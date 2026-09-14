@@ -97,6 +97,15 @@ export interface Testimonial {
 
 export interface FaqItem {
   id: string
+  /**
+   * Branche à laquelle la question se rattache.
+   *
+   * `group` est un libellé d'affichage ; il ne permet ni de compter les
+   * questions par branche, ni de les filtrer, ni de préremplir le formulaire
+   * quand une branche n'en a pas. La branche est donc portée comme donnée,
+   * et le libellé s'en déduit.
+   */
+  branch: BranchSlug
   group: string
   question: string
   answer: string

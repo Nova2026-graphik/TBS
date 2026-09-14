@@ -1,0 +1,1 @@
+ALTER TABLE "faq_items" ADD COLUMN "branch_slug" "branch_slug";

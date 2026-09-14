@@ -43,6 +43,13 @@
       "when": 1789127846297,
       "tag": "0005_greedy_mathemanic",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1789395342365,
+      "tag": "0006_elite_blob",
+      "breakpoints": true
     }
   ]
 }

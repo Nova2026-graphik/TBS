@@ -191,7 +191,10 @@
     "equipmentTitle": "Ce que ce domaine couvre — {count} références",
     "equipmentLead": "Cette liste n’est pas un catalogue de vente : elle dit ce que nous fournissons.",
     "equipmentCta": "Demandez un devis pour votre besoin précis.",
-    "equipmentQuoteIntro": "Demande concernant : {domain}."
+    "equipmentQuoteIntro": "Demande concernant : {domain}.",
+    "enlarge": "Agrandir",
+    "hint": "Cliquez une photo pour l'agrandir",
+    "worksEyebrow": "Réalisations"
   },
   "about": {
     "eyebrow": "Organisation",
@@ -586,8 +589,8 @@
   "cta": {
     "eyebrow": "Votre projet",
     "title": "Parlons de votre",
-    "accent": "prochaine date",
-    "lead": "Date, lieu, nombre d'invités : vous recevez une proposition chiffrée sous 24 heures."
+    "accent": "prochain projet",
+    "lead": "Date, lieu, nombre d'invités — ou liste de matériel, cahier des charges, exploitation à équiper : vous recevez une proposition chiffrée sous 24 heures."
   },
   "domain": {
     "nav": {
