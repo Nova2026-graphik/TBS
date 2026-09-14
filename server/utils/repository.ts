@@ -232,6 +232,9 @@ export function getFaqItems(locale: ContentLocale = 'fr') {
 
     return rows.map(r => ({
       id: r.ref,
+      // Une ligne antérieure à la colonne n'a pas de branche : Événementiel
+      // est celle de six questions sur huit, et le repli le moins faux.
+      branch: (r.branchSlug ?? 'events') as FaqItem['branch'],
       group: r.groupLabel,
       question: r.question,
       answer: r.answer,

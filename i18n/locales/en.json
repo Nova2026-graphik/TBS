@@ -191,7 +191,10 @@
     "equipmentTitle": "What this field covers — {count} references",
     "equipmentLead": "This list is not a sales catalogue: it states what we supply.",
     "equipmentCta": "Ask for a quote for your exact need.",
-    "equipmentQuoteIntro": "Enquiry about: {domain}."
+    "equipmentQuoteIntro": "Enquiry about: {domain}.",
+    "enlarge": "Enlarge",
+    "hint": "Click a photo to enlarge it",
+    "worksEyebrow": "Projects"
   },
   "about": {
     "eyebrow": "Organisation",
@@ -586,8 +589,8 @@
   "cta": {
     "eyebrow": "Your project",
     "title": "Let's talk about your",
-    "accent": "next date",
-    "lead": "Date, venue, number of guests: you receive a costed proposal within 24 hours."
+    "accent": "next project",
+    "lead": "Date, venue, number of guests — or an equipment list, a brief, a farm to equip: you receive a costed proposal within 24 hours."
   },
   "domain": {
     "nav": {

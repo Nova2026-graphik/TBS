@@ -33,18 +33,6 @@ const activeBlocks = computed(() => data.value.services.filter(s => s.branch ===
 const activeProcess = computed(() => process.value[active.value]!)
 const accent = computed(() => activeBranch.value?.color ?? '#827148')
 
-/**
- * Planche-contact de l'en-tête : les quatre branches, dans l'ordre des
- * onglets. Elle reste fixe quand on change d'onglet — c'est le titre de la
- * page qu'elle illustre, « quatre branches », et non la branche affichée.
- */
-const HERO_MEDIA = [
-  { src: '/images/branche-equipements.jpg', subject: 'Équipements' },
-  { src: '/images/branche-events.jpg', subject: 'Events' },
-  { src: '/images/branche-etudes.jpg', subject: 'Études & Conseils' },
-  { src: '/images/branche-agro.jpg', subject: 'Agro' },
-]
-
 /** Onglet : chip pleine quand actif, contour discret sinon. */
 function chipClass(isActive: boolean) {
   return isActive
@@ -69,7 +57,8 @@ useBreadcrumbSchema([{ name: 'Nos services', path: '/services' }])
       :title="$t('services.title')"
       :accent="$t('services.accent')"
       :lead="$t('services.lead')"
-      :media="HERO_MEDIA"
+      image="/images/branche-equipements.jpg"
+      :height="360"
     >
       <!-- Onglets de branche : rôle tablist explicite, navigation clavier
            assurée par les liens natifs. -->

@@ -247,7 +247,7 @@ function meta(collection: Collection): string {
     -->
     <div
       v-if="collections.length"
-      class="relative aspect-4/5 overflow-hidden bg-shell sm:aspect-3/2 lg:aspect-auto lg:h-[30rem]"
+      class="relative aspect-4/5 overflow-hidden bg-shell sm:aspect-3/2 lg:aspect-[2.6]"
     >
       <!--
         Les photos sont empilées et se croisent en fondu : la sortante reste
@@ -381,28 +381,12 @@ function meta(collection: Collection): string {
     </div>
 
     <!--
-      Titraille sous la planche, centrée : le grand cadre porte le regard, le
-      titre le nomme. La mesure reste bornée — un titre pleine largeur en
-      Cormorant se lit mal au-delà d'une vingtaine de caractères par ligne.
+      La titraille n'est plus ici. Elle était centrée sous la planche, et les
+      filtres en dessous encore : trois blocs empilés qui repoussaient les
+      secteurs sous le premier écran. La page les pose maintenant côte à
+      côte — titre à gauche, introduction et filtres à droite — juste après
+      cette planche, qui se contente désormais de montrer.
     -->
-    <div class="mx-auto mt-[clamp(1.75rem,4vw,3rem)] flex max-w-[62rem] flex-col items-center text-center">
-      <span v-reveal class="u-eyebrow">
-        <span class="u-rule" />
-        {{ $t('gallery.eyebrow') }}
-        <span class="u-rule" />
-      </span>
-
-      <h1 v-reveal="90" class="mt-4 max-w-[18ch] text-h1">
-        {{ $t('gallery.title') }}
-        <span class="italic">{{ $t('gallery.accent') }}</span>
-      </h1>
-
-      <p v-reveal="150" class="mt-5 max-w-[58ch] text-[0.9375rem] leading-[1.72]">
-        {{ $t('gallery.lead') }}
-      </p>
-    </div>
-
-    <slot />
   </section>
 </template>
 

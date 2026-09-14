@@ -74,7 +74,8 @@ test.describe('planche animée de la galerie', () => {
 
     // Le filtre part dans l'URL, et la pastille correspondante s'enfonce.
     await expect(page).toHaveURL(/\?filtre=/)
-    await expect(page.getByRole('button', { name: collection, exact: true }))
+    // La pastille porte aussi son effectif — « Mariages 5 » — d'où le motif.
+    await expect(page.getByRole('button', { name: new RegExp(`^${collection} [0-9]+$`) }))
       .toHaveAttribute('aria-pressed', 'true')
   })
 
