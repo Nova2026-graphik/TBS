@@ -22,9 +22,21 @@ const route = useRoute()
 const router = useRouter()
 const { data } = await useSiteContent()
 
-/** Les valeurs restent les catégories de la base ; seuls les libellés changent. */
+/**
+ * Les valeurs restent les catégories de la base ; seuls les libellés changent.
+ * Chaque pastille porte son effectif, compté dans les données — « Mariages 5 »
+ * ne s'écrit nulle part.
+ */
+const parCategorie = computed(() => effectifsPar(data.value.gallery, i => i.category))
+
 const filters = computed(() =>
-  GALLERY_FILTERS.map(filter => ({ ...filter, label: t(`gallery.filters.${filter.value}`) })),
+  GALLERY_FILTERS.map(filter => ({
+    ...filter,
+    label: t(`gallery.filters.${filter.value}`),
+    count: filter.value === 'all'
+      ? data.value.gallery.length
+      : (parCategorie.value[filter.value as GalleryCategory] ?? 0),
+  })),
 )
 /** Les valeurs valides ne dépendent pas de la langue : elles viennent des données. */
 const VALID = GALLERY_FILTERS.map(f => f.value) as readonly string[]
@@ -176,21 +188,52 @@ const sizesThird = SIZES_THIRD
       :branches="data.branches"
       :active="activeSector ? 'all' : activeFilter"
       @select="setFilter"
-    >
-      <div class="mt-[clamp(1.75rem,4vw,3rem)] flex flex-wrap justify-center gap-2.5">
-        <button
-          v-for="filter in filters"
-          :key="filter.value"
-          type="button"
-          :aria-pressed="!activeSector && activeFilter === filter.value"
-          class="rounded-full border px-5 py-2.5 text-[0.6875rem] uppercase tracking-[0.16em] transition-colors duration-400"
-          :class="chipClass(!activeSector && activeFilter === filter.value)"
-          @click="setFilter(filter.value)"
-        >
-          {{ filter.label }}
-        </button>
+    />
+
+    <!--
+      Titre et filtres côte à côte, sous la planche. Ils étaient empilés et
+      centrés — titre, introduction, puis six pastilles sur trois rangées — et
+      repoussaient les secteurs sous le premier écran. À gauche le titre, à
+      droite ce qui sert à choisir. Sous `lg`, les deux colonnes s'empilent et
+      les pastilles filent sur une seule ligne défilante.
+    -->
+    <div class="u-gutter grid items-end gap-x-14 gap-y-6 pb-[1.625rem] pt-[clamp(1.75rem,3.5vw,2.75rem)] lg:grid-cols-[auto_minmax(0,1fr)]">
+      <div v-reveal>
+        <span class="u-eyebrow">
+          <span class="u-rule" />
+          {{ $t('gallery.eyebrow') }}
+        </span>
+        <h1 class="mt-2.5 text-h1 lg:whitespace-nowrap">
+          {{ $t('gallery.title') }}<br class="max-lg:hidden">
+          <span class="italic">{{ $t('gallery.accent') }}</span>
+        </h1>
       </div>
-    </GalleryHero>
+
+      <div v-reveal="90" class="min-w-0">
+        <p class="mb-3.5 max-w-[44ch] text-[0.96875rem] leading-[1.72] text-ink-soft">
+          {{ $t('gallery.lead') }}
+        </p>
+        <!--
+          `-mx` et `px` égaux à la gouttière sous `lg` : la ligne défile de
+          bord à bord, et la pastille suivante dépasse — c'est ce qui dit
+          qu'il y en a d'autres.
+        -->
+        <div class="flex gap-2 max-lg:-mx-[var(--spacing-gutter)] max-lg:snap-x max-lg:overflow-x-auto max-lg:px-[var(--spacing-gutter)] max-lg:pb-1 lg:flex-wrap">
+          <button
+            v-for="filter in filters"
+            :key="filter.value"
+            type="button"
+            :aria-pressed="!activeSector && activeFilter === filter.value"
+            class="inline-flex min-h-11 shrink-0 snap-start items-center gap-1.5 whitespace-nowrap rounded-full border px-[1.125rem] py-2.5 text-[0.6875rem] uppercase leading-[1.2] tracking-[0.16em] transition-colors duration-400"
+            :class="chipClass(!activeSector && activeFilter === filter.value)"
+            @click="setFilter(filter.value)"
+          >
+            {{ filter.label }}
+            <span class="font-normal opacity-60">{{ filter.count }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
 
     <!--
       Les quatre secteurs ouvrent la page, avant les vignettes.
@@ -230,15 +273,27 @@ const sizesThird = SIZES_THIRD
         </button>
       </div>
 
-      <!-- Compteur : l'utilisateur voit immédiatement l'effet du filtre. -->
-      <p class="mb-8 text-[0.6875rem] uppercase tracking-[0.2em] text-ink-mute" aria-live="polite">
-        <template v-if="remaining > 0">
-          {{ shown.length }} sur {{ visible.length }} réalisations
-        </template>
-        <template v-else>
-          {{ visible.length }} réalisation{{ visible.length > 1 ? 's' : '' }}
-        </template>
-      </p>
+      <!--
+        Compteur : l'utilisateur voit immédiatement l'effet du filtre. Il est
+        le titre de la section, et l'aide au clavier ne s'affiche qu'à
+        partir de `lg` — sur un écran tactile, il n'y a ni flèches ni clic.
+      -->
+      <div class="mb-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-3">
+        <div>
+          <span class="u-eyebrow"><span class="u-rule" />{{ $t('gallery.worksEyebrow') }}</span>
+          <h2 class="mt-2.5 text-h2" aria-live="polite">
+            <template v-if="remaining > 0">
+              {{ shown.length }} <span class="italic">sur {{ visible.length }} réalisations</span>
+            </template>
+            <template v-else>
+              {{ visible.length }} <span class="italic">réalisation{{ visible.length > 1 ? 's' : '' }}</span>
+            </template>
+          </h2>
+        </div>
+        <p class="hidden text-[0.6875rem] uppercase tracking-[0.2em] text-ink-mute lg:block">
+          {{ $t('gallery.hint') }} <span aria-hidden="true">· ← →</span>
+        </p>
+      </div>
 
       <!--
         Écran vide. La photothèque ne couvre pas encore tous les domaines — la
@@ -295,15 +350,17 @@ const sizesThird = SIZES_THIRD
                 height="675"
                 class="size-full object-cover transition-transform duration-[1.1s] ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
               />
-              <!-- Voile + loupe : signale que la vignette est cliquable. -->
+              <!--
+                « Agrandir » : signale que la vignette s'ouvre. Sur un écran
+                sans survol, il n'y a pas de survol pour le révéler — il reste
+                donc visible, en plus discret, et le geste qui l'ouvre est le
+                même.
+              -->
               <span
-                class="pointer-events-none absolute inset-0 flex items-center justify-center bg-ink/0 opacity-0 transition-[background-color,opacity] duration-500 group-hover:bg-ink/35 group-hover:opacity-100 group-focus-visible:bg-ink/35 group-focus-visible:opacity-100"
+                class="pointer-events-none absolute inset-0 flex items-start justify-center bg-ink/0 pt-[38%] transition-[background-color,opacity] duration-500 [@media(hover:hover)]:opacity-0 group-hover:bg-ink/30 group-hover:opacity-100 group-focus-visible:bg-ink/30 group-focus-visible:opacity-100"
               >
-                <span class="flex size-12 items-center justify-center rounded-full border border-white/70 text-white">
-                  <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                    <circle cx="11" cy="11" r="6" />
-                    <path d="m15.5 15.5 4 4" stroke-linecap="round" />
-                  </svg>
+                <span class="-translate-y-1/2 bg-sand/92 px-4 py-2.5 text-[0.6875rem] uppercase tracking-[0.2em] text-ink">
+                  {{ $t('gallery.enlarge') }} <span aria-hidden="true">⤢</span>
                 </span>
               </span>
             </div>

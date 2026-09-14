@@ -191,7 +191,10 @@
     "equipmentTitle": "What this field covers — {count} references",
     "equipmentLead": "This list is not a sales catalogue: it states what we supply.",
     "equipmentCta": "Ask for a quote for your exact need.",
-    "equipmentQuoteIntro": "Enquiry about: {domain}."
+    "equipmentQuoteIntro": "Enquiry about: {domain}.",
+    "enlarge": "Enlarge",
+    "hint": "Click a photo to enlarge it",
+    "worksEyebrow": "Projects"
   },
   "about": {
     "eyebrow": "Organisation",

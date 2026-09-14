@@ -191,7 +191,10 @@
     "equipmentTitle": "Ce que ce domaine couvre — {count} références",
     "equipmentLead": "Cette liste n’est pas un catalogue de vente : elle dit ce que nous fournissons.",
     "equipmentCta": "Demandez un devis pour votre besoin précis.",
-    "equipmentQuoteIntro": "Demande concernant : {domain}."
+    "equipmentQuoteIntro": "Demande concernant : {domain}.",
+    "enlarge": "Agrandir",
+    "hint": "Cliquez une photo pour l'agrandir",
+    "worksEyebrow": "Réalisations"
   },
   "about": {
     "eyebrow": "Organisation",
