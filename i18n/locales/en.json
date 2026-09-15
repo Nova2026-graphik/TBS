@@ -303,7 +303,25 @@
   "faq": {
     "title": "Frequently asked",
     "accent": "questions",
-    "lead": "Can't find your answer? Give us a call — we reply quickly."
+    "lead": "Can't find your answer? Give us a call — we reply quickly.",
+    "searchLabel": "Search a question",
+    "searchPlaceholder": "Search a question — e.g. \"deposit\", \"lead time\", \"tender\"",
+    "byBranch": "By division",
+    "all": "All questions",
+    "helpTitle": "A specific question?",
+    "helpBody": "An adviser answers the same day, Monday to Saturday.",
+    "groupSub": {
+      "events": "Reception equipment hire — booking, delivery, breakage, stock visit",
+      "equipements": "Supplies, public tenders, lead times",
+      "etudes": "Studies, advisory, training",
+      "agro": "Inputs, equipment, processing",
+      "empty": "Questions will come with the first projects"
+    },
+    "noMatch": "No question matches.",
+    "noMatchBody": "Ask yours: the answer is sent to you, then published here if it helps others.",
+    "emptyTitle": "No question published yet for these divisions.",
+    "emptyBody": "Ask yours: the answer is sent to you, then published here if it helps others.",
+    "ask": "Ask a question"
   },
   "footer": {
     "tagline": "Four divisions: Equipment, Events, Studies & Consulting, Agro Business. Supply, rental, consulting and agri-business. Agôè-Démakpoè, Lomé — Togo.",
