@@ -102,7 +102,7 @@ useBreadcrumbSchema([{ name: 'À propos', path: '/a-propos' }])
           <li v-for="branch in data.branches" :key="branch.slug">
             <NuxtLinkLocale
               :to="`/services?branche=${versUrl(branch.slug)}`"
-              class="flex min-h-11 items-center gap-2.5 border border-white/30 bg-white/[0.08] px-3.5 py-2.5 text-[0.6875rem] uppercase tracking-[0.16em] text-white transition-colors duration-400 hover:border-white hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              class="flex min-h-12 items-center gap-2.5 border border-white/30 bg-white/[0.08] px-3.5 py-2.5 text-[0.6875rem] uppercase tracking-[0.16em] text-white transition-colors duration-400 hover:border-white hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               <span
                 aria-hidden="true"
@@ -200,7 +200,7 @@ useBreadcrumbSchema([{ name: 'À propos', path: '/a-propos' }])
               {{ $t('about.branchLabel', { index: String(branch.index).padStart(2, '0') }) }}
             </span>
             <h3 class="mt-1.5 font-display text-2xl text-ink">{{ branch.name }}</h3>
-            <p class="mt-1 text-[0.625rem] uppercase tracking-[0.16em] text-gold">{{ branch.tagline }}</p>
+            <p class="mt-1 text-[0.625rem] uppercase tracking-[0.16em] text-gold max-lg:text-xs max-lg:tracking-[0.14em]">{{ branch.tagline }}</p>
 
             <dl class="mt-4 grid gap-[9px] text-[0.8125rem]">
               <div v-for="row in branchDetails[branch.slug]" :key="row.label">

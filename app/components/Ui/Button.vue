@@ -82,7 +82,7 @@ const SIZES: Record<Size, string> = {
     :type="to || href ? undefined : type"
     :disabled="to || href ? undefined : disabled"
     :aria-disabled="disabled || undefined"
-    class="inline-flex items-center justify-center gap-2.5 text-center text-[0.6875rem] uppercase tracking-[0.18em] transition-[background-color,color,border-color,transform] duration-500 ease-[var(--ease-out-expo)] disabled:cursor-not-allowed disabled:opacity-55"
+    class="inline-flex min-h-11 items-center justify-center gap-2.5 text-center text-[0.6875rem] uppercase tracking-[0.18em] max-lg:text-xs max-lg:tracking-[0.14em] transition-[background-color,color,border-color,transform] duration-500 ease-[var(--ease-out-expo)] disabled:cursor-not-allowed disabled:opacity-55"
     :class="[VARIANTS[variant], SIZES[size], block ? 'w-full' : '']"
   >
     <slot />
