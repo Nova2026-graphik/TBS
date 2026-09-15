@@ -34,6 +34,16 @@ export const quoteSchema = z.object({
   location: z.string().trim().max(200).optional().or(z.literal('')),
   message: z.string().trim().min(5, 'Précisez votre besoin').max(4000),
   /**
+   * Champs propres à la branche — domaine, quantités, objet de mission,
+   * culture… — sous forme « libellé : valeur ». Ils sont repliés en tête du
+   * message à l'enregistrement : la base et la notification ne changent pas,
+   * et l'équipe lit tout au même endroit. Bornés en nombre et en longueur.
+   */
+  details: z
+    .record(z.string().trim().min(1).max(60), z.string().trim().max(200))
+    .refine(d => Object.keys(d).length <= 10, 'Trop de détails')
+    .optional(),
+  /**
    * Champ piège : invisible pour l'utilisateur, attirant pour les robots.
    * Accepté tel quel — c'est `looksAutomated` qui rejette, en silence. Une
    * contrainte de schéma (`max(0)`) renverrait une 422 nommant `company` dans
