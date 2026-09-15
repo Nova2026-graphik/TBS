@@ -114,6 +114,7 @@ export function getServiceBlocks(locale: ContentLocale = 'fr') {
 
     return rows.map(r => ({
       branch: r.branchSlug,
+      domain: (r.domainSlug ?? undefined) as ServiceBlock['domain'],
       eyebrow: r.eyebrow,
       title: r.title,
       description: r.description,

@@ -35,6 +35,11 @@ export default defineContentConfig({
         imageAlt: z.string(),
         /** Mise en avant sur l'accueil de la rubrique. */
         featured: z.boolean().default(false),
+        /**
+         * L'article embarque un calculateur. Le badge « Avec calculateur » ne
+         * s'affiche que sur cette donnée — pas sur le seul fait d'être à la une.
+         */
+        calculator: z.boolean().default(false),
       }),
     }),
   },

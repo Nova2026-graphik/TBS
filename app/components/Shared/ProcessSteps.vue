@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { RouteLocationRaw } from 'vue-router'
 import type { ProcessStep } from '#shared/types'
 
 /**
@@ -13,6 +14,11 @@ defineProps<{
   accent: string
   steps: ProcessStep[]
   footnote?: string
+  /**
+   * Bouton de l'encart qui porte la note — « Nous consulter » vers le devis.
+   * Sans lui, la note reste un paragraphe en retrait comme avant.
+   */
+  footnoteCta?: { label: string, to: RouteLocationRaw }
   tone?: 'light' | 'sand'
 }>()
 </script>
@@ -51,8 +57,21 @@ defineProps<{
       </li>
     </ol>
 
+    <!--
+      La note sur les appels d'offres était un paragraphe en retrait, qu'on
+      lisait sans savoir quoi en faire. Avec un bouton, elle devient une
+      porte : un encart, et « Nous consulter » qui mène au devis.
+    -->
+    <div
+      v-if="footnote && footnoteCta"
+      v-reveal
+      class="mt-[2.125rem] flex flex-wrap items-center justify-between gap-6 border border-ink/12 bg-white px-[1.625rem] py-[1.375rem]"
+    >
+      <p class="max-w-[70ch] text-sm leading-[1.7] text-ink-soft">{{ footnote }}</p>
+      <UiButton :to="footnoteCta.to" variant="ghost">{{ footnoteCta.label }}</UiButton>
+    </div>
     <p
-      v-if="footnote"
+      v-else-if="footnote"
       v-reveal
       class="mt-[clamp(2rem,4vw,3.5rem)] max-w-[70ch] border-l-2 border-gold/40 pl-6 text-sm leading-[1.8] text-ink-soft"
     >

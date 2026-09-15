@@ -25,6 +25,17 @@ import { notifyQuote } from '../utils/quoteNotification'
 import { isQuoteRateLimited } from '../utils/rateLimit'
 import { formatIssues, looksAutomated, quoteSchema } from '../utils/quoteValidation'
 
+/**
+ * Les champs propres à la branche précèdent le besoin, une ligne chacun.
+ * Vides ou absents, le message est rendu tel quel.
+ */
+function avecDetails(message: string, details?: Record<string, string>): string {
+  const lignes = Object.entries(details ?? {})
+    .filter(([, v]) => v.length > 0)
+    .map(([k, v]) => `${k} : ${v}`)
+  return lignes.length ? [...lignes, '', message].join('\n') : message
+}
+
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   const body = await readBody(event)
@@ -81,7 +92,7 @@ export default defineEventHandler(async (event) => {
     eventDate: payload.eventDate || null,
     guestCount: payload.guestCount ?? null,
     location: payload.location || null,
-    message: payload.message,
+    message: avecDetails(payload.message, payload.details),
     ipHash,
     userAgent: getRequestHeader(event, 'user-agent')?.slice(0, 400) ?? null,
   }

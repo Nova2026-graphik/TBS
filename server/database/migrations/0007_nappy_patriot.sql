@@ -1,0 +1,1 @@
+ALTER TABLE "service_blocks" ADD COLUMN "domain_slug" varchar(60);
