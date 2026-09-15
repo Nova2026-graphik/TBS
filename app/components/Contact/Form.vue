@@ -39,6 +39,9 @@ const REQUEST_TYPES = [
   'Autre',
 ]
 
+/** Le seul type qui recouvre Équipements ; Études et Agro passent par « Autre ». */
+const TYPE_FOURNITURE = REQUEST_TYPES[4]!
+
 /**
  * Branche déduite du type de demande.
  *
@@ -65,6 +68,30 @@ const route = useRoute()
 const info = useSiteInfo()
 const { t, tm, rt } = useI18n()
 const { track } = useAnalytics()
+const { data: site } = await useSiteContent()
+
+/**
+ * Les quatre tuiles de branche. La vignette est celle du premier domaine de
+ * la branche — l'objet détouré qui la représente déjà partout ailleurs.
+ */
+const tuiles = computed(() =>
+  site.value.branches.map((b) => {
+    const labels = libelles('form.branches')
+    const premier = site.value.domains.find(d => d.branch === b.slug)
+    return {
+      slug: b.slug,
+      index: b.index,
+      color: b.color,
+      label: (labels[BRANCH_INDEX[b.slug]] ?? b.name).split('—')[0]!.trim(),
+      thumbnail: premier?.thumbnail,
+    }
+  }),
+)
+
+/** Les treize domaines d'Équipements, pour le sélecteur. */
+const domainesEquipements = computed(() => domainesDeLaBranche(site.value.domains, 'equipements'))
+
+const sizesThumbnail = SIZES_THUMBNAIL
 
 /**
  * Les libellés des deux listes viennent des fichiers de langue, mais **la
@@ -77,11 +104,6 @@ const { track } = useAnalytics()
 function libelles(cle: string): string[] {
   return (tm(cle) as unknown[]).map(entree => rt(entree as string))
 }
-
-const branchOptions = computed(() => {
-  const labels = libelles('form.branches')
-  return BRANCH_OPTIONS.map((value, i) => ({ value, label: labels[i] ?? value }))
-})
 
 const requestTypeOptions = computed(() => {
   const labels = libelles('form.requestTypes')
@@ -101,21 +123,52 @@ function markStarted() {
 }
 const retentionMonths = QUOTE_RETENTION_MONTHS
 
+/**
+ * La branche se choisit par quatre tuiles en tête du formulaire, et c'est
+ * elle qui commande les champs affichés. Le formulaire ne parlait
+ * qu'événement — date, nombre d'invités — même pour un lot de fournitures ou
+ * une étude ; chaque branche a maintenant les siens.
+ *
+ * `form.branch` reste le libellé complet envoyé au serveur, inchangé : les
+ * demandes déjà enregistrées restent comparables aux nouvelles.
+ */
+const brancheChoisie = ref<BranchSlug>('events')
+
+/** Type de demande imposé par la branche, sauf Événementiel qui le laisse choisir. */
+const TYPE_PAR_BRANCHE: Record<Exclude<BranchSlug, 'events'>, string> = {
+  equipements: TYPE_FOURNITURE,
+  etudes: REQUEST_TYPES[5]!,
+  agro: REQUEST_TYPES[5]!,
+}
+
 const form = reactive({
   name: '',
   phone: '',
   email: '',
-  // Déduite du type par défaut, et non fixée au premier de la liste : sans
-  // cela, une demande envoyée sans toucher au type partirait sur « Mariage »
-  // et « TBS Équipements », ce que le sélecteur masqué ne laisserait pas voir.
-  branch: BRANCHE_PAR_TYPE[REQUEST_TYPES[0]!] ?? BRANCH_OPTIONS[0]!,
+  /** Visible et facultatif — distinct du champ piège `company`, qui reste masqué. */
+  organisation: '',
+  branch: BRANCH_OPTIONS[1]!,
   requestType: REQUEST_TYPES[0]!,
   eventDate: '',
   guestCount: '',
   location: '',
   message: '',
   company: '', // piège
+  // ── champs propres à une branche ; repliés dans le message à l'envoi ──
+  domaine: '',
+  quantites: '',
+  objet: '',
+  echeance: '',
+  culture: '',
+  surface: '',
+  saison: '',
 })
+
+watch(brancheChoisie, (slug) => {
+  form.branch = BRANCH_OPTIONS[BRANCH_INDEX[slug]]!
+  if (slug !== 'events') form.requestType = TYPE_PAR_BRANCHE[slug]
+  else if (!BRANCHE_PAR_TYPE[form.requestType]) form.requestType = REQUEST_TYPES[0]!
+}, { immediate: true })
 
 /**
  * Intitulé de chaque champ pour le résumé d'erreurs. Le message seul —
@@ -124,7 +177,7 @@ const form = reactive({
  * Les clés couvrent aussi les champs que seul le serveur peut rejeter.
  */
 const FIELD_KEYS = [
-  'name', 'phone', 'email', 'branch',
+  'name', 'phone', 'email', 'organisation', 'branch',
   'requestType', 'eventDate', 'guestCount', 'location', 'message',
 ] as const
 
@@ -174,21 +227,6 @@ function texteDeRequete(valeur: unknown): string {
   return typeof valeur === 'string' ? valeur : ''
 }
 
-/** Vrai quand le type de demande ne suffit pas à désigner la branche. */
-const brancheAmbigue = computed(() => !BRANCHE_PAR_TYPE[form.requestType])
-
-/**
- * Un lien `?branche=` reste prioritaire : il vient d'une page de branche, où
- * le visiteur a déjà dit ce qui l'intéresse. Hors de ce cas, le type de
- * demande commande la branche.
- */
-const brancheImposee = ref(false)
-
-watch(() => form.requestType, (type) => {
-  const deduite = BRANCHE_PAR_TYPE[type]
-  if (deduite && !brancheImposee.value) form.branch = deduite
-})
-
 onMounted(() => {
   /**
    * La branche arrive par son nom public — `?branche=evenementiel` — et se
@@ -201,11 +239,7 @@ onMounted(() => {
    * « Événementiel » à la liste des perdantes.
    */
   const slug = depuisUrl(route.query.branche)
-  if (slug) {
-    form.branch = BRANCH_OPTIONS[BRANCH_INDEX[slug]]!
-    // Le lien vient d'une page de branche : ce choix prime sur la déduction.
-    brancheImposee.value = true
-  }
+  if (slug) brancheChoisie.value = slug
 
   const invites = Number(texteDeRequete(route.query.invites))
   if (Number.isInteger(invites) && invites > 0 && invites <= 100_000) {
@@ -219,11 +253,33 @@ onMounted(() => {
 })
 
 /** Les champs date / invités n'ont de sens que pour une demande événementielle. */
-const isEventRequest = computed(() =>
-  ['Mariage', 'Cérémonie / baptême', 'Réception privée', 'Événement d\'entreprise'].includes(
-    form.requestType,
-  ),
-)
+const isEventRequest = computed(() => brancheChoisie.value === 'events')
+
+/**
+ * Les champs propres à la branche partent avec le message, sous forme de
+ * lignes « Libellé : valeur ». Le serveur les place en tête du besoin : le
+ * schéma d'envoi et la base ne changent pas, et l'équipe lit tout au même
+ * endroit.
+ */
+const details = computed(() => {
+  const lignes: [string, string][] = []
+  if (form.organisation.trim()) lignes.push([t('form.fields.organisation'), form.organisation.trim()])
+  const b = brancheChoisie.value
+  if (b === 'equipements') {
+    if (form.domaine) lignes.push([t('form.fields.domaine'), form.domaine])
+    if (form.quantites.trim()) lignes.push([t('form.fields.quantites'), form.quantites.trim()])
+  }
+  if (b === 'etudes') {
+    if (form.objet.trim()) lignes.push([t('form.fields.objet'), form.objet.trim()])
+    if (form.echeance.trim()) lignes.push([t('form.fields.echeance'), form.echeance.trim()])
+  }
+  if (b === 'agro') {
+    if (form.culture.trim()) lignes.push([t('form.fields.culture'), form.culture.trim()])
+    if (form.surface.trim()) lignes.push([t('form.fields.surface'), form.surface.trim()])
+    if (form.saison.trim()) lignes.push([t('form.fields.saison'), form.saison.trim()])
+  }
+  return Object.fromEntries(lignes)
+})
 
 function validate(): boolean {
   const next: Record<string, string> = {}
@@ -266,8 +322,17 @@ async function submit() {
     await $fetch('/api/quotes', {
       method: 'POST',
       body: {
-        ...form,
-        guestCount: form.guestCount ? Number(form.guestCount) : undefined,
+        name: form.name,
+        phone: form.phone,
+        email: form.email,
+        branch: form.branch,
+        requestType: form.requestType,
+        eventDate: isEventRequest.value ? form.eventDate : '',
+        guestCount: isEventRequest.value && form.guestCount ? Number(form.guestCount) : undefined,
+        location: form.location,
+        message: form.message,
+        company: form.company,
+        details: details.value,
         elapsedMs: Date.now() - mountedAt.value,
       },
     })
@@ -289,10 +354,11 @@ async function submit() {
 
 function reset() {
   Object.assign(form, {
-    name: '', phone: '', email: '',
-    branch: BRANCHE_PAR_TYPE[REQUEST_TYPES[0]!] ?? BRANCH_OPTIONS[0]!,
-    requestType: REQUEST_TYPES[0]!, eventDate: '', guestCount: '',
-    location: '', message: '', company: '',
+    name: '', phone: '', email: '', organisation: '',
+    branch: BRANCH_OPTIONS[BRANCH_INDEX[brancheChoisie.value]]!,
+    requestType: brancheChoisie.value === 'events' ? REQUEST_TYPES[0]! : TYPE_PAR_BRANCHE[brancheChoisie.value as Exclude<BranchSlug, 'events'>],
+    eventDate: '', guestCount: '', location: '', message: '', company: '',
+    domaine: '', quantites: '', objet: '', echeance: '', culture: '', surface: '', saison: '',
   })
   errors.value = {}
   serverError.value = ''
@@ -364,7 +430,65 @@ const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
       </ul>
     </div>
 
+    <!--
+      La branche d'abord : quatre tuiles, un groupe de boutons radio. C'est
+      elle qui commande la suite du formulaire. `fieldset` + `legend` pour que
+      le groupe soit annoncé ; chaque tuile est un vrai `input` masqué sous
+      son étiquette, donc navigable aux flèches comme tout groupe radio.
+    -->
+    <fieldset>
+      <legend :class="LABEL">{{ $t('form.fields.branch') }}</legend>
+      <div class="mt-3 grid grid-cols-2 gap-2.5 lg:grid-cols-4">
+        <label
+          v-for="tuile in tuiles"
+          :key="tuile.slug"
+          class="relative flex min-h-[4.25rem] cursor-pointer items-center gap-3 border bg-white px-3 py-2.5 transition-colors duration-300 has-[:checked]:border-2 has-[:checked]:border-ink has-[:checked]:bg-sand has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-ink"
+          :class="brancheChoisie === tuile.slug ? 'border-ink' : 'border-ink/15 hover:border-ink/40'"
+        >
+          <input
+            v-model="brancheChoisie"
+            type="radio"
+            name="branche"
+            :value="tuile.slug"
+            class="sr-only"
+            @change="markStarted"
+          >
+          <span class="grid size-12 flex-none place-items-center bg-cream">
+            <NuxtImg
+              v-if="tuile.thumbnail"
+              :src="tuile.thumbnail"
+              alt=""
+              preset="card"
+              loading="lazy"
+              :sizes="sizesThumbnail"
+              width="84"
+              height="84"
+              class="max-h-10 max-w-10 object-contain"
+            />
+          </span>
+          <span class="min-w-0">
+            <span class="block text-[0.5625rem] uppercase tracking-[0.18em]" :style="{ color: brandColor(tuile.color) }">
+              {{ $t('about.branchLabel', { index: String(tuile.index).padStart(2, '0') }) }}
+            </span>
+            <span class="block text-[0.84375rem] leading-[1.2] text-ink">{{ tuile.label }}</span>
+          </span>
+        </label>
+      </div>
+    </fieldset>
+
     <div class="grid gap-7 sm:grid-cols-2">
+      <div>
+        <label :class="LABEL" for="field-organisation">{{ $t('form.fields.organisation') }}</label>
+        <input
+          id="field-organisation"
+          v-model="form.organisation"
+          type="text"
+          autocomplete="organization"
+          :placeholder="$t('form.placeholders.organisation')"
+          :class="FIELD"
+        >
+      </div>
+
       <div>
         <label :class="LABEL" for="field-name">{{ $t('form.fields.name') }} *</label>
         <input
@@ -380,7 +504,9 @@ const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
         >
         <p v-if="errors.name" id="err-name" class="mt-2 text-xs text-red-600">{{ errors.name }}</p>
       </div>
+    </div>
 
+    <div class="grid gap-7 sm:grid-cols-2">
       <div>
         <label :class="LABEL" for="field-phone">{{ $t('form.fields.phone') }} *</label>
         <input
@@ -396,77 +522,113 @@ const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
         >
         <p v-if="errors.phone" id="err-phone" class="mt-2 text-xs text-red-600">{{ errors.phone }}</p>
       </div>
-    </div>
 
-    <div>
-      <label :class="LABEL" for="field-email">{{ $t('form.fields.email') }}</label>
-      <input
-        id="field-email"
-        v-model="form.email"
-        type="email"
-        autocomplete="email"
-        :placeholder="$t('form.placeholders.email')"
-        :class="[FIELD, errors.email ? 'border-red-500' : '']"
-        :aria-invalid="!!errors.email"
-        :aria-describedby="errors.email ? 'err-email' : undefined"
-      >
-      <p v-if="errors.email" id="err-email" class="mt-2 text-xs text-red-600">{{ errors.email }}</p>
-    </div>
-
-    <!--
-      Masqué quand le type de demande désigne déjà la branche — mais toujours
-      affiché si un lien l'a imposée : une valeur pré-remplie que le visiteur
-      ne peut ni voir ni corriger vaut moins que la question elle-même.
-    -->
-    <div v-if="brancheAmbigue || brancheImposee">
-      <label :class="LABEL" for="field-branch">{{ $t('form.fields.branch') }}</label>
-      <select id="field-branch" v-model="form.branch" :class="FIELD" @change="markStarted">
-        <option v-for="option in branchOptions" :key="option.value" :value="option.value">
-          {{ option.label }}
-        </option>
-      </select>
-    </div>
-
-    <div class="grid gap-7 sm:grid-cols-2">
       <div>
-        <label :class="LABEL" for="field-requestType">{{ $t('form.fields.requestType') }}</label>
-        <select id="field-requestType" v-model="form.requestType" :class="FIELD">
-          <option v-for="option in requestTypeOptions" :key="option.value" :value="option.value">
-            {{ option.label }}
-          </option>
+        <label :class="LABEL" for="field-email">{{ $t('form.fields.email') }}</label>
+        <input
+          id="field-email"
+          v-model="form.email"
+          type="email"
+          autocomplete="email"
+          :placeholder="$t('form.placeholders.email')"
+          :class="[FIELD, errors.email ? 'border-red-500' : '']"
+          :aria-invalid="!!errors.email"
+          :aria-describedby="errors.email ? 'err-email' : undefined"
+        >
+        <p v-if="errors.email" id="err-email" class="mt-2 text-xs text-red-600">{{ errors.email }}</p>
+      </div>
+    </div>
+
+    <!-- ── Événementiel : type, date, invités, lieu ─────────────────────── -->
+    <template v-if="isEventRequest">
+      <div class="grid gap-7 sm:grid-cols-2">
+        <div>
+          <label :class="LABEL" for="field-requestType">{{ $t('form.fields.requestType') }}</label>
+          <select id="field-requestType" v-model="form.requestType" :class="FIELD">
+            <option v-for="option in requestTypeOptions" :key="option.value" :value="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+
+        <div>
+          <label :class="LABEL" for="field-eventDate">{{ $t('form.fields.eventDate') }}</label>
+          <input id="field-eventDate" v-model="form.eventDate" type="date" :class="FIELD">
+        </div>
+      </div>
+
+      <div class="grid gap-7 sm:grid-cols-2">
+        <div>
+          <label :class="LABEL" for="field-guestCount">{{ $t('form.fields.guestCount') }}</label>
+          <input
+            id="field-guestCount"
+            v-model="form.guestCount"
+            type="number"
+            min="0"
+            inputmode="numeric"
+            :placeholder="$t('form.placeholders.guestCount')"
+            :class="FIELD"
+          >
+        </div>
+
+        <div>
+          <label :class="LABEL" for="field-location">{{ $t('form.fields.location') }}</label>
+          <input
+            id="field-location"
+            v-model="form.location"
+            type="text"
+            autocomplete="address-level2"
+            :placeholder="$t('form.placeholders.location')"
+            :class="FIELD"
+          >
+        </div>
+      </div>
+    </template>
+
+    <!-- ── Équipements : domaine, quantités / échéance, lieu de livraison ── -->
+    <div v-else-if="brancheChoisie === 'equipements'" class="grid gap-7 sm:grid-cols-2">
+      <div>
+        <label :class="LABEL" for="field-domaine">{{ $t('form.fields.domaine') }}</label>
+        <select id="field-domaine" v-model="form.domaine" :class="FIELD">
+          <option value="">{{ $t('form.placeholders.domaine') }}</option>
+          <option v-for="d in domainesEquipements" :key="d.slug" :value="d.title">{{ d.title }}</option>
         </select>
       </div>
-
-      <div v-if="isEventRequest">
-        <label :class="LABEL" for="field-eventDate">{{ $t('form.fields.eventDate') }}</label>
-        <input id="field-eventDate" v-model="form.eventDate" type="date" :class="FIELD">
+      <div>
+        <label :class="LABEL" for="field-quantites">{{ $t('form.fields.quantites') }}</label>
+        <input id="field-quantites" v-model="form.quantites" type="text" :placeholder="$t('form.placeholders.quantites')" :class="FIELD">
+      </div>
+      <div class="sm:col-span-2">
+        <label :class="LABEL" for="field-location">{{ $t('form.fields.livraison') }}</label>
+        <input id="field-location" v-model="form.location" type="text" autocomplete="address-level2" :placeholder="$t('form.placeholders.livraison')" :class="FIELD">
       </div>
     </div>
 
-    <div class="grid gap-7 sm:grid-cols-2">
-      <div v-if="isEventRequest">
-        <label :class="LABEL" for="field-guestCount">{{ $t('form.fields.guestCount') }}</label>
-        <input
-          id="field-guestCount"
-          v-model="form.guestCount"
-          type="number"
-          min="0"
-          inputmode="numeric"
-          :placeholder="$t('form.placeholders.guestCount')"
-          :class="FIELD"
-        >
-      </div>
-
+    <!-- ── Études & Conseils : objet, échéance ─────────────────────────── -->
+    <div v-else-if="brancheChoisie === 'etudes'" class="grid gap-7 sm:grid-cols-2">
       <div>
-        <label :class="LABEL" for="field-location">{{ $t('form.fields.location') }}</label>
-        <input
-          id="field-location"
-          v-model="form.location"
-          type="text"
-          autocomplete="address-level2"
-          :placeholder="$t('form.placeholders.location')"
-          :class="FIELD"
-        >
+        <label :class="LABEL" for="field-objet">{{ $t('form.fields.objet') }}</label>
+        <input id="field-objet" v-model="form.objet" type="text" :placeholder="$t('form.placeholders.objet')" :class="FIELD">
+      </div>
+      <div>
+        <label :class="LABEL" for="field-echeance">{{ $t('form.fields.echeance') }}</label>
+        <input id="field-echeance" v-model="form.echeance" type="text" :placeholder="$t('form.placeholders.echeance')" :class="FIELD">
+      </div>
+    </div>
+
+    <!-- ── Agro Business : culture, surface, saison ────────────────────── -->
+    <div v-else class="grid gap-7 sm:grid-cols-3">
+      <div>
+        <label :class="LABEL" for="field-culture">{{ $t('form.fields.culture') }}</label>
+        <input id="field-culture" v-model="form.culture" type="text" :placeholder="$t('form.placeholders.culture')" :class="FIELD">
+      </div>
+      <div>
+        <label :class="LABEL" for="field-surface">{{ $t('form.fields.surface') }}</label>
+        <input id="field-surface" v-model="form.surface" type="text" :placeholder="$t('form.placeholders.surface')" :class="FIELD">
+      </div>
+      <div>
+        <label :class="LABEL" for="field-saison">{{ $t('form.fields.saison') }}</label>
+        <input id="field-saison" v-model="form.saison" type="text" :placeholder="$t('form.placeholders.saison')" :class="FIELD">
       </div>
     </div>
 

@@ -292,9 +292,13 @@
       "show": "Show the map",
       "directions": "Directions",
       "notice": "Displaying the map sends a request to OpenStreetMap, which then receives your IP address.",
-      "openExternal": "Open on openstreetmap.org"
+      "openExternal": "Open on openstreetmap.org",
+      "visit": "warehouses can be visited by appointment"
     },
-    "heading": "Get in touch"
+    "heading": "Get in touch",
+    "fastest": "Fastest",
+    "whatsappTitle": "Write to us on WhatsApp",
+    "whatsappBody": "A photo of the venue, an equipment list or a brief: we answer the same day."
   },
   "faq": {
     "title": "Frequently asked",
@@ -330,7 +334,7 @@
     "summary": "{n} field to correct before sending: | {n} fields to correct before sending:",
     "submit": "Send my request",
     "submitting": "Sending…",
-    "notice": "Reply within 24 working hours. Fields marked * are required.",
+    "notice": "Reply within 24 working hours · * required fields",
     "privacy": "Your details are used solely to process this quote request and are held by TBS Distribution S.A.R.L. They are kept for {months} months, then anonymised. You may ask to see, correct or delete them at any time by writing to",
     "privacyLink": "Privacy policy",
     "fields": {
@@ -342,7 +346,16 @@
       "eventDate": "Event date",
       "guestCount": "Number of guests",
       "location": "Location",
-      "message": "What you need"
+      "message": "What you need",
+      "organisation": "Company",
+      "domaine": "Field",
+      "quantites": "Quantities / desired timing",
+      "livraison": "Delivery location",
+      "objet": "Subject of the assignment",
+      "echeance": "Deadline",
+      "culture": "Crop or activity",
+      "surface": "Area or volume",
+      "saison": "Season / timing"
     },
     "placeholders": {
       "name": "e.g. Akouvi Adjovi",
@@ -350,7 +363,16 @@
       "email": "To receive the quote in writing",
       "guestCount": "e.g. 350",
       "location": "e.g. Agôè, Lomé",
-      "message": "Furniture, tableware, décor, sound…"
+      "message": "Furniture, tableware, décor, sound…",
+      "organisation": "Optional",
+      "domaine": "Choose a field",
+      "quantites": "e.g. 40 workstations, delivery in March",
+      "livraison": "City, district or site",
+      "objet": "e.g. feasibility study, training",
+      "echeance": "e.g. before end of quarter",
+      "culture": "e.g. maize, market gardening, poultry",
+      "surface": "e.g. 5 ha, 2 t/month",
+      "saison": "e.g. 2027 season"
     },
     "errors": {
       "name": "Please enter your name.",

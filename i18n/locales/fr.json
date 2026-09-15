@@ -292,9 +292,13 @@
       "show": "Afficher la carte",
       "directions": "Itinéraire",
       "notice": "L'affichage envoie une requête à OpenStreetMap, qui reçoit alors votre adresse IP.",
-      "openExternal": "Ouvrir sur openstreetmap.org"
+      "openExternal": "Ouvrir sur openstreetmap.org",
+      "visit": "entrepôts visitables sur rendez-vous"
     },
-    "heading": "Nous joindre"
+    "heading": "Nous joindre",
+    "fastest": "Plus rapide",
+    "whatsappTitle": "Écrivez-nous sur WhatsApp",
+    "whatsappBody": "Photo de la salle, liste de matériel ou cahier des charges : on répond dans la journée."
   },
   "faq": {
     "title": "Questions",
@@ -330,7 +334,7 @@
     "summary": "{n} champ à corriger avant l'envoi : | {n} champs à corriger avant l'envoi :",
     "submit": "Envoyer ma demande",
     "submitting": "Envoi…",
-    "notice": "Réponse sous 24 h ouvrées. Champs marqués * obligatoires.",
+    "notice": "Réponse sous 24 h ouvrées · champs * obligatoires",
     "privacy": "Vos coordonnées servent uniquement à traiter cette demande de devis et sont destinées à TBS Distribution S.A.R.L. Elles sont conservées {months} mois, puis anonymisées. Vous pouvez à tout moment demander à les consulter, les corriger ou les supprimer en écrivant à",
     "privacyLink": "Politique de confidentialité",
     "fields": {
@@ -342,7 +346,16 @@
       "eventDate": "Date de l'événement",
       "guestCount": "Nombre d'invités",
       "location": "Lieu",
-      "message": "Votre besoin"
+      "message": "Votre besoin",
+      "organisation": "Société",
+      "domaine": "Domaine",
+      "quantites": "Quantités / échéance souhaitée",
+      "livraison": "Lieu de livraison",
+      "objet": "Objet de la mission",
+      "echeance": "Échéance",
+      "culture": "Culture ou activité",
+      "surface": "Surface ou volume",
+      "saison": "Saison / échéance"
     },
     "placeholders": {
       "name": "Ex. Akouvi Adjovi",
@@ -350,7 +363,16 @@
       "email": "Pour recevoir le devis par écrit",
       "guestCount": "Ex. 350",
       "location": "Ex. Agôè, Lomé",
-      "message": "Mobilier, vaisselle, décoration, sonorisation…"
+      "message": "Mobilier, vaisselle, décoration, sonorisation…",
+      "organisation": "Facultatif",
+      "domaine": "Choisir un domaine",
+      "quantites": "ex. 40 postes, livraison en mars",
+      "livraison": "Ville, quartier ou site",
+      "objet": "ex. étude de faisabilité, formation",
+      "echeance": "ex. avant fin de trimestre",
+      "culture": "ex. maïs, maraîchage, volaille",
+      "surface": "ex. 5 ha, 2 t/mois",
+      "saison": "ex. campagne 2027"
     },
     "errors": {
       "name": "Indiquez votre nom.",
