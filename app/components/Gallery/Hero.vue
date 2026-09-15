@@ -217,9 +217,9 @@ function meta(collection: Collection): string {
   >
     <nav
       :aria-label="$t('common.breadcrumb')"
-      class="mb-6 flex items-center gap-2 text-[0.6875rem] uppercase tracking-[0.2em] text-ink-mute"
+      class="mb-6 flex items-center gap-2 text-[0.6875rem] uppercase tracking-[0.2em] text-ink-mute max-lg:text-xs max-lg:tracking-[0.14em]"
     >
-      <NuxtLinkLocale to="/" class="transition-colors hover:text-gold">{{ $t('nav.home') }}</NuxtLinkLocale>
+      <NuxtLinkLocale to="/" class="inline-flex min-h-12 items-center transition-colors hover:text-gold">{{ $t('nav.home') }}</NuxtLinkLocale>
       <span aria-hidden="true">/</span>
       <span class="text-ink-soft">{{ $t('gallery.eyebrow') }}</span>
     </nav>
@@ -323,7 +323,7 @@ function meta(collection: Collection): string {
               <span class="block truncate text-[clamp(1rem,2vw,1.375rem)] leading-tight text-ink">
                 {{ courante.label }}
               </span>
-              <span class="mt-1 block truncate text-[0.6875rem] uppercase tracking-[0.16em] text-ink-mute">
+              <span class="mt-1 block truncate text-[0.6875rem] uppercase tracking-[0.16em] text-ink-mute max-lg:text-xs max-lg:tracking-[0.14em]">
                 {{ meta(courante) }}
               </span>
             </span>
@@ -344,7 +344,7 @@ function meta(collection: Collection): string {
           v-for="(collection, i) in collections"
           :key="collection.value"
           type="button"
-          class="group flex h-11 w-9 items-center sm:w-14"
+          class="group flex h-11 w-11 items-center sm:w-14"
           :aria-label="$t('gallery.hero.show', { collection: collection.label })"
           :aria-current="i === actif ? 'true' : undefined"
           @click="aller(i)"

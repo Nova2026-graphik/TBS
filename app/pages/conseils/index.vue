@@ -159,11 +159,11 @@ defineI18nRoute({ locales: ['fr'] })
           <!-- Le badge suit la donnée, pas la place à la une. -->
           <span
             v-if="aLaUne.calculator"
-            class="mb-3.5 inline-block bg-ink px-2.5 py-1.5 text-[0.625rem] uppercase tracking-[0.18em] text-white"
+            class="mb-3.5 inline-block bg-ink px-2.5 py-1.5 text-[0.625rem] uppercase tracking-[0.18em] text-white max-lg:text-xs max-lg:tracking-[0.14em]"
           >
             Avec calculateur
           </span>
-          <p class="text-[0.65625rem] uppercase tracking-[0.18em] text-ink-mute">
+          <p class="text-[0.65625rem] uppercase tracking-[0.18em] text-ink-mute max-lg:text-xs max-lg:tracking-[0.14em]">
             {{ aLaUne.category }} · <time :datetime="aLaUne.publishedAt">{{ dateLisible(aLaUne.publishedAt) }}</time>
             · {{ aLaUne.readingTime }} min de lecture
           </p>
@@ -193,12 +193,12 @@ defineI18nRoute({ locales: ['fr'] })
                 class="aspect-4/3 w-full object-cover transition-transform duration-[1.4s] ease-[var(--ease-out-expo)] group-hover:scale-[1.03]"
               />
             </NuxtLink>
-            <p class="mb-1.5 mt-3.5 flex flex-wrap justify-between gap-x-3 text-[0.625rem] uppercase tracking-[0.18em] text-ink-mute">
+            <p class="mb-1.5 mt-3.5 flex flex-wrap justify-between gap-x-3 text-[0.625rem] uppercase tracking-[0.18em] text-ink-mute max-lg:text-xs max-lg:tracking-[0.14em]">
               <span class="text-gold">{{ article.category }}</span>
               <span><time :datetime="article.publishedAt">{{ dateLisible(article.publishedAt) }}</time> · {{ article.readingTime }} min</span>
             </p>
             <h3 class="font-display text-[1.4375rem] leading-[1.2] text-ink">
-              <NuxtLink :to="article.path" class="transition-colors duration-500 group-hover:text-gold">
+              <NuxtLink :to="article.path" class="inline-block transition-colors duration-500 group-hover:text-gold max-lg:py-2.5">
                 {{ article.shortTitle ?? article.title }}
               </NuxtLink>
             </h3>

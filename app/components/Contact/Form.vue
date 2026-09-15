@@ -368,7 +368,7 @@ function reset() {
 
 const FIELD
   = 'w-full border-0 border-b border-ink/20 bg-transparent pb-3 pt-2 text-[0.9375rem] text-ink transition-colors duration-400 outline-none placeholder:text-ink-mute/70 focus:border-gold'
-const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
+const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute max-lg:text-xs max-lg:tracking-[0.14em]'
 </script>
 
 <template>
@@ -467,7 +467,7 @@ const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute'
             />
           </span>
           <span class="min-w-0">
-            <span class="block text-[0.5625rem] uppercase tracking-[0.18em]" :style="{ color: brandColor(tuile.color) }">
+            <span class="block text-[0.5625rem] uppercase tracking-[0.18em] max-lg:text-xs max-lg:tracking-[0.14em]" :style="{ color: brandColor(tuile.color) }">
               {{ $t('about.branchLabel', { index: String(tuile.index).padStart(2, '0') }) }}
             </span>
             <span class="block text-[0.84375rem] leading-[1.2] text-ink">{{ tuile.label }}</span>

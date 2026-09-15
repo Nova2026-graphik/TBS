@@ -283,6 +283,15 @@
     align-items: center;
     gap: 0.5625rem;
   }
+  /* Sous 1024 px, aucun texte utile sous 12 px : les petites capitales
+     espacées y passent à 12 px, avec un espacement ramené pour que la
+     longueur de ligne ne s'allonge pas d'autant. */
+  @media (max-width: 1023px) {
+    .u-eyebrow {
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+    }
+  }
 
   /* Lien souligné qui s'anime de gauche à droite. */
   .u-link-underline {
@@ -297,6 +306,16 @@
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--color-ink);
+  }
+  /* Au doigt, la cible fait 44 px : la hauteur s'ajoute au-dessus du texte,
+     le trait reste collé à lui. */
+  @media (max-width: 1023px) {
+    .u-link-underline {
+      min-height: 2.75rem;
+      min-width: 2.75rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.14em;
+    }
   }
   .u-link-underline::after {
     content: '';

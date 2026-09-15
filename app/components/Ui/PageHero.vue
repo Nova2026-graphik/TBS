@@ -83,19 +83,19 @@ const densitiesFull = DENSITIES_FULL
       <div v-reveal class="min-w-0">
         <nav
           :aria-label="$t('common.breadcrumb')"
-          class="mb-[1.375rem] flex flex-wrap items-center gap-2.5 text-[0.6875rem] uppercase tracking-[0.2em] text-cream/70"
+          class="mb-[1.375rem] flex flex-wrap items-center gap-2.5 text-[0.6875rem] uppercase tracking-[0.2em] text-cream/70 max-lg:text-xs max-lg:tracking-[0.14em]"
         >
           <NuxtLinkLocale
             to="/"
-            class="inline-flex min-h-11 items-center transition-colors duration-400 hover:text-white"
+            class="inline-flex min-h-12 items-center transition-colors duration-400 hover:text-white"
           >
             {{ $t('nav.home') }}
           </NuxtLinkLocale>
           <span aria-hidden="true">/</span>
-          <span class="inline-flex min-h-11 items-center text-cream" aria-current="page">{{ eyebrow }}</span>
+          <span class="inline-flex min-h-12 items-center text-cream" aria-current="page">{{ eyebrow }}</span>
         </nav>
 
-        <span class="block text-[0.6875rem] uppercase tracking-[0.22em] text-gold">{{ eyebrow }}</span>
+        <span class="block text-[0.6875rem] uppercase tracking-[0.22em] text-gold max-lg:text-xs max-lg:tracking-[0.14em]">{{ eyebrow }}</span>
 
         <h1 class="mt-3 max-w-[16ch] font-display text-[clamp(2.125rem,5vw,3.75rem)] leading-[1.06] text-white">
           {{ title }}

@@ -48,12 +48,12 @@ function lien(tag: string) {
       class="aspect-4/3 w-full object-cover"
     />
     <div class="min-w-0">
-      <p class="text-[0.625rem] uppercase tracking-[0.2em] text-ink-mute">{{ block.eyebrow }}</p>
+      <p class="text-[0.625rem] uppercase tracking-[0.2em] text-ink-mute max-lg:text-xs max-lg:tracking-[0.14em]">{{ block.eyebrow }}</p>
       <h3 class="mb-2 mt-1 font-display text-2xl leading-[1.15] text-ink">
         <NuxtLinkLocale
           v-if="domain"
           :to="`/galerie/${versUrl(domain.branch)}/${domain.slug}`"
-          class="transition-colors duration-400 hover:text-gold"
+          class="inline-block transition-colors duration-400 hover:text-gold max-lg:py-2.5"
         >
           {{ block.title }}
         </NuxtLinkLocale>
@@ -66,13 +66,13 @@ function lien(tag: string) {
           <NuxtLinkLocale
             v-if="lien(tag)"
             :to="lien(tag)!"
-            class="inline-flex min-h-11 items-center border border-ink/15 bg-sand px-2.5 py-1.5 text-[0.625rem] uppercase tracking-[0.14em] text-ink transition-colors duration-400 hover:border-gold hover:text-gold sm:min-h-0"
+            class="inline-flex min-h-11 items-center border border-ink/15 bg-sand px-2.5 py-1.5 text-[0.625rem] uppercase tracking-[0.14em] text-ink transition-colors duration-400 hover:border-gold hover:text-gold max-lg:text-xs lg:min-h-0"
           >
             {{ tag }}
           </NuxtLinkLocale>
           <span
             v-else
-            class="inline-flex items-center border border-ink/15 bg-sand px-2.5 py-1.5 text-[0.625rem] uppercase tracking-[0.14em] text-ink"
+            class="inline-flex items-center border border-ink/15 bg-sand px-2.5 py-1.5 text-[0.625rem] uppercase tracking-[0.14em] text-ink max-lg:text-xs"
           >
             {{ tag }}
           </span>
