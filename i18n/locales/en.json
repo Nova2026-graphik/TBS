@@ -205,7 +205,7 @@
     "legalName": "S.A.R.L",
     "eyebrowAbout": "About",
     "historyEyebrow": "Our story",
-    "lead": "Born in Agôè-Démakpoè, TBS has been equipping the great moments of Togolese life for over ten years.",
+    "lead": "Born in Agôè-Démakpoè, TBS has equipped the great moments of Togolese life for over ten years — and supplies, advises and grows for companies, institutions and cooperatives.",
     "p1": "What began as a few batches of chairs and tableware lent to the neighbourhood has become a stock of more than 900 items, maintained piece by piece in our warehouses. Today we serve families, caterers, hotels, institutions and companies across Greater Lomé.",
     "p2Intro": "The company is now organised into four divisions:",
     "p2Equipements": "for the supply of materials and equipment,",
@@ -220,7 +220,7 @@
       ],
       [
         "Punctuality",
-        "Set-up finished before the first guest arrives"
+        "Setup finished before the first guest arrives; delivery on the date committed in the offer."
       ],
       [
         "Discretion",
@@ -229,7 +229,50 @@
     ],
     "valuesEyebrow": "Our values",
     "valuesTitle": "Three commitments",
-    "valuesAccent": "we do not bend"
+    "valuesAccent": "we do not bend",
+    "titleLine": "TBS Distribution S.A.R.L,",
+    "titleAccent": "four trades, one point of contact",
+    "historyTitle": "A few lots of chairs,",
+    "historyAccent": "then 900 references",
+    "stats": {
+      "created": {
+        "label": "Founded",
+        "sub": "Agôè-Démakpoè, Lomé"
+      },
+      "events": {
+        "label": "Events equipped",
+        "sub": "Weddings, ceremonies, galas"
+      },
+      "branches": {
+        "label": "Divisions",
+        "sub": "{n} fields covered"
+      },
+      "people": {
+        "label": "People in the field",
+        "sub": "Delivery, setup, follow-up"
+      }
+    },
+    "timeline": [
+      [
+        "2014",
+        "Founded: chair and tableware hire in the neighbourhood."
+      ],
+      [
+        "The stock",
+        "Over 900 references, maintained piece by piece in our warehouses."
+      ],
+      [
+        "Four divisions",
+        "Equipment, Events, Studies & Consulting, Agro Business."
+      ],
+      [
+        "Today",
+        "Families, caterers, hotels, institutions and companies across Greater Lomé."
+      ]
+    ],
+    "branchesLink": "Our services",
+    "branchLabel": "Division {index}",
+    "seePrestations": "See the services"
   },
   "contact": {
     "eyebrow": "Contact",

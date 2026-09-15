@@ -205,7 +205,7 @@
     "legalName": "S.A.R.L",
     "eyebrowAbout": "À propos",
     "historyEyebrow": "Notre histoire",
-    "lead": "Née à Agôè-Démakpoè, TBS équipe les grands moments de la vie togolaise depuis plus de dix ans.",
+    "lead": "Née à Agôè-Démakpoè, TBS équipe les grands moments de la vie togolaise depuis plus de dix ans — et fournit, conseille et cultive pour les entreprises, les institutions et les coopératives.",
     "p1": "Ce qui a commencé par quelques lots de chaises et de vaisselle prêtés au quartier est devenu un parc de plus de 900 références, entretenu pièce par pièce dans nos entrepôts. Nous servons aujourd'hui les familles, les traiteurs, les hôtels, les institutions et les entreprises du Grand Lomé.",
     "p2Intro": "L'entreprise est aujourd'hui organisée en quatre branches :",
     "p2Equipements": "pour la fourniture de matériels et d'équipements,",
@@ -220,7 +220,7 @@
       ],
       [
         "Ponctualité",
-        "Montage terminé avant l'arrivée du premier invité"
+        "Montage terminé avant l'arrivée du premier invité ; livraison à la date engagée sur l'offre."
       ],
       [
         "Discrétion",
@@ -229,7 +229,50 @@
     ],
     "valuesEyebrow": "Nos valeurs",
     "valuesTitle": "Trois engagements",
-    "valuesAccent": "non négociables"
+    "valuesAccent": "non négociables",
+    "titleLine": "TBS Distribution S.A.R.L,",
+    "titleAccent": "quatre métiers, un seul interlocuteur",
+    "historyTitle": "Quelques lots de chaises,",
+    "historyAccent": "puis 900 références",
+    "stats": {
+      "created": {
+        "label": "Année de création",
+        "sub": "Agôè-Démakpoè, Lomé"
+      },
+      "events": {
+        "label": "Événements équipés",
+        "sub": "Mariages, cérémonies, galas"
+      },
+      "branches": {
+        "label": "Branches d'activité",
+        "sub": "{n} domaines couverts"
+      },
+      "people": {
+        "label": "Personnes sur le terrain",
+        "sub": "Livraison, montage, suivi"
+      }
+    },
+    "timeline": [
+      [
+        "2014",
+        "Création : location de chaises et de vaisselle dans le quartier."
+      ],
+      [
+        "Le parc",
+        "Plus de 900 références entretenues pièce par pièce dans nos entrepôts."
+      ],
+      [
+        "Quatre branches",
+        "Équipements, Événementiel, Études & Conseils, Agro Business."
+      ],
+      [
+        "Aujourd'hui",
+        "Familles, traiteurs, hôtels, institutions et entreprises du Grand Lomé."
+      ]
+    ],
+    "branchesLink": "Nos services",
+    "branchLabel": "Branche {index}",
+    "seePrestations": "Voir les prestations"
   },
   "contact": {
     "eyebrow": "Contact",
