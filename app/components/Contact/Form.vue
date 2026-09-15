@@ -76,13 +76,14 @@ const { data: site } = await useSiteContent()
  */
 const tuiles = computed(() =>
   site.value.branches.map((b) => {
-    const labels = libelles('form.branches')
     const premier = site.value.domains.find(d => d.branch === b.slug)
     return {
       slug: b.slug,
       index: b.index,
       color: b.color,
-      label: (labels[BRANCH_INDEX[b.slug]] ?? b.name).split('—')[0]!.trim(),
+      // Le libellé court — « Équipements », pas « TBS Équipements » : la tuile
+      // fait 130 px à 1280, et le préfixe faisait couper le mot au milieu.
+      label: t(`topbar.branches.${b.slug}`),
       thumbnail: premier?.thumbnail,
     }
   }),
