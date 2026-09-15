@@ -137,6 +137,6 @@ test.describe('les anciennes adresses redirigent en 301', () => {
   test('le formulaire de devis reçoit la bonne branche', async ({ page }) => {
     await arrive(page, '/contact?branche=events', /branche=evenementiel$/)
     await pageInteractive(page)
-    await expect(page.locator('#field-branch')).toHaveValue(/TBS Événementiel/)
+    await expect(page.getByRole('radio', { name: /Événementiel/ })).toBeChecked()
   })
 })

@@ -2,67 +2,106 @@ import { expect, test } from '@playwright/test'
 import { pageInteractive } from './utils'
 
 /**
- * Déduction de la branche à partir du type de demande.
+ * Le formulaire de devis s'adapte à la branche.
  *
- * Les deux listes se recouvraient : « Mariage » implique TBS Événementiel, et le
- * confirmer en dessous était une question pour rien. Ces tests gardent les
- * trois cas qui comptent — la déduction, l'ambiguïté qui ramène le champ, et
- * le lien qui prime sur la déduction.
+ * Quatre tuiles en tête — un groupe de boutons radio — choisissent la
+ * branche, et c'est elle qui commande les champs : type, date, invités et
+ * lieu pour Événementiel ; domaine, quantités et lieu de livraison pour
+ * Équipements ; objet et échéance pour Études ; culture, surface et saison
+ * pour Agro. Avant, le formulaire ne parlait qu'événement, même pour un lot
+ * de fournitures.
+ *
+ * La valeur envoyée reste le libellé complet de la branche, inchangé : les
+ * demandes déjà enregistrées restent comparables aux nouvelles.
  */
-test.describe('branche déduite du type de demande', () => {
-  test('le sélecteur disparaît quand le type désigne la branche', async ({ page }) => {
+const tuile = (page: import('@playwright/test').Page, nom: RegExp) =>
+  page.getByRole('radio', { name: nom })
+
+/**
+ * L'`input` est masqué sous son étiquette (`sr-only`) : c'est l'étiquette
+ * qu'un visiteur touche, et c'est elle qu'on clique ici.
+ */
+const choisir = (page: import('@playwright/test').Page, nom: RegExp) =>
+  page.locator('label', { has: tuile(page, nom) }).click()
+
+test.describe('formulaire adapté à la branche', () => {
+  test('Événementiel par défaut, avec ses champs', async ({ page }) => {
     await page.goto('/contact')
     await pageInteractive(page)
 
+    await expect(tuile(page, /Événementiel/)).toBeChecked()
     await expect(page.locator('#field-requestType')).toHaveValue('Mariage')
-    await expect(page.locator('#field-branch')).toHaveCount(0)
-
-    // Huit intitulés visibles au lieu de neuf.
-    await expect(page.locator('form label[for^="field-"]')).toHaveCount(8)
+    await expect(page.locator('#field-eventDate')).toBeVisible()
+    await expect(page.locator('#field-guestCount')).toBeVisible()
+    await expect(page.locator('#field-domaine')).toHaveCount(0)
   })
 
-  test('il revient sur un type ambigu', async ({ page }) => {
+  test('les champs suivent la tuile choisie', async ({ page }) => {
     await page.goto('/contact')
     await pageInteractive(page)
 
-    await page.locator('#field-requestType').selectOption('Fourniture / marché public')
-    await expect(page.locator('#field-branch')).toBeVisible()
+    await choisir(page, /Équipements/)
+    await expect(page.locator('#field-domaine')).toBeVisible()
+    await expect(page.locator('#field-quantites')).toBeVisible()
+    await expect(page.locator('#field-eventDate')).toHaveCount(0)
+    // Treize domaines dans le sélecteur, plus l'invite.
+    await expect(page.locator('#field-domaine option')).toHaveCount(14)
 
-    await page.locator('#field-requestType').selectOption('Autre')
-    await expect(page.locator('#field-branch')).toBeVisible()
+    await choisir(page, /Études/)
+    await expect(page.locator('#field-objet')).toBeVisible()
+    await expect(page.locator('#field-echeance')).toBeVisible()
 
-    await page.locator('#field-requestType').selectOption('Cérémonie / baptême')
-    await expect(page.locator('#field-branch')).toHaveCount(0)
+    await choisir(page, /Agro/)
+    await expect(page.locator('#field-culture')).toBeVisible()
+    await expect(page.locator('#field-surface')).toBeVisible()
+    await expect(page.locator('#field-saison')).toBeVisible()
   })
 
-  test('la valeur envoyée reste la chaîne d’origine', async ({ page }) => {
-    await page.goto('/contact')
+  /**
+   * Les quatre branches, et le libellé envoyé pour chacune. Le corps est
+   * intercepté avant le serveur : c'est la donnée que l'équipe recevra.
+   */
+  for (const [slug, nom, libelle, type] of [
+    ['evenementiel', /Événementiel/, 'TBS Événementiel — location de matériel de réception', 'Mariage'],
+    ['equipements', /Équipements/, 'TBS Équipements — fourniture de matériels & équipements', 'Fourniture / marché public'],
+    ['etudes', /Études/, 'TBS Études & Conseils — études & prestations intellectuelles', 'Autre'],
+    ['agro-business', /Agro/, 'TBS Agro Business — agriculture & agro-industrie', 'Autre'],
+  ] as const) {
+    test(`?branche=${slug} préremplit la tuile et envoie la bonne branche`, async ({ page }) => {
+      await page.goto(`/contact?branche=${slug}`)
+      await pageInteractive(page)
+
+      await expect(tuile(page, nom)).toBeChecked()
+
+      const envoi = page.waitForRequest(r => r.url().includes('/api/quotes') && r.method() === 'POST')
+      await page.getByLabel('Nom complet').fill('Akouvi Adjovi')
+      await page.getByLabel('Téléphone').fill('+228 90 10 85 10')
+      await page.getByLabel('Votre besoin').fill('Un besoin précis, décrit en une phrase.')
+      await page.waitForTimeout(2500)
+      await page.getByRole('button', { name: 'Envoyer ma demande' }).click()
+
+      const corps = JSON.parse((await envoi).postData() ?? '{}')
+      expect(corps.branch).toBe(libelle)
+      expect(corps.requestType).toBe(type)
+    })
+  }
+
+  test('les champs propres à la branche partent dans les détails', async ({ page }) => {
+    await page.goto('/contact?branche=equipements')
     await pageInteractive(page)
+
+    await page.locator('#field-domaine').selectOption({ index: 1 })
+    await page.locator('#field-quantites').fill('40 postes, livraison en mars')
 
     const envoi = page.waitForRequest(r => r.url().includes('/api/quotes') && r.method() === 'POST')
-
     await page.getByLabel('Nom complet').fill('Akouvi Adjovi')
     await page.getByLabel('Téléphone').fill('+228 90 10 85 10')
-    await page.getByLabel('Votre besoin').fill('Dressage de 200 couverts, nappage et sonorisation.')
+    await page.getByLabel('Votre besoin').fill('Équiper un plateau de quarante postes.')
     await page.waitForTimeout(2500)
     await page.getByRole('button', { name: 'Envoyer ma demande' }).click()
 
     const corps = JSON.parse((await envoi).postData() ?? '{}')
-    // Les demandes déjà enregistrées doivent rester comparables aux nouvelles.
-    expect(corps.branch).toBe('TBS Événementiel — location de matériel de réception')
-    expect(corps.requestType).toBe('Mariage')
-  })
-
-  test('un lien ?branche= prime et reste visible', async ({ page }) => {
-    await page.goto('/contact?branche=agro-business')
-    await pageInteractive(page)
-
-    // Une valeur imposée que le visiteur ne pourrait ni voir ni corriger
-    // vaudrait moins que la question elle-même.
-    await expect(page.locator('#field-branch')).toBeVisible()
-    await expect(page.locator('#field-branch')).toHaveValue(/TBS Agro Business/)
-
-    await page.locator('#field-requestType').selectOption('Mariage')
-    await expect(page.locator('#field-branch')).toHaveValue(/TBS Agro Business/)
+    expect(corps.details).toMatchObject({ 'Quantités / échéance souhaitée': '40 postes, livraison en mars' })
+    expect(Object.keys(corps.details)).toContain('Domaine')
   })
 })

@@ -88,6 +88,8 @@ export const serviceBlocks = pgTable(
   {
     id: serial('id').primaryKey(),
     branchSlug: branchSlugEnum('branch_slug').notNull(),
+    /** Domaine décrit par le bloc, nullable pour les lignes antérieures. */
+    domainSlug: varchar('domain_slug', { length: 60 }),
     eyebrow: varchar('eyebrow', { length: 120 }).notNull(),
     title: varchar('title', { length: 200 }).notNull(),
     description: text('description').notNull(),

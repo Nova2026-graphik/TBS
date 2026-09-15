@@ -132,7 +132,15 @@
       "eyebrow": "Packages",
       "title": "Three levels",
       "accent": "of support"
-    }
+    },
+    "supplyTitle": "Everything we",
+    "supplyAccent": "supply",
+    "supplyLink": "See the reference gallery",
+    "detailEyebrow": "{n} field in detail | {n} fields in detail",
+    "detailTitle": "What each supply",
+    "detailAccent": "includes",
+    "detailLink": "All fields",
+    "consultUs": "Consult us"
   },
   "gallery": {
     "eyebrow": "Gallery",
@@ -205,7 +213,7 @@
     "legalName": "S.A.R.L",
     "eyebrowAbout": "About",
     "historyEyebrow": "Our story",
-    "lead": "Born in Agôè-Démakpoè, TBS has been equipping the great moments of Togolese life for over ten years.",
+    "lead": "Born in Agôè-Démakpoè, TBS has equipped the great moments of Togolese life for over ten years — and supplies, advises and grows for companies, institutions and cooperatives.",
     "p1": "What began as a few batches of chairs and tableware lent to the neighbourhood has become a stock of more than 900 items, maintained piece by piece in our warehouses. Today we serve families, caterers, hotels, institutions and companies across Greater Lomé.",
     "p2Intro": "The company is now organised into four divisions:",
     "p2Equipements": "for the supply of materials and equipment,",
@@ -220,7 +228,7 @@
       ],
       [
         "Punctuality",
-        "Set-up finished before the first guest arrives"
+        "Setup finished before the first guest arrives; delivery on the date committed in the offer."
       ],
       [
         "Discretion",
@@ -229,7 +237,50 @@
     ],
     "valuesEyebrow": "Our values",
     "valuesTitle": "Three commitments",
-    "valuesAccent": "we do not bend"
+    "valuesAccent": "we do not bend",
+    "titleLine": "TBS Distribution S.A.R.L,",
+    "titleAccent": "four trades, one point of contact",
+    "historyTitle": "A few lots of chairs,",
+    "historyAccent": "then 900 references",
+    "stats": {
+      "created": {
+        "label": "Founded",
+        "sub": "Agôè-Démakpoè, Lomé"
+      },
+      "events": {
+        "label": "Events equipped",
+        "sub": "Weddings, ceremonies, galas"
+      },
+      "branches": {
+        "label": "Divisions",
+        "sub": "{n} fields covered"
+      },
+      "people": {
+        "label": "People in the field",
+        "sub": "Delivery, setup, follow-up"
+      }
+    },
+    "timeline": [
+      [
+        "2014",
+        "Founded: chair and tableware hire in the neighbourhood."
+      ],
+      [
+        "The stock",
+        "Over 900 references, maintained piece by piece in our warehouses."
+      ],
+      [
+        "Four divisions",
+        "Equipment, Events, Studies & Consulting, Agro Business."
+      ],
+      [
+        "Today",
+        "Families, caterers, hotels, institutions and companies across Greater Lomé."
+      ]
+    ],
+    "branchesLink": "Our services",
+    "branchLabel": "Division {index}",
+    "seePrestations": "See the services"
   },
   "contact": {
     "eyebrow": "Contact",
@@ -241,14 +292,36 @@
       "show": "Show the map",
       "directions": "Directions",
       "notice": "Displaying the map sends a request to OpenStreetMap, which then receives your IP address.",
-      "openExternal": "Open on openstreetmap.org"
+      "openExternal": "Open on openstreetmap.org",
+      "visit": "warehouses can be visited by appointment"
     },
-    "heading": "Get in touch"
+    "heading": "Get in touch",
+    "fastest": "Fastest",
+    "whatsappTitle": "Write to us on WhatsApp",
+    "whatsappBody": "A photo of the venue, an equipment list or a brief: we answer the same day."
   },
   "faq": {
     "title": "Frequently asked",
     "accent": "questions",
-    "lead": "Can't find your answer? Give us a call — we reply quickly."
+    "lead": "Can't find your answer? Give us a call — we reply quickly.",
+    "searchLabel": "Search a question",
+    "searchPlaceholder": "Search a question — e.g. \"deposit\", \"lead time\", \"tender\"",
+    "byBranch": "By division",
+    "all": "All questions",
+    "helpTitle": "A specific question?",
+    "helpBody": "An adviser answers the same day, Monday to Saturday.",
+    "groupSub": {
+      "events": "Reception equipment hire — booking, delivery, breakage, stock visit",
+      "equipements": "Supplies, public tenders, lead times",
+      "etudes": "Studies, advisory, training",
+      "agro": "Inputs, equipment, processing",
+      "empty": "Questions will come with the first projects"
+    },
+    "noMatch": "No question matches.",
+    "noMatchBody": "Ask yours: the answer is sent to you, then published here if it helps others.",
+    "emptyTitle": "No question published yet for these divisions.",
+    "emptyBody": "Ask yours: the answer is sent to you, then published here if it helps others.",
+    "ask": "Ask a question"
   },
   "footer": {
     "tagline": "Four divisions: Equipment, Events, Studies & Consulting, Agro Business. Supply, rental, consulting and agri-business. Agôè-Démakpoè, Lomé — Togo.",
@@ -279,7 +352,7 @@
     "summary": "{n} field to correct before sending: | {n} fields to correct before sending:",
     "submit": "Send my request",
     "submitting": "Sending…",
-    "notice": "Reply within 24 working hours. Fields marked * are required.",
+    "notice": "Reply within 24 working hours · * required fields",
     "privacy": "Your details are used solely to process this quote request and are held by TBS Distribution S.A.R.L. They are kept for {months} months, then anonymised. You may ask to see, correct or delete them at any time by writing to",
     "privacyLink": "Privacy policy",
     "fields": {
@@ -291,7 +364,16 @@
       "eventDate": "Event date",
       "guestCount": "Number of guests",
       "location": "Location",
-      "message": "What you need"
+      "message": "What you need",
+      "organisation": "Company",
+      "domaine": "Field",
+      "quantites": "Quantities / desired timing",
+      "livraison": "Delivery location",
+      "objet": "Subject of the assignment",
+      "echeance": "Deadline",
+      "culture": "Crop or activity",
+      "surface": "Area or volume",
+      "saison": "Season / timing"
     },
     "placeholders": {
       "name": "e.g. Akouvi Adjovi",
@@ -299,7 +381,16 @@
       "email": "To receive the quote in writing",
       "guestCount": "e.g. 350",
       "location": "e.g. Agôè, Lomé",
-      "message": "Furniture, tableware, décor, sound…"
+      "message": "Furniture, tableware, décor, sound…",
+      "organisation": "Optional",
+      "domaine": "Choose a field",
+      "quantites": "e.g. 40 workstations, delivery in March",
+      "livraison": "City, district or site",
+      "objet": "e.g. feasibility study, training",
+      "echeance": "e.g. before end of quarter",
+      "culture": "e.g. maize, market gardening, poultry",
+      "surface": "e.g. 5 ha, 2 t/month",
+      "saison": "e.g. 2027 season"
     },
     "errors": {
       "name": "Please enter your name.",

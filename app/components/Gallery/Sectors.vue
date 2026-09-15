@@ -205,7 +205,7 @@ const sizesHalfMd = SIZES_HALF_MD
           @click="chosen = sector.slug"
         >
           <span class="min-w-0">
-            <span class="block text-[0.625rem] uppercase tracking-[0.2em] text-cream/70">
+            <span class="block text-[0.625rem] uppercase tracking-[0.2em] text-cream/70 max-lg:text-xs max-lg:tracking-[0.14em]">
               {{ $t('gallery.sectors.branch', { index: String(sector.index).padStart(2, '0') }) }}
             </span>
             <span class="block truncate font-display text-[1.25rem] leading-tight">{{ sector.name }}</span>
@@ -255,7 +255,7 @@ const sizesHalfMd = SIZES_HALF_MD
               largeur restante plutôt qu'une longueur fixe.
             -->
             <div
-              class="mt-[1.875rem] mb-[1.125rem] flex w-full items-center gap-3.5 text-[0.65625rem] uppercase tracking-[0.24em] text-cream/62"
+              class="mt-[1.875rem] mb-[1.125rem] flex w-full items-center gap-3.5 text-[0.65625rem] uppercase tracking-[0.24em] text-cream/62 max-lg:text-xs max-lg:tracking-[0.14em]"
             >
               <span>
                 {{ $t('gallery.sectors.domains') }} ·
@@ -293,7 +293,7 @@ const sizesHalfMd = SIZES_HALF_MD
             -->
             <NuxtLinkLocale
               :to="{ path: '/services', query: { branche: versUrl(sector.slug) } }"
-              class="mt-auto inline-flex min-h-11 items-center gap-2 pt-5 text-[0.6875rem] uppercase tracking-[0.2em] text-white transition-colors duration-400 hover:text-cream focus-visible:outline-offset-[-2px]"
+              class="mt-auto inline-flex min-h-11 items-center gap-2 pt-5 text-[0.6875rem] uppercase tracking-[0.2em] text-white transition-colors duration-400 hover:text-cream focus-visible:outline-offset-[-2px] max-lg:text-xs max-lg:tracking-[0.14em]"
             >
               <span class="sr-only">{{ $t('gallery.sectors.ctaLabel', { sector: sector.name }) }}</span>
               <span aria-hidden="true">{{ $t('gallery.sectors.cta') }}</span>
