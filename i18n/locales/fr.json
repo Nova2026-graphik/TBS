@@ -303,7 +303,25 @@
   "faq": {
     "title": "Questions",
     "accent": "fréquentes",
-    "lead": "Vous ne trouvez pas votre réponse ? Appelez-nous, on répond vite."
+    "lead": "Vous ne trouvez pas votre réponse ? Appelez-nous, on répond vite.",
+    "searchLabel": "Rechercher une question",
+    "searchPlaceholder": "Rechercher une question — ex. « caution », « délai », « appel d'offres »",
+    "byBranch": "Par branche",
+    "all": "Toutes les questions",
+    "helpTitle": "Une question précise ?",
+    "helpBody": "Un conseiller répond dans la journée, du lundi au samedi.",
+    "groupSub": {
+      "events": "Location de matériel de réception — réservation, livraison, casse, visite du stock",
+      "equipements": "Fournitures, marchés publics, délais",
+      "etudes": "Études, conseil, formation",
+      "agro": "Intrants, équipements, transformation",
+      "empty": "Les questions arrivent avec les premiers projets"
+    },
+    "noMatch": "Aucune question ne correspond.",
+    "noMatchBody": "Posez la vôtre : la réponse vous est envoyée, puis publiée ici si elle est utile à d'autres.",
+    "emptyTitle": "Pas encore de question publiée pour ces branches.",
+    "emptyBody": "Posez la vôtre : la réponse vous est envoyée, puis publiée ici si elle est utile à d'autres.",
+    "ask": "Poser une question"
   },
   "footer": {
     "tagline": "Quatre branches : Équipements, Événementiel, Études & Conseils, Agro Business. Fourniture, location, conseil et agro-industrie. Agôè-Démakpoè, Lomé — Togo.",
