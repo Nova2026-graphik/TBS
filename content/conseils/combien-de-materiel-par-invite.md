@@ -9,6 +9,7 @@ readingTime: 6
 image: "/images/events-mobilier.jpg"
 imageAlt: "Mobilier de réception — chaises et tables installées"
 featured: true
+calculator: true
 ---
 
 C'est la première question de tous les appels : « on sera environ trois cents,
