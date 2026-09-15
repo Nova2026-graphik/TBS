@@ -28,17 +28,21 @@ function select(slug: BranchSlug) {
   router.replace({ query: { ...route.query, branche: versUrl(slug) } })
 }
 
-const activeBranch = computed(() => data.value.branches.find(b => b.slug === active.value))
+const activeBranch = computed(() => data.value.branches.find(b => b.slug === active.value)!)
 const activeBlocks = computed(() => data.value.services.filter(s => s.branch === active.value))
 const activeProcess = computed(() => process.value[active.value]!)
 const accent = computed(() => activeBranch.value?.color ?? '#827148')
 
-/** Onglet : chip pleine quand actif, contour discret sinon. */
-function chipClass(isActive: boolean) {
-  return isActive
-    ? 'bg-ink border-ink text-white'
-    : 'bg-transparent border-ink/18 text-ink-soft hover:border-gold hover:text-gold'
+/** Le domaine décrit par un bloc, pour ses liens. */
+function domaineDe(slug?: string) {
+  return slug ? data.value.domains.find(d => d.slug === slug) : undefined
 }
+
+/** Effectifs de la branche active, comptés — jamais écrits. */
+const nbDomaines = computed(() => domainesDeLaBranche(data.value.domains, active.value).length)
+const nbReferences = computed(() =>
+  referencesDeLaBranche(data.value.equipment ?? [], data.value.domains, active.value),
+)
 
 usePageSeo({
   title: t('seo.services.title'),
@@ -62,21 +66,28 @@ useBreadcrumbSchema([{ name: 'Nos services', path: '/services' }])
     >
       <!-- Onglets de branche : rôle tablist explicite, navigation clavier
            assurée par les liens natifs. -->
-      <div class="mt-[clamp(1.75rem,4vw,3rem)] flex flex-wrap gap-2.5" role="tablist" :aria-label="$t('services.tablist')">
+      <!--
+        Sous `md`, la ligne défile de bord à bord et l'onglet suivant dépasse :
+        c'est ce qui dit qu'il y en a d'autres.
+      -->
+      <div
+        class="flex gap-2 max-md:-mx-[var(--spacing-gutter)] max-md:snap-x max-md:overflow-x-auto max-md:px-[var(--spacing-gutter)] max-md:pb-1 md:flex-wrap"
+        role="tablist"
+        :aria-label="$t('services.tablist')"
+      >
         <button
           v-for="tab in tabs"
           :key="tab.slug"
           type="button"
           role="tab"
           :aria-selected="active === tab.slug"
-          class="flex items-center gap-2.5 rounded-full border px-5 py-2.5 text-[0.6875rem] uppercase tracking-[0.16em] transition-colors duration-400"
-          :class="chipClass(active === tab.slug)"
+          class="flex min-h-11 shrink-0 snap-start items-center gap-2.5 whitespace-nowrap border px-[1.125rem] py-3 text-[0.6875rem] uppercase tracking-[0.16em] transition-colors duration-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          :class="active === tab.slug
+            ? 'border-white bg-white text-ink'
+            : 'border-white/35 text-white hover:border-white hover:bg-white/10'"
           @click="select(tab.slug)"
         >
-          <span
-            class="size-1.5 rounded-full"
-            :style="{ background: active === tab.slug ? '#fff' : brandColor(tab.color) }"
-          />
+          <span class="size-[7px] rounded-full" :style="{ background: brandColor(tab.color) }" />
           {{ tab.label }}
         </button>
       </div>
@@ -92,14 +103,58 @@ useBreadcrumbSchema([{ name: 'Nos services', path: '/services' }])
       leave-to-class="opacity-0"
     >
       <div :key="active">
-        <section class="u-gutter u-section flex flex-col gap-[clamp(3rem,7vw,7rem)] bg-white">
-          <ServicesBlock
-            v-for="(block, i) in activeBlocks"
-            :key="block.title"
-            :block="block"
-            :reversed="i % 2 === 1"
-            :accent="accent"
-          />
+        <!--
+          Tout ce que la branche fournit : ses domaines en tuiles, comptés.
+          La page décrivait quatre domaines sur treize, et rien n'y était
+          cliquable. La grille est celle du panneau de la galerie.
+        -->
+        <section class="u-gutter bg-sand pb-[clamp(2.5rem,5vw,4.5rem)] pt-14">
+          <div class="mb-[1.625rem] flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+            <div>
+              <span class="u-eyebrow">
+                <span class="size-[7px] rounded-full" :style="{ background: brandColor(accent) }" />
+                {{ activeBranch.name }} — {{ $t('gallery.sectors.countDomains', { n: nbDomaines }, nbDomaines) }}
+                · {{ $t('gallery.sectors.countRefs', { n: nbReferences }, nbReferences) }}
+              </span>
+              <h2 class="mt-3 text-h2">
+                {{ $t('services.supplyTitle') }} <span class="italic">{{ $t('services.supplyAccent') }}</span>
+              </h2>
+            </div>
+            <NuxtLinkLocale
+              :to="{ path: '/galerie', query: { branche: versUrl(active) } }"
+              class="u-link-underline"
+            >
+              {{ $t('services.supplyLink') }}
+            </NuxtLinkLocale>
+          </div>
+          <div class="@container">
+            <DomainGrid
+              :branch="activeBranch"
+              :domains="data.domains"
+              :equipment="data.equipment ?? []"
+              tone="light"
+            />
+          </div>
+        </section>
+
+        <section class="u-gutter bg-white pb-[clamp(2.5rem,5vw,4.5rem)] pt-[3.75rem]">
+          <div class="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
+            <div>
+              <span class="u-eyebrow"><span class="u-rule" />{{ $t('services.detailEyebrow', { n: activeBlocks.length }, activeBlocks.length) }}</span>
+              <h2 class="mt-3 text-h2">
+                {{ $t('services.detailTitle') }} <span class="italic">{{ $t('services.detailAccent') }}</span>
+              </h2>
+            </div>
+            <a href="#top" class="u-link-underline">{{ $t('services.detailLink') }} <span aria-hidden="true">↑</span></a>
+          </div>
+          <div class="mt-7 grid gap-x-8 gap-y-7 lg:grid-cols-2">
+            <ServicesBlock
+              v-for="block in activeBlocks"
+              :key="block.title"
+              :block="block"
+              :domain="domaineDe(block.domain)"
+            />
+          </div>
         </section>
 
         <SharedProcessSteps
@@ -109,6 +164,9 @@ useBreadcrumbSchema([{ name: 'Nos services', path: '/services' }])
           :accent="activeProcess.titleAccent"
           :steps="activeProcess.steps"
           :footnote="activeProcess.footnote"
+          :footnote-cta="activeProcess.footnote
+            ? { label: $t('services.consultUs'), to: { path: '/contact', query: { branche: versUrl(active) } } }
+            : undefined"
           :tone="active === 'events' ? 'light' : 'sand'"
         />
 
