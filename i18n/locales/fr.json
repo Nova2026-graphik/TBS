@@ -132,7 +132,15 @@
       "eyebrow": "Formules",
       "title": "Trois niveaux",
       "accent": "d'accompagnement"
-    }
+    },
+    "supplyTitle": "Tout ce que nous",
+    "supplyAccent": "fournissons",
+    "supplyLink": "Voir la galerie des références",
+    "detailEyebrow": "{n} domaine en détail | {n} domaines en détail",
+    "detailTitle": "Ce que comprend",
+    "detailAccent": "chaque fourniture",
+    "detailLink": "Tous les domaines",
+    "consultUs": "Nous consulter"
   },
   "gallery": {
     "eyebrow": "Galerie",

@@ -367,6 +367,7 @@ export const serviceBlocks: ServiceBlock[] = [
   // ── TBS Équipements ──────────────────────────────────────────────────────
   {
     branch: 'equipements',
+    domain: 'mobilier-bureau',
     eyebrow: '01 — Bureau',
     title: 'Mobilier & matériel de bureau',
     description:
@@ -377,6 +378,7 @@ export const serviceBlocks: ServiceBlock[] = [
   },
   {
     branch: 'equipements',
+    domain: 'informatique',
     eyebrow: '02 — Informatique',
     title: 'Matériel informatique',
     description:
@@ -387,6 +389,7 @@ export const serviceBlocks: ServiceBlock[] = [
   },
   {
     branch: 'equipements',
+    domain: 'sante-laboratoire',
     eyebrow: '03 — Santé & laboratoire',
     title: 'Équipements hospitaliers & de laboratoire',
     description:
@@ -397,6 +400,7 @@ export const serviceBlocks: ServiceBlock[] = [
   },
   {
     branch: 'equipements',
+    domain: 'roulant',
     eyebrow: '04 — Matériel roulant',
     title: 'Matériel roulant',
     description:
@@ -409,6 +413,7 @@ export const serviceBlocks: ServiceBlock[] = [
   // ── TBS Événementiel ───────────────────────────────────────────────────────────
   {
     branch: 'events',
+    domain: 'location-reception',
     eyebrow: '01 — Mobilier',
     title: 'Chaises, tables, lounge',
     description:
@@ -419,6 +424,7 @@ export const serviceBlocks: ServiceBlock[] = [
   },
   {
     branch: 'events',
+    domain: 'location-reception',
     eyebrow: '02 — Art de la table',
     title: 'Vaisselle, verrerie, nappage',
     description:
@@ -429,6 +435,7 @@ export const serviceBlocks: ServiceBlock[] = [
   },
   {
     branch: 'events',
+    domain: 'location-reception',
     eyebrow: '03 — Décoration',
     title: 'Scénographie & décor',
     description:
@@ -439,6 +446,7 @@ export const serviceBlocks: ServiceBlock[] = [
   },
   {
     branch: 'events',
+    domain: 'location-reception',
     eyebrow: '04 — Technique',
     title: 'Son, lumière & piste LED',
     description:
@@ -451,6 +459,7 @@ export const serviceBlocks: ServiceBlock[] = [
   // ── TBS Études & Conseils ────────────────────────────────────────────────
   {
     branch: 'etudes',
+    domain: 'etudes-prestations',
     eyebrow: '01 — Études',
     title: 'Études techniques & de faisabilité',
     description:
@@ -461,6 +470,7 @@ export const serviceBlocks: ServiceBlock[] = [
   },
   {
     branch: 'etudes',
+    domain: 'etudes-prestations',
     eyebrow: '02 — Conseil & formation',
     title: 'Conseil en organisation & formation',
     description:
@@ -473,6 +483,7 @@ export const serviceBlocks: ServiceBlock[] = [
   // ── TBS Agro Business ─────────────────────────────────────────────────────────────
   {
     branch: 'agro',
+    domain: 'agro-industrie',
     eyebrow: '01 — Intrants & équipements',
     title: 'Agriculture & intrants',
     description:
@@ -483,6 +494,7 @@ export const serviceBlocks: ServiceBlock[] = [
   },
   {
     branch: 'agro',
+    domain: 'agro-industrie',
     eyebrow: '02 — Agro-industrie',
     title: 'Transformation & agro-industrie',
     description:
