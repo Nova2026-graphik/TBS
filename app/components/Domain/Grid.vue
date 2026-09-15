@@ -73,7 +73,7 @@ defineExpose({ total })
       >
         <span class="min-w-0 text-[0.84375rem] leading-[1.25]">
           <span
-            class="mb-[3px] block text-[0.625rem] uppercase tracking-[0.18em]"
+            class="mb-[3px] block text-[0.625rem] uppercase tracking-[0.18em] max-lg:text-xs max-lg:tracking-[0.14em]"
             :class="sombre ? 'text-cream/60' : 'text-ink-mute'"
           >
             {{ $t('gallery.sectors.allBranch') }}
@@ -81,7 +81,7 @@ defineExpose({ total })
           {{ accroche }}
         </span>
         <span
-          class="whitespace-nowrap border px-[1.125rem] py-[0.6875rem] text-[0.6875rem] uppercase tracking-[0.2em]"
+          class="inline-flex min-h-11 items-center whitespace-nowrap border px-[1.125rem] py-[0.6875rem] text-[0.6875rem] uppercase tracking-[0.2em] max-lg:text-xs max-lg:tracking-[0.14em]"
           :class="sombre ? 'border-white/75' : 'border-ink/28'"
         >
           {{ $t('common.quote') }}

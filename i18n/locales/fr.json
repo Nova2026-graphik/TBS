@@ -132,7 +132,15 @@
       "eyebrow": "Formules",
       "title": "Trois niveaux",
       "accent": "d'accompagnement"
-    }
+    },
+    "supplyTitle": "Tout ce que nous",
+    "supplyAccent": "fournissons",
+    "supplyLink": "Voir la galerie des références",
+    "detailEyebrow": "{n} domaine en détail | {n} domaines en détail",
+    "detailTitle": "Ce que comprend",
+    "detailAccent": "chaque fourniture",
+    "detailLink": "Tous les domaines",
+    "consultUs": "Nous consulter"
   },
   "gallery": {
     "eyebrow": "Galerie",
@@ -205,7 +213,7 @@
     "legalName": "S.A.R.L",
     "eyebrowAbout": "À propos",
     "historyEyebrow": "Notre histoire",
-    "lead": "Née à Agôè-Démakpoè, TBS équipe les grands moments de la vie togolaise depuis plus de dix ans.",
+    "lead": "Née à Agôè-Démakpoè, TBS équipe les grands moments de la vie togolaise depuis plus de dix ans — et fournit, conseille et cultive pour les entreprises, les institutions et les coopératives.",
     "p1": "Ce qui a commencé par quelques lots de chaises et de vaisselle prêtés au quartier est devenu un parc de plus de 900 références, entretenu pièce par pièce dans nos entrepôts. Nous servons aujourd'hui les familles, les traiteurs, les hôtels, les institutions et les entreprises du Grand Lomé.",
     "p2Intro": "L'entreprise est aujourd'hui organisée en quatre branches :",
     "p2Equipements": "pour la fourniture de matériels et d'équipements,",
@@ -220,7 +228,7 @@
       ],
       [
         "Ponctualité",
-        "Montage terminé avant l'arrivée du premier invité"
+        "Montage terminé avant l'arrivée du premier invité ; livraison à la date engagée sur l'offre."
       ],
       [
         "Discrétion",
@@ -229,7 +237,50 @@
     ],
     "valuesEyebrow": "Nos valeurs",
     "valuesTitle": "Trois engagements",
-    "valuesAccent": "non négociables"
+    "valuesAccent": "non négociables",
+    "titleLine": "TBS Distribution S.A.R.L,",
+    "titleAccent": "quatre métiers, un seul interlocuteur",
+    "historyTitle": "Quelques lots de chaises,",
+    "historyAccent": "puis 900 références",
+    "stats": {
+      "created": {
+        "label": "Année de création",
+        "sub": "Agôè-Démakpoè, Lomé"
+      },
+      "events": {
+        "label": "Événements équipés",
+        "sub": "Mariages, cérémonies, galas"
+      },
+      "branches": {
+        "label": "Branches d'activité",
+        "sub": "{n} domaines couverts"
+      },
+      "people": {
+        "label": "Personnes sur le terrain",
+        "sub": "Livraison, montage, suivi"
+      }
+    },
+    "timeline": [
+      [
+        "2014",
+        "Création : location de chaises et de vaisselle dans le quartier."
+      ],
+      [
+        "Le parc",
+        "Plus de 900 références entretenues pièce par pièce dans nos entrepôts."
+      ],
+      [
+        "Quatre branches",
+        "Équipements, Événementiel, Études & Conseils, Agro Business."
+      ],
+      [
+        "Aujourd'hui",
+        "Familles, traiteurs, hôtels, institutions et entreprises du Grand Lomé."
+      ]
+    ],
+    "branchesLink": "Nos services",
+    "branchLabel": "Branche {index}",
+    "seePrestations": "Voir les prestations"
   },
   "contact": {
     "eyebrow": "Contact",
@@ -241,14 +292,36 @@
       "show": "Afficher la carte",
       "directions": "Itinéraire",
       "notice": "L'affichage envoie une requête à OpenStreetMap, qui reçoit alors votre adresse IP.",
-      "openExternal": "Ouvrir sur openstreetmap.org"
+      "openExternal": "Ouvrir sur openstreetmap.org",
+      "visit": "entrepôts visitables sur rendez-vous"
     },
-    "heading": "Nous joindre"
+    "heading": "Nous joindre",
+    "fastest": "Plus rapide",
+    "whatsappTitle": "Écrivez-nous sur WhatsApp",
+    "whatsappBody": "Photo de la salle, liste de matériel ou cahier des charges : on répond dans la journée."
   },
   "faq": {
     "title": "Questions",
     "accent": "fréquentes",
-    "lead": "Vous ne trouvez pas votre réponse ? Appelez-nous, on répond vite."
+    "lead": "Vous ne trouvez pas votre réponse ? Appelez-nous, on répond vite.",
+    "searchLabel": "Rechercher une question",
+    "searchPlaceholder": "Rechercher une question — ex. « caution », « délai », « appel d'offres »",
+    "byBranch": "Par branche",
+    "all": "Toutes les questions",
+    "helpTitle": "Une question précise ?",
+    "helpBody": "Un conseiller répond dans la journée, du lundi au samedi.",
+    "groupSub": {
+      "events": "Location de matériel de réception — réservation, livraison, casse, visite du stock",
+      "equipements": "Fournitures, marchés publics, délais",
+      "etudes": "Études, conseil, formation",
+      "agro": "Intrants, équipements, transformation",
+      "empty": "Les questions arrivent avec les premiers projets"
+    },
+    "noMatch": "Aucune question ne correspond.",
+    "noMatchBody": "Posez la vôtre : la réponse vous est envoyée, puis publiée ici si elle est utile à d'autres.",
+    "emptyTitle": "Pas encore de question publiée pour ces branches.",
+    "emptyBody": "Posez la vôtre : la réponse vous est envoyée, puis publiée ici si elle est utile à d'autres.",
+    "ask": "Poser une question"
   },
   "footer": {
     "tagline": "Quatre branches : Équipements, Événementiel, Études & Conseils, Agro Business. Fourniture, location, conseil et agro-industrie. Agôè-Démakpoè, Lomé — Togo.",
@@ -279,7 +352,7 @@
     "summary": "{n} champ à corriger avant l'envoi : | {n} champs à corriger avant l'envoi :",
     "submit": "Envoyer ma demande",
     "submitting": "Envoi…",
-    "notice": "Réponse sous 24 h ouvrées. Champs marqués * obligatoires.",
+    "notice": "Réponse sous 24 h ouvrées · champs * obligatoires",
     "privacy": "Vos coordonnées servent uniquement à traiter cette demande de devis et sont destinées à TBS Distribution S.A.R.L. Elles sont conservées {months} mois, puis anonymisées. Vous pouvez à tout moment demander à les consulter, les corriger ou les supprimer en écrivant à",
     "privacyLink": "Politique de confidentialité",
     "fields": {
@@ -291,7 +364,16 @@
       "eventDate": "Date de l'événement",
       "guestCount": "Nombre d'invités",
       "location": "Lieu",
-      "message": "Votre besoin"
+      "message": "Votre besoin",
+      "organisation": "Société",
+      "domaine": "Domaine",
+      "quantites": "Quantités / échéance souhaitée",
+      "livraison": "Lieu de livraison",
+      "objet": "Objet de la mission",
+      "echeance": "Échéance",
+      "culture": "Culture ou activité",
+      "surface": "Surface ou volume",
+      "saison": "Saison / échéance"
     },
     "placeholders": {
       "name": "Ex. Akouvi Adjovi",
@@ -299,7 +381,16 @@
       "email": "Pour recevoir le devis par écrit",
       "guestCount": "Ex. 350",
       "location": "Ex. Agôè, Lomé",
-      "message": "Mobilier, vaisselle, décoration, sonorisation…"
+      "message": "Mobilier, vaisselle, décoration, sonorisation…",
+      "organisation": "Facultatif",
+      "domaine": "Choisir un domaine",
+      "quantites": "ex. 40 postes, livraison en mars",
+      "livraison": "Ville, quartier ou site",
+      "objet": "ex. étude de faisabilité, formation",
+      "echeance": "ex. avant fin de trimestre",
+      "culture": "ex. maïs, maraîchage, volaille",
+      "surface": "ex. 5 ha, 2 t/mois",
+      "saison": "ex. campagne 2027"
     },
     "errors": {
       "name": "Indiquez votre nom.",
