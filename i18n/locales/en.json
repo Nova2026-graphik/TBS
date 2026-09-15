@@ -132,7 +132,15 @@
       "eyebrow": "Packages",
       "title": "Three levels",
       "accent": "of support"
-    }
+    },
+    "supplyTitle": "Everything we",
+    "supplyAccent": "supply",
+    "supplyLink": "See the reference gallery",
+    "detailEyebrow": "{n} field in detail | {n} fields in detail",
+    "detailTitle": "What each supply",
+    "detailAccent": "includes",
+    "detailLink": "All fields",
+    "consultUs": "Consult us"
   },
   "gallery": {
     "eyebrow": "Gallery",

@@ -50,6 +50,13 @@
       "when": 1789395342365,
       "tag": "0006_elite_blob",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1789463635268,
+      "tag": "0007_nappy_patriot",
+      "breakpoints": true
     }
   ]
 }

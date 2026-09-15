@@ -70,6 +70,7 @@ async function seed() {
   await db.insert(schema.serviceBlocks).values(
     serviceBlocksContent.map((s, i) => ({
       branchSlug: s.branch,
+      domainSlug: s.domain,
       eyebrow: s.eyebrow,
       title: s.title,
       description: s.description,

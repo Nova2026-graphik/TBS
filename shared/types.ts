@@ -40,6 +40,12 @@ export interface RentalCategory {
 /** Un bloc « prestation » alterné image / texte sur la page Services. */
 export interface ServiceBlock {
   branch: BranchSlug
+  /**
+   * Domaine que le bloc décrit, pour y mener. Les blocs Équipements
+   * correspondent chacun à un domaine ; ceux d'Événementiel, d'Études et
+   * d'Agro décrivent une famille du domaine unique de leur branche.
+   */
+  domain?: DomainSlug
   eyebrow: string
   title: string
   description: string
