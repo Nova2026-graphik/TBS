@@ -25,6 +25,7 @@ const props = defineProps<{
 const lignes = computed(() => splitDomainTitle(props.domain.title))
 
 const sizesFull = SIZES_FULL
+const sizesObjet = SIZES_DOMAIN_OBJECT
 const densitesFull = DENSITIES_FULL
 </script>
 
@@ -102,7 +103,7 @@ const densitesFull = DENSITIES_FULL
           :src="domain.thumbnail"
           alt=""
           preset="hero"
-          :sizes="sizesFull"
+          :sizes="sizesObjet"
           width="420"
           height="420"
           class="hidden size-[clamp(6rem,12vw,10rem)] shrink-0 object-contain drop-shadow-[0_12px_28px_rgba(0,0,0,0.5)] md:block"

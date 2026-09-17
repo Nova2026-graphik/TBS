@@ -56,11 +56,18 @@ export const SIZES_QUARTER = buildSizes('50vw', { md: '33vw', lg: '25vw' })
 export const SIZES_THUMBNAIL = buildSizes('42px')
 
 /**
- * Planche-contact des en-têtes de page (`UiPageHero`). La bande occupe toute
- * la largeur en mobile et un tiers environ en bureau ; divisée par trois ou
- * quatre cadres, chaque vignette ne dépasse jamais 200 px de large.
+ * Objet détouré de l'en-tête d'un domaine (`DomainHero`).
+ *
+ * Il s'affiche en `clamp(6rem, 12vw, 10rem)` — 160 px au plus — et reste
+ * masqué sous `md`. Il était pourtant annoncé en `100vw` : le navigateur
+ * réclamait alors la variante du plein écran, soit 3072 px de large en
+ * densité double. Dix-neuf fois la largeur utile, pour un objet que la
+ * moitié des visiteurs ne voit même pas.
+ *
+ * 160 px couvre la plus grande taille rendue ; les descripteurs `w` laissent
+ * le navigateur appliquer lui-même la densité de l'écran.
  */
-export const SIZES_HERO_STRIP = buildSizes('33vw', { lg: '12vw' })
+export const SIZES_DOMAIN_OBJECT = buildSizes('160px')
 
 /** Visionneuse : pleine largeur en mobile, 80 % au-delà de `lg`. */
 export const SIZES_LIGHTBOX = buildSizes('100vw', { lg: '80vw' })
