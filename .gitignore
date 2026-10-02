@@ -31,5 +31,5 @@ playwright-report/
 blob-report/
 .playwright/
 
+# Déploiement
 .vercel
-.env*

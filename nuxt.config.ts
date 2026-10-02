@@ -273,6 +273,7 @@ export default defineNuxtConfig({
       headers: { ...enTetesStatiques, 'cache-control': 'public, max-age=2592000' },
     },
   },
+
   future: { compatibilityVersion: 4 },
 
   experimental: {
@@ -324,6 +325,29 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
     typeCheck: false,
+  },
+  /**
+   * `/sitemap.xml` : redirection **permanente** vers l'index.
+   *
+   * Le site étant bilingue, `@nuxtjs/sitemap` produit un index et deux
+   * sitemaps (`fr-TG.xml`, `en.xml`) ; `/sitemap.xml` n'existe pas en propre,
+   * et le module y pose lui-même une redirection — en 307, c'est-à-dire
+   * « temporaire ». Elle ne l'est pas : tant que le site reste bilingue,
+   * l'adresse ne reviendra pas. Une 301 dit la vérité, et transmet le
+   * capital de l'ancienne adresse plutôt que de le retenir.
+   *
+   * Le réglage passe par ce hook et non par `routeRules` : le module écrit
+   * `nuxt.options.nitro.routeRules['/sitemap.xml']` dans son propre `setup`,
+   * donc **après** la lecture de ce fichier, et écrasait la règle. Vérifié
+   * dans `.vercel/output/config.json` et sur le serveur Nitro.
+   */
+  hooks: {
+    'nitro:config': (nitroConfig) => {
+      nitroConfig.routeRules ??= {}
+      nitroConfig.routeRules['/sitemap.xml'] = {
+        redirect: { to: '/sitemap_index.xml', statusCode: 301 },
+      }
+    },
   },
 
   /**

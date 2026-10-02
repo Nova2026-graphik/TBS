@@ -31,7 +31,7 @@ const STEPS = [
   { name: 'Types', command: 'npm run typecheck' },
   { name: 'Tests unitaires', command: 'npm run test' },
   { name: 'Build', command: 'npm run build' },
-  { name: 'Audit de sécurité', command: 'npm audit --audit-level=high --omit=dev' },
+  { name: 'Audit de sécurité', command: 'npm run audit' },
 ]
 
 /** Le travail `parcours` du workflow, joué seulement sur demande. */
