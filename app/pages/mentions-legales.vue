@@ -6,145 +6,97 @@
  * capital, gérant — est obligatoire sur ses supports de communication.
  * Les valeurs encore attendues de TBS sont marquées en clair sur la page :
  * elles se renseignent dans `shared/utils/legalData.ts`.
+ *
+ * **Page bilingue.** Le document engage la société au regard du droit
+ * togolais : la version anglaise est une traduction de confort, et la page le
+ * dit en toutes lettres par le bandeau `legal.prevails`, qui renvoie au texte
+ * français. Le texte lui-même vit dans les fichiers de langue comme celui de
+ * toutes les autres pages — un document légal qu'on ne peut pas relire dans
+ * sa langue n'est pas lu du tout.
  */
 const info = useSiteInfo()
-const updatedAt = formatLegalDate(LEGAL_UPDATED_AT)
+const { t, locale } = useI18n()
+const anglais = computed(() => locale.value === 'en')
+const updatedAt = computed(() => formatLegalDate(LEGAL_UPDATED_AT, anglais.value ? 'en-GB' : 'fr-FR'))
 const identity = LEGAL_IDENTITY
 const host = LEGAL_HOST
 const pending = countPendingLegalFields(identity, host)
 
+/** Coordonnées réinjectées dans les phrases traduites, pas découpées en morceaux. */
+const contact = computed(() => ({
+  email: info.email,
+  phone: info.phoneDisplay,
+  phoneHref: info.phonePrimary,
+  phone2: info.phoneSecondaryDisplay,
+  phone2Href: info.phoneSecondary,
+}))
+
 usePageSeo({
-  title: 'Mentions légales',
-  description:
-    'Identification de TBS Distribution S.A.R.L : raison sociale, forme juridique, siège social, RCCM, NIF, gérant et hébergeur du site.',
+  title: t('seo.legalNotice.title'),
+  description: t('seo.legalNotice.description'),
   path: '/mentions-legales',
 })
 
-useBreadcrumbSchema([{ name: 'Mentions légales', path: '/mentions-legales' }])
-
-/**
- * Page française uniquement.
- *
- * Ce document engage la société au regard du droit togolais. Une traduction
- * non relue par un juriste ne serait pas un service mais une prise de risque :
- * la version anglaise renvoie donc ici, et le lien du pied de page reste
- * valide dans les deux langues.
- */
-defineI18nRoute({ locales: ['fr'] })
-
-/**
- * Planche-contact de l'en-tête : le siège, les bureaux d'où le site est publié,
- * puis une des photographies dont la page traite précisément la propriété.
- *
- * Le chapô annonce trois temps — qui édite, qui héberge, à qui appartiennent
- * les contenus — et l'hébergeur n'a pas d'image : ce n'est pas TBS, et la
- * photothèque n'a rien qui le dise honnêtement. La vignette du milieu montre
- * donc le directeur de la publication à son poste, ce que la page nomme juste
- * en dessous.
- */
-const HERO_MEDIA = [
-  { src: '/images/apropos-entrepot.jpg', subject: 'Le siège d\'Agôè-Démakpoè — l\'éditeur' },
-  { src: '/images/branche-etudes.jpg', subject: 'Les bureaux — la direction de la publication' },
-  { src: '/images/galerie-centre-de-table.jpg', subject: 'Une photographie du site — les contenus' },
-]
+useBreadcrumbSchema([{ name: t('footer.legal.mentions'), path: '/mentions-legales' }])
 </script>
 
 <template>
   <div>
     <UiPageHero
-      eyebrow="Mentions légales"
-      title="Mentions"
-      accent="légales"
-      lead="Qui édite ce site, qui l'héberge, et à qui appartiennent les contenus."
-      :media="HERO_MEDIA"
+      data-hors-impression
+      :eyebrow="$t('legal.notice.eyebrow')"
+      :title="$t('legal.notice.title')"
+      :accent="$t('legal.notice.accent')"
+      :lead="$t('legal.notice.lead')"
     />
 
     <section class="u-gutter u-section bg-white">
-      <p class="text-[0.6875rem] uppercase tracking-[0.16em] text-ink-mute">
-        Dernière mise à jour : {{ updatedAt }}
-      </p>
+      <div class="mx-auto flex max-w-[68ch] flex-wrap items-center justify-between gap-4">
+        <p class="max-w-[68ch] text-[0.6875rem] uppercase tracking-[0.16em] text-ink-mute">
+          {{ $t('legal.updatedAt', { date: updatedAt }) }}
+        </p>
+        <LegalTelechargement />
+      </div>
+
+      <LegalPrevaut v-if="anglais" />
 
       <!-- Bandeau de suivi : il disparaît de lui-même quand les dernières
            informations sont renseignées dans `shared/utils/legalData.ts`. -->
       <aside
         v-if="pending > 0"
-        class="mt-8 max-w-[72ch] border border-dashed border-warn-border bg-warn-surface p-5 text-[0.9375rem] leading-[1.7] text-warn-text"
+        class="mx-auto mt-8 max-w-[68ch] border border-dashed border-warn-border bg-warn-surface p-5 text-[0.9375rem] leading-[1.7] text-warn-text"
       >
-        <strong class="font-medium">
-          {{ pending }} information{{ pending > 1 ? 's' : '' }} manque{{ pending > 1 ? 'nt' : '' }} encore.
-        </strong>
-        Elles sont signalées ci-dessous et doivent être communiquées par TBS
-        avant la mise en ligne : identification au registre du commerce,
-        identification fiscale, capital, gérant et coordonnées de l'hébergeur.
+        <strong class="font-medium">{{ $t('legal.notice.pendingCount', { n: pending }, pending) }}</strong>
+        {{ $t('legal.notice.pendingBody') }}
       </aside>
 
-      <div class="u-prose mt-10">
-        <h2>Éditeur du site</h2>
+      <div data-impression class="u-prose mx-auto mt-10 max-w-[68ch]">
+        <h2>{{ $t('legal.notice.publisher') }}</h2>
         <LegalFields :fields="identity" />
-        <p>
-          Téléphone : <a :href="`tel:${info.phonePrimary}`">{{ info.phoneDisplay }}</a>
-          et <a :href="`tel:${info.phoneSecondary}`">{{ info.phoneSecondaryDisplay }}</a>.
-          Courriel : <a :href="`mailto:${info.email}`">{{ info.email }}</a>.
-        </p>
+        <LegalTexte :texte="$t('legal.notice.publisherContact', contact)" />
 
-        <h2>Directeur de la publication</h2>
-        <p>
-          Le gérant de TBS Distribution S.A.R.L, dont le nom figure au bloc
-          ci-dessus. Toute demande relative au contenu du site peut lui être
-          adressée à <a :href="`mailto:${info.email}`">{{ info.email }}</a>.
-        </p>
+        <h2>{{ $t('legal.notice.director') }}</h2>
+        <LegalTexte :texte="$t('legal.notice.directorBody', contact)" />
 
-        <h2>Hébergeur</h2>
-        <p>
-          Le site est un site statique servi par un serveur Node. Le prestataire
-          d'hébergement n'est pas encore arrêté ; ses coordonnées seront
-          publiées ici à la mise en ligne.
-        </p>
+        <h2>{{ $t('legal.notice.host') }}</h2>
+        <LegalTexte :texte="$t('legal.notice.hostBody')" />
         <LegalFields :fields="host" />
 
-        <h2>Propriété intellectuelle</h2>
-        <p>
-          La dénomination <strong>TBS Distribution</strong>, le logotype, la
-          charte graphique, les textes et la structure de ce site sont la
-          propriété de TBS Distribution S.A.R.L. Toute reproduction,
-          représentation ou adaptation, totale ou partielle, sans autorisation
-          écrite préalable est interdite.
-        </p>
-        <p>
-          Les demandes d'autorisation se font à
-          <a :href="`mailto:${info.email}`">{{ info.email }}</a>.
-        </p>
+        <h2>{{ $t('legal.notice.ip') }}</h2>
+        <LegalTexte :texte="$t('legal.notice.ipBody')" />
+        <LegalTexte :texte="$t('legal.notice.ipRequests', contact)" />
 
-        <h2>Crédits photographiques</h2>
-        <p>
-          Les photographies actuellement en ligne proviennent de la maquette du
-          site et sont issues de banques d'images. Elles seront remplacées par
-          des clichés des réalisations de TBS ; les crédits correspondants
-          seront alors publiés ici.
-        </p>
+        <h2>{{ $t('legal.notice.credits') }}</h2>
+        <LegalTexte :texte="$t('legal.notice.creditsBody')" />
 
-        <h2>Signaler une erreur</h2>
-        <p>
-          Une information inexacte sur cette page ? Écrivez à
-          <a :href="`mailto:${info.email}`">{{ info.email }}</a> ou appelez le
-          <a :href="`tel:${info.phonePrimary}`">{{ info.phoneDisplay }}</a>.
-          La correction est faite sans délai.
-        </p>
+        <h2>{{ $t('legal.notice.report') }}</h2>
+        <LegalTexte :texte="$t('legal.notice.reportBody', contact)" />
 
-        <h2>Autres documents</h2>
-        <ul>
-          <li>
-            <NuxtLinkLocale to="/conditions-de-location">Conditions de location</NuxtLinkLocale> —
-            devis, caution, livraison, annulation et responsabilité.
-          </li>
-          <li>
-            <NuxtLinkLocale to="/confidentialite">Politique de confidentialité</NuxtLinkLocale> —
-            données collectées par le formulaire de devis et droits associés.
-          </li>
-        </ul>
+        <h2>{{ $t('legal.notice.others') }}</h2>
+        <LegalListe cle="legal.notice.othersItems" />
       </div>
     </section>
 
-    <SharedCtaBanner />
+    <SharedCtaBanner data-hors-impression />
   </div>
 </template>

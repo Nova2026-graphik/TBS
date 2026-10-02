@@ -13,14 +13,15 @@ const switchLocalePath = useSwitchLocalePath()
  * Les langues autres que celle affichée — une seule, ici.
  *
  * `switchLocalePath` rend une **chaîne vide** sur une page qui n'existe pas
- * dans la langue visée : les trois pages légales et toute la rubrique
- * Conseils sont francophones. Le sélecteur devenait alors un `<a>` sans
- * `href` — depuis un article, on ne pouvait plus repasser à l'anglais du
- * tout, et le lien restait pourtant affiché et survolable.
+ * dans la langue visée. C'était le cas de toute la rubrique Conseils et des
+ * trois pages légales, depuis traduites : le sélecteur devenait alors un
+ * `<a>` sans `href` — depuis un article, on ne pouvait plus repasser à
+ * l'anglais du tout, et le lien restait pourtant affiché et survolable.
  *
- * On retombe sur l'accueil de la langue visée. Ce n'est pas la page
- * équivalente — il n'y en a pas — mais c'est une sortie honnête, et le
- * visiteur arrive dans la langue qu'il a demandée.
+ * Seul l'espace de suivi des devis reste francophone, mais le repli ne lui
+ * est pas réservé : on retombe sur l'accueil de la langue visée. Ce n'est pas
+ * la page équivalente — il n'y en a pas — mais c'est une sortie honnête, et
+ * le visiteur arrive dans la langue qu'il a demandée.
  */
 const autresLangues = computed(() =>
   (locales.value as { code: string, name?: string, language?: string }[])

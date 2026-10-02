@@ -23,7 +23,7 @@ const branchLinks = computed(() => [
 
 const { t } = useI18n()
 
-/** Cf. `useLienLocalise` : les trois pages légales n'existent qu'en français. */
+/** Cf. `useLienLocalise` : une entrée dont la page manque dans la langue courante. */
 const lienLocalise = useLienLocalise()
 
 const pageLinks = computed(() => [
@@ -51,10 +51,11 @@ const socialLinks = [
 ]
 
 /**
- * Les pages légales n'existent qu'en français : elles engagent la société au
- * regard du droit togolais. Le lien reste affiché en version anglaise, mais il
- * ramène au document français — mieux vaut un texte valable dans une langue
- * qu'une traduction non relue par un juriste.
+ * Les trois documents légaux existent désormais dans les deux langues. La
+ * version anglaise porte en tête l'avertissement d'usage : elle est fournie
+ * pour la lecture, c'est le texte français qui engage la société au regard du
+ * droit togolais. `lienLocalise` reste en place — il ne coûte rien et couvre
+ * le jour où une page légale s'ajouterait sans traduction.
  */
 const legalLinks = computed(() => [
   { key: 'mentions', to: '/mentions-legales' },
