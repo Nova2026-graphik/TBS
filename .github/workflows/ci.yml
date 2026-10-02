@@ -58,9 +58,12 @@ jobs:
       - name: Build
         run: npm run build
 
-      # `--omit=dev` : seules comptent les dépendances réellement servies.
+      # `scripts/audit.mjs` plutôt que `npm audit` nu : il porte la seule
+      # dérogation du dépôt — un avis sans correctif amont, sur un paquet que
+      # la production n'exécute pas — avec son motif, et il échoue le jour où
+      # cet avis disparaît. Une dérogation muette survivrait à son motif.
       - name: Audit de sécurité
-        run: npm audit --audit-level=high --omit=dev
+        run: npm run audit
 
       - name: Conserver la sortie du build
         uses: actions/upload-artifact@v7
