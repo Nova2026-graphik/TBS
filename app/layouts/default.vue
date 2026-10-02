@@ -11,6 +11,15 @@ useOrganizationSchema()
  * sites sans rapport plutôt que deux versions d'un même site.
  */
 useHead(useLocaleHead({ seo: true }))
+
+/**
+ * Retour en arrière, sur toutes les pages **sauf l'accueil** — où il n'y a
+ * rien derrière, et où un lien de remontée ne désignerait que la page qu'on
+ * regarde. Posé ici plutôt que dans chaque page : une page ajoutée demain
+ * l'obtient sans y penser, et aucune ne peut l'oublier.
+ */
+const route = useRoute()
+const estAccueil = computed(() => route.path.replace(/^\/en(?=\/|$)/, '').replace(/\/$/, '') === '')
 </script>
 
 <template>
@@ -27,6 +36,7 @@ useHead(useLocaleHead({ seo: true }))
     <AppHeader />
 
     <main id="contenu" class="flex-1">
+      <UiRetour v-if="!estAccueil" class="pt-3" />
       <slot />
     </main>
 

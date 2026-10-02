@@ -9,16 +9,31 @@ const info = useSiteInfo()
 const { t, locale, locales } = useI18n()
 const switchLocalePath = useSwitchLocalePath()
 
-/** Les langues autres que celle affichée — une seule, ici. */
+/**
+ * Les langues autres que celle affichée — une seule, ici.
+ *
+ * `switchLocalePath` rend une **chaîne vide** sur une page qui n'existe pas
+ * dans la langue visée : les trois pages légales et toute la rubrique
+ * Conseils sont francophones. Le sélecteur devenait alors un `<a>` sans
+ * `href` — depuis un article, on ne pouvait plus repasser à l'anglais du
+ * tout, et le lien restait pourtant affiché et survolable.
+ *
+ * On retombe sur l'accueil de la langue visée. Ce n'est pas la page
+ * équivalente — il n'y en a pas — mais c'est une sortie honnête, et le
+ * visiteur arrive dans la langue qu'il a demandée.
+ */
 const autresLangues = computed(() =>
   (locales.value as { code: string, name?: string, language?: string }[])
     .filter(l => l.code !== locale.value)
-    .map(l => ({
-      code: l.code,
-      name: l.name ?? l.code,
-      language: l.language ?? l.code,
-      chemin: switchLocalePath(l.code as 'fr' | 'en'),
-    })),
+    .map((l) => {
+      const code = l.code as 'fr' | 'en'
+      return {
+        code,
+        name: l.name ?? code,
+        language: l.language ?? code,
+        chemin: switchLocalePath(code) || (code === 'fr' ? '/' : `/${code}`),
+      }
+    }),
 )
 
 /**

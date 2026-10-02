@@ -35,7 +35,8 @@
     "hoursSunday": "Dimanche",
     "hoursSundayTime": "sur rendez-vous",
     "whatsappMessage": "Bonjour TBS, je souhaite un devis pour…",
-    "skipToContent": "Aller au contenu"
+    "skipToContent": "Aller au contenu",
+    "back": "Retour"
   },
   "topbar": {
     "branches": {
