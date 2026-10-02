@@ -20,9 +20,10 @@ Quatre branches : **TBS Équipements**, **TBS Events**,
 
 > **État du projet** — audit complet du 2 octobre 2026 :
 > [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md). L'application se
-> construit et passe ses 222 tests (141 unitaires, 81 parcours) ; trois
-> commandes de vérification sont en revanche à réparer, le détail et les
-> correctifs sont dans l'audit.
+> construit et passe ses 227 tests : 146 unitaires et 81 parcours de bout en
+> bout. `npm ci`, `npm run lint` et `npm run typecheck`, qui échouaient au
+> relevé, sont réparés. Reste `npm audit` et six points mineurs, détaillés
+> dans l'audit.
 
 ---
 
@@ -601,8 +602,31 @@ performance.
 
 - Titre, description, Open Graph, Twitter Card et URL canonique par page.
 - JSON-LD `LocalBusiness` (adresse, horaires, zone desservie, offres),
-  `FAQPage` et `BreadcrumbList`.
+  `FAQPage`, `BreadcrumbList` et `Article`.
 - `sitemap.xml` et `robots.txt` générés.
+
+#### Données structurées : toujours passer par `serialiserJsonLd()`
+
+Le JSON-LD voyage dans le corps d'un `<script type="application/ld+json">`, et
+`JSON.stringify` **n'échappe pas `<`**. Une chaîne contenant `</script>` ferme
+donc la balise, et la suite est interprétée comme du balisage.
+
+Ce n'est pas théorique ici : le `FAQPage` est alimenté par la table
+`faq_items`, et l'édition du contenu sans redéploiement est une fonctionnalité
+du projet. Une réponse de FAQ saisie depuis le back-office serait sinon
+injectée dans toutes les pages qui la portent.
+
+`shared/utils/jsonLd.ts` règle le cas en une ligne, et les quatre points
+d'injection l'appellent :
+
+```ts
+import { serialiserJsonLd } from '#shared/utils/jsonLd'
+
+useHead({ script: [{ type: 'application/ld+json', innerHTML: serialiserJsonLd(schema) }] })
+```
+
+**Un nouveau bloc JSON-LD passe par elle, jamais par `JSON.stringify` nu.**
+`tests/unit/jsonLd.spec.ts` garde la règle.
 
 ### Fonctionnel
 
@@ -799,10 +823,10 @@ les exécutions repartiront.
 | `npm run test:e2e` | Parcours de bout en bout (Playwright) |
 | `npm run photos:check` | Noms, orientations et proportions de `public/images` — cf. `docs/reportage-photo.md` |
 
-> ⚠ `npm run lint` et `npm run typecheck` **ne s'exécutent plus** depuis le
-> passage de `typescript` en `^7.0.2` : ni `vue-tsc` 3.x ni
-> `@typescript-eslint` ne supportent encore cette version. Les deux repartent
-> en redescendant la dépendance à `^5.9.0` — voir
+> `npm run lint` et `npm run typecheck` ont cessé de s'exécuter le temps que
+> `typescript` est resté en `^7.0.2` — ni `vue-tsc` 3.x ni `@typescript-eslint`
+> ne supportent encore cette version. La dépendance est revenue à `^5.9.0` et
+> les deux rendent 0 erreur. Voir
 > [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md), §2.2 à §2.4.
 
 ### Lint
@@ -822,7 +846,7 @@ Deux règles de mise en forme des gabarits sont désactivées, avec le motif
 
 ### Tests unitaires
 
-`tests/unit/`, en environnement Node — **15 suites, 141 tests, 1,7 s**. Elles
+`tests/unit/`, en environnement Node — **16 suites, 146 tests, 1,8 s**. Elles
 portent sur des modules purs ; monter un environnement Nuxt complet coûterait
 une minute par exécution sans rien apprendre de neuf.
 
@@ -838,6 +862,7 @@ les coordonnées de l'entrepôt.
 | `imageSizes.spec.ts` | Les chaînes `sizes`, dont aucun jeton ne doit être nu — le bug a déjà coûté cher |
 | `clientIp.spec.ts` | L'adresse du client : en-tête ignoré sans proxy déclaré, `X-Forwarded-For` lu par la droite, normalisation des formes d'une même adresse |
 | `rateLimit.spec.ts` | Le quota horaire : fenêtre glissante, comptes séparés par adresse, repli en mémoire qui ne s'ouvre pas quand la base tousse |
+| `jsonLd.spec.ts` | L'échappement du JSON-LD : un `</script>` venu de la base ne peut pas fermer la balise — cf. « Données structurées » |
 
 ### Tests de bout en bout
 
@@ -1295,25 +1320,25 @@ npm run build
 npm audit --omit=dev
 ```
 
-> ### ⚠ Trois de ces vérifications ne s'exécutent plus
->
-> Relevé le 2 octobre 2026, détail dans
-> [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md) :
->
-> | Commande | État | Cause |
-> | --- | --- | --- |
-> | `npm ci` | ✖ | verrou désynchronisé — **corrigé**, le verrou a été régénéré |
-> | `npm run lint` | ✖ | `ts-api-utils` lit une API interne que TypeScript 7 ne publie plus |
-> | `npm run typecheck` | ✖ | `vue-tsc` charge `typescript/lib/tsc`, retiré en TypeScript 7 |
-> | `npm audit` | ✖ | 19 avis, dont 13 « high » |
-> | `npm test` | ✔ | 141 tests, 15 suites |
-> | `npm run build` | ✔ | 2 165 routes pré-rendues |
-> | `npm run test:e2e` | ✔ | 81 parcours, bureau et mobile |
->
-> Lint et typecheck tiennent à **une seule ligne** de `package.json` :
-> `typescript` est déclaré en `^7.0.2`, que ni `vue-tsc` 3.x ni
-> `@typescript-eslint` ne supportent encore. Redescendre à `^5.9.0` les rend
-> tous les deux. L'audit détaille le reste.
+État relevé le 2 octobre 2026, détail dans
+[`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md) :
+
+| Commande | État | Note |
+| --- | --- | --- |
+| `npm ci` | ✔ | le verrou, désynchronisé, a été régénéré |
+| `npm run lint` | ✔ | 0 erreur |
+| `npm run typecheck` | ✔ | 0 erreur |
+| `npm test` | ✔ | 146 tests, 16 suites |
+| `npm run build` | ✔ | 2 165 routes pré-rendues |
+| `npm run test:e2e` | ✔ | 81 parcours, bureau et mobile |
+| `npm audit` | ✖ | 19 avis, dont 13 « high » — voir l'audit, §2.5 |
+
+> **Pourquoi `typescript` reste en `^5.9`.** La dépendance avait été montée en
+> `^7.0.2`, que ni `vue-tsc` 3.x ni `@typescript-eslint` ne supportent encore :
+> `ts-api-utils` y lisait une API interne que TypeScript 7 ne publie plus, et
+> `vue-tsc` y cherchait `typescript/lib/tsc`, retiré. Lint et typecheck
+> plantaient tous les deux au chargement, sans analyser un seul fichier. À
+> remonter le jour où l'amont annonce TypeScript 7 — pas avant.
 
 En-têtes de sécurité, sur le build de production :
 
