@@ -12,10 +12,12 @@
 const { t } = useI18n()
 
 /**
- * `useLienLocalise` et non `localePath` seul : la rubrique Conseils n'existe
- * qu'en français, et `localePath('/conseils')` rend une chaîne vide en
- * anglais — l'entrée du menu devenait un `<a>` sans `href`. Le composable
- * renvoie alors vers la version française en annonçant la langue.
+ * `useLienLocalise` et non `localePath` seul : une page absente de la langue
+ * courante donne une chaîne vide, et l'entrée du menu devient un `<a>` sans
+ * `href`. Le composable renvoie alors vers la version française en annonçant
+ * la langue. Toutes les entrées du menu existent aujourd'hui dans les deux
+ * langues ; la garde reste, car la prochaine page francophone ne préviendra
+ * pas.
  */
 const lienLocalise = useLienLocalise()
 

@@ -4,14 +4,14 @@ Site vitrine pour TBS Distribution (Agôè-Démakpoè, Lomé — Togo), réalis�
 **Nuxt 4 + TypeScript**, à partir de la maquette
 `TBS Site 6 Pages - offline2.html`.
 
-Les six pages de la maquette en font **cinquante-sept** au pré-rendu :
+Les six pages de la maquette en font **soixante-cinq** au pré-rendu :
 
 | | Pages |
 | --- | --- |
 | Français — les six d'origine, les trois pages légales, l'index Conseils | 10 |
 | Articles de la rubrique Conseils | 7 |
 | Pages de domaine de la galerie (`/galerie/<branche>/<domaine>`) | 17 |
-| Anglais sous `/en/` — six pages et dix-sept domaines | 23 |
+| Anglais sous `/en/` — six pages, l'index Conseils et ses sept articles, dix-sept domaines | 31 |
 
 L'espace de suivi des devis, `/admin`, reste hors index et hors pré-rendu.
 
@@ -426,6 +426,7 @@ design/                    Maquette source + plaquettes commerciales (documentat
 | `shared/` | Types et données partagés client / serveur |
 | `i18n/locales/` | `fr.json` et `en.json` — voir [Version anglaise](#version-anglaise) |
 | `content/conseils/` | Les sept articles de la rubrique Conseils, en Markdown |
+| `content/en/conseils/` | Leur version anglaise — un fichier de même nom pour chacun |
 | `tests/` | `unit/` (Vitest) et `e2e/` (Playwright) — voir [Qualité](#qualité) |
 | `scripts/` | Outillage hors build — vérification locale, empreintes CSP, icônes, crochets |
 | `docs/` | Notes de travail destinées à TBS — cahier de tournage photo, crédits d'images, captures, audit |
@@ -1032,10 +1033,6 @@ de `quote_requests` reste comparable d'une ligne à l'autre.
 **Les trois pages légales.** Elles engagent la société au regard du droit
 togolais ; une traduction non relue par un juriste serait une prise de risque,
 pas un service.
-
-**La rubrique Conseils.** Ses articles visent des requêtes locales — « combien
-de chaises pour 300 invités », « prix location vaisselle mariage Lomé ». Les
-traduire relèverait d'une décision éditoriale à part.
 
 **L'espace de suivi des devis.** Interne, et le doubler créerait des URL à
 indexer pour des pages qui n'ont pas à l'être.

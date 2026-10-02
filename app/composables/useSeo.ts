@@ -189,9 +189,19 @@ export function useFaqSchema(items: MaybeRefOrGetter<FaqItem[]>) {
   })
 }
 
-/** JSON-LD BreadcrumbList. */
+/**
+ * JSON-LD BreadcrumbList.
+ *
+ * Les chemins reçus ne portent **pas** le préfixe de langue — les appelants
+ * donnent `/conseils`, pas `/en/conseils`. `localePath` l'ajoute : sans lui,
+ * le fil d'Ariane d'une page anglaise désignait les URL françaises, et
+ * annonçait donc à un moteur un chemin de navigation qui n'existe pas dans
+ * cette langue.
+ */
 export function useBreadcrumbSchema(trail: { name: string, path: string }[]) {
   const { public: cfg } = useRuntimeConfig()
+  const { t } = useI18n()
+  const localePath = useLocalePath()
 
   useHead({
     script: [
@@ -200,11 +210,11 @@ export function useBreadcrumbSchema(trail: { name: string, path: string }[]) {
         innerHTML: serialiserJsonLd({
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
-          'itemListElement': [{ name: 'Accueil', path: '/' }, ...trail].map((item, i) => ({
+          'itemListElement': [{ name: t('nav.home'), path: '/' }, ...trail].map((item, i) => ({
             '@type': 'ListItem',
             'position': i + 1,
             'name': item.name,
-            'item': `${cfg.siteUrl}${item.path}`,
+            'item': `${cfg.siteUrl}${localePath(item.path)}`,
           })),
         }),
       },

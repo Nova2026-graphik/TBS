@@ -21,31 +21,37 @@
  */
 const route = useRoute()
 const router = useRouter()
+const { t } = useI18n()
 
-const { data: articles } = await useAsyncData('conseils', () =>
-  queryCollection('conseils').order('publishedAt', 'DESC').all(),
+/** Collection, préfixe, libellés de thème et format de date — cf. le composable. */
+const { collection, libelleTheme, dateLisible } = useConseils()
+
+const { data: articles } = await useAsyncData(
+  () => `conseils-${collection.value}`,
+  () => queryCollection(collection.value).order('publishedAt', 'DESC').all(),
+  { watch: [collection] },
 )
 
 // ── Filtres par thème ───────────────────────────────────────────────────────
 
 /**
- * Le thème en URL est un slug ; la catégorie de l'article est un libellé.
- * La table tient les deux, dans l'ordre d'affichage.
+ * Le thème en URL est un slug ; la catégorie de l'article est une clé de
+ * données, en français dans les deux langues. La table tient les deux, dans
+ * l'ordre d'affichage, et `libelleTheme` la traduit au rendu.
  */
-const THEMES = [
-  { slug: 'reception', category: 'Réception' },
-  { slug: 'equipements', category: 'Équipements' },
-  { slug: 'appels-d-offres', category: 'Appels d’offres' },
-  { slug: 'agro', category: 'Agro' },
-] as const
+const THEMES = THEMES_CONSEILS
 
 /** Effectif par thème, compté ; un thème sans article ne s'affiche pas. */
 const effectifs = computed(() => effectifsPar(articles.value ?? [], a => a.category))
 
 const filtres = computed(() =>
   THEMES
-    .map(t => ({ ...t, count: effectifs.value[t.category] ?? 0 }))
-    .filter(t => t.count > 0),
+    .map(theme => ({
+      ...theme,
+      libelle: libelleTheme(theme.category),
+      count: effectifs.value[theme.category] ?? 0,
+    }))
+    .filter(theme => theme.count > 0),
 )
 
 const themeActif = computed(() => {
@@ -75,39 +81,21 @@ const sizesThird = SIZES_THIRD_MD
 const info = useSiteInfo()
 
 usePageSeo({
-  title: 'Conseils — organiser, équiper, chiffrer',
-  description:
-    'Combien de chaises pour 300 invités, quel rétroplanning pour un mariage à Lomé, comment répondre à un appel d’offres public au Togo : les repères de TBS Distribution, chiffrés et vérifiés sur le terrain.',
+  title: t('advice.seoTitle'),
+  description: t('advice.seoDescription'),
   path: '/conseils',
 })
 
-useBreadcrumbSchema([{ name: 'Conseils', path: '/conseils' }])
-
-function dateLisible(valeur: string) {
-  return new Date(valeur).toLocaleDateString('fr-FR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-}
-
-/**
- * Rubrique française uniquement.
- *
- * Les articles visent des requêtes locales — « combien de chaises pour 300
- * invités », « prix location vaisselle mariage Lomé ». Les traduire relèverait
- * d'une décision éditoriale à part, pas d'un miroir mécanique.
- */
-defineI18nRoute({ locales: ['fr'] })
+useBreadcrumbSchema([{ name: t('advice.eyebrow'), path: '/conseils' }])
 </script>
 
 <template>
   <div>
     <UiPageHero
-      eyebrow="Conseils"
-      title="Ce que nous savons,"
-      accent="mis à votre disposition"
-      lead="Des repères chiffrés, tirés de dix ans de montages de salle et de livraisons : quantités, délais, pièces à réunir. De quoi préparer votre projet avant même de nous appeler."
+      :eyebrow="$t('advice.eyebrow')"
+      :title="$t('advice.title')"
+      :accent="$t('advice.accent')"
+      :lead="$t('advice.lead')"
       image="/images/galerie-seminaire.jpg"
       :height="340"
     >
@@ -120,7 +108,7 @@ defineI18nRoute({ locales: ['fr'] })
           :class="!themeActif ? 'border-white bg-white text-ink' : 'border-white/40 text-white hover:border-white'"
           @click="setTheme(null)"
         >
-          Tous <span class="font-normal opacity-60">{{ (articles ?? []).length }}</span>
+          {{ $t('advice.all') }} <span class="font-normal opacity-60">{{ (articles ?? []).length }}</span>
         </button>
         <button
           v-for="filtre in filtres"
@@ -131,7 +119,7 @@ defineI18nRoute({ locales: ['fr'] })
           :class="themeActif?.slug === filtre.slug ? 'border-white bg-white text-ink' : 'border-white/40 text-white hover:border-white'"
           @click="setTheme(filtre.slug)"
         >
-          {{ filtre.category }} <span class="font-normal opacity-60">{{ filtre.count }}</span>
+          {{ filtre.libelle }} <span class="font-normal opacity-60">{{ filtre.count }}</span>
         </button>
       </div>
     </UiPageHero>
@@ -161,11 +149,11 @@ defineI18nRoute({ locales: ['fr'] })
             v-if="aLaUne.calculator"
             class="mb-3.5 inline-block bg-ink px-2.5 py-1.5 text-[0.625rem] uppercase tracking-[0.18em] text-white max-lg:text-xs max-lg:tracking-[0.14em]"
           >
-            Avec calculateur
+            {{ $t('advice.withCalculator') }}
           </span>
           <p class="text-[0.65625rem] uppercase tracking-[0.18em] text-ink-mute max-lg:text-xs max-lg:tracking-[0.14em]">
-            {{ aLaUne.category }} · <time :datetime="aLaUne.publishedAt">{{ dateLisible(aLaUne.publishedAt) }}</time>
-            · {{ aLaUne.readingTime }} min de lecture
+            {{ libelleTheme(aLaUne.category) }} · <time :datetime="aLaUne.publishedAt">{{ dateLisible(aLaUne.publishedAt) }}</time>
+            · {{ $t('advice.readingTime', { n: aLaUne.readingTime }) }}
           </p>
           <h2 class="mt-2.5 max-w-[22ch] font-display text-[clamp(1.75rem,3vw,2.375rem)] leading-[1.15] text-ink">
             <NuxtLink :to="aLaUne.path" class="transition-colors duration-500 hover:text-gold">{{ aLaUne.title }}</NuxtLink>
@@ -173,7 +161,7 @@ defineI18nRoute({ locales: ['fr'] })
           <p class="mb-[1.125rem] mt-3.5 max-w-[54ch] text-[0.9375rem] leading-[1.7] text-ink-soft">
             {{ aLaUne.description }}
           </p>
-          <UiButton :to="aLaUne.path">{{ aLaUne.calculator ? 'Lire et calculer' : 'Lire' }}</UiButton>
+          <UiButton :to="aLaUne.path">{{ aLaUne.calculator ? $t('advice.readAndCalculate') : $t('advice.read') }}</UiButton>
         </div>
       </article>
 
@@ -194,8 +182,8 @@ defineI18nRoute({ locales: ['fr'] })
               />
             </NuxtLink>
             <p class="mb-1.5 mt-3.5 flex flex-wrap justify-between gap-x-3 text-[0.625rem] uppercase tracking-[0.18em] text-ink-mute max-lg:text-xs max-lg:tracking-[0.14em]">
-              <span class="text-gold">{{ article.category }}</span>
-              <span><time :datetime="article.publishedAt">{{ dateLisible(article.publishedAt) }}</time> · {{ article.readingTime }} min</span>
+              <span class="text-gold">{{ libelleTheme(article.category) }}</span>
+              <span><time :datetime="article.publishedAt">{{ dateLisible(article.publishedAt) }}</time> · {{ $t('advice.readingTimeShort', { n: article.readingTime }) }}</span>
             </p>
             <h3 class="font-display text-[1.4375rem] leading-[1.2] text-ink">
               <NuxtLink :to="article.path" class="inline-block transition-colors duration-500 group-hover:text-gold max-lg:py-2.5">
@@ -204,14 +192,14 @@ defineI18nRoute({ locales: ['fr'] })
             </h3>
             <p class="mb-3 mt-2 flex-1 text-[0.84375rem] leading-[1.6] text-ink-soft">{{ article.description }}</p>
             <NuxtLink :to="article.path" class="u-link-underline self-start">
-              Lire<span class="sr-only"> — {{ article.shortTitle ?? article.title }}</span>
+              {{ $t('advice.read') }}<span class="sr-only"> — {{ article.shortTitle ?? article.title }}</span>
             </NuxtLink>
           </article>
         </li>
       </ul>
 
       <p v-else-if="!aLaUne" class="mt-10 text-[0.9375rem] text-ink-soft">
-        Aucun conseil publié sur ce thème pour le moment.
+        {{ $t('advice.empty') }}
       </p>
 
       <!-- ── Une porte d'entrée vers la question ───────────────────────── -->
@@ -220,8 +208,8 @@ defineI18nRoute({ locales: ['fr'] })
         class="mt-14 flex flex-wrap items-center justify-between gap-5 border border-ink/12 bg-sand px-[1.625rem] py-[1.625rem]"
       >
         <div class="min-w-0">
-          <h2 class="font-display text-[1.625rem] leading-[1.2] text-ink">Vous cherchez un repère qui n'est pas ici ?</h2>
-          <p class="mt-1.5 text-sm text-ink-soft">Posez la question : si elle revient souvent, elle devient un conseil publié.</p>
+          <h2 class="font-display text-[1.625rem] leading-[1.2] text-ink">{{ $t('advice.askTitle') }}</h2>
+          <p class="mt-1.5 text-sm text-ink-soft">{{ $t('advice.askText') }}</p>
         </div>
         <div class="flex flex-wrap gap-3">
           <a
@@ -232,7 +220,7 @@ defineI18nRoute({ locales: ['fr'] })
           >
             {{ $t('common.whatsapp') }}
           </a>
-          <UiButton to="/contact" variant="ghost">Nous écrire</UiButton>
+          <UiButton to="/contact" variant="ghost">{{ $t('common.writeUs') }}</UiButton>
         </div>
       </div>
     </section>

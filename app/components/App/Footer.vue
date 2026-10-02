@@ -23,7 +23,7 @@ const branchLinks = computed(() => [
 
 const { t } = useI18n()
 
-/** Cf. `useLienLocalise` : Conseils n'existe qu'en français. */
+/** Cf. `useLienLocalise` : les trois pages légales n'existent qu'en français. */
 const lienLocalise = useLienLocalise()
 
 const pageLinks = computed(() => [

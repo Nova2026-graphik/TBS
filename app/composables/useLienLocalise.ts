@@ -1,23 +1,23 @@
 /**
  * Liens vers des pages qui n'existent pas dans toutes les langues.
  *
- * Trois pages légales et la rubrique Conseils sont volontairement
- * francophones — `defineI18nRoute({ locales: ['fr'] })`. Pour celles-là,
- * `localePath()` et `switchLocalePath()` rendent une **chaîne vide** dans
- * l'autre langue, et `NuxtLink` fabrique alors une balise `<a>` **sans
- * `href`** : un lien qui a l'air d'un lien, se survole comme un lien, et ne
- * mène nulle part.
+ * Les trois pages légales sont volontairement francophones —
+ * `defineI18nRoute({ locales: ['fr'] })` : elles engagent la société au regard
+ * du droit togolais, et une traduction non relue par un juriste vaudrait moins
+ * que le texte d'origine. Pour celles-là, `localePath()` et
+ * `switchLocalePath()` rendent une **chaîne vide** dans l'autre langue, et
+ * `NuxtLink` fabrique alors une balise `<a>` **sans `href`** : un lien qui a
+ * l'air d'un lien, se survole comme un lien, et ne mène nulle part.
  *
- * Le site en portait trois à la fois : l'entrée « Advice » du menu anglais,
- * la même dans le pied de page, et le sélecteur de langue dès qu'on était sur
- * une page francophone — en anglais, la rubrique Conseils était donc
- * injoignable, et depuis un article on ne pouvait plus repasser à l'anglais.
+ * Le site en portait plusieurs à la fois : les trois entrées légales du pied
+ * de page anglais, l'entrée « Advice » du menu — la rubrique Conseils était
+ * alors francophone elle aussi, elle est depuis traduite — et le sélecteur de
+ * langue dès qu'on se trouvait sur une page francophone, d'où l'impossibilité
+ * de repasser à l'anglais depuis un article.
  *
- * Plutôt que de masquer ces entrées — ce qui cacherait un contenu utile, écrit
- * pour une clientèle locale et que lisent aussi les anglophones installés au
- * Togo — on renvoie vers la version française en annonçant la langue. Un lien
- * qui change de langue et le dit vaut mieux qu'un lien absent, et bien mieux
- * qu'un lien mort.
+ * Plutôt que de masquer ces entrées, on renvoie vers la version française en
+ * annonçant la langue. Un lien qui change de langue et le dit vaut mieux qu'un
+ * lien absent, et bien mieux qu'un lien mort.
  */
 
 export interface LienLocalise {

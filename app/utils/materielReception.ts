@@ -10,10 +10,19 @@
  * Ce que le calcul produit reste une **estimation de départ**. Le plan de
  * salle réel dépend du lieu, du service et du déroulé ; c'est le rôle du devis
  * de le trancher, et l'interface le dit.
+ *
+ * **Le barème ne porte aucun texte.** Il rend des clés de traduction et leurs
+ * paramètres ; la langue est résolue au rendu par `resoudreLignes`. La
+ * rubrique Conseils existe dans les deux langues, et un libellé écrit en dur
+ * ici serait resté français dans l'article anglais qui embarque ce
+ * calculateur.
  */
 
 /** Format de réception, qui change tout le reste du calcul. */
 export type FormatReception = 'assis' | 'cocktail' | 'mixte'
+
+/** Traducteur injecté — `t` de vue-i18n, ou un substitut dans les tests. */
+export type Traduire = (cle: string, params?: Record<string, unknown>) => string
 
 export interface OptionsCalcul {
   invites: number
@@ -22,13 +31,25 @@ export interface OptionsCalcul {
   soiree: boolean
 }
 
-export interface LigneMateriel {
+/** Une ligne telle que le barème la produit : des clés, pas des phrases. */
+export interface LigneBareme {
   /** Identifiant stable, pour les tests et le pré-remplissage du devis. */
+  cle: string
+  quantite: number
+  libelleCle: string
+  libelleParams?: Record<string, number>
+  /** Ce qui justifie le nombre, affiché sous la ligne. */
+  regleCle: string
+  regleParams?: Record<string, number>
+  uniteCle: string
+}
+
+/** La même ligne, une fois les clés résolues dans la langue de la page. */
+export interface LigneMateriel {
   cle: string
   libelle: string
   quantite: number
   unite: string
-  /** Ce qui justifie le nombre, affiché sous la ligne. */
   regle: string
 }
 
@@ -54,7 +75,7 @@ function sieges(invites: number, format: FormatReception): number {
   return arrondi(invites * 1.05)
 }
 
-export function calculerMateriel({ invites, format, soiree }: OptionsCalcul): LigneMateriel[] {
+export function calculerMateriel({ invites, format, soiree }: OptionsCalcul): LigneBareme[] {
   if (!Number.isFinite(invites) || invites <= 0) return []
 
   const assis = format !== 'cocktail'
@@ -62,105 +83,110 @@ export function calculerMateriel({ invites, format, soiree }: OptionsCalcul): Li
   const tablesRondes = assis ? arrondi(invites / COUVERTS_PAR_TABLE) : 0
   const mangeDebout = format === 'assis' ? 0 : arrondi(invites / 12)
 
-  const lignes: LigneMateriel[] = [
+  const lignes: LigneBareme[] = [
     {
       cle: 'chaises',
-      libelle: 'Chaises',
       quantite: nbSieges,
-      unite: 'pièces',
-      regle: format === 'cocktail'
-        ? 'Un tiers des invités assis : en cocktail, on ne s’assoit pas tous en même temps'
-        : format === 'mixte'
-          ? 'Trois quarts des invités assis, le reste debout ou en lounge'
-          : 'Un siège par invité, plus 5 % — il y a toujours des accompagnants non annoncés',
+      libelleCle: 'calculator.items.chaises',
+      uniteCle: 'calculator.units.pieces',
+      regleCle: `calculator.rules.chaises-${format}`,
     },
   ]
 
   if (tablesRondes) {
     lignes.push({
       cle: 'tables-rondes',
-      libelle: `Tables rondes de ${COUVERTS_PAR_TABLE}`,
       quantite: tablesRondes,
-      unite: 'tables',
-      regle: `${COUVERTS_PAR_TABLE} couverts par table, le standard local`,
+      libelleCle: 'calculator.items.tables-rondes',
+      libelleParams: { n: COUVERTS_PAR_TABLE },
+      uniteCle: 'calculator.units.tables',
+      regleCle: 'calculator.rules.tables-rondes',
+      regleParams: { n: COUVERTS_PAR_TABLE },
     })
   }
 
   if (mangeDebout) {
     lignes.push({
       cle: 'mange-debout',
-      libelle: 'Mange-debout',
       quantite: mangeDebout,
-      unite: 'tables',
-      regle: 'Un mange-debout pour douze personnes en circulation',
+      libelleCle: 'calculator.items.mange-debout',
+      uniteCle: 'calculator.units.tables',
+      regleCle: 'calculator.rules.mange-debout',
     })
   }
 
   lignes.push({
     cle: 'nappes',
-    libelle: 'Nappes',
     quantite: tablesRondes + mangeDebout + arrondi(invites / 60),
-    unite: 'pièces',
-    regle: 'Une par table, plus les buffets et la table d’honneur',
+    libelleCle: 'calculator.items.nappes',
+    uniteCle: 'calculator.units.pieces',
+    regleCle: 'calculator.rules.nappes',
   })
 
   if (assis) {
     lignes.push({
       cle: 'assiettes',
-      libelle: 'Assiettes',
       quantite: arrondi(invites * 2.5 * MARGE_CASSE),
-      unite: 'pièces',
-      regle: 'Deux services et demi par convive — entrée, plat, dessert partagé — plus 10 % de casse',
+      libelleCle: 'calculator.items.assiettes',
+      uniteCle: 'calculator.units.pieces',
+      regleCle: 'calculator.rules.assiettes',
     })
     lignes.push({
       cle: 'couverts',
-      libelle: 'Couverts',
       quantite: arrondi(invites * 3 * MARGE_CASSE),
-      unite: 'pièces',
-      regle: 'Trois pièces par convive, plus 10 % de casse',
+      libelleCle: 'calculator.items.couverts',
+      uniteCle: 'calculator.units.pieces',
+      regleCle: 'calculator.rules.couverts',
     })
   }
 
   lignes.push({
     cle: 'verres',
-    libelle: 'Verres',
     quantite: arrondi(invites * (soiree ? 3.5 : 2.5) * MARGE_CASSE),
-    unite: 'pièces',
-    regle: soiree
-      ? 'Trois verres et demi par invité pour une soirée qui se prolonge, plus 10 % de casse'
-      : 'Deux verres et demi par invité, plus 10 % de casse',
+    libelleCle: 'calculator.items.verres',
+    uniteCle: 'calculator.units.pieces',
+    regleCle: soiree ? 'calculator.rules.verres-soiree' : 'calculator.rules.verres',
   })
 
   lignes.push({
     cle: 'serviettes',
-    libelle: 'Serviettes',
     quantite: arrondi(invites * 1.2),
-    unite: 'pièces',
-    regle: 'Une par invité, plus 20 % pour le service',
+    libelleCle: 'calculator.items.serviettes',
+    uniteCle: 'calculator.units.pieces',
+    regleCle: 'calculator.rules.serviettes',
   })
 
   /** Une tente de 100 m² abrite environ 80 personnes assises. */
   lignes.push({
     cle: 'tente',
-    libelle: 'Surface de tente',
     quantite: arrondi(invites * (assis ? 1.3 : 0.9)),
-    unite: 'm² si extérieur',
-    regle: assis
-      ? '1,3 m² par invité assis, circulation et service compris'
-      : '0,9 m² par invité debout',
+    libelleCle: 'calculator.items.tente',
+    uniteCle: 'calculator.units.sqmOutdoor',
+    regleCle: assis ? 'calculator.rules.tente-assis' : 'calculator.rules.tente-debout',
   })
 
   if (invites >= 150) {
     lignes.push({
       cle: 'sonorisation',
-      libelle: 'Sonorisation',
       quantite: invites >= 500 ? 2 : 1,
-      unite: 'ensemble(s)',
-      regle: 'Au-delà de 500 invités, deux points de diffusion valent mieux qu’un système poussé',
+      libelleCle: 'calculator.items.sonorisation',
+      uniteCle: 'calculator.units.sets',
+      regleCle: 'calculator.rules.sonorisation',
     })
   }
 
   return lignes
+}
+
+/** Résout les clés du barème dans la langue de la page. */
+export function resoudreLignes(bareme: LigneBareme[], t: Traduire): LigneMateriel[] {
+  return bareme.map(ligne => ({
+    cle: ligne.cle,
+    quantite: ligne.quantite,
+    libelle: t(ligne.libelleCle, ligne.libelleParams),
+    unite: t(ligne.uniteCle),
+    regle: t(ligne.regleCle, ligne.regleParams),
+  }))
 }
 
 /* ── Ajustements du visiteur ───────────────────────────────────────────────
@@ -230,11 +256,12 @@ export function aDesAjustements(ajustements: Ajustements, libres: LigneLibre[]):
   )
 }
 
-/** Réconcilie le barème, les ajustements et les articles ajoutés. */
+/** Réconcilie les lignes résolues, les ajustements et les articles ajoutés. */
 export function appliquerAjustements(
   base: LigneMateriel[],
   ajustements: Ajustements,
   libres: LigneLibre[] = [],
+  regleLibre = 'Ajouté par vos soins',
 ): LigneInventaire[] {
   const retirees = new Set(ajustements.retirees)
 
@@ -256,7 +283,7 @@ export function appliquerAjustements(
     libelle: ligne.libelle,
     quantite: normaliserQuantite(ligne.quantite),
     unite: ligne.unite,
-    regle: 'Ajouté par vos soins',
+    regle: regleLibre,
     quantiteCalculee: normaliserQuantite(ligne.quantite),
     ajustee: false,
     libre: true,
@@ -277,12 +304,19 @@ export function appliquerAjustements(
  * corrigerait un choix délibéré, ou raterait une contrainte que le client
  * avait pris la peine d'exprimer. La valeur calculée est rappelée entre
  * parenthèses, pour qu'il voie l'écart sans avoir à refaire le calcul.
+ *
+ * Le message part dans la langue de la page : c'est celle dans laquelle le
+ * client s'exprime, et celle dans laquelle il relira sa demande.
  */
-export function messageDevis(options: OptionsCalcul, lignes: LigneMateriel[]): string {
+export function messageDevis(
+  options: OptionsCalcul,
+  lignes: LigneMateriel[],
+  t: Traduire,
+): string {
   const formats: Record<FormatReception, string> = {
-    assis: 'dîner assis',
-    cocktail: 'cocktail debout',
-    mixte: 'format mixte (assis et debout)',
+    assis: t('calculator.quote.formatAssis'),
+    cocktail: t('calculator.quote.formatCocktail'),
+    mixte: t('calculator.quote.formatMixte'),
   }
 
   const inventaire = lignes
@@ -290,8 +324,10 @@ export function messageDevis(options: OptionsCalcul, lignes: LigneMateriel[]): s
       const base = `- ${ligne.libelle} : ${ligne.quantite} ${ligne.unite}`
       const detail = ligne as Partial<LigneInventaire>
 
-      if (detail.libre) return `${base} (ajouté par le client)`
-      if (detail.ajustee) return `${base} (ajusté par le client ; calcul : ${detail.quantiteCalculee})`
+      if (detail.libre) return `${base} (${t('calculator.quote.addedByClient')})`
+      if (detail.ajustee) {
+        return `${base} (${t('calculator.quote.adjusted', { n: detail.quantiteCalculee })})`
+      }
       return base
     })
     .join('\n')
@@ -302,15 +338,17 @@ export function messageDevis(options: OptionsCalcul, lignes: LigneMateriel[]): s
   })
 
   return [
-    `Estimation faite depuis le calculateur du site.`,
+    t('calculator.quote.intro'),
     ``,
-    `${options.invites} invités, ${formats[options.format]}${options.soiree ? ', avec soirée' : ''}.`,
+    t('calculator.quote.summary', {
+      n: options.invites,
+      format: formats[options.format],
+      evening: options.soiree ? t('calculator.quote.evening') : '',
+    }),
     ``,
     inventaire,
-    ...(retouche
-      ? [``, `J'ai ajusté certaines quantités : ce sont celles-là qui comptent.`]
-      : []),
+    ...(retouche ? [``, t('calculator.quote.note')] : []),
     ``,
-    `Merci de me confirmer les quantités et le prix.`,
+    t('calculator.quote.closing'),
   ].join('\n')
 }

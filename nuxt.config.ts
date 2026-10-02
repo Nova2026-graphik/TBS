@@ -387,10 +387,12 @@ export default defineNuxtConfig({
    * déterministe. Le choix passe par le sélecteur du bandeau supérieur, qui
    * est explicite et se voit.
    *
-   * Les trois pages légales et la rubrique Conseils n'existent qu'en
-   * français : les premières engagent la société au regard du droit togolais,
-   * la seconde vise une clientèle locale et se traduirait au prix d'une
-   * décision éditoriale à part.
+   * Seules les trois pages légales n'existent qu'en français : elles engagent
+   * la société au regard du droit togolais, et une traduction non relue par un
+   * juriste serait une prise de risque, pas un service. La rubrique Conseils,
+   * longtemps francophone pour la même raison d'économie, est désormais
+   * traduite — ses sept articles ont leur version anglaise dans
+   * `content/en/conseils/`.
    */
   i18n: {
     defaultLocale: 'fr',

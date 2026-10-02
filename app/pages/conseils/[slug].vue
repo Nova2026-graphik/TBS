@@ -10,17 +10,25 @@ import { serialiserJsonLd } from '#shared/utils/jsonLd'
  * personne ne l'aurait cherché.
  */
 const route = useRoute()
+const { t } = useI18n()
 
-const { data: article } = await useAsyncData(`conseil-${route.params.slug}`, () =>
-  queryCollection('conseils').path(`/conseils/${route.params.slug}`).first(),
+/** Collection, préfixe, libellés de thème et format de date — cf. le composable. */
+const { collection, basePath, langue, libelleTheme, dateLisible } = useConseils()
+
+const { data: article } = await useAsyncData(
+  () => `conseil-${collection.value}-${route.params.slug}`,
+  () => queryCollection(collection.value).path(`${basePath.value}/${route.params.slug}`).first(),
+  { watch: [collection] },
 )
 
 if (!article.value) {
-  throw createError({ statusCode: 404, statusMessage: 'Article introuvable', fatal: true })
+  throw createError({ statusCode: 404, statusMessage: t('advice.notFound'), fatal: true })
 }
 
-const { data: voisins } = await useAsyncData(`conseils-voisins-${route.params.slug}`, () =>
-  queryCollection('conseils').order('publishedAt', 'DESC').limit(4).all(),
+const { data: voisins } = await useAsyncData(
+  () => `conseils-voisins-${collection.value}-${route.params.slug}`,
+  () => queryCollection(collection.value).order('publishedAt', 'DESC').limit(4).all(),
+  { watch: [collection] },
 )
 
 const suite = computed(() =>
@@ -37,7 +45,7 @@ usePageSeo({
 })
 
 useBreadcrumbSchema([
-  { name: 'Conseils', path: '/conseils' },
+  { name: t('advice.eyebrow'), path: '/conseils' },
   { name: article.value!.shortTitle ?? article.value!.title, path: `/conseils/${route.params.slug}` },
 ])
 
@@ -59,35 +67,18 @@ useHead({
       'image': `${cfg.siteUrl}${article.value!.image}`,
       'datePublished': article.value!.publishedAt,
       'dateModified': article.value!.updatedAt ?? article.value!.publishedAt,
-      'inLanguage': 'fr',
+      'inLanguage': langue.value,
       'author': { '@type': 'Organization', 'name': cfg.siteName, 'url': cfg.siteUrl },
       'publisher': {
         '@type': 'Organization',
         'name': cfg.siteName,
         'logo': { '@type': 'ImageObject', 'url': `${cfg.siteUrl}/images/logo-tbs.png` },
       },
-      'mainEntityOfPage': `${cfg.siteUrl}/conseils/${route.params.slug}`,
+      'mainEntityOfPage': `${cfg.siteUrl}${basePath.value}/${route.params.slug}`,
     }),
     tagPriority: 'low',
   }],
 })
-
-function dateLisible(valeur: string) {
-  return new Date(valeur).toLocaleDateString('fr-FR', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-}
-
-/**
- * Rubrique française uniquement.
- *
- * Les articles visent des requêtes locales — « combien de chaises pour 300
- * invités », « prix location vaisselle mariage Lomé ». Les traduire relèverait
- * d'une décision éditoriale à part, pas d'un miroir mécanique.
- */
-defineI18nRoute({ locales: ['fr'] })
 </script>
 
 <template>
@@ -107,17 +98,17 @@ defineI18nRoute({ locales: ['fr'] })
       <div class="u-scrim-article absolute inset-0" />
 
       <div class="u-gutter absolute inset-0 flex flex-col justify-end gap-5 pb-[clamp(2rem,5vw,4rem)]">
-        <nav class="flex items-center gap-2.5 text-[0.6875rem] uppercase tracking-[0.16em] text-white/60" aria-label="Fil d'Ariane">
-          <NuxtLink to="/conseils" class="transition-colors hover:text-white">Conseils</NuxtLink>
+        <nav class="flex items-center gap-2.5 text-[0.6875rem] uppercase tracking-[0.16em] text-white/60" :aria-label="$t('common.breadcrumb')">
+          <NuxtLinkLocale to="/conseils" class="transition-colors hover:text-white">{{ $t('advice.eyebrow') }}</NuxtLinkLocale>
           <span aria-hidden="true">/</span>
-          <span class="text-cream">{{ article.category }}</span>
+          <span class="text-cream">{{ libelleTheme(article.category) }}</span>
         </nav>
 
         <h1 class="max-w-[24ch] text-h1 text-white">{{ article.title }}</h1>
 
         <p class="text-[0.6875rem] uppercase tracking-[0.16em] text-white/60">
           <time :datetime="article.publishedAt">{{ dateLisible(article.publishedAt) }}</time>
-          · {{ article.readingTime }} min de lecture
+          · {{ $t('advice.readingTime', { n: article.readingTime }) }}
         </p>
       </div>
     </section>
@@ -132,7 +123,7 @@ defineI18nRoute({ locales: ['fr'] })
     </section>
 
     <section v-if="suite.length" class="u-gutter u-section bg-sand">
-      <UiSectionHead eyebrow="À lire ensuite" title="D'autres repères" accent="utiles" />
+      <UiSectionHead :eyebrow="$t('advice.nextEyebrow')" :title="$t('advice.nextTitle')" :accent="$t('advice.nextAccent')" />
 
       <ul class="mt-[clamp(2rem,4vw,3.5rem)] grid gap-[clamp(1.75rem,3.5vw,3rem)] md:grid-cols-2">
         <li v-for="item in suite" :key="item.path">
