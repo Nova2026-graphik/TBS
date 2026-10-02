@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { pageInteractive } from './utils'
 
 /**
  * Le parcours qui rapporte : une demande de devis envoyée de bout en bout.
@@ -9,6 +10,7 @@ import { expect, test } from '@playwright/test'
 test.describe('demande de devis', () => {
   test('envoie une demande complète et affiche la confirmation', async ({ page }) => {
     await page.goto('/contact')
+    await pageInteractive(page)
 
     await page.getByLabel('Nom complet').fill('Akouvi Adjovi')
     await page.getByLabel('Téléphone').fill('+228 90 10 85 10')
@@ -24,6 +26,7 @@ test.describe('demande de devis', () => {
 
   test('signale les champs manquants sans quitter la page', async ({ page }) => {
     await page.goto('/contact')
+    await pageInteractive(page)
 
     await page.waitForTimeout(2500)
     await page.getByRole('button', { name: 'Envoyer ma demande' }).click()
@@ -45,6 +48,7 @@ test.describe('demande de devis', () => {
 
   test('le résumé d’erreurs reçoit le focus et mène au champ', async ({ page }) => {
     await page.goto('/contact')
+    await pageInteractive(page)
 
     await page.waitForTimeout(2500)
     await page.getByRole('button', { name: 'Envoyer ma demande' }).click()
@@ -59,6 +63,7 @@ test.describe('demande de devis', () => {
 
   test('accepte sans broncher un envoi qui remplit le champ piège', async ({ page }) => {
     await page.goto('/contact')
+    await pageInteractive(page)
 
     await page.getByLabel('Nom complet').fill('Robot Test')
     await page.getByLabel('Téléphone').fill('+228 90 10 85 10')

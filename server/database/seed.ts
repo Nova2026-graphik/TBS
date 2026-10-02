@@ -12,6 +12,7 @@ import * as schema from './schema'
 import {
   branches as branchesContent,
   domains as domainsContent,
+  equipment as equipmentContent,
   faqItems as faqContent,
   galleryItems as galleryContent,
   rentalCategories as categoriesContent,
@@ -30,6 +31,7 @@ async function seed() {
 
   console.log('→ Nettoyage des tables de contenu…')
   await db.delete(schema.serviceBlocks)
+  await db.delete(schema.equipment)
   await db.delete(schema.domains)
   await db.delete(schema.galleryItems)
   await db.delete(schema.rentalCategories)
@@ -68,6 +70,7 @@ async function seed() {
   await db.insert(schema.serviceBlocks).values(
     serviceBlocksContent.map((s, i) => ({
       branchSlug: s.branch,
+      domainSlug: s.domain,
       eyebrow: s.eyebrow,
       title: s.title,
       description: s.description,
@@ -81,9 +84,36 @@ async function seed() {
   console.log('→ Domaines d\'intervention…')
   await db.insert(schema.domains).values(
     domainsContent.map((d, i) => ({
+      slug: d.slug,
       branchSlug: d.branch,
       title: d.title,
       description: d.description,
+      intro: d.intro,
+      meta: d.meta,
+      image: d.image,
+      imageAlt: d.imageAlt,
+      thumbnail: d.thumbnail,
+      thumbnailHover: d.thumbnailHover,
+      families: d.families ?? [],
+      exampleNote: d.exampleNote,
+      medallion: d.medallion ?? false,
+      position: i,
+    })),
+  )
+
+  console.log('→ Références du catalogue…')
+  await db.insert(schema.equipment).values(
+    equipmentContent.map((e, i) => ({
+      domainSlug: e.domain,
+      name: e.name,
+      description: e.description,
+      specs: e.specs,
+      family: e.family,
+      kind: e.kind,
+      image: e.image,
+      imageHover: e.imageHover,
+      nonContractual: e.nonContractual ?? false,
+      source: e.source,
       position: i,
     })),
   )
@@ -96,6 +126,7 @@ async function seed() {
       location: g.location,
       category: g.category,
       branchSlug: g.branch,
+      domainSlug: g.domain,
       image: g.image,
       imageAlt: g.imageAlt,
       position: i,
@@ -116,6 +147,7 @@ async function seed() {
   await db.insert(schema.faqItems).values(
     faqContent.map((f, i) => ({
       ref: f.id,
+      branchSlug: f.branch,
       groupLabel: f.group,
       question: f.question,
       answer: f.answer,

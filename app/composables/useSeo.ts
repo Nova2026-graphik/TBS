@@ -6,6 +6,7 @@
  * Google exploite pour le knowledge panel et les résultats enrichis.
  */
 import type { FaqItem } from '#shared/types'
+import { serialiserJsonLd } from '#shared/utils/jsonLd'
 
 /**
  * Format imposé aux images sociales : 1200 × 630, le rapport 1,91:1 qu'attendent
@@ -33,9 +34,22 @@ interface PageSeoOptions {
 export function usePageSeo(options: PageSeoOptions) {
   const { public: cfg } = useRuntimeConfig()
   const route = useRoute()
+  const { locale, locales } = useI18n()
+  const localePath = useLocalePath()
 
-  const url = `${cfg.siteUrl}${options.path ?? route.path}`
+  /**
+   * L'URL canonique porte le préfixe de langue : sans lui, la version anglaise
+   * se déclarerait canonique de la page française et les deux entreraient en
+   * concurrence dans l'index.
+   */
+  const url = `${cfg.siteUrl}${localePath(options.path ?? route.path)}`
   const image = `${cfg.siteUrl}${options.image ?? '/og-image.jpg'}`
+
+  const langue = computed(() => {
+    const trouve = (locales.value as { code: string, language?: string }[])
+      .find(l => l.code === locale.value)
+    return (trouve?.language ?? 'fr-TG').replace('-', '_')
+  })
 
   useHead({
     link: [{ rel: 'canonical', href: url }],
@@ -54,7 +68,7 @@ export function usePageSeo(options: PageSeoOptions) {
     ogImageHeight: OG_IMAGE_HEIGHT,
     ogImageType: 'image/jpeg',
     ogSiteName: cfg.siteName,
-    ogLocale: 'fr_TG',
+    ogLocale: langue,
     twitterCard: 'summary_large_image',
     twitterTitle: options.title,
     twitterDescription: options.description,
@@ -66,6 +80,7 @@ export function usePageSeo(options: PageSeoOptions) {
 /** JSON-LD LocalBusiness — à poser une seule fois, dans le layout. */
 export function useOrganizationSchema() {
   const { public: cfg } = useRuntimeConfig()
+  const { tm, rt } = useI18n()
 
   const coords = parseCoordinates(cfg.geoLatitude, cfg.geoLongitude)
 
@@ -133,17 +148,21 @@ export function useOrganizationSchema() {
         'closes': '19:00',
       },
     ],
-    'makesOffer': [
-      'TBS Équipements — fourniture de matériels & équipements',
-      'TBS Events — location de matériel de réception',
-      'TBS Études & Conseils — études & prestations intellectuelles',
-      'TBS Agro — agriculture & agro-industrie',
-    ].map(name => ({ '@type': 'Offer', 'itemOffered': { '@type': 'Service', name } })),
+    /**
+     * Les quatre branches, dans la langue de la page. Elles reprennent les
+     * intitulés du formulaire de devis — mêmes mots des deux côtés, sans
+     * seconde liste à tenir à jour. La dernière entrée, « Plusieurs
+     * branches », n'est pas une offre.
+     */
+    'makesOffer': (tm('form.branches') as unknown[])
+      .slice(0, 4)
+      .map(entree => rt(entree as string))
+      .map(name => ({ '@type': 'Offer', 'itemOffered': { '@type': 'Service', name } })),
   }
 
   useHead({
     script: [
-      { type: 'application/ld+json', innerHTML: JSON.stringify(schema), tagPriority: 'low' },
+      { type: 'application/ld+json', innerHTML: serialiserJsonLd(schema), tagPriority: 'low' },
     ],
   })
 }
@@ -155,7 +174,7 @@ export function useFaqSchema(items: MaybeRefOrGetter<FaqItem[]>) {
       {
         type: 'application/ld+json',
         innerHTML: computed(() =>
-          JSON.stringify({
+          serialiserJsonLd({
             '@context': 'https://schema.org',
             '@type': 'FAQPage',
             'mainEntity': toValue(items).map(item => ({
@@ -178,7 +197,7 @@ export function useBreadcrumbSchema(trail: { name: string, path: string }[]) {
     script: [
       {
         type: 'application/ld+json',
-        innerHTML: JSON.stringify({
+        innerHTML: serialiserJsonLd({
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           'itemListElement': [{ name: 'Accueil', path: '/' }, ...trail].map((item, i) => ({

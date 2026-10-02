@@ -31,6 +31,30 @@ const props = withDefaults(
 
 const component = computed(() => (props.to ? resolveComponent('NuxtLink') : props.href ? 'a' : 'button'))
 
+/**
+ * Préfixe de langue appliqué une fois pour toutes.
+ *
+ * Chaque appel du site écrit `to="/contact"` : localiser ici plutôt que sur
+ * les trente points d'appel évite d'oublier le préfixe quelque part — et un
+ * lien oublié renverrait un visiteur anglophone sur la page française sans
+ * que rien ne le signale.
+ *
+ * Une chaîne portant une requête est découpée sur `?` : `localePath()` attend
+ * une route, pas une URL, et laisserait `?branche=events` dans le chemin.
+ */
+const localePath = useLocalePath()
+
+const to = computed(() => {
+  if (!props.to) return undefined
+  if (typeof props.to !== 'string') return localePath(props.to)
+  if (!props.to.startsWith('/')) return props.to
+
+  const [path, query] = props.to.split('?')
+  return localePath(
+    query ? { path: path!, query: Object.fromEntries(new URLSearchParams(query)) } : path!,
+  )
+})
+
 const VARIANTS: Record<Variant, string> = {
   // Fond brun profond → or au survol : l'action principale.
   solid: 'bg-ink text-white hover:bg-gold focus-visible:bg-gold',
@@ -58,7 +82,7 @@ const SIZES: Record<Size, string> = {
     :type="to || href ? undefined : type"
     :disabled="to || href ? undefined : disabled"
     :aria-disabled="disabled || undefined"
-    class="inline-flex items-center justify-center gap-2.5 text-center text-[0.6875rem] uppercase tracking-[0.18em] transition-[background-color,color,border-color,transform] duration-500 ease-[var(--ease-out-expo)] disabled:cursor-not-allowed disabled:opacity-55"
+    class="inline-flex min-h-11 items-center justify-center gap-2.5 text-center text-[0.6875rem] uppercase tracking-[0.18em] max-lg:text-xs max-lg:tracking-[0.14em] transition-[background-color,color,border-color,transform] duration-500 ease-[var(--ease-out-expo)] disabled:cursor-not-allowed disabled:opacity-55"
     :class="[VARIANTS[variant], SIZES[size], block ? 'w-full' : '']"
   >
     <slot />

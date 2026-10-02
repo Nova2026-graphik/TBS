@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Conditions générales de location — branche TBS Events.
+ * Conditions générales de location — branche TBS Événementiel.
  *
  * Le déroulé est celui réellement pratiqué par TBS et décrit ailleurs sur le
  * site (devis, montage, reprise). Les montants et délais, eux, sont des
@@ -15,11 +15,21 @@ const pending = countPendingLegalFields(terms)
 usePageSeo({
   title: 'Conditions de location',
   description:
-    'Devis et réservation, caution, livraison et reprise, casse et manquants, annulation, responsabilité : les conditions de location du matériel de réception TBS Events.',
+    'Devis et réservation, caution, livraison et reprise, casse et manquants, annulation, responsabilité : les conditions de location du matériel de réception TBS Événementiel.',
   path: '/conditions-de-location',
 })
 
 useBreadcrumbSchema([{ name: 'Conditions de location', path: '/conditions-de-location' }])
+
+/**
+ * Page française uniquement.
+ *
+ * Ce document engage la société au regard du droit togolais. Une traduction
+ * non relue par un juriste ne serait pas un service mais une prise de risque :
+ * la version anglaise renvoie donc ici, et le lien du pied de page reste
+ * valide dans les deux langues.
+ */
+defineI18nRoute({ locales: ['fr'] })
 </script>
 
 <template>
@@ -38,7 +48,7 @@ useBreadcrumbSchema([{ name: 'Conditions de location', path: '/conditions-de-loc
 
       <aside
         v-if="pending > 0"
-        class="mt-8 max-w-[72ch] border border-dashed border-[#c4633f] bg-[#fbeae5] p-5 text-[0.9375rem] leading-[1.7] text-[#8a2b12]"
+        class="mt-8 max-w-[72ch] border border-dashed border-warn-border bg-warn-surface p-5 text-[0.9375rem] leading-[1.7] text-warn-text"
       >
         <strong class="font-medium">Document en cours de validation.</strong>
         Le déroulé décrit ci-dessous est celui pratiqué par TBS.
@@ -172,7 +182,7 @@ useBreadcrumbSchema([{ name: 'Conditions de location', path: '/conditions-de-loc
         <p>
           Les informations transmises lors d'une demande de devis sont traitées
           conformément à la
-          <NuxtLink to="/confidentialite">politique de confidentialité</NuxtLink>.
+          <NuxtLinkLocale to="/confidentialite">politique de confidentialité</NuxtLinkLocale>.
         </p>
 
         <h2>Droit applicable et litiges</h2>

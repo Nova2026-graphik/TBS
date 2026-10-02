@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { RentalCategory } from '#shared/types'
 
-/** Les six univers du parc locatif TBS Events. */
+/** Les six univers du parc locatif TBS Événementiel. */
 defineProps<{ categories: RentalCategory[] }>()
 
 const sizesThird = SIZES_THIRD
@@ -10,24 +10,24 @@ const sizesThird = SIZES_THIRD
 <template>
   <section class="u-gutter u-section bg-sand">
     <UiSectionHead
-      eyebrow="TBS Events — nos catégories"
-      dot="#E8A07C"
-      title="Six univers,"
-      accent="une seule livraison"
+      :eyebrow="$t('home.categories.eyebrow')"
+      dot="var(--color-peach)"
+      :title="$t('home.categories.title')"
+      :accent="$t('home.categories.accent')"
     >
       <template #aside>
-        <NuxtLink to="/services?branche=events" class="u-link-underline">
+        <NuxtLinkLocale :to="{ path: '/services', query: { branche: versUrl('events') } }" class="u-link-underline">
           Voir le catalogue
-        </NuxtLink>
+        </NuxtLinkLocale>
       </template>
     </UiSectionHead>
 
     <div class="grid gap-[clamp(0.875rem,1.6vw,1.375rem)] sm:grid-cols-2 lg:grid-cols-3">
-      <NuxtLink
+      <NuxtLinkLocale
         v-for="(category, i) in categories"
         :key="category.slug"
         v-reveal="(i % 3) * 80"
-        :to="`/services?branche=events#${category.slug}`"
+        :to="{ path: '/services', query: { branche: versUrl('events') }, hash: `#${category.slug}` }"
         class="group block transition-transform duration-600 ease-[var(--ease-out-expo)] hover:-translate-y-1.5"
       >
         <div class="relative aspect-4/3 overflow-hidden bg-shell">
@@ -48,10 +48,10 @@ const sizesThird = SIZES_THIRD
             {{ category.name }}
           </span>
           <span class="shrink-0 text-[0.6875rem] uppercase tracking-[0.18em] text-ink-soft">
-            {{ category.refCount }} réf.
+            {{ $t('home.categories.refCount', { count: category.refCount }) }}
           </span>
         </div>
-      </NuxtLink>
+      </NuxtLinkLocale>
     </div>
   </section>
 </template>

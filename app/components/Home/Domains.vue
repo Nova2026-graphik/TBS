@@ -17,12 +17,12 @@ const nameOf = (slug: string) =>
 <template>
   <section class="u-gutter u-section bg-white">
     <UiSectionHead
-      eyebrow="Nos domaines d'intervention"
-      title="Huit domaines,"
-      accent="quatre branches"
+      :eyebrow="$t('home.domains.eyebrow')"
+      :title="$t('home.domains.title')"
+      :accent="$t('home.domains.accent')"
     >
       <template #aside>
-        <NuxtLink to="/services" class="u-link-underline">Détail des prestations</NuxtLink>
+        <NuxtLinkLocale to="/services" class="u-link-underline">{{ $t('home.domains.detail') }}</NuxtLinkLocale>
       </template>
     </UiSectionHead>
 
@@ -35,7 +35,7 @@ const nameOf = (slug: string) =>
       >
         <span
           class="mt-2 size-2 shrink-0 rounded-full transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:scale-150"
-          :style="{ background: colorOf(domain.branch) }"
+          :style="{ background: brandColor(colorOf(domain.branch)) }"
         />
         <div>
           <p class="text-[0.6875rem] uppercase tracking-[0.2em] text-ink-mute">

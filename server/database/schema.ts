@@ -66,7 +66,7 @@ export const branches = pgTable('branches', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
 
-/** Catégories du parc locatif TBS Events (mobilier, nappage…). */
+/** Catégories du parc locatif TBS Événementiel (mobilier, nappage…). */
 export const rentalCategories = pgTable(
   'rental_categories',
   {
@@ -88,6 +88,8 @@ export const serviceBlocks = pgTable(
   {
     id: serial('id').primaryKey(),
     branchSlug: branchSlugEnum('branch_slug').notNull(),
+    /** Domaine décrit par le bloc, nullable pour les lignes antérieures. */
+    domainSlug: varchar('domain_slug', { length: 60 }),
     eyebrow: varchar('eyebrow', { length: 120 }).notNull(),
     title: varchar('title', { length: 200 }).notNull(),
     description: text('description').notNull(),
@@ -103,11 +105,76 @@ export const serviceBlocks = pgTable(
 /** Domaines d'intervention listés en page d'accueil. */
 export const domains = pgTable('domains', {
   id: serial('id').primaryKey(),
+  /**
+   * Identifiant stable, indépendant de l'intitulé et de la langue : c'est lui
+   * que porte l'URL `/galerie/<branche>/<domaine>` et qui relie une
+   * réalisation à son domaine.
+   */
+  slug: varchar('slug', { length: 60 }).notNull(),
   branchSlug: branchSlugEnum('branch_slug').notNull(),
   title: varchar('title', { length: 200 }).notNull(),
   description: text('description').notNull(),
+  /**
+   * Paragraphe d'ouverture de la page domaine, et méta-description de la page.
+   * `description` tient en une ligne pour le panneau des secteurs.
+   */
+  intro: text('intro'),
+  meta: varchar('meta', { length: 200 }),
+  /**
+   * Bannière et vignettes.
+   *
+   * Ces colonnes manquaient : le type `Domain` portait déjà `image` et
+   * `imageAlt`, mais la table non — une installation avec base de données
+   * servait donc des domaines sans visuel, en silence, alors que le repli
+   * statique les affichait. La page domaine en a besoin pour exister.
+   */
+  image: varchar('image', { length: 300 }),
+  imageAlt: varchar('image_alt', { length: 300 }),
+  thumbnail: varchar('thumbnail', { length: 300 }),
+  thumbnailHover: varchar('thumbnail_hover', { length: 300 }),
+  families: jsonb('families').$type<string[]>().notNull().default([]),
+  exampleNote: text('example_note'),
+  medallion: boolean('medallion').notNull().default(false),
   position: integer('position').notNull().default(0),
 })
+
+/**
+ * Références du catalogue, rattachées à un domaine.
+ *
+ * `domain_slug` n'est pas une clé étrangère vers `domains` : celle-ci n'a pas
+ * de contrainte d'unicité sur `slug`, faute d'avoir pu la poser lors de la
+ * migration 0002 sur une table déjà peuplée. Le rattachement est donc tenu par
+ * le type `DomainSlug` côté application, comme pour `gallery_items`.
+ *
+ * Les caractéristiques sont un tableau de chaînes courtes, stocké en JSON :
+ * elles ne se filtrent ni ne se trient, elles s'affichent.
+ */
+export const equipment = pgTable(
+  'equipment',
+  {
+    id: serial('id').primaryKey(),
+    domainSlug: varchar('domain_slug', { length: 60 }).notNull(),
+    name: varchar('name', { length: 200 }).notNull(),
+    description: text('description').notNull(),
+    specs: jsonb('specs').$type<string[]>().notNull().default([]),
+    /** Famille de filtre, prise parmi les `families` du domaine. */
+    family: varchar('family', { length: 120 }),
+    /**
+     * Nature du visuel — `cut`, `png`, `photo`, `med` ou `ghost`. Stockée en
+     * `varchar` plutôt qu'en `pgEnum` : la liste s'allongera quand les photos
+     * de l'issue #22 remplaceront les objets détourés, et une valeur nouvelle
+     * ne doit pas demander une migration d'énumération.
+     */
+    kind: varchar('kind', { length: 20 }).notNull().default('ghost'),
+    image: varchar('image', { length: 300 }),
+    imageHover: varchar('image_hover', { length: 300 }),
+    /** Le visuel montre un modèle équivalent, pas l'article livré. */
+    nonContractual: boolean('non_contractual').notNull().default(false),
+    source: varchar('source', { length: 300 }),
+    position: integer('position').notNull().default(0),
+  },
+  t => [index('equipment_domain_idx').on(t.domainSlug, t.position)],
+)
 
 /** Réalisations affichées dans la galerie. */
 export const galleryItems = pgTable(
@@ -119,6 +186,11 @@ export const galleryItems = pgTable(
     location: varchar('location', { length: 120 }),
     category: galleryCategoryEnum('category').notNull(),
     branchSlug: branchSlugEnum('branch_slug').notNull(),
+    /**
+     * Domaine précis, nullable : une vue d'ensemble relève d'une branche sans
+     * appartenir à l'un de ses domaines plutôt qu'à l'autre.
+     */
+    domainSlug: varchar('domain_slug', { length: 60 }),
     image: varchar('image', { length: 300 }).notNull(),
     imageAlt: varchar('image_alt', { length: 300 }).notNull(),
     eventDate: timestamp('event_date', { withTimezone: false }),
@@ -127,6 +199,7 @@ export const galleryItems = pgTable(
   },
   t => [
     uniqueIndex('gallery_items_ref_idx').on(t.ref),
+    index('gallery_items_domain_idx').on(t.domainSlug, t.position),
     index('gallery_items_category_idx').on(t.category, t.position),
   ],
 )
@@ -147,6 +220,12 @@ export const faqItems = pgTable(
   {
     id: serial('id').primaryKey(),
     ref: varchar('ref', { length: 40 }).notNull(),
+    /**
+     * Branche de la question. Le libellé de groupe seul ne permettait ni de
+     * compter les questions par branche, ni de les filtrer. Nullable pour la
+     * migration : les lignes existantes sont rattachées au moment du seed.
+     */
+    branchSlug: branchSlugEnum('branch_slug'),
     groupLabel: varchar('group_label', { length: 160 }).notNull(),
     question: text('question').notNull(),
     answer: text('answer').notNull(),
@@ -173,6 +252,11 @@ export const quoteRequests = pgTable(
     location: varchar('location', { length: 200 }),
     message: text('message').notNull(),
     status: quoteStatusEnum('status').notNull().default('nouveau'),
+    /**
+     * Note du commercial qui traite la demande — jamais montrée au client.
+     * Anonymisée en même temps que le reste, passé le délai de conservation.
+     */
+    internalNote: text('internal_note'),
     /** Conservé pour la limitation de débit et l'analyse anti-spam. */
     ipHash: varchar('ip_hash', { length: 64 }),
     userAgent: varchar('user_agent', { length: 400 }),
@@ -184,6 +268,33 @@ export const quoteRequests = pgTable(
     index('quote_requests_status_idx').on(t.status),
     index('quote_requests_ip_idx').on(t.ipHash, t.createdAt),
   ],
+)
+
+/**
+ * Tentatives d'ouverture de session sur l'espace de suivi.
+ *
+ * L'espace tient sur un mot de passe unique, sans second facteur : le
+ * limiteur de débit est donc la seule barrière contre l'essai systématique.
+ * Il comptait en mémoire, ce qui ne vaut rien en serverless — chaque instance
+ * a la sienne, et un démarrage à froid la remet à zéro.
+ *
+ * Seuls les **échecs** sont écrits. Compter les réussites verrouillerait
+ * l'accès à qui s'en sert normalement, ce qui est le plus sûr moyen de faire
+ * désactiver la protection.
+ *
+ * Les lignes sont purgées après 24 h par la tâche planifiée : la fenêtre de
+ * comptage ne remonte qu'à une heure, et conserver des empreintes d'adresses
+ * au-delà de leur usage n'a pas de justification.
+ */
+export const adminAttempts = pgTable(
+  'admin_attempts',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    /** SHA-256 tronqué de l'adresse — jamais l'adresse elle-même. */
+    ipHash: varchar('ip_hash', { length: 64 }).notNull(),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  t => [index('admin_attempts_ip_idx').on(t.ipHash, t.createdAt)],
 )
 
 /* ── Relations ────────────────────────────────────────────────────────────── */

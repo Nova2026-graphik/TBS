@@ -16,15 +16,13 @@ const sizesHalfMd = SIZES_HALF_MD
 <template>
   <section class="u-gutter u-section bg-white">
     <UiSectionHead
-      eyebrow="Une maison, quatre branches"
-      title="Quatre métiers,"
-      accent="un seul interlocuteur"
+      :eyebrow="$t('home.branches.eyebrow')"
+      :title="$t('home.branches.title')"
+      :accent="$t('home.branches.accent')"
     >
       <template #aside>
         <p class="text-[0.9375rem] leading-[1.72]">
-          TBS Distribution S.A.R.L structure son activité en quatre branches
-          complémentaires. Chacune a ses équipes et ses fournisseurs ; toutes
-          partagent la même logistique et la même exigence de délai.
+          {{ $t('home.branches.lead') }}
         </p>
       </template>
     </UiSectionHead>
@@ -39,7 +37,7 @@ const sizesHalfMd = SIZES_HALF_MD
         <!-- Filet de branche : 2px au repos, 4px au survol. -->
         <span
           class="h-0.5 w-full transition-[height] duration-500 ease-[var(--ease-out-expo)] group-hover:h-1"
-          :style="{ background: branch.color }"
+          :style="{ background: brandColor(branch.color) }"
         />
 
         <div class="relative aspect-16/10 overflow-hidden bg-shell">
@@ -57,7 +55,7 @@ const sizesHalfMd = SIZES_HALF_MD
 
         <div class="flex flex-1 flex-col pt-[clamp(1.25rem,2.4vw,1.875rem)]">
           <span class="u-eyebrow">
-            <span class="size-[7px] rounded-full" :style="{ background: branch.color }" />
+            <span class="size-[7px] rounded-full" :style="{ background: brandColor(branch.color) }" />
             Branche {{ String(branch.index).padStart(2, '0') }}
           </span>
 
@@ -78,8 +76,8 @@ const sizesHalfMd = SIZES_HALF_MD
 
           <UiTag :items="branch.tags" class="mb-6" />
 
-          <NuxtLink
-            :to="`/services?branche=${branch.slug}`"
+          <NuxtLinkLocale
+            :to="{ path: '/services', query: { branche: versUrl(branch.slug) } }"
             class="u-link-underline mt-auto self-start after:bg-current"
             :style="{ '--tw-text-opacity': 1 }"
           >
@@ -88,7 +86,7 @@ const sizesHalfMd = SIZES_HALF_MD
                  d'écran. -->
             <span class="absolute inset-0" aria-hidden="true" />
             Voir la branche<span class="sr-only"> {{ branch.name }}</span>
-          </NuxtLink>
+          </NuxtLinkLocale>
         </div>
       </article>
     </div>

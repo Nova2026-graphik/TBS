@@ -21,6 +21,16 @@ usePageSeo({
 })
 
 useBreadcrumbSchema([{ name: 'Mentions légales', path: '/mentions-legales' }])
+
+/**
+ * Page française uniquement.
+ *
+ * Ce document engage la société au regard du droit togolais. Une traduction
+ * non relue par un juriste ne serait pas un service mais une prise de risque :
+ * la version anglaise renvoie donc ici, et le lien du pied de page reste
+ * valide dans les deux langues.
+ */
+defineI18nRoute({ locales: ['fr'] })
 </script>
 
 <template>
@@ -41,7 +51,7 @@ useBreadcrumbSchema([{ name: 'Mentions légales', path: '/mentions-legales' }])
            informations sont renseignées dans `shared/utils/legalData.ts`. -->
       <aside
         v-if="pending > 0"
-        class="mt-8 max-w-[72ch] border border-dashed border-[#c4633f] bg-[#fbeae5] p-5 text-[0.9375rem] leading-[1.7] text-[#8a2b12]"
+        class="mt-8 max-w-[72ch] border border-dashed border-warn-border bg-warn-surface p-5 text-[0.9375rem] leading-[1.7] text-warn-text"
       >
         <strong class="font-medium">
           {{ pending }} information{{ pending > 1 ? 's' : '' }} manque{{ pending > 1 ? 'nt' : '' }} encore.
@@ -107,11 +117,11 @@ useBreadcrumbSchema([{ name: 'Mentions légales', path: '/mentions-legales' }])
         <h2>Autres documents</h2>
         <ul>
           <li>
-            <NuxtLink to="/conditions-de-location">Conditions de location</NuxtLink> —
+            <NuxtLinkLocale to="/conditions-de-location">Conditions de location</NuxtLinkLocale> —
             devis, caution, livraison, annulation et responsabilité.
           </li>
           <li>
-            <NuxtLink to="/confidentialite">Politique de confidentialité</NuxtLink> —
+            <NuxtLinkLocale to="/confidentialite">Politique de confidentialité</NuxtLinkLocale> —
             données collectées par le formulaire de devis et droits associés.
           </li>
         </ul>

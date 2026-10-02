@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { serialiserJsonLd } from '#shared/utils/jsonLd'
+
 /**
  * Article de la rubrique Conseils.
  *
@@ -49,7 +51,7 @@ const { public: cfg } = useRuntimeConfig()
 useHead({
   script: [{
     type: 'application/ld+json',
-    innerHTML: JSON.stringify({
+    innerHTML: serialiserJsonLd({
       '@context': 'https://schema.org',
       '@type': 'Article',
       'headline': article.value!.title,
@@ -77,6 +79,15 @@ function dateLisible(valeur: string) {
     day: 'numeric',
   })
 }
+
+/**
+ * Rubrique française uniquement.
+ *
+ * Les articles visent des requêtes locales — « combien de chaises pour 300
+ * invités », « prix location vaisselle mariage Lomé ». Les traduire relèverait
+ * d'une décision éditoriale à part, pas d'un miroir mécanique.
+ */
+defineI18nRoute({ locales: ['fr'] })
 </script>
 
 <template>
@@ -93,10 +104,7 @@ function dateLisible(valeur: string) {
         height="933"
         class="absolute inset-0 size-full object-cover"
       />
-      <div
-        class="absolute inset-0"
-        style="background: linear-gradient(180deg, rgb(62 53 36 / 0.5) 0%, rgb(62 53 36 / 0.4) 45%, rgb(62 53 36 / 0.92) 100%)"
-      />
+      <div class="u-scrim-article absolute inset-0" />
 
       <div class="u-gutter absolute inset-0 flex flex-col justify-end gap-5 pb-[clamp(2rem,5vw,4rem)]">
         <nav class="flex items-center gap-2.5 text-[0.6875rem] uppercase tracking-[0.16em] text-white/60" aria-label="Fil d'Ariane">

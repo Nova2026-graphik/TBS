@@ -20,21 +20,8 @@ function go(delta: number) {
   emit('navigate', (props.index + delta + props.items.length) % props.items.length)
 }
 
-watch(
-  () => props.index,
-  async (value) => {
-    if (import.meta.server) return
-    document.documentElement.style.overflow = value === null ? '' : 'hidden'
-    if (value !== null) {
-      await nextTick()
-      dialog.value?.focus()
-    }
-  },
-)
-
-onBeforeUnmount(() => {
-  if (import.meta.client) document.documentElement.style.overflow = ''
-})
+// Focus déplacé, piégé, puis rendu ; défilement verrouillé — voir le composable.
+useDialogueFocus(dialog, computed(() => props.index !== null))
 
 onKeyStroke('Escape', () => props.index !== null && emit('close'))
 onKeyStroke('ArrowLeft', () => props.index !== null && go(-1))
@@ -74,7 +61,7 @@ const sizesLightbox = SIZES_LIGHTBOX
           <button
             type="button"
             class="flex size-11 items-center justify-center text-2xl text-white/70 transition-colors hover:text-white"
-            aria-label="Fermer la visionneuse"
+            :aria-label="$t('gallery.lightbox.close')"
             @click="emit('close')"
           >
             <span aria-hidden="true">&times;</span>
@@ -85,7 +72,7 @@ const sizesLightbox = SIZES_LIGHTBOX
           <button
             type="button"
             class="hidden size-12 shrink-0 items-center justify-center border border-white/20 text-white transition-colors hover:bg-white hover:text-ink sm:flex"
-            aria-label="Image précédente"
+            :aria-label="$t('gallery.lightbox.previous')"
             @click="go(-1)"
           >
             <span aria-hidden="true">&#8592;</span>
@@ -113,7 +100,7 @@ const sizesLightbox = SIZES_LIGHTBOX
           <button
             type="button"
             class="hidden size-12 shrink-0 items-center justify-center border border-white/20 text-white transition-colors hover:bg-white hover:text-ink sm:flex"
-            aria-label="Image suivante"
+            :aria-label="$t('gallery.lightbox.next')"
             @click="go(1)"
           >
             <span aria-hidden="true">&#8594;</span>
@@ -128,14 +115,14 @@ const sizesLightbox = SIZES_LIGHTBOX
             class="flex-1 border border-white/20 py-3 text-[0.6875rem] uppercase tracking-[0.18em] text-white"
             @click="go(-1)"
           >
-            Précédente
+            {{ $t('gallery.lightbox.previous') }}
           </button>
           <button
             type="button"
             class="flex-1 border border-white/20 py-3 text-[0.6875rem] uppercase tracking-[0.18em] text-white"
             @click="go(1)"
           >
-            Suivante
+            {{ $t('gallery.lightbox.next') }}
           </button>
         </div>
       </div>

@@ -1,21 +1,21 @@
 <script setup lang="ts">
 /**
- * Les trois formules TBS Events.
+ * Les trois formules TBS Événementiel.
  *
  * Ajout par rapport à la maquette : la formule la plus demandée est
  * réellement mise en avant (fond sombre, badge) au lieu d'être une carte
  * identique aux autres avec un simple libellé différent.
  */
-const offers = EVENT_OFFERS
+const { offers } = useSiteData()
 </script>
 
 <template>
   <section class="u-gutter u-section bg-sand">
     <UiSectionHead
-      eyebrow="Formules"
-      dot="#E8A07C"
-      title="Trois niveaux"
-      accent="d'accompagnement"
+      :eyebrow="$t('services.offers.eyebrow')"
+      dot="var(--color-peach)"
+      :title="$t('services.offers.title')"
+      :accent="$t('services.offers.accent')"
       align="start"
     />
 

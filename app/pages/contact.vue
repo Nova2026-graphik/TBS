@@ -1,4 +1,5 @@
 <script setup lang="ts">
+const { t } = useI18n()
 const info = useSiteInfo()
 
 // `devis_ouvert` : le trafic qui atteint réellement le formulaire.
@@ -34,9 +35,8 @@ const mapLink = coords ? mapLinkUrl(coords) : QUARTIER_LINK
 const itineraire = coords ? directionsUrl(coords) : null
 
 usePageSeo({
-  title: 'Contact — demander un devis',
-  description:
-    'Une réception à équiper, un lot de fournitures, une étude ou une campagne agricole : précisez la branche concernée, un conseiller TBS vous rappelle sous 24 heures. Agôè-Démakpoè, Lomé.',
+  title: t('seo.contact.title'),
+  description: t('seo.contact.description'),
   path: '/contact',
 })
 
@@ -46,10 +46,12 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
 <template>
   <div>
     <UiPageHero
-      eyebrow="Contact"
-      title="Demander"
-      accent="un devis"
-      lead="Une réception à équiper, un lot de fournitures, une étude ou une campagne agricole : précisez la branche concernée, un conseiller vous rappelle et vous envoie une proposition sous 24 heures."
+      :eyebrow="$t('contact.eyebrow')"
+      :title="$t('contact.title')"
+      :accent="$t('contact.accent')"
+      :lead="$t('contact.lead')"
+      image="/images/branche-etudes.jpg"
+      :height="300"
     />
 
     <section class="u-gutter u-section grid gap-[clamp(2.5rem,5vw,5rem)] bg-white lg:grid-cols-[1.35fr_1fr]">
@@ -57,61 +59,52 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
         <ContactForm />
       </div>
 
-      <aside v-reveal="100" class="flex flex-col gap-8">
-        <div class="bg-sand p-[clamp(1.5rem,3vw,2.25rem)]">
-          <h2 class="u-eyebrow">
-            <span class="u-rule" />
-            Nous joindre
-          </h2>
+      <aside v-reveal="100" class="flex flex-col gap-5">
+        <!--
+          WhatsApp en tête : c'est le canal le plus utilisé au Togo, et il
+          était la deuxième ligne d'une liste de cinq. Une carte à part, et
+          un bouton — vert, la seule couleur écrite du site, parce que c'est
+          celle de WhatsApp et non celle de la charte.
+        -->
+        <div class="border border-ink/12 bg-white p-[clamp(1.5rem,3vw,1.75rem)]">
+          <span class="u-eyebrow">{{ $t('contact.fastest') }}</span>
+          <h2 class="mt-2 font-display text-[1.75rem] leading-[1.15] text-ink">{{ $t('contact.whatsappTitle') }}</h2>
+          <p class="mt-2.5 text-[0.9375rem] leading-[1.65] text-ink-soft">{{ $t('contact.whatsappBody') }}</p>
+          <a
+            :href="info.whatsappUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mt-5 inline-flex min-h-12 items-center gap-3 bg-[#25d366] px-6 py-3.5 text-[0.6875rem] uppercase tracking-[0.18em] text-white transition-opacity duration-400 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+          >
+            {{ $t('common.whatsapp') }} <span aria-hidden="true">·</span> {{ info.phoneDisplay }}
+          </a>
+        </div>
 
-          <dl class="mt-7 divide-y divide-ink/10 border-t border-ink/10">
-            <div class="py-4">
-              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">Téléphone</dt>
-              <dd class="mt-2 flex flex-col gap-1">
-                <a
-                  :href="`tel:${info.phonePrimary}`"
-                  class="text-[0.9375rem] text-ink transition-colors hover:text-gold"
-                >{{ info.phoneDisplay }}</a>
-                <a
-                  :href="`tel:${info.phoneSecondary}`"
-                  class="text-[0.9375rem] text-ink transition-colors hover:text-gold"
-                >{{ info.phoneSecondaryDisplay }}</a>
+        <div class="border border-ink/12 bg-white p-[clamp(1.5rem,3vw,1.75rem)]">
+          <h2 class="u-eyebrow">{{ $t('contact.heading') }}</h2>
+
+          <dl class="mt-5 grid gap-x-6 gap-y-5 sm:grid-cols-2">
+            <div>
+              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">{{ $t('common.phone') }}</dt>
+              <dd class="mt-1.5 flex flex-col">
+                <a :href="`tel:${info.phonePrimary}`" class="inline-flex min-h-11 items-center text-[0.9375rem] text-ink transition-colors hover:text-gold">{{ info.phoneDisplay }}</a>
+                <a :href="`tel:${info.phoneSecondary}`" class="inline-flex min-h-11 items-center text-[0.9375rem] text-ink transition-colors hover:text-gold">{{ info.phoneSecondaryDisplay }}</a>
               </dd>
             </div>
-
-            <div class="py-4">
-              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">WhatsApp</dt>
-              <dd class="mt-2">
-                <a
-                  :href="info.whatsappUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-[0.9375rem] text-ink transition-colors hover:text-gold"
-                >Écrire sur WhatsApp</a>
+            <div>
+              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">{{ $t('common.email') }}</dt>
+              <dd class="mt-1.5">
+                <a :href="`mailto:${info.email}`" class="inline-flex min-h-11 items-center break-all text-[0.9375rem] text-ink transition-colors hover:text-gold">{{ info.email }}</a>
               </dd>
             </div>
-
-            <div class="py-4">
-              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">E-mail</dt>
-              <dd class="mt-2">
-                <a
-                  :href="`mailto:${info.email}`"
-                  class="break-all text-[0.9375rem] text-ink transition-colors hover:text-gold"
-                >{{ info.email }}</a>
-              </dd>
+            <div>
+              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">{{ $t('common.address') }}</dt>
+              <dd class="mt-1.5 text-[0.9375rem] leading-[1.6] text-ink">{{ $t('common.addressStreet') }}<br>{{ $t('common.addressCity') }}</dd>
             </div>
-
-            <div class="py-4">
-              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">Adresse</dt>
-              <dd class="mt-2 text-[0.9375rem] text-ink">Agôè - Démakpoè<br>Lomé, Togo</dd>
-            </div>
-
-            <div class="py-4">
-              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">Horaires</dt>
-              <dd class="mt-2 text-[0.9375rem] text-ink">
-                <span v-for="slot in info.hours" :key="slot.days" class="block">
-                  {{ slot.days }} : {{ slot.time }}
-                </span>
+            <div>
+              <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">{{ $t('common.hours') }}</dt>
+              <dd class="mt-1.5 text-[0.9375rem] leading-[1.6] text-ink">
+                <span v-for="slot in info.hours" :key="slot.days" class="block">{{ slot.days }} : {{ slot.time }}</span>
               </dd>
             </div>
           </dl>
@@ -121,7 +114,7 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
         <div class="relative aspect-4/3 overflow-hidden bg-shell">
           <iframe
             v-if="mapVisible"
-            title="Localisation de TBS Distribution à Agôè-Démakpoè, Lomé"
+            :title="$t('contact.map.title')"
             :src="mapEmbed"
             loading="lazy"
             referrerpolicy="no-referrer"
@@ -135,10 +128,10 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
               <circle cx="12" cy="10" r="2.5" />
             </svg>
             <p class="text-[0.9375rem] leading-[1.6] text-ink-soft">
-              {{ info.address }}
+              {{ info.address }} — {{ $t('contact.map.visit') }}
             </p>
             <div class="flex flex-wrap items-center justify-center gap-3">
-              <UiButton variant="ghost" @click="mapVisible = true">Afficher la carte</UiButton>
+              <UiButton variant="ghost" @click="mapVisible = true">{{ $t('contact.map.show') }}</UiButton>
               <!-- L'itinéraire n'apparaît que si la destination est connue :
                    un lien qui mène au centre d'un quartier de 13 km ne rend
                    service à personne. -->
@@ -153,14 +146,13 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
               </UiButton>
             </div>
             <p class="max-w-[34ch] text-xs leading-[1.6] text-ink-mute">
-              L'affichage envoie une requête à OpenStreetMap, qui reçoit alors
-              votre adresse IP.
+              {{ $t('contact.map.notice') }}
               <a
                 :href="mapLink"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="underline underline-offset-2 hover:text-ink"
-              >Ouvrir sur openstreetmap.org</a>
+              >{{ $t('contact.map.openExternal') }}</a>
             </p>
           </div>
         </div>

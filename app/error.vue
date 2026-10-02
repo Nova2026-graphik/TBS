@@ -36,7 +36,7 @@ useHead({ title: is404.value ? 'Page introuvable' : 'Une erreur est survenue' })
           <UiButton to="/" size="lg" @click="clearError({ redirect: '/' })">
             Retour à l'accueil
           </UiButton>
-          <UiButton to="/contact" variant="ghost" size="lg">Nous contacter</UiButton>
+          <UiButton to="/contact" variant="ghost" size="lg">{{ $t('common.contactUs') }}</UiButton>
         </div>
       </div>
     </main>

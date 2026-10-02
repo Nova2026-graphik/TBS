@@ -43,10 +43,11 @@ const lignes = computed(() => calculerMateriel(options.value))
  * Lien vers le formulaire de devis, inventaire compris. Le formulaire lit ces
  * paramètres au montage — cf. `app/components/Contact/Form.vue`.
  */
-const lienDevis = computed(() => ({
-  path: '/contact',
-  query: {
-    branche: 'events',
+// Chaîne plutôt qu'objet de route : `UiButton.to` est typé `string`, et
+// `NuxtLink` lit la chaîne de requête d'une URL relative sans difficulté.
+const lienDevis = computed(() => {
+  const query = new URLSearchParams({
+    branche: versUrl('events'),
     invites: String(invitesValides.value),
     message: messageDevis(options.value, lignes.value),
   },
@@ -110,7 +111,7 @@ const CHAMP
     </div>
 
     <label class="mt-6 flex items-center gap-3 text-[0.9375rem] text-ink-soft">
-      <input v-model="soiree" type="checkbox" class="size-4 accent-[#827148]">
+      <input v-model="soiree" type="checkbox" class="size-4 accent-gold">
       La réception se prolonge en soirée
     </label>
 

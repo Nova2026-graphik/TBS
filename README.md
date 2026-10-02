@@ -1,11 +1,31 @@
 # TBS Distribution S.A.R.L — site vitrine
 
-Site vitrine six pages pour TBS Distribution (Agôè-Démakpoè, Lomé — Togo),
-réalisé en **Nuxt 4 + TypeScript**, à partir de la maquette
+Site vitrine pour TBS Distribution (Agôè-Démakpoè, Lomé — Togo), réalisé en
+**Nuxt 4 + TypeScript**, à partir de la maquette
 `TBS Site 6 Pages - offline2.html`.
+
+Les six pages de la maquette en font **cinquante-sept** au pré-rendu :
+
+| | Pages |
+| --- | --- |
+| Français — les six d'origine, les trois pages légales, l'index Conseils | 10 |
+| Articles de la rubrique Conseils | 7 |
+| Pages de domaine de la galerie (`/galerie/<branche>/<domaine>`) | 17 |
+| Anglais sous `/en/` — six pages et dix-sept domaines | 23 |
+
+L'espace de suivi des devis, `/admin`, reste hors index et hors pré-rendu.
 
 Quatre branches : **TBS Équipements**, **TBS Events**,
 **TBS Études & Conseils**, **TBS Agro**.
+
+> **État du projet** — audit complet du 2 octobre 2026 :
+> [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md). **Tous les
+> correctifs de code qu'il recense sont appliqués** ; l'audit garde les
+> constats d'origine et porte l'état courant de chacun. La chaîne de
+> vérification passe de bout en bout — installation, lint, types, 227 tests
+> (146 unitaires, 81 parcours), build, audit. Ne restent ouverts qu'un avis
+> de sécurité sans correctif amont, dérogé et motivé, et les seize
+> informations légales attendues de TBS.
 
 ---
 
@@ -254,43 +274,144 @@ publique par nécessité.
 
 ---
 
+## Espace de suivi des devis
+
+`/admin` liste les demandes, permet d'en ouvrir une, de la rappeler, d'en
+changer le statut et d'y attacher une note interne. Jusqu'ici, la seule façon
+de lire une demande était `npm run db:studio` depuis un poste de
+développement : inutilisable par un commercial.
+
+### Accès
+
+Un mot de passe partagé, pas de comptes : l'écran sert deux ou trois personnes,
+et gérer des utilisateurs coûterait plus cher que le problème ne vaut.
+
+```
+NUXT_ADMIN_PASSWORD=…
+```
+
+**Vide, l'espace n'existe pas** : `/admin` comme `/api/admin/*` répondent 404,
+page comprise. Un déploiement qui oublie la variable n'ouvre pas un accès libre
+aux demandes de devis.
+
+Ce qui protège l'accès :
+
+| | |
+| --- | --- |
+| Session | Jeton HMAC-SHA256 sur la date d'expiration, cookie `HttpOnly`, `SameSite=Strict`, `Secure` hors développement, huit heures |
+| Mot de passe | Jamais stocké côté navigateur ; comparaison à temps constant |
+| Force brute | Dix tentatives par heure et par adresse |
+| Indexation | `noindex, nofollow`, `Disallow: /admin`, hors sitemap, hors pré-rendu |
+| Mot de passe faible | Avertissement au journal sous douze caractères, ou s'il commence par un mot évident |
+
+Changer le mot de passe déconnecte tout le monde : la clé de signature en
+dérive. C'est le comportement attendu.
+
+### Ce que l'écran montre — et ne montre pas
+
+`ip_hash` ne sort jamais : il sert la limitation de débit, pas le suivi
+commercial. Le `user_agent` n'apparaît qu'au détail, où il aide à juger un
+envoi automatisé.
+
+La **note interne** n'est jamais montrée au client, et part avec le reste à
+l'anonymisation — elle peut nommer des personnes.
+
+`handled_at` se pose tout seul dès qu'une demande quitte « nouveau » : c'est la
+date qui fait foi pour la conservation, et personne ne penserait à la
+renseigner à la main.
+
+### Migration
+
+L'espace ajoute une colonne :
+
+```bash
+npm run db:migrate      # applique 0001_large_boom_boom.sql
+```
+
+---
+
 ## Architecture
 
 ```
 app/
-  assets/css/main.css      Design tokens (@theme Tailwind v4) + base + utilitaires
+  assets/css/main.css      Les deux chartes + design tokens (@theme Tailwind v4)
+                           + base + utilitaires
   components/
     App/                   TopBar, Header, Footer, ContactDock
-    Ui/                    Button, SectionHead, Tag, StatRow, PageHero
+    Ui/                    Button, SectionHead, Tag, StatRow
+    Ui/PageHero.vue        En-tête de page + planche-contact illustrée (`media`)
     Home/                  Hero, Branches, Categories, Domains, Inspirations, Testimonials
     Services/              Block, Offers
-    Gallery/               Lightbox
+    Gallery/               Lightbox, Sectors
+    Gallery/Hero.vue       En-tête propre à /galerie — planche animée, une
+                           collection à la fois, la carte applique le filtre
     Faq/                   Accordion
     Contact/               Form
+    Legal/                 Gabarit commun aux trois pages légales
+    Admin/                 StatusBadge — espace de suivi des devis
     Shared/                ProcessSteps, CtaBanner
+    content/               CalculateurMateriel — composant appelé depuis un article
+  components/
+    Ui/ThemeSwitch.vue     Sélecteur de charte — bandeau supérieur et tiroir mobile
   composables/
+    useTheme.ts            Les deux chartes, et le basculement de l'une à l'autre
     useSiteContent.ts      Chargement dédupliqué du contenu + coordonnées
+    useSiteData.ts         Blocs de présentation, assemblés depuis la langue active
     useSeo.ts              Meta par page, JSON-LD LocalBusiness / FAQPage / Breadcrumb
+    useAnalytics.ts        Événements de parcours, sans cookie ni donnée personnelle
   pages/                   index, services, galerie, a-propos, contact, faq,
-                           mentions-legales, conditions-de-location, confidentialite
+                           mentions-legales, conditions-de-location, confidentialite,
+                           conseils/ (index + [slug]), admin/ (index + [id])
   plugins/reveal.ts        Directive v-reveal (IntersectionObserver partagé, SSR-safe)
+  plugins/analytics.ts     Collecte des événements de parcours
   utils/imageSizes.ts      Valeurs `sizes` pour <NuxtImg>
+  utils/businessLocation.ts    Coordonnées de l'entrepôt — carte, marqueur, itinéraire
+  utils/materielReception.ts   Barème du calculateur de matériel
+i18n/locales/              fr.json et en.json — les deux fichiers se correspondent
+content/conseils/          Les sept articles de la rubrique, en Markdown
 server/
   api/                     site-content, branches, gallery, faq, health (GET) · quotes (POST)
+  api/admin/               Session et suivi des demandes — sous authentification
+  api/__sitemap__/urls.get.ts  Les articles, pour qu'un ajout entre au sitemap sans build
+  routes/conseils/rss.xml.get.ts   Flux RSS de la rubrique
+  middleware/admin-gate.ts Barrière d'accès à /admin
   plugins/error-reporting.ts   Alerte sur erreur serveur, sans donnée personnelle
+  plugins/security-headers.ts  Pose les en-têtes sur chaque réponse
+  tasks/quotes/anonymise.ts    Anonymisation planifiée des demandes échues
   utils/errorReporter.ts   Mise en forme et fenêtre anti-inondation
   data/content.ts          Contenu de référence — seed + repli
-  database/                schema.ts, client.ts, seed.ts
+  data/content.en.ts       Sa traduction : seuls les champs lisibles
+  database/                schema.ts, client.ts, seed.ts, migrations/
   utils/mailer.ts          Envoi e-mail — Resend ou Brevo, par API HTTP
   utils/quoteNotification.ts  Alerte équipe + accusé de réception
+  utils/quoteValidation.ts    Validation partagée des demandes
+  utils/quoteRetention.ts     Durée de conservation et anonymisation
+  utils/rateLimit.ts       Fenêtre glissante en base, repli mémoire
+  utils/clientIp.ts        Adresse cliente — en-têtes de plate-forme vérifiés
+  utils/adminSession.ts, requireAdmin.ts   Session signée de l'espace de suivi
   utils/repository.ts      Accès base avec repli statique
   utils/securityHeaders.ts Politique CSP et en-têtes — source unique de vérité
-scripts/csp-hashes.mjs     Relève les empreintes CSP des scripts en ligne
+scripts/
+  ci.mjs                   Rejoue localement le travail `qualite` de la CI
+  csp-hashes.mjs           Relève les empreintes CSP des scripts en ligne
+  generate-icons.mjs       Produit le jeu d'icônes depuis le logo
+  trace-logo.mjs           Vectorise le logo (favicon.svg, mask-icon.svg)
+  install-hooks.mjs        Installe le crochet de pré-envoi
+  check-photos.mjs         Vérifie le cahier de tournage photo
+  images-domaines.mjs, images-references.mjs   Prépare les visuels de la galerie
+tests/
+  unit/                    Vitest — validation, dépôt, limiteur, IP, admin, images,
+                           couleurs de branche
+  e2e/                     Playwright — devis, galerie, services, navigation mobile
 shared/
   types.ts                 Types partagés client / serveur
   utils/legalData.ts       Identité légale — le seul fichier à compléter
   utils/siteData.ts        Contenu de présentation statique (process, formules, stats)
-public/images/             34 photos extraites de la maquette
+  utils/analytics.ts       Noms d'événements — une seule source
+  utils/adminQuotes.ts, branchColors.ts    Libellés de statut et couleurs de branche
+public/images/             34 photos de la maquette + le logo, et les
+                           visuels de domaines et de références
+docs/reportage-photo.md    Cahier de tournage — remplacer les images de banque
 design/                    Maquette source + plaquettes commerciales (documentation)
 ```
 
@@ -303,12 +424,87 @@ design/                    Maquette source + plaquettes commerciales (documentat
 | `app/` | Interface Nuxt — pages, composants, styles, composables |
 | `server/` | API Nitro, schéma et accès base, contenu de référence |
 | `shared/` | Types et données partagés client / serveur |
-| `scripts/` | Outillage hors build — relevé des empreintes CSP |
-| `public/images/` | Les 34 photographies extraites de la maquette |
+| `i18n/locales/` | `fr.json` et `en.json` — voir [Version anglaise](#version-anglaise) |
+| `content/conseils/` | Les sept articles de la rubrique Conseils, en Markdown |
+| `tests/` | `unit/` (Vitest) et `e2e/` (Playwright) — voir [Qualité](#qualité) |
+| `scripts/` | Outillage hors build — vérification locale, empreintes CSP, icônes, crochets |
+| `docs/` | Notes de travail destinées à TBS — cahier de tournage photo, crédits d'images, captures, audit |
+| `public/images/` | Les 34 photographies extraites de la maquette, le logo, et les visuels de domaines et de références |
 | `design/` | Maquette d’origine et plaquettes commerciales TBS — voir [design/README.md](design/README.md) |
 
 Le dossier `design/` documente la provenance : d’où viennent les couleurs, les
 textes et les photos. Il n’est pas compilé par Nuxt.
+
+---
+
+## Les deux chartes
+
+Le site porte deux palettes, et un seul jeu de composants. Le visiteur passe de
+l'une à l'autre depuis le sélecteur du bandeau supérieur — repris dans le
+tiroir mobile, où le bandeau est masqué.
+
+| | Charte | Ancrage |
+| --- | --- | --- |
+| **Principale** (défaut) | Sable & Or | La charte historique héritée du template : brun-olive profond, or, pêche, crème, olive |
+| **Secondaire** | Bleu & Rouge | Le logotype : bleu `#3376ba` et rouge `#d83934`, relevés au pixel sur `public/images/logo-tbs.png` |
+
+### Comment ça marche
+
+Le mécanisme tient dans `app/assets/css/main.css`, en deux étages :
+
+1. les valeurs brutes vivent dans des variables `--tbs-*` posées sur `:root`,
+   que le sélecteur `:root[data-theme='logo']` réécrit ;
+2. les jetons `@theme` de Tailwind ne portent plus aucune couleur, seulement
+   une référence — `--color-gold: var(--tbs-accent)`.
+
+Toutes les classes déjà écrites — `bg-gold`, `text-ink/70`, `border-cream` —
+changent donc de couleur sans qu'une ligne de gabarit ne bouge. Le basculement
+se réduit à un attribut sur `<html>` : pas de rechargement, pas de seconde
+feuille de style, pas de composant qui ait à connaître le thème courant.
+
+Les pages étant pré-rendues, leur HTML est identique pour tout le monde : le
+serveur ne peut pas y écrire le thème retenu. L'attribut est donc posé par un
+script en ligne minuscule, en tête de `<head>` (`app/app.vue`), avant le
+premier rendu — sans quoi la page s'afficherait un instant en sable avant de
+virer au bleu. Le choix est mémorisé dans `localStorage` : une préférence
+d'affichage strictement locale, rien n'est envoyé au serveur, et la politique
+de confidentialité n'a pas à en parler.
+
+### Les contrastes, dans les deux thèmes
+
+La charte secondaire n'est pas une teinture : elle reprend les rapports de
+contraste de la première, valeur par valeur, et chaque jeton de `main.css`
+porte le sien en commentaire. Le bleu et le rouge du logo sont repris tels
+quels partout où ils servent d'aplat ou d'accent — ce sont eux qu'on vient
+reconnaître.
+
+Deux valeurs seulement s'en écartent, et pour la raison qui vaut déjà dans la
+charte principale : le rouge de marque plafonne à 4,61:1, sous le seuil dès
+qu'il passe sur fond sable, et le bleu clair de l'Agro est à 2,25:1. Comme la
+pêche et l'olive, ils ont une variante texte de même teinte à luminance
+abaissée. Le rouge de marque occupant par ailleurs le registre de l'alerte,
+l'encadré d'avertissement des pages légales bascule sur l'ambre dans ce
+thème — sans quoi il se confondrait avec la branche Events.
+
+### Ajouter ou changer une couleur
+
+Trois règles, et une épreuve qui les tient :
+
+- **jamais de couleur en dur dans un gabarit.** Une valeur hexadécimale écrite
+  dans une classe ou un attribut `style` échappe au basculement : la pastille
+  resterait pêche sur une page devenue bleue. Passer par un jeton ;
+- **une couleur ajoutée dans les données** (`shared/utils/siteData.ts`,
+  `server/data/content.ts`, base) reste hexadécimale — c'est ce que lisent le
+  semis, l'espace de suivi et les courriels, où aucune feuille de style n'est
+  chargée. Elle doit être reportée dans les deux tables de
+  `shared/utils/branchColors.ts`, qui la traduisent en jeton au rendu ;
+- **toute couleur de texte passe par `brandTextColor()`**, jamais par
+  `brandColor()` : c'est elle qui garantit les 4,5:1 de WCAG 1.4.3.
+
+`tests/unit/branchColors.spec.ts` vérifie les trois liens — couverture des
+couleurs de `BRANCH_TABS`, existence des jetons dans `main.css`, valeur de
+repli conforme. Une couleur oubliée y échoue, là où le rendu se contenterait
+d'avoir l'air un peu faux.
 
 ---
 
@@ -323,12 +519,32 @@ performance.
 - **Vraies pages plutôt qu'un state React.** La maquette affichait six écrans
   dans un composant unique piloté par `this.state.page`. Chaque page a
   désormais son URL : liens partageables, indexables, bouton « précédent »
-  fonctionnel, et six pages pré-rendues au build.
+  fonctionnel, et cinquante-sept pages pré-rendues au build.
 - **Filtres et onglets dans l'URL.** `?branche=events`, `?filtre=mariage` —
   on peut envoyer un lien pointant directement sur une branche ou une
   catégorie.
 - **Barre « Aperçu Desktop / Tablet / Mobile » supprimée.** C'était un
   artefact de prototypage : le site est réellement responsive.
+- **En-têtes de page illustrés.** La maquette ouvrait chaque page intérieure
+  sur un bandeau sable et du texte, avec une moitié droite vide sous le chapô.
+  `UiPageHero` accepte désormais `media` : trois ou quatre vignettes carrées,
+  façon planche-contact, qui montrent de quoi la page parle avant qu'on ait lu
+  une ligne — les quatre familles de réalisations sur `/galerie`, les quatre
+  branches sur `/services`, le savoir-faire sur `/conseils`, l'entreprise sur
+  `/contact`, le matériel sur `/faq`. Elles entrent en cascade, avec un zoom
+  lent, et sont neutralisées sous `prefers-reduced-motion`.
+  Les trois pages légales n'en reçoivent pas : une mention légale n'a pas à
+  s'illustrer, et `media` y reste simplement absent.
+- **La galerie, elle, ouvre sur une planche animée.** `GalleryHero` y remplace
+  l'en-tête commun : un grand cadre fait défiler les collections — Mariages,
+  Cérémonies, Entreprise, Décor, Fournitures — une à la fois, photo de
+  couverture en fondu croisé et carte qui la nomme. **La carte est un bouton**
+  et applique le filtre correspondant ; la planche suit en retour le
+  `?filtre=` de l'URL et s'immobilise dès qu'un filtre est posé. Rotation de
+  six secondes, donc arrêt explicite exigé par WCAG 2.2.2 : bouton de pause,
+  arrêt au survol, au focus et en arrière-plan, rotation désactivée sous
+  `prefers-reduced-motion`. Seule la première photo est préchargée, les quatre
+  autres n'entrent dans le DOM qu'après l'événement `load`.
 
 ### Accessibilité
 
@@ -341,27 +557,41 @@ performance.
 - Visionneuse de galerie : `role="dialog"`, focus déplacé, navigation aux
   flèches.
 - Anneau de focus visible et unique sur tous les éléments interactifs.
+- **Vignettes d'en-tête retirées de l'arbre d'accessibilité.** Elles sont
+  décoratives — les mêmes photos reviennent en pleine taille plus bas — et un
+  `alt` descriptif les ferait lire deux fois (WCAG 1.1.1). `tests/e2e/heros.spec.ts`
+  vérifie qu'aucune n'expose de rôle `img`.
 - `prefers-reduced-motion` respecté : le contenu reste visible, les
   animations sont neutralisées.
-- **Contrastes conformes AA** (WCAG 1.4.3). Les couleurs de branche pêche et
-  olive sont décoratives : lisibles en pastille, elles tombent à 2,15:1 et
-  2,33:1 dès qu'on en fait du texte. `brandTextColor()`
-  (`shared/utils/branchColors.ts`) donne la variante texte — même teinte,
-  luminance abaissée. **Toute nouvelle couleur de texte doit passer par elle.**
+- **Contrastes conformes AA** (WCAG 1.4.3), dans les deux chartes. Les
+  couleurs de branche pêche et olive sont décoratives : lisibles en pastille,
+  elles tombent à 2,15:1 et 2,33:1 dès qu'on en fait du texte.
+  `brandTextColor()` (`shared/utils/branchColors.ts`) donne la variante
+  texte — même teinte, luminance abaissée. **Toute nouvelle couleur de texte
+  doit passer par elle** ; `brandColor()` fait le même travail pour les
+  aplats. Voir « Les deux chartes ».
 - **Cibles tactiles à 24 px** (WCAG 2.5.8), y compris les puces du carrousel :
   le trait reste fin, la zone cliquable fait 44 px de haut.
+- **Rotation du hero arrêtable** (WCAG 2.2.2) : pause au survol, au focus
+  clavier, quand l'onglet passe en arrière-plan, et par un bouton explicite.
+  Sous `prefers-reduced-motion`, elle ne démarre pas.
 
 ### Performance
 
 - `<NuxtImg>` : WebP, `srcset` responsive, `loading="lazy"` hors hero.
   Le hero est préchargé — c'est le LCP.
+- **Aucun décalage sur les vignettes d'en-tête** : le cadre porte le rapport
+  d'aspect, pas l'image, et la hauteur est donc réservée avant le chargement.
+  Le budget CLS de la CI (0,1) reste tenu. `tests/e2e/heros.spec.ts` mesure en
+  outre la largeur réellement décodée, pour attraper le `srcset` dégénéré que
+  documente `app/utils/imageSizes.ts`.
 - Polices auto-hébergées par `@nuxt/fonts` (plus d'appel à Google Fonts au
   chargement).
 - Vignettes de galerie filtrées **retirées du DOM** au lieu d'être masquées en
   CSS : plus d'images invisibles chargées ni de pièges au clavier.
 - Contenu chargé une seule fois et partagé entre les pages
   (`useAsyncData` + `getCachedData`), réponse API mise en cache 10 min (SWR).
-- Neuf pages pré-rendues, assets compressés en gzip et brotli.
+- Cinquante-sept pages pré-rendues, assets compressés en gzip et brotli.
 - **Cache des images** : `routeRules` pose `immutable` un an sur `/_ipx/**`
   — ces URL portent format, qualité et dimensions, elles sont adressées par
   leur contenu — et trente jours sur `/images/**`.
@@ -374,8 +604,31 @@ performance.
 
 - Titre, description, Open Graph, Twitter Card et URL canonique par page.
 - JSON-LD `LocalBusiness` (adresse, horaires, zone desservie, offres),
-  `FAQPage` et `BreadcrumbList`.
+  `FAQPage`, `BreadcrumbList` et `Article`.
 - `sitemap.xml` et `robots.txt` générés.
+
+#### Données structurées : toujours passer par `serialiserJsonLd()`
+
+Le JSON-LD voyage dans le corps d'un `<script type="application/ld+json">`, et
+`JSON.stringify` **n'échappe pas `<`**. Une chaîne contenant `</script>` ferme
+donc la balise, et la suite est interprétée comme du balisage.
+
+Ce n'est pas théorique ici : le `FAQPage` est alimenté par la table
+`faq_items`, et l'édition du contenu sans redéploiement est une fonctionnalité
+du projet. Une réponse de FAQ saisie depuis le back-office serait sinon
+injectée dans toutes les pages qui la portent.
+
+`shared/utils/jsonLd.ts` règle le cas en une ligne, et les quatre points
+d'injection l'appellent :
+
+```ts
+import { serialiserJsonLd } from '#shared/utils/jsonLd'
+
+useHead({ script: [{ type: 'application/ld+json', innerHTML: serialiserJsonLd(schema) }] })
+```
+
+**Un nouveau bloc JSON-LD passe par elle, jamais par `JSON.stringify` nu.**
+`tests/unit/jsonLd.spec.ts` garde la règle.
 
 ### Fonctionnel
 
@@ -388,7 +641,15 @@ performance.
 - **Dock de contact permanent** : bouton WhatsApp flottant en bureau, barre
   Appeler / WhatsApp / Devis en mobile — les deux canaux qui convertissent le
   mieux au Togo.
+- **Hero en cinq diapositives** : TBS Distribution ouvre le défilement, puis
+  les quatre branches, cinq secondes chacune. La maquette montrait une image
+  fixe ; la maison, elle, n'était nommée nulle part au-dessus de la ligne de
+  flottaison.
 - **Visionneuse de galerie** : les vignettes n'étaient pas cliquables.
+- **Accordéon des secteurs**, au bas de la galerie : les quatre branches et
+  les huit domaines, dépliés au survol comme au clavier. La maquette montrait
+  des photos sans jamais dire de quel métier elles relevaient ; chaque panneau
+  mène désormais aux prestations de son secteur.
 - **Carrousel de témoignages** reconstruit sur `scroll-snap` natif : glissement
   au doigt, molette horizontale, et plus d'arithmétique de pourcentages à
   maintenir si le nombre de témoignages change.
@@ -426,28 +687,78 @@ LinkedIn et WhatsApp doivent télécharger l'image pour les deviner — d'où le
 lien nu au premier partage. Une image d'un autre gabarit ferait mentir ces
 deux nombres : passer par le script.
 
-**Ce qui manque encore** : `favicon.svg` et `mask-icon`. Les deux demandent le
-logo en vectoriel, et le dépôt n'a que le PNG de 400 × 200. Emballer ce PNG
-dans un `<svg>` n'apporterait rien — mêmes pixels, aucune mise à l'échelle
-gagnée. Le jour où le fichier vectoriel arrive (AI, EPS ou SVG), les deux
-lignes sont à ajouter dans `nuxt.config.ts`.
+`favicon.svg` et `mask-icon.svg` **existent désormais** : faute du logo en
+vectoriel, `npm run icons:trace` vectorise le PNG par contours (potrace). Les
+deux fichiers sont versionnés, déclarés dans `nuxt.config.ts` et servis
+(vérifié). Le jour où le vrai fichier vectoriel arrive (AI, EPS ou SVG), il
+suffit de remplacer les deux fichiers — aucune ligne de configuration à
+toucher.
 
 ## Intégration continue
+
+> ### ⚠ Le compte GitHub est bloqué pour un motif de facturation
+>
+> **La cause est connue, et c'est GitHub qui la nomme.** Chaque exécution
+> porte la même annotation :
+>
+> ```
+> The job was not started because your account is locked due to a billing issue.
+> ```
+>
+> Le workflow `CI` n'a **jamais abouti une seule fois** : 107 exécutions,
+> 107 échecs, aucun succès (relevé du 2 octobre 2026). Les travaux passent à
+> `failure` en trois à huit secondes sans enregistrer une seule étape, pas
+> même « Set up job » — ils ne démarrent pas.
+>
+> Le détail qui confirme tout : **un seul workflow réussit**, et c'est
+> `Dependabot Updates`, 15 fois sur 15. Il est le seul à ne pas demander de
+> machine facturée — il tourne sur l'infrastructure de Dependabot. Dès qu'un
+> travail réclame un runner hébergé, le verrou tombe.
+>
+> Tout le reste a été écarté, vérification à l'appui :
+>
+> | Hypothèse | Vérification | Résultat |
+> | --- | --- | --- |
+> | Actions désactivé par une politique | `gh api repos/…/actions/permissions` | `enabled: true`, `allowed_actions: all` |
+> | Quota des dépôts privés | Le dépôt est public | minutes illimitées, et rien n'a changé |
+> | Version d'action inexistante | Les quatre tags interrogés un par un | `checkout@v7`, `setup-node@v4`, `upload-artifact@v7`, `download-artifact@v8` existent |
+> | YAML invalide | GitHub enregistre le workflow et crée les exécutions | valide |
+>
+> **Le correctif est hors du dépôt** : ouvrir
+> <https://github.com/settings/billing> sur le compte `Nova2026-graphik` et
+> régler ce qui bloque — solde impayé, moyen de paiement expiré, ou limite de
+> dépense à zéro. Aucune modification du dépôt n'y changera quoi que ce soit,
+> et rien d'autre ne reste à corriger : le jour où le compte est débloqué, le
+> pipeline part tel quel.
+>
+> **En attendant, `npm run ci` rejoue localement le travail `qualite`** :
+>
+> ```bash
+> npm run ci                # lint, types, tests, build, audit
+> npm run ci -- --parcours  # et les parcours Playwright par-dessus
+> ```
+>
+> Il s'arrête à la première erreur et renvoie un code non nul — utilisable tel
+> quel en crochet `pre-push`. Comptez environ trois minutes, dont deux et demie
+> de build ; les parcours ajoutent autant, d'où leur mise à l'écart du chemin
+> par défaut.
 
 `.github/workflows/ci.yml` s'exécute à chaque poussée sur `main` et sur chaque
 pull request. Trois travaux, du plus rapide au plus lent :
 
 | Travail | Étapes | Bloquant |
 | --- | --- | --- |
-| `qualite` | `npm ci`, lint, types, tests unitaires, build, `npm audit --audit-level=high --omit=dev` | oui |
+| `qualite` | `npm ci`, lint, types, tests unitaires, build, `npm run audit` | oui |
 | `parcours` | Playwright sur Chromium, les quatre parcours de bout en bout | oui |
 | `performance` | Lighthouse CI sur quatre pages, trois relevés chacune | non — avertissement |
 
 Une nouvelle poussée annule la vérification en cours sur la même branche.
 
-Les étapes `lint`, `test` et `test:e2e` passent par `npm run --if-present` :
-les scripts arrivent avec l'outillage de l'issue #16, et la CI ne doit pas
-échouer sur les branches ouvertes avant lui.
+Aucune étape ne passe plus par `npm run --if-present`. La garde avait un sens
+le temps que les branches ouvertes avant l'issue #16 rattrapent leur retard ;
+elle est devenue un trou. Une étape déclarée bloquante qu'un script renommé
+fait passer en silence ne bloque rien — c'est précisément ce que l'issue #17
+reproche à l'état antérieur.
 
 ### Budget de performance
 
@@ -473,6 +784,36 @@ gh api -X PUT repos/Nova2026-graphik/TBS/branches/main/protection   -F required_
 
 ---
 
+### Le crochet de pré-envoi
+
+Tant que GitHub Actions ne démarre pas, rien ne se déclenche tout seul. Le
+crochet versionné `.githooks/pre-push` comble ce vide : il rejoue `npm run ci`
+avant chaque envoi.
+
+```bash
+npm run hooks:install     # git config core.hooksPath .githooks
+```
+
+L'installation est **explicite, jamais faite par `postinstall`** : un
+`npm install` n'a pas à modifier en silence la configuration Git d'un poste.
+
+| Besoin | Commande |
+| --- | --- |
+| Passer outre une fois | `git push --no-verify` |
+| Passer outre sans toucher au crochet | `SKIP_PRE_PUSH=1 git push` |
+| Désinstaller | `git config --unset core.hooksPath` |
+
+Le crochet **se tait sur une suppression de branche** : `git push --delete`
+n'envoie aucun commit, et trois minutes de build pour effacer une référence
+sont trois minutes perdues. Il lit pour cela les références que Git lui passe
+sur l'entrée standard, et ne rend la main sans rien faire que si toutes sont
+des suppressions.
+
+Comptez deux à trois minutes par envoi, l'essentiel étant le build. C'est le
+prix d'un dépôt sans intégration continue active — et il tombera le jour où
+les exécutions repartiront.
+
+
 ## Qualité
 
 | Commande | Ce qu'elle vérifie |
@@ -482,6 +823,43 @@ gh api -X PUT repos/Nova2026-graphik/TBS/branches/main/protection   -F required_
 | `npm run typecheck` | Types, sur les gabarits comme sur le code |
 | `npm test` | Tests unitaires (Vitest) |
 | `npm run test:e2e` | Parcours de bout en bout (Playwright) |
+| `npm run audit` | Avis de sécurité des dépendances servies, dérogations comprises — cf. « Audit des dépendances » |
+| `npm run photos:check` | Noms, orientations et proportions de `public/images` — cf. `docs/reportage-photo.md` |
+
+> `npm run lint` et `npm run typecheck` ont cessé de s'exécuter le temps que
+> `typescript` est resté en `^7.0.2` — ni `vue-tsc` 3.x ni `@typescript-eslint`
+> ne supportent encore cette version. La dépendance est revenue à `^5.9.0` et
+> les deux rendent 0 erreur. Voir
+> [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md), §2.2 à §2.4.
+
+### Audit des dépendances
+
+```bash
+npm run audit     # → scripts/audit.mjs
+```
+
+`npm audit --audit-level=high --omit=dev` est le bon contrôle, mais il n'a
+aucun moyen d'écarter un avis précis. Or il en reste un que **rien ne peut
+corriger** : `node-forge` est en 1.4.0, la dernière version publiée, et l'avis
+la vise toujours. Il est atteint par `nuxt → @nuxt/cli → listhen`, le serveur
+de développement — le certificat auto-signé de `nuxt dev --https`. Absent de
+`.output`, jamais exécuté en production. Le remède que propose npm,
+`nuxt@3.15.1`, serait une rétrogradation majeure du cadriciel pour un paquet
+que la production n'exécute pas.
+
+Sans dérogation, l'étape échoue à chaque exécution, et une étape qui échoue
+toujours finit par se lire en diagonale — c'est ainsi qu'un vrai avis passe
+inaperçu. Avec une dérogation muette, l'exception survit à son motif. D'où la
+même forme que celle qu'avait prise la dérogation de `typecheck` :
+
+- tout avis `high` ou `critical` hors liste **échoue** ;
+- une dérogation **dont l'avis a disparu échoue aussi**, et demande sa propre
+  suppression.
+
+L'exception se périme donc d'elle-même le jour où l'amont corrige. La liste,
+avec le motif de chaque entrée et ce qu'on attend pour la lever, est en tête
+de `scripts/audit.mjs` — **y ajouter une entrée est une décision, pas une
+formalité.**
 
 ### Lint
 
@@ -500,9 +878,14 @@ Deux règles de mise en forme des gabarits sont désactivées, avec le motif
 
 ### Tests unitaires
 
-`tests/unit/`, en environnement Node — les trois suites portent sur des
-modules purs, monter un environnement Nuxt complet coûterait une minute par
-exécution sans rien apprendre de neuf.
+`tests/unit/`, en environnement Node — **16 suites, 146 tests, 1,8 s**. Elles
+portent sur des modules purs ; monter un environnement Nuxt complet coûterait
+une minute par exécution sans rien apprendre de neuf.
+
+Les cinq suites ci-dessous sont celles qui gardent le plus ; les dix autres
+couvrent la session d'administration, le rapport d'erreur, les rapports CSP,
+les couleurs et libellés de branche, les compteurs, les titres de domaine et
+les coordonnées de l'entrepôt.
 
 | Suite | Ce qu'elle garde |
 | --- | --- |
@@ -511,6 +894,7 @@ exécution sans rien apprendre de neuf.
 | `imageSizes.spec.ts` | Les chaînes `sizes`, dont aucun jeton ne doit être nu — le bug a déjà coûté cher |
 | `clientIp.spec.ts` | L'adresse du client : en-tête ignoré sans proxy déclaré, `X-Forwarded-For` lu par la droite, normalisation des formes d'une même adresse |
 | `rateLimit.spec.ts` | Le quota horaire : fenêtre glissante, comptes séparés par adresse, repli en mémoire qui ne s'ouvre pas quand la base tousse |
+| `jsonLd.spec.ts` | L'échappement du JSON-LD : un `</script>` venu de la base ne peut pas fermer la balise — cf. « Données structurées » |
 
 ### Tests de bout en bout
 
@@ -518,9 +902,13 @@ exécution sans rien apprendre de neuf.
 Nitro) et non sur le serveur de développement : le pré-rendu, l'hydratation et
 les en-têtes y sont ceux du site livré.
 
-Quatre parcours : envoi d'une demande de devis, filtrage de la galerie et
-visionneuse, changement de branche sur `/services` avec synchronisation de
-l'URL, tiroir mobile au clavier. Aucune base n'est requise — la dégradation
+**16 fichiers, 81 parcours**, répartis en deux projets : `bureau` (Desktop
+Chrome) et `mobile` (Pixel 7). Ils couvrent l'envoi d'une demande de devis et
+sa variante par branche, la rotation du hero d'accueil (ordre, cadence,
+arrêt), la galerie et sa visionneuse, les dix-sept pages de domaine, le
+panneau des domaines, les redirections 301 des anciennes adresses de branche,
+les en-têtes de sécurité, la version anglaise, et la navigation tactile
+(tiroir, secteurs, grilles). Aucune base n'est requise — la dégradation
 gracieuse fait partie de ce qui est vérifié.
 
 Première exécution :
@@ -604,6 +992,80 @@ fois découvert par un lien.
 
 ---
 
+## Version anglaise
+
+Le français est la langue par défaut, l'anglais vit sous `/en/`. La stratégie
+`prefix_except_default` laisse les URL françaises **inchangées** : aucune
+redirection, aucun lien cassé, aucun capital de référencement perdu.
+
+```
+/                    français        /en                  anglais
+/services            français        /en/services         anglais
+/conseils            français uniquement
+/mentions-legales    français uniquement
+/admin               français uniquement
+```
+
+### Où vit le texte
+
+| Ce qui est traduit | Où |
+| --- | --- |
+| Copie des pages, formulaire, navigation, pied de page | `i18n/locales/fr.json` et `en.json` |
+| Contenu éditorial — branches, prestations, galerie, FAQ, témoignages | `server/data/content.ts` et `content.en.ts` |
+| Blocs de présentation — étapes, formules, ambiances, chiffres | clé `data` des fichiers de langue, assemblée par `app/composables/useSiteData.ts` |
+
+La règle est la même partout : **la structure d'un côté, le texte de l'autre**.
+`content.en.ts` ne redéfinit que les champs lisibles et reprend du fichier
+français les identifiants, slugs, couleurs, images et valeurs chiffrées. Deux
+raisons : une valeur non textuelle dupliquée finit toujours par diverger, et le
+filtrage de la galerie comme la sélection de branche passent par ces
+identifiants — ils ne doivent pas changer d'une langue à l'autre, sous peine de
+casser `?branche=` et `?filtre=`.
+
+Même principe dans le formulaire de devis : les libellés des listes sont
+traduits, mais **la valeur envoyée reste française**. Une demande venue de la
+version anglaise atterrit dans le même bac que les autres, et le champ `branch`
+de `quote_requests` reste comparable d'une ligne à l'autre.
+
+### Ce qui n'est pas traduit, et pourquoi
+
+**Les trois pages légales.** Elles engagent la société au regard du droit
+togolais ; une traduction non relue par un juriste serait une prise de risque,
+pas un service.
+
+**La rubrique Conseils.** Ses articles visent des requêtes locales — « combien
+de chaises pour 300 invités », « prix location vaisselle mariage Lomé ». Les
+traduire relèverait d'une décision éditoriale à part.
+
+**L'espace de suivi des devis.** Interne, et le doubler créerait des URL à
+indexer pour des pages qui n'ont pas à l'être.
+
+Ces pages sont déclarées `defineI18nRoute({ locales: ['fr'] })` : la version
+anglaise n'existe pas, et les liens y ramènent au français.
+
+**La détection par la langue du navigateur** est désactivée. Elle enverrait un
+moteur d'indexation ou un visiteur francophone en voyage sur une version qu'il
+n'a pas demandée, et rendrait le pré-rendu non déterministe. Le choix passe par
+le sélecteur du bandeau supérieur, qui conserve la page en cours.
+
+### Ajouter une chaîne
+
+1. La clé dans `i18n/locales/fr.json` **et** `en.json` — les deux fichiers ont
+   la même forme, un `diff` des clés le vérifie.
+2. `{{ $t('ma.cle') }}` dans le gabarit, ou `t('ma.cle')` dans le script.
+3. Pour un lien interne, `<NuxtLinkLocale>` plutôt que `<NuxtLink>`. `UiButton`
+   s'en charge seul pour sa prop `to`.
+
+### Vérifier
+
+```bash
+npm run build
+grep -o '<link[^>]*alternate[^>]*>' .output/public/index.html   # hreflang + x-default
+ls .output/public/__sitemap__/                                   # fr-TG.xml et en.xml
+```
+
+---
+
 ---
 
 ## Déploiement
@@ -654,15 +1116,34 @@ chaque lundi.
 
 ## Sécurité
 
-`server/plugins/security-headers.ts` pose les en-têtes de protection sur
-**toutes** les réponses : pages pré-rendues, assets et routes `/api`. La
-politique elle-même vit dans `server/utils/securityHeaders.ts`.
+La politique vit dans `server/utils/securityHeaders.ts`, et elle est posée à
+**deux endroits**, parce qu'une seule ne suffisait pas.
 
-> Un plugin Nitro, et non un middleware `server/middleware/` : Nitro enregistre
-> le gestionnaire d'assets publics comme premier middleware, si bien qu'un
-> middleware applicatif n'est jamais atteint pour `/`, `/contact` ou tout autre
-> document pré-rendu. Le hook `request` du plugin, lui, court avant toute la
-> pile.
+| Où | Ce que ça couvre |
+| --- | --- |
+| `server/plugins/security-headers.ts` | tout ce qui traverse Nitro : routes `/api`, rendu à la volée, développement |
+| `routeRules` dans `nuxt.config.ts` | ce qui ne le traverse pas : les pages **pré-rendues**, servies telles quelles par le CDN |
+
+> Le plugin seul a laissé le site sans protection pendant des semaines. Mesure
+> faite en production le 8 septembre 2026 : `/api/health` portait les cinq
+> en-têtes, `/` n'en portait aucun. Une page pré-rendue est écrite au build et
+> servie comme un fichier ; elle n'entre jamais dans le serveur. Toute la
+> surface qu'un navigateur interprète comme du HTML était donc découverte, et
+> la seule surface protégée rendait du JSON.
+
+Les deux runtimes ne traitent pas les règles de la même façon, et cela se
+vérifie plutôt que se suppose :
+
+- **Nitro les fusionne** — une image reçoit aussi celles de `/**` ;
+- **la table de routage de Vercel s'arrête** à la première qui correspond, si
+  bien que `/(.*)` n'est jamais atteint pour `/images/**` ou `/_ipx/**`.
+
+D'où des en-têtes portés par chaque règle plutôt que délégués à `/**`. Le
+résultat se lit en clair dans `.vercel/output/config.json` après un
+`NITRO_PRESET=vercel npm run build`.
+
+La CSP, elle, n'accompagne que les documents : un navigateur l'ignore sur une
+réponse qui n'en est pas un.
 
 | En-tête | Valeur | Ce qu'il empêche |
 | --- | --- | --- |
@@ -684,10 +1165,11 @@ Tout est auto-hébergé (polices `/_fonts`, images `/_ipx`, scripts `/_nuxt`), l
 politique tient donc en `'self'` — seule exception, `frame-src` pour la carte
 OpenStreetMap de la page contact.
 
-Reste le cas des deux scripts que Nuxt sérialise dans chaque page pré-rendue
-(carte d'imports et `window.__NUXT__.config`). Une CSP bloquante sans leur
-empreinte coupe l'hydratation : le HTML s'affiche, plus rien ne réagit. D'où le
-défaut prudent — `Content-Security-Policy-Report-Only` — et la bascule en deux
+Reste le cas des scripts en ligne : les deux que Nuxt sérialise dans chaque
+page pré-rendue (carte d'imports et `window.__NUXT__.config`), et celui qui
+pose le thème de couleurs avant le premier rendu (voir « Les deux chartes »).
+Une CSP bloquante sans leur empreinte coupe l'hydratation, ou fait clignoter la
+page : le HTML s'affiche, plus rien ne réagit. D'où le défaut prudent — `Content-Security-Policy-Report-Only` — et la bascule en deux
 temps :
 
 ```bash
@@ -703,9 +1185,42 @@ NUXT_SECURITY_CSP_MODE=enforce
 ```
 
 Les empreintes changent à chaque build qui touche la configuration publique :
-`npm run security:csp-hashes` fait partie du déploiement. En attendant, le mode
-report-only signale les violations dans la console du navigateur — les deux
-scripts Nuxt y apparaissent, avec l'empreinte à autoriser.
+`npm run security:csp-hashes` fait partie du déploiement.
+
+#### Où arrivent les violations
+
+La politique désigne un point de collecte :
+
+```
+report-uri /api/csp-report
+```
+
+Sans lui, `Report-Only` était décoratif : le navigateur signalait dans la
+console du visiteur, et personne ne lisait cette console. `/api/csp-report`
+accepte les deux formats — l'ancien `report-uri` et la *Reporting API* — et
+journalise une ligne par violation :
+
+```
+[csp] script-src a refusé inline sur https://…/contact
+```
+
+Trois précautions, parce que l'adresse est publique et que le navigateur y
+poste sans que le site ne l'appelle :
+
+- **rien n'est cru** — ce qui n'est pas un rapport est ignoré, et la réponse
+  reste un 204 dans tous les cas, y compris sur un corps aberrant : distinguer
+  renseignerait qui sonde l'adresse ;
+- **on n'inonde pas** — une page cassée produit la même violation à chaque
+  visite ; la fenêtre de `errorReporter` n'en retient qu'une par quart d'heure
+  et par signature, la page n'entrant pas dans cette signature ;
+- **rien de personnel ne sort** — les URL sont réduites à leur chemin, la
+  chaîne de requête retirée. Elle peut porter un filtre de galerie ou un terme
+  de recherche.
+
+> `report-uri` plutôt que la *Reporting API* : celle-ci exige un en-tête
+> `Reporting-Endpoints` portant une URL **absolue**, donc l'origine du site —
+> laquelle est fausse en production tant que l'issue #81 n'est pas traitée. Un
+> chemin relatif ne dépend de rien.
 
 ### Limitation de débit et adresse du client
 
@@ -753,6 +1268,11 @@ Les en-têtes doivent alors être posés par l'hébergeur — fichier `_headers`
 
 ## Points à finaliser avec le client
 
+Les anomalies techniques relevées le 2 octobre 2026 sont dans
+[`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md), avec leur correctif.
+Ce qui suit ne dépend pas du code mais d'informations ou de décisions
+attendues de TBS.
+
 1. **Carte de contact** — `app/pages/contact.vue` intègre une carte
    OpenStreetMap centrée sur Lomé. Remplacer les coordonnées du `bbox` par
    celles relevées à l'entrepôt d'Agôè-Démakpoè.
@@ -765,8 +1285,12 @@ Les en-têtes doivent alors être posés par l'hébergeur — fichier `_headers`
    fichiers de `public/images/` décrivent leur usage.
 4. **Logo sur fond sombre** — le logo bichrome est posé sur une pastille
    blanche dans le footer. Une version monochrome claire serait plus élégante.
-5. **Mentions légales** — les liens du bas de page sont présents mais les
-   pages restent à rédiger.
+5. **Mentions légales** — les trois pages existent, sont pré-rendues et
+   affichent un marqueur « À compléter » visible là où l'information manque.
+   Restent **seize champs** à obtenir de TBS, tous dans
+   `shared/utils/legalData.ts` : capital social, RCCM, NIF, gérant,
+   hébergeur et ses coordonnées, et les sept conditions de location (acompte,
+   caution, annulations, casse et manquants, zone de livraison).
 6. **Notification de devis** — l'envoi est en place (voir « Notification des
    demandes de devis »). Reste à ouvrir le compte Resend ou Brevo, vérifier le
    domaine d'envoi et renseigner `NUXT_MAIL_API_KEY` en production.
@@ -825,8 +1349,28 @@ plutôt que publiées vides.
 ```bash
 npm run typecheck
 npm run build
-npm audit           # doit rester à 0 vulnérabilité
+npm run audit
 ```
+
+État relevé le 2 octobre 2026, détail dans
+[`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md) :
+
+| Commande | État | Note |
+| --- | --- | --- |
+| `npm ci` | ✔ | le verrou, désynchronisé, a été régénéré |
+| `npm run lint` | ✔ | 0 erreur |
+| `npm run typecheck` | ✔ | 0 erreur |
+| `npm test` | ✔ | 146 tests, 16 suites |
+| `npm run build` | ✔ | 2 165 routes pré-rendues |
+| `npm run test:e2e` | ✔ | 81 parcours, bureau et mobile |
+| `npm run audit` | ✔ | 1 dérogation motivée, sans correctif amont — voir l'audit, §2.5 |
+
+> **Pourquoi `typescript` reste en `^5.9`.** La dépendance avait été montée en
+> `^7.0.2`, que ni `vue-tsc` 3.x ni `@typescript-eslint` ne supportent encore :
+> `ts-api-utils` y lisait une API interne que TypeScript 7 ne publie plus, et
+> `vue-tsc` y cherchait `typescript/lib/tsc`, retiré. Lint et typecheck
+> plantaient tous les deux au chargement, sans analyser un seul fichier. À
+> remonter le jour où l'amont annonce TypeScript 7 — pas avant.
 
 En-têtes de sécurité, sur le build de production :
 
@@ -838,33 +1382,23 @@ curl -sI http://127.0.0.1:3000/ | grep -iE 'content-security|strict-transport|x-
 En ligne, viser A ou A+ sur <https://securityheaders.com> (A tant que la CSP
 reste en report-only, A+ une fois passée en `enforce`).
 
-### L'exception du contrôle de types
+### Le contrôle de types, sans dérogation
 
-`npm run typecheck` passe par [`scripts/typecheck.mjs`](scripts/typecheck.mjs),
-qui tolère **une** erreur et une seule : `TS2537` dans
-`node_modules/@nuxt/image/dist/runtime/components/NuxtPicture.vue`, une
-incompatibilité entre `@nuxt/image` 1.11 et les types `@unhead` livrés avec
-Nuxt 4. Le composant `<NuxtPicture>` n'est pas utilisé ici et le build n'est
-pas affecté.
+`npm run typecheck` appelle `nuxt typecheck`, et rien d'autre.
 
-Ni `skipLibCheck` ni un `exclude` de tsconfig ne couvrent ce cas :
-`skipLibCheck` ne vaut que pour les `.d.ts`, et le composant est tiré
-transitivement par les types de composants globaux.
+Il a longtemps passé par un script intermédiaire qui tolérait **une** erreur :
+`TS2537` dans `NuxtPicture.vue`, une incompatibilité entre `@nuxt/image` 1.11
+et les types `@unhead` livrés avec Nuxt 4. Ni `skipLibCheck` ni un `exclude`
+de tsconfig ne couvraient le cas.
 
-La dérogation se périme d'elle-même. Le script échoue :
+Cette dérogation a été écrite pour se périmer d'elle-même : le script échouait
+sur toute autre erreur, **et** le jour où l'erreur tolérée disparaissait. Elle
+a tenu parole. `@nuxt/image` 2.1 a corrigé la signature, le script l'a signalé
+au premier passage, et il a été supprimé avec elle — `scripts/typecheck.mjs`
+n'existe plus.
 
-- sur **toute autre** erreur de type, qu'il liste ;
-- **et** le jour où l'erreur tolérée disparaît — c'est alors le signal de
-  mettre à jour `@nuxt/image` et de supprimer le script.
-
-Sans cette seconde condition, une exception muette survivrait à son motif et
-finirait par masquer de vraies erreurs. `npm run typecheck:brut` donne la
-sortie sans filtre.
-
-**Levée de l'exception** : `@nuxt/image` 2.x corrige la signature. La montée
-de version est une majeure — elle touche le rendu des images, donc le LCP de
-l'accueil — et mérite d'être vérifiée pour elle-même plutôt que glissée dans
-un correctif d'outillage.
+C'est la seule forme d'exception qui vaille : une exception muette survit à son
+motif et finit par masquer de vraies erreurs.
 
 ---
 
@@ -875,3 +1409,27 @@ Code, contenus éditoriaux et éléments d’identité : tous droits réservés.
 Les photographies issues de la maquette proviennent d’une banque d’images et
 sont destinées à être remplacées par les clichés des réalisations TBS —
 le cahier de tournage est dans [`docs/reportage-photo.md`](docs/reportage-photo.md).
+
+---
+
+## Réalisation
+
+**Samuel by Novagraphik Visu** — conception, design et développement.
+
+| | |
+| --- | --- |
+| **Auteur** | Samuel |
+| **Studio** | Novagraphik Visu |
+| **Métiers** | Identité visuelle · Design d’interface · Développement web |
+| **Courriel** | [novagraphiksat@gmail.com](mailto:novagraphiksat@gmail.com) |
+| **Dépôt** | [github.com/Nova2026-graphik](https://github.com/Nova2026-graphik) |
+| **Lieu** | Lomé — Togo |
+
+Maquette, intégration Nuxt, architecture, accessibilité, référencement,
+sécurité et mise en production : **Samuel by Novagraphik Visu**.
+
+La signature figure aussi dans le code — en tête de `nuxt.config.ts`,
+`app/app.vue` et `app/assets/css/main.css`, et dans le champ `author` de
+`package.json`.
+
+<sub>© 2026 Novagraphik Visu — pour TBS Distribution S.A.R.L. Tous droits réservés.</sub>
