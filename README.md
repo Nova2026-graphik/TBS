@@ -19,11 +19,13 @@ Quatre branches : **TBS Équipements**, **TBS Events**,
 **TBS Études & Conseils**, **TBS Agro**.
 
 > **État du projet** — audit complet du 2 octobre 2026 :
-> [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md). L'application se
-> construit et passe ses 227 tests : 146 unitaires et 81 parcours de bout en
-> bout. `npm ci`, `npm run lint` et `npm run typecheck`, qui échouaient au
-> relevé, sont réparés. Reste `npm audit` et six points mineurs, détaillés
-> dans l'audit.
+> [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md). **Tous les
+> correctifs de code qu'il recense sont appliqués** ; l'audit garde les
+> constats d'origine et porte l'état courant de chacun. La chaîne de
+> vérification passe de bout en bout — installation, lint, types, 227 tests
+> (146 unitaires, 81 parcours), build, audit. Ne restent ouverts qu'un avis
+> de sécurité sans correctif amont, dérogé et motivé, et les seize
+> informations légales attendues de TBS.
 
 ---
 
@@ -746,7 +748,7 @@ pull request. Trois travaux, du plus rapide au plus lent :
 
 | Travail | Étapes | Bloquant |
 | --- | --- | --- |
-| `qualite` | `npm ci`, lint, types, tests unitaires, build, `npm audit --audit-level=high --omit=dev` | oui |
+| `qualite` | `npm ci`, lint, types, tests unitaires, build, `npm run audit` | oui |
 | `parcours` | Playwright sur Chromium, les quatre parcours de bout en bout | oui |
 | `performance` | Lighthouse CI sur quatre pages, trois relevés chacune | non — avertissement |
 
@@ -821,6 +823,7 @@ les exécutions repartiront.
 | `npm run typecheck` | Types, sur les gabarits comme sur le code |
 | `npm test` | Tests unitaires (Vitest) |
 | `npm run test:e2e` | Parcours de bout en bout (Playwright) |
+| `npm run audit` | Avis de sécurité des dépendances servies, dérogations comprises — cf. « Audit des dépendances » |
 | `npm run photos:check` | Noms, orientations et proportions de `public/images` — cf. `docs/reportage-photo.md` |
 
 > `npm run lint` et `npm run typecheck` ont cessé de s'exécuter le temps que
@@ -828,6 +831,35 @@ les exécutions repartiront.
 > ne supportent encore cette version. La dépendance est revenue à `^5.9.0` et
 > les deux rendent 0 erreur. Voir
 > [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md), §2.2 à §2.4.
+
+### Audit des dépendances
+
+```bash
+npm run audit     # → scripts/audit.mjs
+```
+
+`npm audit --audit-level=high --omit=dev` est le bon contrôle, mais il n'a
+aucun moyen d'écarter un avis précis. Or il en reste un que **rien ne peut
+corriger** : `node-forge` est en 1.4.0, la dernière version publiée, et l'avis
+la vise toujours. Il est atteint par `nuxt → @nuxt/cli → listhen`, le serveur
+de développement — le certificat auto-signé de `nuxt dev --https`. Absent de
+`.output`, jamais exécuté en production. Le remède que propose npm,
+`nuxt@3.15.1`, serait une rétrogradation majeure du cadriciel pour un paquet
+que la production n'exécute pas.
+
+Sans dérogation, l'étape échoue à chaque exécution, et une étape qui échoue
+toujours finit par se lire en diagonale — c'est ainsi qu'un vrai avis passe
+inaperçu. Avec une dérogation muette, l'exception survit à son motif. D'où la
+même forme que celle qu'avait prise la dérogation de `typecheck` :
+
+- tout avis `high` ou `critical` hors liste **échoue** ;
+- une dérogation **dont l'avis a disparu échoue aussi**, et demande sa propre
+  suppression.
+
+L'exception se périme donc d'elle-même le jour où l'amont corrige. La liste,
+avec le motif de chaque entrée et ce qu'on attend pour la lever, est en tête
+de `scripts/audit.mjs` — **y ajouter une entrée est une décision, pas une
+formalité.**
 
 ### Lint
 
@@ -1317,7 +1349,7 @@ plutôt que publiées vides.
 ```bash
 npm run typecheck
 npm run build
-npm audit --omit=dev
+npm run audit
 ```
 
 État relevé le 2 octobre 2026, détail dans
@@ -1331,7 +1363,7 @@ npm audit --omit=dev
 | `npm test` | ✔ | 146 tests, 16 suites |
 | `npm run build` | ✔ | 2 165 routes pré-rendues |
 | `npm run test:e2e` | ✔ | 81 parcours, bureau et mobile |
-| `npm audit` | ✖ | 19 avis, dont 13 « high » — voir l'audit, §2.5 |
+| `npm run audit` | ✔ | 1 dérogation motivée, sans correctif amont — voir l'audit, §2.5 |
 
 > **Pourquoi `typescript` reste en `^5.9`.** La dépendance avait été montée en
 > `^7.0.2`, que ni `vue-tsc` 3.x ni `@typescript-eslint` ne supportent encore :

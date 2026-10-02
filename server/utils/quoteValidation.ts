@@ -14,25 +14,59 @@ import { z } from 'zod'
  */
 export const MIN_FILL_MS = 2000
 
+/**
+ * Message des champs obligatoires absents — ou reçus dans un autre type.
+ *
+ * Sans lui, Zod retombe sur son texte par défaut, en anglais (« Invalid
+ * input: expected string, received undefined »), et `Contact/Form.vue`
+ * l'affiche tel quel sous le champ. La validation côté client couvre les
+ * quatre champs qu'elle connaît, mais pas `branch`, `requestType` ni
+ * `details` : le cas est rare, pas impossible.
+ *
+ * Chaque contrainte garde par ailleurs son propre message — `error` ne vaut
+ * que pour le contrôle de type, `.min()` et consorts restent prioritaires sur
+ * le leur.
+ */
+const OBLIGATOIRE = { error: 'Champ obligatoire' }
+
 export const quoteSchema = z.object({
-  name: z.string().trim().min(2, 'Nom trop court').max(160),
+  name: z.string(OBLIGATOIRE).trim().min(2, 'Nom trop court').max(160, 'Nom trop long'),
   phone: z
-    .string()
+    .string(OBLIGATOIRE)
     .trim()
     .min(6, 'Numéro invalide')
-    .max(40)
+    .max(40, 'Numéro trop long')
     .regex(/^[\d\s+().-]+$/, 'Numéro invalide'),
-  email: z.string().trim().email('E-mail invalide').max(200).optional().or(z.literal('')),
-  branch: z.string().trim().min(1).max(120),
-  requestType: z.string().trim().min(1).max(120),
+  email: z
+    .string()
+    .trim()
+    .email('E-mail invalide')
+    .max(200, 'E-mail trop long')
+    .optional()
+    .or(z.literal('')),
+  branch: z.string(OBLIGATOIRE).trim().min(1, 'Branche manquante').max(120, 'Branche inconnue'),
+  requestType: z
+    .string(OBLIGATOIRE)
+    .trim()
+    .min(1, 'Type de demande manquant')
+    .max(120, 'Type de demande inconnu'),
   eventDate: z
     .string()
     .regex(/^\d{4}-\d{2}-\d{2}$/, 'Date invalide')
     .optional()
     .or(z.literal('')),
-  guestCount: z.coerce.number().int().min(0).max(100_000).optional(),
-  location: z.string().trim().max(200).optional().or(z.literal('')),
-  message: z.string().trim().min(5, 'Précisez votre besoin').max(4000),
+  guestCount: z.coerce
+    .number({ error: 'Nombre invalide' })
+    .int('Nombre entier attendu')
+    .min(0, 'Nombre invalide')
+    .max(100_000, 'Nombre trop grand')
+    .optional(),
+  location: z.string().trim().max(200, 'Lieu trop long').optional().or(z.literal('')),
+  message: z
+    .string(OBLIGATOIRE)
+    .trim()
+    .min(5, 'Précisez votre besoin')
+    .max(4000, 'Message trop long'),
   /**
    * Champs propres à la branche — domaine, quantités, objet de mission,
    * culture… — sous forme « libellé : valeur ». Ils sont repliés en tête du
@@ -40,7 +74,10 @@ export const quoteSchema = z.object({
    * et l'équipe lit tout au même endroit. Bornés en nombre et en longueur.
    */
   details: z
-    .record(z.string().trim().min(1).max(60), z.string().trim().max(200))
+    .record(
+      z.string().trim().min(1, 'Libellé vide').max(60, 'Libellé trop long'),
+      z.string().trim().max(200, 'Valeur trop longue'),
+    )
     .refine(d => Object.keys(d).length <= 10, 'Trop de détails')
     .optional(),
   /**
