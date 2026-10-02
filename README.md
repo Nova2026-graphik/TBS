@@ -4,14 +4,14 @@ Site vitrine pour TBS Distribution (Agôè-Démakpoè, Lomé — Togo), réalis�
 **Nuxt 4 + TypeScript**, à partir de la maquette
 `TBS Site 6 Pages - offline2.html`.
 
-Les six pages de la maquette en font **soixante-cinq** au pré-rendu :
+Les six pages de la maquette en font **soixante-huit** au pré-rendu :
 
 | | Pages |
 | --- | --- |
 | Français — les six d'origine, les trois pages légales, l'index Conseils | 10 |
 | Articles de la rubrique Conseils | 7 |
 | Pages de domaine de la galerie (`/galerie/<branche>/<domaine>`) | 17 |
-| Anglais sous `/en/` — six pages, l'index Conseils et ses sept articles, dix-sept domaines | 31 |
+| Anglais sous `/en/` — six pages, les trois pages légales, l'index Conseils et ses sept articles, dix-sept domaines | 34 |
 
 L'espace de suivi des devis, `/admin`, reste hors index et hors pré-rendu.
 
@@ -22,9 +22,9 @@ Quatre branches : **TBS Équipements**, **TBS Events**,
 > [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md). **Tous les
 > correctifs de code qu'il recense sont appliqués** ; l'audit garde les
 > constats d'origine et porte l'état courant de chacun. La chaîne de
-> vérification passe de bout en bout — installation, lint, types, 227 tests
-> (146 unitaires, 81 parcours), build, audit. Ne restent ouverts qu'un avis
-> de sécurité sans correctif amont, dérogé et motivé, et les seize
+> vérification passe de bout en bout — installation, lint, types, 1 015 tests
+> (931 unitaires, 84 parcours), build, audit. Ne restent ouverts qu'un avis
+> de sécurité sans correctif amont, dérogé et motivé, et les douze
 > informations légales attendues de TBS.
 
 ---
@@ -347,7 +347,9 @@ app/
                            collection à la fois, la carte applique le filtre
     Faq/                   Accordion
     Contact/               Form
-    Legal/                 Gabarit commun aux trois pages légales
+    Legal/                 Pages légales : blocs d'identification, marqueur
+                           « à compléter », texte enrichi, bouton PDF,
+                           avertissement de la version anglaise
     Admin/                 StatusBadge — espace de suivi des devis
     Shared/                ProcessSteps, CtaBanner
     content/               CalculateurMateriel — composant appelé depuis un article
@@ -535,7 +537,7 @@ performance.
   `/contact`, le matériel sur `/faq`. Elles entrent en cascade, avec un zoom
   lent, et sont neutralisées sous `prefers-reduced-motion`.
   Les trois pages légales n'en reçoivent pas : une mention légale n'a pas à
-  s'illustrer, et `media` y reste simplement absent.
+  s'illustrer, et leur bandeau tient sur le seul aplat d'encre.
 - **La galerie, elle, ouvre sur une planche animée.** `GalleryHero` y remplace
   l'en-tête commun : un grand cadre fait défiler les collections — Mariages,
   Cérémonies, Entreprise, Décor, Fournitures — une à la fois, photo de
@@ -879,14 +881,19 @@ Deux règles de mise en forme des gabarits sont désactivées, avec le motif
 
 ### Tests unitaires
 
-`tests/unit/`, en environnement Node — **16 suites, 146 tests, 1,8 s**. Elles
+`tests/unit/`, en environnement Node — **20 suites, 931 tests, 1,7 s**. Elles
 portent sur des modules purs ; monter un environnement Nuxt complet coûterait
 une minute par exécution sans rien apprendre de neuf.
 
-Les cinq suites ci-dessous sont celles qui gardent le plus ; les dix autres
+Le chiffre est gonflé par `i18nParite.spec.ts`, qui engendre une assertion par
+clé de traduction : 740 des 931. C'est voulu — un rapport qui nomme la clé
+fautive vaut mieux qu'un `toEqual` sur deux objets de six cents entrées.
+
+Les sept suites ci-dessous sont celles qui gardent le plus ; les autres
 couvrent la session d'administration, le rapport d'erreur, les rapports CSP,
-les couleurs et libellés de branche, les compteurs, les titres de domaine et
-les coordonnées de l'entrepôt.
+les couleurs et libellés de branche, les compteurs, les titres de domaine, le
+calcul du matériel de réception, la rubrique Conseils bilingue et les
+coordonnées de l'entrepôt.
 
 | Suite | Ce qu'elle garde |
 | --- | --- |
@@ -896,6 +903,8 @@ les coordonnées de l'entrepôt.
 | `clientIp.spec.ts` | L'adresse du client : en-tête ignoré sans proxy déclaré, `X-Forwarded-For` lu par la droite, normalisation des formes d'une même adresse |
 | `rateLimit.spec.ts` | Le quota horaire : fenêtre glissante, comptes séparés par adresse, repli en mémoire qui ne s'ouvre pas quand la base tousse |
 | `jsonLd.spec.ts` | L'échappement du JSON-LD : un `</script>` venu de la base ne peut pas fermer la balise — cf. « Données structurées » |
+| `i18nParite.spec.ts` | Les deux fichiers de langue se répondent : mêmes clés, mêmes variables (`{email}` perdu en anglais rend une phrase sans adresse), mêmes cibles de liens, mêmes formes plurielles |
+| `texteEnrichi.spec.ts` | La notation des pages légales : gras et liens isolés sans jamais perdre un caractère, marque mal fermée affichée telle quelle plutôt qu'interprétée |
 
 ### Tests de bout en bout
 
@@ -903,12 +912,13 @@ les coordonnées de l'entrepôt.
 Nitro) et non sur le serveur de développement : le pré-rendu, l'hydratation et
 les en-têtes y sont ceux du site livré.
 
-**16 fichiers, 81 parcours**, répartis en deux projets : `bureau` (Desktop
+**16 fichiers, 84 parcours**, répartis en deux projets : `bureau` (Desktop
 Chrome) et `mobile` (Pixel 7). Ils couvrent l'envoi d'une demande de devis et
 sa variante par branche, la rotation du hero d'accueil (ordre, cadence,
 arrêt), la galerie et sa visionneuse, les dix-sept pages de domaine, le
 panneau des domaines, les redirections 301 des anciennes adresses de branche,
-les en-têtes de sécurité, la version anglaise, et la navigation tactile
+les en-têtes de sécurité, la version anglaise — pages légales comprises,
+avec l'avertissement qui renvoie au texte français — et la navigation tactile
 (tiroir, secteurs, grilles). Aucune base n'est requise — la dégradation
 gracieuse fait partie de ce qui est vérifié.
 
@@ -1028,22 +1038,62 @@ traduits, mais **la valeur envoyée reste française**. Une demande venue de la
 version anglaise atterrit dans le même bac que les autres, et le champ `branch`
 de `quote_requests` reste comparable d'une ligne à l'autre.
 
-### Ce qui n'est pas traduit, et pourquoi
+### Les pages légales, traduites sans cesser d'être françaises
 
-**Les trois pages légales.** Elles engagent la société au regard du droit
-togolais ; une traduction non relue par un juriste serait une prise de risque,
-pas un service.
+Les trois documents — mentions légales, conditions de location, politique de
+confidentialité — engagent la société au regard du **droit togolais**, et
+c'est le texte français qui a été rédigé pour cela. Ils ont longtemps été
+francophones pour cette raison ; l'ennui est qu'un visiteur qui ne lit pas le
+français ne lisait alors rien du tout, pas même ce que le formulaire de devis
+enregistre à son sujet. Un bailleur européen lit une politique de
+confidentialité **avant** de remplir le formulaire, pas après.
 
-**L'espace de suivi des devis.** Interne, et le doubler créerait des URL à
-indexer pour des pages qui n'ont pas à l'être.
+Les trois pages existent donc dans les deux langues, et la version anglaise
+porte en tête un avertissement (`LegalPrevaut`) qui dit en toutes lettres que
+**la version française fait foi**, avec le lien vers elle. Une traduction qui
+s'annonce comme telle informe ; c'est une traduction muette qui aurait été
+une prise de risque.
 
-Ces pages sont déclarées `defineI18nRoute({ locales: ['fr'] })` : la version
-anglaise n'existe pas, et les liens y ramènent au français.
+Leur texte vit dans les fichiers de langue comme celui de toutes les autres
+pages. Les phrases y restent entières, avec une notation légère que
+`decouperTexteEnrichi` relit — `**gras**` et `[libellé](/chemin)` — plutôt que
+d'être découpées en morceaux que l'anglais n'enchaînerait pas dans le même
+ordre. Rien n'est injecté en HTML : chaque segment passe par l'interpolation
+de Vue, donc échappé.
+
+Ce qui n'est **pas** du texte reste dans `shared/utils/legalData.ts` : raison
+sociale, nom de l'hébergeur, montants, numéros de registre. « Vercel Inc. » ne
+se traduit pas.
+
+**L'espace de suivi des devis**, lui, n'est pas traduit : interne, et le
+doubler créerait des URL à indexer pour des pages qui n'ont pas à l'être. Il
+reste déclaré `defineI18nRoute({ locales: ['fr'] })`, et `useLienLocalise`
+rattrape les liens qui pointeraient vers lui depuis l'anglais.
 
 **La détection par la langue du navigateur** est désactivée. Elle enverrait un
 moteur d'indexation ou un visiteur francophone en voyage sur une version qu'il
 n'a pas demandée, et rendrait le pré-rendu non déterministe. Le choix passe par
 le sélecteur du bandeau supérieur, qui conserve la page en cours.
+
+### Télécharger un document légal
+
+Les trois pages portent un bouton « Télécharger en PDF » qui ouvre la boîte
+d'impression du navigateur ; son entrée « Enregistrer au format PDF » produit
+le fichier. Les styles `@media print` de `main.css` retirent au passage
+l'en-tête, le pied de page, le bandeau d'appel final et le bouton lui-même
+(`[data-hors-impression]`), rendent au document toute la largeur de la page
+(`[data-impression]`), impriment la cible des liens derrière leur libellé et
+repassent le marqueur « à compléter » en noir sur blanc.
+
+**Pourquoi pas un PDF pré-fabriqué et versionné ?** Il aurait donné un
+téléchargement en un clic, mais il se périme en silence : le jour où une
+clause change, le site dit une chose et le fichier joint au dossier en dit une
+autre. Sur un document qui engage la société, un PDF dormant vaut moins que
+pas de PDF du tout. Ce qui s'imprime est toujours ce qui est en ligne.
+
+Le bouton n'est rendu que côté client : sans JavaScript, un bouton qui appelle
+`window.print()` ne ferait rien, et la page reste imprimable par le menu du
+navigateur de toute façon.
 
 ### Ajouter une chaîne
 
@@ -1357,9 +1407,9 @@ npm run audit
 | `npm ci` | ✔ | le verrou, désynchronisé, a été régénéré |
 | `npm run lint` | ✔ | 0 erreur |
 | `npm run typecheck` | ✔ | 0 erreur |
-| `npm test` | ✔ | 146 tests, 16 suites |
+| `npm test` | ✔ | 931 tests, 20 suites |
 | `npm run build` | ✔ | 2 165 routes pré-rendues |
-| `npm run test:e2e` | ✔ | 81 parcours, bureau et mobile |
+| `npm run test:e2e` | ✔ | 84 parcours, bureau et mobile |
 | `npm run audit` | ✔ | 1 dérogation motivée, sans correctif amont — voir l'audit, §2.5 |
 
 > **Pourquoi `typescript` reste en `^5.9`.** La dépendance avait été montée en

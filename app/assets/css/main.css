@@ -553,3 +553,84 @@
     }
   }
 }
+
+/* ==========================================================================
+   Impression — les trois documents légaux
+   ==========================================================================
+   Les mentions légales, les conditions de location et la politique de
+   confidentialité sont des documents qu'on archive, qu'on joint à un dossier
+   ou qu'on fait relire par un juriste. Le bouton « Télécharger en PDF » ouvre
+   la boîte d'impression du navigateur, dont l'entrée « Enregistrer au format
+   PDF » produit le fichier.
+
+   Un PDF pré-fabriqué et versionné aurait donné un téléchargement en un clic,
+   mais il se périme en silence : le jour où une clause change, le site dit une
+   chose et le fichier une autre. Sur un document qui engage la société, un PDF
+   dormant vaut moins que pas de PDF. Ce qui s'imprime ici est toujours ce qui
+   est en ligne.
+
+   `[data-impression]` marque le conteneur du document dans la page.
+   ========================================================================== */
+
+@media print {
+  /* Ce qui n'appartient pas au document : navigation, pied de page, dock,
+     bandeau d'appel final, et le bouton lui-même. */
+  header,
+  footer,
+  nav[aria-label],
+  [data-hors-impression] {
+    display: none !important;
+  }
+
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 11pt;
+  }
+
+  /* Le document reprend toute la largeur de la page : la colonne de lecture
+     de l'écran laisserait une marge droite vide sur le papier. */
+  [data-impression] {
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  @page {
+    margin: 18mm 16mm;
+  }
+
+  /* Un titre seul en bas de page, ou deux lignes orphelines, se relisent mal
+     sur un document qu'on cite par section. */
+  h1,
+  h2,
+  h3 {
+    break-after: avoid-page;
+    page-break-after: avoid;
+  }
+
+  p,
+  li,
+  dl {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Les liens perdent leur cible au tirage : on l'imprime derrière le texte,
+     sauf pour les ancres internes, qui ne mènent nulle part sur papier. */
+  .u-prose a[href^='http']::after,
+  .u-prose a[href^='mailto']::after,
+  .u-prose a[href^='tel']::after {
+    content: ' (' attr(href) ')';
+    font-size: 0.85em;
+    word-break: break-all;
+  }
+
+  /* Les marqueurs « à compléter » doivent rester lisibles en noir et blanc. */
+  .u-pending {
+    border: 1px solid #000 !important;
+    background: none !important;
+    color: #000 !important;
+  }
+}

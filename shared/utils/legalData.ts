@@ -9,62 +9,89 @@
  *
  * Renseigner une valeur ici la propage partout — c'est le seul fichier à
  * modifier une fois les informations obtenues.
+ *
+ * **Ce qui est une clé et ce qui est une valeur.** Les pages existent en
+ * français et en anglais : tout ce qui est du texte — intitulés, précisions,
+ * valeurs rédigées — est une clé de traduction (`legal.fields.*`). Ce qui est
+ * une donnée — une raison sociale, un nom d'hébergeur, un montant, un numéro
+ * de registre — s'écrit tel quel : « Vercel Inc. » ne se traduit pas.
  */
 
 export interface LegalField {
+  /** Clé i18n de l'intitulé. */
   label: string
-  /** `null` tant que TBS n'a pas communiqué l'information. */
+  /**
+   * Donnée brute, identique dans les deux langues : raison sociale, nom
+   * d'hébergeur, montant, numéro. `null` tant que TBS ne l'a pas communiquée.
+   */
   value: string | null
-  /** Précision affichée à la place de la valeur manquante. */
+  /**
+   * Clé i18n, quand la « valeur » est en réalité une phrase — « Société à
+   * responsabilité limitée de droit togolais » se traduit, pas « Vercel Inc. ».
+   * Prioritaire sur `value`.
+   */
+  valueKey?: string
+  /** Clé i18n de la précision affichée à la place de la valeur manquante. */
   hint?: string
 }
 
 /** Identification de l'éditeur — obligatoire sur les supports de communication. */
 export const LEGAL_IDENTITY: LegalField[] = [
-  { label: 'Raison sociale', value: 'TBS Distribution S.A.R.L' },
+  { label: 'legal.fields.companyName', value: 'TBS Distribution S.A.R.L' },
   {
-    label: 'Forme juridique',
-    value: 'Société à responsabilité limitée (S.A.R.L) de droit togolais',
-  },
-  { label: 'Siège social', value: 'Agôè - Démakpoè, Lomé — Togo' },
-  {
-    label: 'Capital social',
+    label: 'legal.fields.legalForm',
     value: null,
-    hint: 'Montant en francs CFA figurant aux statuts',
+    valueKey: 'legal.fields.legalFormValue',
   },
+  { label: 'legal.fields.headOffice', value: 'Agôè - Démakpoè, Lomé — Togo' },
   {
-    label: 'RCCM',
+    label: 'legal.fields.capital',
     value: null,
-    hint: 'Numéro au registre du commerce et du crédit mobilier',
+    hint: 'legal.fields.capitalHint',
   },
   {
-    label: 'NIF',
+    label: 'legal.fields.rccm',
     value: null,
-    hint: 'Numéro d\'identification fiscale',
+    hint: 'legal.fields.rccmHint',
   },
   {
-    label: 'Gérant',
+    label: 'legal.fields.nif',
     value: null,
-    hint: 'Nom et prénom du gérant, également directeur de la publication',
+    hint: 'legal.fields.nifHint',
+  },
+  {
+    label: 'legal.fields.manager',
+    value: null,
+    hint: 'legal.fields.managerHint',
   },
 ]
 
-/** Hébergeur du site — le choix n'est pas encore arrêté (Vercel, Netlify, Node). */
+/** Hébergeur du site. */
 export const LEGAL_HOST: LegalField[] = [
   {
-    label: 'Hébergeur',
-    value: null,
-    hint: 'Raison sociale du prestataire retenu',
+    /**
+     * Établi, pas supposé : `www.tbstogo.com` est servi par le projet Vercel
+     * `tbs-distribution`, qui porte le domaine et d'où part chaque
+     * déploiement de `main`.
+     */
+    label: 'legal.fields.host',
+    value: 'Vercel Inc.',
   },
   {
-    label: 'Adresse',
+    /**
+     * Non renseignée faute d'avoir pu la vérifier : l'adresse d'un hébergeur
+     * est une mention légale, et la recopier de mémoire serait exactement le
+     * genre d'erreur que cette page a pour objet d'éviter. À relever sur les
+     * mentions légales de Vercel.
+     */
+    label: 'legal.fields.hostAddress',
     value: null,
-    hint: 'Siège de l\'hébergeur',
+    hint: 'legal.fields.hostAddressHint',
   },
   {
-    label: 'Contact',
+    label: 'legal.fields.hostContact',
     value: null,
-    hint: 'Téléphone ou adresse de contact technique',
+    hint: 'legal.fields.hostContactHint',
   },
 ]
 
@@ -74,9 +101,19 @@ export const LEGAL_HOST: LegalField[] = [
  * choisis — cf. `.env.example`.
  */
 export const LEGAL_PROCESSORS: LegalField[] = [
-  { label: 'Hébergement du site', value: null, hint: 'Prestataire et pays d\'hébergement' },
-  { label: 'Base de données', value: null, hint: 'Prestataire et pays d\'hébergement' },
-  { label: 'Envoi des e-mails', value: null, hint: 'Prestataire retenu pour les notifications' },
+  { label: 'legal.fields.hosting', value: 'Vercel Inc.' },
+  /**
+   * Relevé le 2 octobre 2026 : le projet Vercel qui sert `www.tbstogo.com` ne
+   * porte **aucune variable d'environnement**. Ni `DATABASE_URL`, ni clé
+   * d'envoi : aucune base ne reçoit les demandes, aucun prestataire de
+   * messagerie n'en est destinataire. Annoncer un sous-traitant qui n'existe
+   * pas serait aussi faux que d'en taire un.
+   *
+   * **À reprendre le jour où l'un ou l'autre est mis en service** — c'est à ce
+   * moment-là que ces deux lignes deviennent fausses.
+   */
+  { label: 'legal.fields.database', value: null, valueKey: 'legal.fields.databaseValue' },
+  { label: 'legal.fields.mailing', value: null, valueKey: 'legal.fields.mailingValue' },
 ]
 
 /**
@@ -85,23 +122,23 @@ export const LEGAL_PROCESSORS: LegalField[] = [
  * TBS, le site ne fait que les publier.
  */
 export const RENTAL_TERMS: LegalField[] = [
-  { label: 'Acompte à la réservation', value: null, hint: 'Pourcentage du montant du devis' },
-  { label: 'Caution', value: null, hint: 'Montant ou pourcentage, et délai de restitution' },
+  { label: 'legal.fields.deposit', value: null, hint: 'legal.fields.depositHint' },
+  { label: 'legal.fields.security', value: null, hint: 'legal.fields.securityHint' },
   {
-    label: 'Annulation sans frais',
+    label: 'legal.fields.freeCancellation',
     value: null,
-    hint: 'Nombre de jours avant la date de mise à disposition',
+    hint: 'legal.fields.freeCancellationHint',
   },
-  { label: 'Annulation tardive', value: null, hint: 'Part de l\'acompte conservée' },
+  { label: 'legal.fields.lateCancellation', value: null, hint: 'legal.fields.lateCancellationHint' },
   {
-    label: 'Casse et manquants',
+    label: 'legal.fields.breakage',
     value: null,
-    hint: 'Base de valorisation du matériel non restitué',
+    hint: 'legal.fields.breakageHint',
   },
   {
-    label: 'Zone de livraison incluse',
+    label: 'legal.fields.deliveryZone',
     value: null,
-    hint: 'Périmètre autour de Lomé, et tarif au-delà',
+    hint: 'legal.fields.deliveryZoneHint',
   },
 ]
 
@@ -114,15 +151,24 @@ export const QUOTE_RETENTION_MONTHS = 24
  */
 export const LEGAL_UPDATED_AT = '2026-09-06'
 
-/** « 2026-09-06 » → « 6 septembre 2026 ». */
-export function formatLegalDate(iso: string): string {
-  return new Intl.DateTimeFormat('fr-FR', {
+/**
+ * « 2026-09-06 » → « 6 septembre 2026 », ou « 6 September 2026 » selon la
+ * langue affichée. Une date écrite en toutes lettres dans une langue au
+ * milieu d'une page rédigée dans l'autre se remarque immédiatement.
+ */
+export function formatLegalDate(iso: string, locale = 'fr-FR'): string {
+  return new Intl.DateTimeFormat(locale, {
     dateStyle: 'long',
     timeZone: 'Africa/Lome',
   }).format(new Date(`${iso}T12:00:00Z`))
 }
 
-/** Nombre d'informations encore attendues de TBS, tous blocs confondus. */
+/**
+ * Nombre d'informations encore attendues de TBS, tous blocs confondus.
+ *
+ * Une valeur rédigée (`valueKey`) compte comme renseignée : elle est bien
+ * présente sur la page, elle est seulement traduite plutôt qu'écrite en dur.
+ */
 export function countPendingLegalFields(...groups: LegalField[][]): number {
-  return groups.flat().filter(field => field.value === null).length
+  return groups.flat().filter(field => field.value === null && field.valueKey === undefined).length
 }

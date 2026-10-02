@@ -6,14 +6,17 @@
  * incomplète se remarque et se corrige, une mention absente ne se découvre
  * qu'au contrôle. La valeur se renseigne dans `shared/utils/legalData.ts`.
  */
-defineProps<{ hint?: string }>()
+defineProps<{
+  /** Clé i18n de la précision, pas la précision elle-même. */
+  hint?: string
+}>()
 </script>
 
 <template>
   <span class="u-pending">
     <span aria-hidden="true">▲</span>
     <span>
-      À compléter<template v-if="hint"> — {{ hint }}</template>
+      {{ $t('legal.pending') }}<template v-if="hint"> — {{ $t(hint) }}</template>
     </span>
   </span>
 </template>

@@ -1,19 +1,20 @@
 /**
  * Liens vers des pages qui n'existent pas dans toutes les langues.
  *
- * Les trois pages légales sont volontairement francophones —
- * `defineI18nRoute({ locales: ['fr'] })` : elles engagent la société au regard
- * du droit togolais, et une traduction non relue par un juriste vaudrait moins
- * que le texte d'origine. Pour celles-là, `localePath()` et
- * `switchLocalePath()` rendent une **chaîne vide** dans l'autre langue, et
- * `NuxtLink` fabrique alors une balise `<a>` **sans `href`** : un lien qui a
- * l'air d'un lien, se survole comme un lien, et ne mène nulle part.
+ * Quand une page est déclarée dans une seule langue —
+ * `defineI18nRoute({ locales: ['fr'] })`, le cas des écrans d'administration —
+ * `localePath()` et `switchLocalePath()` rendent une **chaîne vide** dans
+ * l'autre langue, et `NuxtLink` fabrique alors une balise `<a>` **sans
+ * `href`** : un lien qui a l'air d'un lien, se survole comme un lien, et ne
+ * mène nulle part.
  *
  * Le site en portait plusieurs à la fois : les trois entrées légales du pied
- * de page anglais, l'entrée « Advice » du menu — la rubrique Conseils était
- * alors francophone elle aussi, elle est depuis traduite — et le sélecteur de
- * langue dès qu'on se trouvait sur une page francophone, d'où l'impossibilité
- * de repasser à l'anglais depuis un article.
+ * de page anglais, l'entrée « Advice » du menu, et le sélecteur de langue dès
+ * qu'on se trouvait sur une page francophone, d'où l'impossibilité de
+ * repasser à l'anglais depuis un article. La rubrique Conseils et les trois
+ * pages légales ont depuis été traduites ; ce garde-fou reste, parce que la
+ * panne qu'il évite est silencieuse et que la prochaine page francophone
+ * seule la ramènerait telle quelle.
  *
  * Plutôt que de masquer ces entrées, on renvoie vers la version française en
  * annonçant la langue. Un lien qui change de langue et le dit vaut mieux qu'un
