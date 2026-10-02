@@ -1,3 +1,9 @@
+/**
+ * TBS Distribution S.A.R.L — site vitrine
+ * Agôè-Démakpoè, Lomé — Togo
+ *
+ * Conception et développement : Samuel by Novagraphik Visu
+ */
 import tailwindcss from '@tailwindcss/vite'
 import {
   buildContentSecurityPolicy,

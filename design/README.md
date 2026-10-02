@@ -18,9 +18,9 @@ déballe côté navigateur.
 | `<script type="__bundler/template">` | Le markup réel, encodé en chaîne JSON (188 Ko) |
 | `<script type="__bundler/ext_resources">` | Correspondance URL CDN → identifiant de ressource |
 
-Le markup utilise le format `x-dc` (Claude Design canvas) : composant unique,
-styles en ligne, navigation entre pages pilotée par `this.state.page`, et
-directives `sc-if` / `sc-camel-on-click`.
+Le markup utilise le format `x-dc` de l'outil de maquettage d'origine :
+composant unique, styles en ligne, navigation entre pages pilotée par
+`this.state.page`, et directives `sc-if` / `sc-camel-on-click`.
 
 Pour l'ouvrir : double-cliquer le fichier dans un navigateur, le script se
 charge du reste.

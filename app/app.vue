@@ -1,5 +1,8 @@
 <script setup lang="ts">
 /**
+ * TBS Distribution S.A.R.L — site vitrine
+ * Conception et développement : Samuel by Novagraphik Visu
+ *
  * Racine de l'application. Deux responsabilités, toutes deux liées au thème
  * de couleurs (`app/composables/useTheme.ts`).
  *
