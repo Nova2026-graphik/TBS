@@ -20,15 +20,17 @@ import type { FormatReception, LigneLibre } from '~/utils/materielReception'
  * Le composant vit dans `app/components/content/` : il est ainsi utilisable
  * directement depuis un article Markdown, en `:calculateur-materiel`.
  */
+const { t } = useI18n()
+
 const invites = ref(200)
 const format = ref<FormatReception>('assis')
 const soiree = ref(true)
 
-const FORMATS: { valeur: FormatReception, libelle: string, detail: string }[] = [
-  { valeur: 'assis', libelle: 'Dîner assis', detail: 'Tables rondes, service à l’assiette' },
-  { valeur: 'mixte', libelle: 'Mixte', detail: 'Une partie assise, une partie debout' },
-  { valeur: 'cocktail', libelle: 'Cocktail', detail: 'Debout, mange-debout et lounge' },
-]
+const FORMATS = computed<{ valeur: FormatReception, libelle: string, detail: string }[]>(() => [
+  { valeur: 'assis', libelle: t('calculator.formats.assis'), detail: t('calculator.formats.assisDetail') },
+  { valeur: 'mixte', libelle: t('calculator.formats.mixte'), detail: t('calculator.formats.mixteDetail') },
+  { valeur: 'cocktail', libelle: t('calculator.formats.cocktail'), detail: t('calculator.formats.cocktailDetail') },
+])
 
 /** Bornes de saisie : en deçà on n'a pas besoin de nous, au-delà on appelle. */
 const MIN = 10
@@ -44,8 +46,11 @@ const options = computed(() => ({
   soiree: soiree.value,
 }))
 
-/** Ce que le barème calcule, avant toute intervention du visiteur. */
-const bareme = computed(() => calculerMateriel(options.value))
+/**
+ * Ce que le barème calcule, avant toute intervention du visiteur — puis
+ * résolu dans la langue de la page : le barème ne rend que des clés.
+ */
+const bareme = computed(() => resoudreLignes(calculerMateriel(options.value), t))
 
 /* ── Ajustements ─────────────────────────────────────────────────────────── */
 
@@ -64,7 +69,9 @@ const ajustements = computed(() => ({
  * en douce effacerait sa décision. L'écart avec le barème reste visible sur la
  * ligne, et « Rétablir » le referme.
  */
-const lignes = computed(() => appliquerAjustements(bareme.value, ajustements.value, libres.value))
+const lignes = computed(() =>
+  appliquerAjustements(bareme.value, ajustements.value, libres.value, t('calculator.rules.libre')),
+)
 
 const modifie = computed(() => aDesAjustements(ajustements.value, libres.value))
 
@@ -107,9 +114,11 @@ function toutRetablir() {
 
 const nouveauLibelle = ref('')
 const nouvelleQuantite = ref<number | null>(null)
-const nouvelleUnite = ref('pièces')
+const nouvelleUnite = ref(t('calculator.units.pieces'))
 
-const UNITES = ['pièces', 'tables', 'm²', 'ensemble(s)', 'lots']
+const UNITES = computed(() =>
+  (['pieces', 'tables', 'sqm', 'sets', 'lots'] as const).map(cle => t(`calculator.units.${cle}`)),
+)
 
 /** Un article sans nom ne se chiffre pas ; le reste a des valeurs par défaut. */
 const peutAjouter = computed(() => nouveauLibelle.value.trim().length >= 2)
@@ -155,19 +164,16 @@ const PASTILLE
 
 <template>
   <section class="my-10 border border-ink/12 bg-sand p-[clamp(1.25rem,3vw,2.25rem)]">
-    <h2 class="text-h3">Combien de matériel pour votre réception ?</h2>
+    <h2 class="text-h3">{{ $t('calculator.title') }}</h2>
     <p class="mt-3 max-w-[60ch] text-[0.9375rem] leading-[1.75] text-ink-soft">
-      Une estimation de départ, calculée sur les ratios que nous appliquons au
-      quotidien. <strong class="font-normal text-ink">Tout est modifiable</strong> :
-      ajustez les quantités, retirez ce dont vous n'avez pas besoin, ajoutez ce
-      qui manque. Le plan de salle définitif dépend du lieu et du déroulé :
-      c'est le devis qui le tranche.
+      {{ $t('calculator.intro') }}
+      <strong class="font-normal text-ink">{{ $t('calculator.introStrong') }}</strong>{{ $t('calculator.introEnd') }}
     </p>
 
     <div class="mt-8 grid gap-7 sm:grid-cols-2">
       <div>
         <label class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute" for="calc-invites">
-          Nombre d'invités
+          {{ $t('calculator.guests') }}
         </label>
         <input
           id="calc-invites"
@@ -179,16 +185,15 @@ const PASTILLE
           :class="CHAMP"
         >
         <p v-if="peu" class="mt-2 text-xs text-ink-mute">
-          En dessous de {{ MIN }} invités, un simple appel ira plus vite.
+          {{ $t('calculator.tooFew', { n: MIN }) }}
         </p>
         <p v-else-if="trop" class="mt-2 text-xs text-ink-mute">
-          Au-delà de {{ MAX }} invités, le calcul ne suffit plus : appelez-nous,
-          nous montons le plan avec vous.
+          {{ $t('calculator.tooMany', { n: MAX }) }}
         </p>
       </div>
 
       <div>
-        <span class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">Format</span>
+        <span class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">{{ $t('calculator.format') }}</span>
         <div class="mt-3 flex flex-wrap gap-2">
           <button
             v-for="option in FORMATS"
@@ -210,7 +215,7 @@ const PASTILLE
 
     <label class="mt-6 flex items-center gap-3 text-[0.9375rem] text-ink-soft">
       <input v-model="soiree" type="checkbox" class="size-4 accent-gold">
-      La réception se prolonge en soirée
+      {{ $t('calculator.evening') }}
     </label>
 
     <!-- `aria-live` : la liste change à chaque frappe, l'annonce doit suivre
@@ -220,8 +225,8 @@ const PASTILLE
         v-if="lignes.length"
         class="flex items-baseline justify-between gap-4 border-b border-ink/15 pb-3 text-[0.6875rem] uppercase tracking-[0.16em] text-ink-mute"
       >
-        <span>Matériel</span>
-        <span>Quantité</span>
+        <span>{{ $t('calculator.colItem') }}</span>
+        <span>{{ $t('calculator.colQuantity') }}</span>
       </div>
 
       <ul v-if="lignes.length" class="mb-1">
@@ -235,11 +240,11 @@ const PASTILLE
             <span
               v-if="ligne.ajustee"
               class="ml-2 align-middle text-[0.625rem] uppercase tracking-[0.14em] text-gold"
-            >Modifié</span>
+            >{{ $t('calculator.modified') }}</span>
             <span
               v-else-if="ligne.libre"
               class="ml-2 align-middle text-[0.625rem] uppercase tracking-[0.14em] text-gold"
-            >Ajouté</span>
+            >{{ $t('calculator.added') }}</span>
 
             <span class="mt-1 block max-w-[52ch] text-xs leading-[1.6] text-ink-mute">
               {{ ligne.regle }}
@@ -251,7 +256,7 @@ const PASTILLE
               class="mt-1.5 text-xs text-ink-mute underline underline-offset-4 transition-colors hover:text-ink"
               @click="retablir(ligne.cle)"
             >
-              Rétablir le calcul ({{ ligne.quantiteCalculee }})
+              {{ $t('calculator.restore', { n: ligne.quantiteCalculee }) }}
             </button>
           </div>
 
@@ -260,7 +265,7 @@ const PASTILLE
               type="button"
               :class="PASTILLE"
               :disabled="ligne.quantite <= 0"
-              :aria-label="`Diminuer : ${ligne.libelle}`"
+              :aria-label="$t('calculator.decrease', { item: ligne.libelle })"
               @click="decaler(ligne.cle, ligne.quantite, -1)"
             >
               <span aria-hidden="true">−</span>
@@ -273,14 +278,14 @@ const PASTILLE
               :max="QUANTITE_MAX"
               inputmode="numeric"
               class="w-16 border-0 border-b border-ink/20 bg-transparent pb-1.5 text-center font-display text-[1.25rem] text-ink outline-none transition-colors duration-400 focus:border-gold"
-              :aria-label="`Quantité : ${ligne.libelle}`"
+              :aria-label="$t('calculator.quantityOf', { item: ligne.libelle })"
               @input="ajuster(ligne.cle, ($event.target as HTMLInputElement).value)"
             >
 
             <button
               type="button"
               :class="PASTILLE"
-              :aria-label="`Augmenter : ${ligne.libelle}`"
+              :aria-label="$t('calculator.increase', { item: ligne.libelle })"
               @click="decaler(ligne.cle, ligne.quantite, 1)"
             >
               <span aria-hidden="true">+</span>
@@ -291,7 +296,7 @@ const PASTILLE
             <button
               type="button"
               class="flex size-9 shrink-0 items-center justify-center text-ink-mute transition-colors duration-400 hover:text-ink focus-visible:text-ink"
-              :aria-label="`Retirer : ${ligne.libelle}`"
+              :aria-label="$t('calculator.remove', { item: ligne.libelle })"
               @click="retirer(ligne.cle)"
             >
               <svg viewBox="0 0 24 24" class="size-4" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
@@ -303,32 +308,30 @@ const PASTILLE
       </ul>
 
       <p v-else class="text-[0.9375rem] text-ink-mute">
-        Indiquez un nombre d'invités pour obtenir l'estimation.
+        {{ $t('calculator.empty') }}
       </p>
     </div>
 
     <!-- Ajout d'un article hors barème -->
     <div class="mt-7 border-t border-ink/12 pt-6">
       <h3 class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">
-        Ajouter un article
+        {{ $t('calculator.addTitle') }}
       </h3>
       <p class="mt-2 max-w-[56ch] text-xs leading-[1.6] text-ink-mute">
-        Praticables, groupe électrogène, climatiseurs mobiles, vaisselle
-        particulière — tout ce que le calcul ne prévoit pas et que vous
-        souhaitez voir chiffré.
+        {{ $t('calculator.addText') }}
       </p>
 
       <div class="mt-4 grid gap-4 sm:grid-cols-[2fr_auto_auto_auto] sm:items-end">
         <div>
           <label class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute" for="calc-libelle">
-            Désignation
+            {{ $t('calculator.label') }}
           </label>
           <input
             id="calc-libelle"
             v-model="nouveauLibelle"
             type="text"
             maxlength="60"
-            placeholder="Groupe électrogène 100 kVA"
+            :placeholder="$t('calculator.labelPlaceholder')"
             :class="CHAMP"
             @keydown.enter.prevent="ajouterArticle"
           >
@@ -336,7 +339,7 @@ const PASTILLE
 
         <div>
           <label class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute" for="calc-quantite">
-            Quantité
+            {{ $t('calculator.colQuantity') }}
           </label>
           <input
             id="calc-quantite"
@@ -353,7 +356,7 @@ const PASTILLE
 
         <div>
           <label class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute" for="calc-unite">
-            Unité
+            {{ $t('calculator.unit') }}
           </label>
           <select
             id="calc-unite"
@@ -370,13 +373,13 @@ const PASTILLE
           :disabled="!peutAjouter"
           @click="ajouterArticle"
         >
-          Ajouter
+          {{ $t('calculator.add') }}
         </button>
       </div>
     </div>
 
     <div v-if="lignes.length" class="mt-9 flex flex-wrap items-center gap-5">
-      <UiButton :to="lienDevis" size="lg">Transformer en demande de devis</UiButton>
+      <UiButton :to="lienDevis" size="lg">{{ $t('calculator.toQuote') }}</UiButton>
 
       <button
         v-if="modifie"
@@ -384,12 +387,11 @@ const PASTILLE
         class="text-xs text-ink-mute underline underline-offset-4 transition-colors hover:text-ink"
         @click="toutRetablir"
       >
-        Revenir au calcul d'origine
+        {{ $t('calculator.resetAll') }}
       </button>
 
       <p class="max-w-[38ch] text-xs leading-[1.6] text-ink-mute">
-        Le formulaire s'ouvre avec cet inventaire déjà rempli, vos ajustements
-        compris. Vous n'avez plus qu'à donner la date et vos coordonnées.
+        {{ $t('calculator.quoteHint') }}
       </p>
     </div>
   </section>
