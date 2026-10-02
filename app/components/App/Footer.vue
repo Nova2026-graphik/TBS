@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { BranchSlug } from '#shared/types'
+
 const info = useSiteInfo()
 const year = new Date().getFullYear()
 
@@ -16,7 +18,7 @@ const branchLinks = computed(() => [
 ].map(branche => ({
   ...branche,
   label: `TBS ${t(`topbar.branches.${branche.key}`)}`,
-  to: { path: '/services', query: { branche: branche.key } },
+  to: { path: '/services', query: { branche: versUrl(branche.key as BranchSlug) } },
 })))
 
 const { t } = useI18n()
@@ -158,7 +160,7 @@ const legalLinks = computed(() => [
     </div>
 
     <div class="u-gutter flex flex-wrap items-center justify-between gap-4 border-t border-white/10 py-6 text-[0.6875rem] tracking-[0.1em] text-white/60">
-      <span>© {{ year }} TBS Distribution S.A.R.L — Tous droits réservés.</span>
+      <span>{{ $t('footer.copyright', { year }) }}</span>
       <!-- Ces trois pages sont exigées : les libellés étaient affichés depuis
            l'origine, sans lien ni page derrière. -->
       <nav :aria-label="$t('footer.legalLabel')" class="flex flex-wrap items-center gap-x-3 gap-y-1">

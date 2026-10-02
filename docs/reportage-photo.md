@@ -102,15 +102,14 @@ quand la photo existera.
 | `branche-agro.jpg` | Parcelle ou équipement agricole en usage | 3:2 |
 | `agro-transformation.jpg` | Unité de transformation, matériel en fonctionnement | 3:2 |
 
-### Vingt fichiers passent aussi en en-tête de page
+### Dix-huit fichiers passent aussi en en-tête de page
 
 Depuis que les en-têtes de page portent une planche-contact
-(`app/components/Ui/PageHero.vue`), vingt de ces fichiers apparaissent une
+(`app/components/Ui/PageHero.vue`), treize de ces fichiers apparaissent une
 seconde fois, en **vignette carrée d'environ 170 px**, tout en haut d'une page :
 
 | Page | Fichiers |
 | --- | --- |
-| `/galerie` | `galerie-mariage-adjovi`, `galerie-ceremonie-officielle`, `galerie-diner-gala`, `galerie-verrerie` |
 | `/services` | `branche-equipements`, `branche-events`, `branche-etudes`, `branche-agro` |
 | `/conseils` | `events-dressage-or`, `categorie-nappage`, `categorie-art-de-la-table` |
 | `/contact` | `apropos-equipe`, `apropos-entrepot`, `equipements-materiel-roulant` |
@@ -124,6 +123,26 @@ centré**. Un plan large où l'essentiel est sur un bord passera en pleine
 largeur plus bas dans la page, mais se retrouvera coupé en vignette. Cadrer en
 gardant le sujet au centre, quitte à laisser de l'air autour — le recadrage
 carré est automatique, il n'y a rien à livrer de plus.
+
+Cinq autres passent en **couverture de collection** sur `/galerie`, où
+`app/components/Gallery/Hero.vue` les affiche en grand, en fondu croisé :
+
+| Collection | Fichier |
+| --- | --- |
+| Mariages | `galerie-mariage-adjovi` |
+| Cérémonies | `galerie-ceremonie-officielle` |
+| Entreprise | `galerie-seminaire` |
+| Décor & détails | `galerie-verrerie` |
+| Fournitures & équipements | `equipements-informatique` |
+
+Ce sont **les premières de leur catégorie dans `server/data/content.ts`** : la
+couverture n'est pas un réglage à part, elle suit l'ordre des réalisations.
+Réordonner la liste change donc la photo d'ouverture.
+
+Le cadre, lui, va du **portrait 4:5 en téléphone au panoramique 2,7:1 en
+bureau** — la même image, recadrée par le centre dans les deux sens. Une
+couverture doit donc survivre aux deux : sujet au centre, rien d'essentiel
+dans les coins ni collé aux bords hauts et bas.
 
 ### 7. Ambiances — les plus remplaçables
 
@@ -171,12 +190,32 @@ Aucune intervention sur le code n'est nécessaire, à trois conditions :
    la photo actuelle, pas la nouvelle. Une description fausse est pire
    qu'absente pour un lecteur d'écran.
 
+Ces trois conditions ne tiennent pas toutes seules. Une promesse écrite dans
+un document finit par être rompue le jour de la livraison, quand un fichier
+arrive en paysage là où le site attend un portrait. Elles sont donc vérifiées :
+
+```bash
+npm run photos:check
+```
+
+Le script compare `public/images` à `docs/photos-reference.json`, qui
+enregistre la géométrie attendue de chaque fichier. Il échoue si une image
+manque, change d'orientation, s'écarte de ses proportions de plus de 2 % ou
+perd en définition ; il signale aussi toute image citée dans le code sans
+exister sur le disque. Les fichiers encore sous 2400 px sont comptés, pas
+reprochés — ce sont les images de maquette, et c'est l'objet du reportage.
+
 Après remplacement :
 
 ```bash
-npm run icons:generate   # les cartes sociales reprennent les nouvelles photos
+npm run photos:check            # noms, orientations, proportions
+npm run photos:check -- --enregistrer   # une fois la livraison acceptée
+npm run icons:generate          # les cartes sociales reprennent les nouvelles photos
 npm run build
 ```
+
+La référence n'est réenregistrée **qu'après relecture** : la régénérer sans
+regarder reviendrait à valider d'avance tout ce que le script doit arrêter.
 
 ## Note sur la définition
 

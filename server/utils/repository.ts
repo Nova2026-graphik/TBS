@@ -13,6 +13,7 @@ import * as contentEn from '../data/content.en'
 import type {
   Branch,
   Domain,
+  Equipment,
   FaqItem,
   GalleryItem,
   RentalCategory,
@@ -113,6 +114,7 @@ export function getServiceBlocks(locale: ContentLocale = 'fr') {
 
     return rows.map(r => ({
       branch: r.branchSlug,
+      domain: (r.domainSlug ?? undefined) as ServiceBlock['domain'],
       eyebrow: r.eyebrow,
       title: r.title,
       description: r.description,
@@ -132,11 +134,53 @@ export function getDomains(locale: ContentLocale = 'fr') {
       .orderBy(asc(schema.domains.position))
 
     return rows.map(r => ({
+      slug: r.slug as Domain['slug'],
       branch: r.branchSlug,
       title: r.title,
       description: r.description,
+      // `?? undefined` et non `?? null` : le type dit « absent », pas « vide ».
+      // Une chaîne nulle rendue telle quelle produirait `src="null"`.
+      intro: r.intro ?? undefined,
+      meta: r.meta ?? undefined,
+      image: r.image ?? undefined,
+      imageAlt: r.imageAlt ?? undefined,
+      thumbnail: r.thumbnail ?? undefined,
+      thumbnailHover: r.thumbnailHover ?? undefined,
+      families: r.families ?? [],
+      exampleNote: r.exampleNote ?? undefined,
+      medallion: r.medallion,
     }))
   }, statique(locale).domains)
+}
+
+/**
+ * Références du catalogue, dans l'ordre où elles ont été semées.
+ *
+ * Le tri par `position` puis par `id` importe : deux références d'un même
+ * domaine partagent leur position quand le seed les a insérées ensemble, et
+ * un ordre instable ferait sautiller la liste d'un rendu à l'autre.
+ */
+export function getEquipment(locale: ContentLocale = 'fr') {
+  return withFallback<Equipment>(async () => {
+    const db = useDb()!
+    const rows = await db
+      .select()
+      .from(schema.equipment)
+      .orderBy(asc(schema.equipment.position), asc(schema.equipment.id))
+
+    return rows.map(r => ({
+      domain: r.domainSlug as Equipment['domain'],
+      name: r.name,
+      description: r.description,
+      specs: r.specs ?? [],
+      family: r.family ?? undefined,
+      kind: r.kind as Equipment['kind'],
+      image: r.image ?? undefined,
+      imageHover: r.imageHover ?? undefined,
+      nonContractual: r.nonContractual,
+      source: r.source ?? undefined,
+    }))
+  }, statique(locale).equipment)
 }
 
 export function getGalleryItems(locale: ContentLocale = 'fr') {
@@ -154,6 +198,7 @@ export function getGalleryItems(locale: ContentLocale = 'fr') {
       location: r.location,
       category: r.category,
       branch: r.branchSlug,
+      domain: (r.domainSlug ?? null) as GalleryItem['domain'],
       image: r.image,
       imageAlt: r.imageAlt,
     }))
@@ -188,6 +233,9 @@ export function getFaqItems(locale: ContentLocale = 'fr') {
 
     return rows.map(r => ({
       id: r.ref,
+      // Une ligne antérieure à la colonne n'a pas de branche : Événementiel
+      // est celle de six questions sur huit, et le repli le moins faux.
+      branch: (r.branchSlug ?? 'events') as FaqItem['branch'],
       group: r.groupLabel,
       question: r.question,
       answer: r.answer,

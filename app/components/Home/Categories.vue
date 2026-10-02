@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { RentalCategory } from '#shared/types'
 
-/** Les six univers du parc locatif TBS Events. */
+/** Les six univers du parc locatif TBS Événementiel. */
 defineProps<{ categories: RentalCategory[] }>()
 
 const sizesThird = SIZES_THIRD
@@ -16,7 +16,7 @@ const sizesThird = SIZES_THIRD
       :accent="$t('home.categories.accent')"
     >
       <template #aside>
-        <NuxtLinkLocale :to="{ path: '/services', query: { branche: 'events' } }" class="u-link-underline">
+        <NuxtLinkLocale :to="{ path: '/services', query: { branche: versUrl('events') } }" class="u-link-underline">
           Voir le catalogue
         </NuxtLinkLocale>
       </template>
@@ -27,7 +27,7 @@ const sizesThird = SIZES_THIRD
         v-for="(category, i) in categories"
         :key="category.slug"
         v-reveal="(i % 3) * 80"
-        :to="{ path: '/services', query: { branche: 'events' }, hash: `#${category.slug}` }"
+        :to="{ path: '/services', query: { branche: versUrl('events') }, hash: `#${category.slug}` }"
         class="group block transition-transform duration-600 ease-[var(--ease-out-expo)] hover:-translate-y-1.5"
       >
         <div class="relative aspect-4/3 overflow-hidden bg-shell">
@@ -48,7 +48,7 @@ const sizesThird = SIZES_THIRD
             {{ category.name }}
           </span>
           <span class="shrink-0 text-[0.6875rem] uppercase tracking-[0.18em] text-ink-soft">
-            {{ category.refCount }} réf.
+            {{ $t('home.categories.refCount', { count: category.refCount }) }}
           </span>
         </div>
       </NuxtLinkLocale>

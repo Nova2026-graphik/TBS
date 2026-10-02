@@ -1,4 +1,104 @@
+/**
+ * TBS Distribution S.A.R.L — site vitrine
+ * Agôè-Démakpoè, Lomé — Togo
+ *
+ * Conception et développement : Samuel by Novagraphik Visu
+ */
 import tailwindcss from '@tailwindcss/vite'
+import {
+  buildContentSecurityPolicy,
+  buildSecurityHeaders,
+  contentSecurityPolicyHeaderName,
+} from './server/utils/securityHeaders'
+
+/**
+ * En-têtes de sécurité des réponses **statiques**.
+ *
+ * `server/plugins/security-headers.ts` les pose sur chaque réponse qui
+ * traverse Nitro. Sur Vercel, les pages pré-rendues n'en traversent aucune :
+ * elles sont écrites au build et servies par le CDN. Résultat mesuré en
+ * production le 8 septembre 2026 — `/api/health` portait les cinq en-têtes,
+ * `/` n'en portait aucun. Toute la surface qu'un navigateur interprète comme
+ * du HTML était sans protection ; la seule surface protégée rendait du JSON.
+ *
+ * `routeRules` est la réponse : le préréglage Vercel les inscrit dans
+ * `.vercel/output/config.json`, qui s'applique aux fichiers statiques. Le
+ * dépôt en avait déjà la preuve — le `cache-control` des images passe par là
+ * et arrive bien.
+ *
+ * Les valeurs sont calculées à la construction, donc lues dans
+ * `process.env` : `routeRules` est figé dans la sortie du build, il ne peut
+ * pas dépendre de `runtimeConfig`. Pour des pages elles-mêmes figées au build,
+ * ce n'est pas une concession.
+ */
+function buildEnTetesStatiques(): Record<string, string> {
+  // `nuxt dev` n'écrit pas de sortie statique, et X-Frame-Options casserait
+  // l'iframe des DevTools : on ne pose rien hors production.
+  if (process.env.NODE_ENV !== 'production') return {}
+
+  const options = {
+    dev: false,
+    cspMode: process.env.NUXT_SECURITY_CSP_MODE ?? 'report-only',
+    cspScriptHashes: process.env.NUXT_SECURITY_CSP_SCRIPT_HASHES ?? '',
+    analyticsOrigin: process.env.NUXT_PUBLIC_ANALYTICS_HOST ?? '',
+  }
+
+  return buildSecurityHeaders(options)
+}
+
+/** La CSP seule, à réserver aux documents — cf. `shouldSendContentSecurityPolicy`. */
+function buildCspStatique(): Record<string, string> {
+  if (process.env.NODE_ENV !== 'production') return {}
+
+  const options = {
+    dev: false,
+    cspMode: process.env.NUXT_SECURITY_CSP_MODE ?? 'report-only',
+    cspScriptHashes: process.env.NUXT_SECURITY_CSP_SCRIPT_HASHES ?? '',
+    analyticsOrigin: process.env.NUXT_PUBLIC_ANALYTICS_HOST ?? '',
+  }
+
+  const nom = contentSecurityPolicyHeaderName(options)
+  return nom ? { [nom]: buildContentSecurityPolicy(options) } : {}
+}
+
+const enTetesStatiques = buildEnTetesStatiques()
+
+/**
+ * Origine publique du site — canonique, `og:url`, sitemap, `robots.txt`,
+ * `@id` du JSON-LD et alternances de langue.
+ *
+ * Elle était écrite en dur à cinq endroits, sur un domaine qui **ne résolvait
+ * pas** : mesure faite le 8 septembre 2026, `www.tbs-distribution.tg` renvoyait
+ * `Could not resolve host`. Le site se déclarait donc canonique vers le vide
+ * tout en demandant à être indexé — la pire combinaison possible, puisque le
+ * moteur consolide vers une adresse morte au lieu de garder celle qui répond.
+ *
+ * Trois sources, dans cet ordre :
+ *
+ *  1. `NUXT_PUBLIC_SITE_URL` ou `NUXT_SITE_URL` — une valeur explicite
+ *     l'emporte toujours, y compris pour revenir en arrière ;
+ *  2. `VERCEL_PROJECT_PRODUCTION_URL` — l'origine de **production** connue de
+ *     la plate-forme. Ce n'est pas `VERCEL_URL`, qui change à chaque
+ *     déploiement et ferait une canonique différente par build. Sur un
+ *     déploiement de prévisualisation, elle désigne bien la production, ce qui
+ *     est exactement ce qu'une canonique doit dire ;
+ *  3. le domaine visé, à défaut.
+ *
+ * La conséquence utile : le jour où le domaine est rattaché au projet Vercel,
+ * la variable de la plate-forme le nomme, et le site se corrige tout seul.
+ */
+function resoudreOrigine(): string {
+  const explicite = process.env.NUXT_PUBLIC_SITE_URL || process.env.NUXT_SITE_URL
+  if (explicite) return explicite.replace(/\/+$/, '')
+
+  const production = process.env.VERCEL_PROJECT_PRODUCTION_URL
+  if (production) return `https://${production.replace(/\/+$/, '')}`
+
+  return 'https://www.tbs-distribution.tg'
+}
+
+const ORIGINE = resoudreOrigine()
+const enTetesDocuments = { ...enTetesStatiques, ...buildCspStatique() }
 
 export default defineNuxtConfig({
 
@@ -36,7 +136,7 @@ export default defineNuxtConfig({
         { rel: 'apple-touch-icon', href: '/apple-touch-icon.png', sizes: '180x180' },
         { rel: 'mask-icon', href: '/mask-icon.svg', color: '#2E78C0' },
         { rel: 'manifest', href: '/site.webmanifest' },
-        { rel: 'canonical', href: 'https://www.tbs-distribution.tg' },
+        { rel: 'canonical', href: ORIGINE },
       ],
       meta: [
         { name: 'theme-color', content: '#3e3524' },
@@ -50,7 +150,7 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   site: {
-    url: 'https://www.tbs-distribution.tg',
+    url: ORIGINE,
     name: 'TBS Distribution S.A.R.L',
   },
 
@@ -109,7 +209,7 @@ export default defineNuxtConfig({
       trustedProxyHops: '1',
     },
     public: {
-      siteUrl: 'https://www.tbs-distribution.tg',
+      siteUrl: ORIGINE,
       siteName: 'TBS Distribution S.A.R.L',
       phonePrimary: '+22890108510',
       phoneSecondary: '+22897800880',
@@ -150,10 +250,30 @@ export default defineNuxtConfig({
    * trente jours laissent une purge possible.
    */
   routeRules: {
+    /**
+     * En-têtes de sécurité — cf. `buildEnTetesStatiques()` en tête de fichier.
+     *
+     * Chaque règle porte les siens, sans compter sur `/**` pour compléter :
+     * dans la table de routage produite pour Vercel, une règle d'asset qui
+     * correspond **arrête** le routage, et `/(.*)` n'est jamais atteint. Le
+     * vérifier vaut mieux que le supposer — `.vercel/output/config.json` le
+     * montre en clair.
+     *
+     * La CSP ne va qu'aux documents : un navigateur l'ignore sur une réponse
+     * qui n'en est pas un, et c'est déjà la règle que suit le plugin Nitro
+     * (`shouldSendContentSecurityPolicy`). Deux points d'application, une
+     * seule politique.
+     */
+    '/**': { headers: enTetesDocuments },
     '/admin/**': { prerender: false },
-    '/_ipx/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
-    '/images/**': { headers: { 'cache-control': 'public, max-age=2592000' } },
+    '/_ipx/**': {
+      headers: { ...enTetesStatiques, 'cache-control': 'public, max-age=31536000, immutable' },
+    },
+    '/images/**': {
+      headers: { ...enTetesStatiques, 'cache-control': 'public, max-age=2592000' },
+    },
   },
+
   future: { compatibilityVersion: 4 },
 
   experimental: {
@@ -205,6 +325,29 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
     typeCheck: false,
+  },
+  /**
+   * `/sitemap.xml` : redirection **permanente** vers l'index.
+   *
+   * Le site étant bilingue, `@nuxtjs/sitemap` produit un index et deux
+   * sitemaps (`fr-TG.xml`, `en.xml`) ; `/sitemap.xml` n'existe pas en propre,
+   * et le module y pose lui-même une redirection — en 307, c'est-à-dire
+   * « temporaire ». Elle ne l'est pas : tant que le site reste bilingue,
+   * l'adresse ne reviendra pas. Une 301 dit la vérité, et transmet le
+   * capital de l'ancienne adresse plutôt que de le retenir.
+   *
+   * Le réglage passe par ce hook et non par `routeRules` : le module écrit
+   * `nuxt.options.nitro.routeRules['/sitemap.xml']` dans son propre `setup`,
+   * donc **après** la lecture de ce fichier, et écrasait la règle. Vérifié
+   * dans `.vercel/output/config.json` et sur le serveur Nitro.
+   */
+  hooks: {
+    'nitro:config': (nitroConfig) => {
+      nitroConfig.routeRules ??= {}
+      nitroConfig.routeRules['/sitemap.xml'] = {
+        redirect: { to: '/sitemap_index.xml', statusCode: 301 },
+      }
+    },
   },
 
   /**
@@ -258,7 +401,7 @@ export default defineNuxtConfig({
     ],
     // Le chargement à la demande des fichiers de langue est le défaut en v10.
     detectBrowserLanguage: false,
-    baseUrl: 'https://www.tbs-distribution.tg',
+    baseUrl: ORIGINE,
   },
 
   image: {

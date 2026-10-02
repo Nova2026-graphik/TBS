@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { serialiserJsonLd } from '#shared/utils/jsonLd'
+
 /**
  * Article de la rubrique Conseils.
  *
@@ -49,7 +51,7 @@ const { public: cfg } = useRuntimeConfig()
 useHead({
   script: [{
     type: 'application/ld+json',
-    innerHTML: JSON.stringify({
+    innerHTML: serialiserJsonLd({
       '@context': 'https://schema.org',
       '@type': 'Article',
       'headline': article.value!.title,

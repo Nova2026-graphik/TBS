@@ -1,6 +1,6 @@
 <script setup lang="ts">
 /**
- * Conditions générales de location — branche TBS Events.
+ * Conditions générales de location — branche TBS Événementiel.
  *
  * Le déroulé est celui réellement pratiqué par TBS et décrit ailleurs sur le
  * site (devis, montage, reprise). Les montants et délais, eux, sont des
@@ -15,7 +15,7 @@ const pending = countPendingLegalFields(terms)
 usePageSeo({
   title: 'Conditions de location',
   description:
-    'Devis et réservation, caution, livraison et reprise, casse et manquants, annulation, responsabilité : les conditions de location du matériel de réception TBS Events.',
+    'Devis et réservation, caution, livraison et reprise, casse et manquants, annulation, responsabilité : les conditions de location du matériel de réception TBS Événementiel.',
   path: '/conditions-de-location',
 })
 

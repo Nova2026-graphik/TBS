@@ -31,9 +31,9 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -41,27 +41,32 @@ jobs:
       - name: Installation
         run: npm ci
 
-      # `--if-present` : les scripts `lint` et `test` arrivent avec l'issue #16.
-      # Sans cette garde, la CI échouerait sur les branches ouvertes avant elle
-      # — et une fois le script en place, il s'exécute sans rien changer ici.
+      # Sans `--if-present` : les trois scripts existent depuis #16. La garde
+      # avait un sens le temps que les branches ouvertes avant lui rattrapent
+      # leur retard ; elle est devenue un trou. Une étape déclarée bloquante
+      # qu'un script renommé fait passer en silence ne bloque rien — et c'est
+      # exactement ce que cette issue reproche à l'état antérieur.
       - name: Lint
-        run: npm run --if-present lint
+        run: npm run lint
 
       - name: Types
         run: npm run typecheck
 
       - name: Tests unitaires
-        run: npm run --if-present test
+        run: npm run test
 
       - name: Build
         run: npm run build
 
-      # `--omit=dev` : seules comptent les dépendances réellement servies.
+      # `scripts/audit.mjs` plutôt que `npm audit` nu : il porte la seule
+      # dérogation du dépôt — un avis sans correctif amont, sur un paquet que
+      # la production n'exécute pas — avec son motif, et il échoue le jour où
+      # cet avis disparaît. Une dérogation muette survivrait à son motif.
       - name: Audit de sécurité
-        run: npm audit --audit-level=high --omit=dev
+        run: npm run audit
 
       - name: Conserver la sortie du build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: output
           path: .output
@@ -74,9 +79,9 @@ jobs:
     needs: qualite
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -88,12 +93,12 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Parcours
-        run: npm run --if-present test:e2e
+        run: npm run test:e2e
 
       # Le rapport ne sert qu'en cas d'échec : traces, captures et vidéos.
       - name: Conserver le rapport
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report
           path: playwright-report
@@ -110,9 +115,9 @@ jobs:
     continue-on-error: true
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -121,7 +126,7 @@ jobs:
         run: npm ci
 
       - name: Récupérer la sortie du build
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: output
           path: .output
@@ -131,7 +136,7 @@ jobs:
 
       - name: Conserver les relevés
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: lighthouse
           path: .lighthouseci

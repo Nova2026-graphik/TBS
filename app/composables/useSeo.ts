@@ -6,6 +6,7 @@
  * Google exploite pour le knowledge panel et les résultats enrichis.
  */
 import type { FaqItem } from '#shared/types'
+import { serialiserJsonLd } from '#shared/utils/jsonLd'
 
 /**
  * Format imposé aux images sociales : 1200 × 630, le rapport 1,91:1 qu'attendent
@@ -161,7 +162,7 @@ export function useOrganizationSchema() {
 
   useHead({
     script: [
-      { type: 'application/ld+json', innerHTML: JSON.stringify(schema), tagPriority: 'low' },
+      { type: 'application/ld+json', innerHTML: serialiserJsonLd(schema), tagPriority: 'low' },
     ],
   })
 }
@@ -173,7 +174,7 @@ export function useFaqSchema(items: MaybeRefOrGetter<FaqItem[]>) {
       {
         type: 'application/ld+json',
         innerHTML: computed(() =>
-          JSON.stringify({
+          serialiserJsonLd({
             '@context': 'https://schema.org',
             '@type': 'FAQPage',
             'mainEntity': toValue(items).map(item => ({
@@ -196,7 +197,7 @@ export function useBreadcrumbSchema(trail: { name: string, path: string }[]) {
     script: [
       {
         type: 'application/ld+json',
-        innerHTML: JSON.stringify({
+        innerHTML: serialiserJsonLd({
           '@context': 'https://schema.org',
           '@type': 'BreadcrumbList',
           'itemListElement': [{ name: 'Accueil', path: '/' }, ...trail].map((item, i) => ({
