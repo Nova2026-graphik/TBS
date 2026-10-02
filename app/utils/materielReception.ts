@@ -163,12 +163,120 @@ export function calculerMateriel({ invites, format, soiree }: OptionsCalcul): Li
   return lignes
 }
 
+/* ── Ajustements du visiteur ───────────────────────────────────────────────
+ *
+ * Le barème donne un point de départ, pas un verdict. Le lieu impose parfois
+ * des tables de huit, la famille apporte sa vaisselle, un client sait qu'il
+ * lui faut deux groupes électrogènes et pas un. Jusqu'ici la liste était à
+ * prendre ou à laisser : on la recopiait à la main dans le message, et le
+ * calculateur perdait l'essentiel de son intérêt.
+ *
+ * Les quantités sont donc modifiables, les lignes retirables, et le visiteur
+ * peut ajouter ce que le barème ne connaît pas. Ce que le barème a calculé
+ * n'est jamais perdu pour autant : chaque ligne modifiée garde sa valeur
+ * d'origine et peut y revenir d'un clic.
+ */
+
+/** Plafond de saisie. Au-delà, ce n'est plus une réception, c'est un marché. */
+export const QUANTITE_MAX = 99_999
+
+/** Ce que le visiteur a changé sur la liste calculée. */
+export interface Ajustements {
+  /** Quantité retenue, par clé — elle remplace celle du barème. */
+  quantites: Record<string, number>
+  /** Lignes du barème que le visiteur a retirées. */
+  retirees: string[]
+}
+
+/** Article ajouté par le visiteur, que le barème ne connaît pas. */
+export interface LigneLibre {
+  cle: string
+  libelle: string
+  quantite: number
+  unite: string
+}
+
+/** Une ligne telle qu'elle s'affiche, barème et ajustements réconciliés. */
+export interface LigneInventaire extends LigneMateriel {
+  /** La quantité ne vient plus du barème. */
+  ajustee: boolean
+  /** Ce que le barème avait calculé — ce à quoi « Rétablir » revient. */
+  quantiteCalculee: number
+  /** Article ajouté par le visiteur. */
+  libre: boolean
+}
+
+export const AJUSTEMENTS_VIDES: Ajustements = { quantites: {}, retirees: [] }
+
+/**
+ * Ramène une saisie à un entier utilisable.
+ *
+ * La saisie vient d'un `<input type="number">` : elle peut être vide, un
+ * texte, un nombre à virgule ou négatif. On ne refuse pas — on borne, et le
+ * champ montre aussitôt ce qui a été retenu.
+ */
+export function normaliserQuantite(valeur: unknown): number {
+  const nombre = Math.floor(Number(valeur))
+  if (!Number.isFinite(nombre) || nombre < 0) return 0
+  return Math.min(nombre, QUANTITE_MAX)
+}
+
+/** `true` si le visiteur a touché à quoi que ce soit. */
+export function aDesAjustements(ajustements: Ajustements, libres: LigneLibre[]): boolean {
+  return (
+    Object.keys(ajustements.quantites).length > 0
+    || ajustements.retirees.length > 0
+    || libres.length > 0
+  )
+}
+
+/** Réconcilie le barème, les ajustements et les articles ajoutés. */
+export function appliquerAjustements(
+  base: LigneMateriel[],
+  ajustements: Ajustements,
+  libres: LigneLibre[] = [],
+): LigneInventaire[] {
+  const retirees = new Set(ajustements.retirees)
+
+  const calculees = base
+    .filter(ligne => !retirees.has(ligne.cle))
+    .map((ligne): LigneInventaire => {
+      const ajustee = Object.hasOwn(ajustements.quantites, ligne.cle)
+      return {
+        ...ligne,
+        quantite: ajustee ? normaliserQuantite(ajustements.quantites[ligne.cle]) : ligne.quantite,
+        quantiteCalculee: ligne.quantite,
+        ajustee,
+        libre: false,
+      }
+    })
+
+  const ajoutees = libres.map((ligne): LigneInventaire => ({
+    cle: ligne.cle,
+    libelle: ligne.libelle,
+    quantite: normaliserQuantite(ligne.quantite),
+    unite: ligne.unite,
+    regle: 'Ajouté par vos soins',
+    quantiteCalculee: normaliserQuantite(ligne.quantite),
+    ajustee: false,
+    libre: true,
+  }))
+
+  return [...calculees, ...ajoutees]
+}
+
 /**
  * Message pré-rempli pour le formulaire de devis.
  *
  * Le calcul ne sert à rien s'il faut le recopier à la main. Le texte reprend
  * les quantités telles quelles, dans une forme qu'un conseiller peut chiffrer
  * sans rien redemander.
+ *
+ * **Ce que le visiteur a modifié est signalé ligne par ligne.** Sans cela, le
+ * conseiller recevrait des nombres en croyant qu'ils sortent du barème : il
+ * corrigerait un choix délibéré, ou raterait une contrainte que le client
+ * avait pris la peine d'exprimer. La valeur calculée est rappelée entre
+ * parenthèses, pour qu'il voie l'écart sans avoir à refaire le calcul.
  */
 export function messageDevis(options: OptionsCalcul, lignes: LigneMateriel[]): string {
   const formats: Record<FormatReception, string> = {
@@ -178,8 +286,20 @@ export function messageDevis(options: OptionsCalcul, lignes: LigneMateriel[]): s
   }
 
   const inventaire = lignes
-    .map(ligne => `- ${ligne.libelle} : ${ligne.quantite} ${ligne.unite}`)
+    .map((ligne) => {
+      const base = `- ${ligne.libelle} : ${ligne.quantite} ${ligne.unite}`
+      const detail = ligne as Partial<LigneInventaire>
+
+      if (detail.libre) return `${base} (ajouté par le client)`
+      if (detail.ajustee) return `${base} (ajusté par le client ; calcul : ${detail.quantiteCalculee})`
+      return base
+    })
     .join('\n')
+
+  const retouche = lignes.some((ligne) => {
+    const detail = ligne as Partial<LigneInventaire>
+    return detail.libre || detail.ajustee
+  })
 
   return [
     `Estimation faite depuis le calculateur du site.`,
@@ -187,6 +307,9 @@ export function messageDevis(options: OptionsCalcul, lignes: LigneMateriel[]): s
     `${options.invites} invités, ${formats[options.format]}${options.soiree ? ', avec soirée' : ''}.`,
     ``,
     inventaire,
+    ...(retouche
+      ? [``, `J'ai ajusté certaines quantités : ce sont celles-là qui comptent.`]
+      : []),
     ``,
     `Merci de me confirmer les quantités et le prix.`,
   ].join('\n')

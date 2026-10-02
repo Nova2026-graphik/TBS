@@ -10,7 +10,14 @@
  *    focus renvoyé sur le bouton à la fermeture.
  */
 const { t } = useI18n()
-const localePath = useLocalePath()
+
+/**
+ * `useLienLocalise` et non `localePath` seul : la rubrique Conseils n'existe
+ * qu'en français, et `localePath('/conseils')` rend une chaîne vide en
+ * anglais — l'entrée du menu devenait un `<a>` sans `href`. Le composable
+ * renvoie alors vers la version française en annonçant la langue.
+ */
+const lienLocalise = useLienLocalise()
 
 const NAV = computed(() => [
   { key: 'home', to: '/' },
@@ -20,7 +27,7 @@ const NAV = computed(() => [
   { key: 'gallery', to: '/galerie' },
   { key: 'contact', to: '/contact' },
   { key: 'faq', to: '/faq' },
-].map(item => ({ ...item, label: t(`nav.${item.key}`), to: localePath(item.to) })))
+].map(item => ({ ...item, label: t(`nav.${item.key}`), ...lienLocalise(item.to) })))
 
 const route = useRoute()
 const info = useSiteInfo()
@@ -74,10 +81,12 @@ onClickOutside(drawerRef, () => {
 
       <!-- Navigation bureau -->
       <nav class="hidden items-center gap-[clamp(0.875rem,2.4vw,2.125rem)] lg:flex" :aria-label="$t('nav.mainLabel')">
-        <NuxtLinkLocale
+        <NuxtLink
           v-for="item in NAV"
           :key="item.to"
           :to="item.to"
+          :lang="item.lang"
+          :hreflang="item.hreflang"
           class="border-b py-1.5 text-xs uppercase tracking-[0.14em] transition-colors duration-500"
           :class="
             route.path === item.to
@@ -86,7 +95,7 @@ onClickOutside(drawerRef, () => {
           "
         >
           {{ item.label }}
-        </NuxtLinkLocale>
+        </NuxtLink>
 
         <UiButton to="/contact" class="ml-[clamp(0.125rem,0.8vw,0.875rem)]">
           {{ $t('common.quote') }}
@@ -128,15 +137,17 @@ onClickOutside(drawerRef, () => {
         class="u-gutter absolute inset-x-0 top-full max-h-[calc(100dvh-var(--header-h))] overflow-y-auto bg-ink pb-8 pt-6 lg:hidden"
       >
         <nav class="flex flex-col" :aria-label="$t('nav.mobileLabel')">
-          <NuxtLinkLocale
+          <NuxtLink
             v-for="item in NAV"
             :key="item.to"
             :to="item.to"
+            :lang="item.lang"
+            :hreflang="item.hreflang"
             class="border-b border-white/10 py-3 font-display text-[1.625rem] transition-colors last:border-0"
             :class="route.path === item.to ? 'text-cream' : 'text-white'"
           >
             {{ item.label }}
-          </NuxtLinkLocale>
+          </NuxtLink>
         </nav>
 
         <UiButton to="/contact" variant="light" block class="mt-5">

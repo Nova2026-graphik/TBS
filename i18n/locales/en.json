@@ -35,7 +35,8 @@
     "hoursSunday": "Sunday",
     "hoursSundayTime": "by appointment",
     "whatsappMessage": "Hello TBS, I would like a quote for…",
-    "skipToContent": "Skip to content"
+    "skipToContent": "Skip to content",
+    "back": "Back"
   },
   "topbar": {
     "branches": {

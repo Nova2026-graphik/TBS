@@ -23,6 +23,9 @@ const branchLinks = computed(() => [
 
 const { t } = useI18n()
 
+/** Cf. `useLienLocalise` : Conseils n'existe qu'en français. */
+const lienLocalise = useLienLocalise()
+
 const pageLinks = computed(() => [
   { key: 'home', to: '/' },
   { key: 'gallery', to: '/galerie' },
@@ -31,7 +34,7 @@ const pageLinks = computed(() => [
   { key: 'advice', to: '/conseils' },
   { key: 'contact', to: '/contact' },
   { key: 'faq', to: '/faq' },
-].map(item => ({ ...item, label: t(`nav.${item.key}`) })))
+].map(item => ({ ...item, label: t(`nav.${item.key}`), ...lienLocalise(item.to) })))
 
 /**
  * WhatsApp est le canal réel ; les autres comptes n'apparaissent que si TBS
@@ -57,7 +60,7 @@ const legalLinks = computed(() => [
   { key: 'mentions', to: '/mentions-legales' },
   { key: 'rental', to: '/conditions-de-location' },
   { key: 'privacy', to: '/confidentialite' },
-].map(item => ({ ...item, label: t(`footer.legal.${item.key}`) })))
+].map(item => ({ ...item, label: t(`footer.legal.${item.key}`), ...lienLocalise(item.to) })))
 </script>
 
 <template>
@@ -108,9 +111,14 @@ const legalLinks = computed(() => [
         <h2 class="text-[0.6875rem] uppercase tracking-[0.2em] text-white">{{ $t('footer.pages') }}</h2>
         <ul class="mt-5 flex flex-col gap-3">
           <li v-for="link in pageLinks" :key="link.to">
-            <NuxtLinkLocale :to="link.to" class="inline-block py-1 text-sm text-white/60 transition-colors hover:text-white">
+            <NuxtLink
+              :to="link.to"
+              :lang="link.lang"
+              :hreflang="link.hreflang"
+              class="inline-block py-1 text-sm text-white/60 transition-colors hover:text-white"
+            >
               {{ link.label }}
-            </NuxtLinkLocale>
+            </NuxtLink>
           </li>
         </ul>
       </div>
@@ -166,12 +174,14 @@ const legalLinks = computed(() => [
       <nav :aria-label="$t('footer.legalLabel')" class="flex flex-wrap items-center gap-x-3 gap-y-1">
         <template v-for="(link, i) in legalLinks" :key="link.to">
           <span v-if="i > 0" aria-hidden="true">·</span>
-          <NuxtLinkLocale
+          <NuxtLink
             :to="link.to"
+            :lang="link.lang"
+            :hreflang="link.hreflang"
             class="inline-block py-1 transition-colors hover:text-white/80"
           >
             {{ link.label }}
-          </NuxtLinkLocale>
+          </NuxtLink>
         </template>
       </nav>
     </div>
