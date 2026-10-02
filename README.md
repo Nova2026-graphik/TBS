@@ -4,13 +4,25 @@ Site vitrine pour TBS Distribution (Agôè-Démakpoè, Lomé — Togo), réalis�
 **Nuxt 4 + TypeScript**, à partir de la maquette
 `TBS Site 6 Pages - offline2.html`.
 
-Les six pages de la maquette en font vingt-trois au pré-rendu : dix en
-français — les six d'origine, les trois pages légales et l'index de la rubrique
-Conseils —, les sept articles de cette rubrique, et six en anglais sous `/en/`.
+Les six pages de la maquette en font **cinquante-sept** au pré-rendu :
+
+| | Pages |
+| --- | --- |
+| Français — les six d'origine, les trois pages légales, l'index Conseils | 10 |
+| Articles de la rubrique Conseils | 7 |
+| Pages de domaine de la galerie (`/galerie/<branche>/<domaine>`) | 17 |
+| Anglais sous `/en/` — six pages et dix-sept domaines | 23 |
+
 L'espace de suivi des devis, `/admin`, reste hors index et hors pré-rendu.
 
 Quatre branches : **TBS Équipements**, **TBS Events**,
 **TBS Études & Conseils**, **TBS Agro**.
+
+> **État du projet** — audit complet du 2 octobre 2026 :
+> [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md). L'application se
+> construit et passe ses 222 tests (141 unitaires, 81 parcours) ; trois
+> commandes de vérification sont en revanche à réparer, le détail et les
+> correctifs sont dans l'audit.
 
 ---
 
@@ -378,11 +390,12 @@ server/
   utils/securityHeaders.ts Politique CSP et en-têtes — source unique de vérité
 scripts/
   ci.mjs                   Rejoue localement le travail `qualite` de la CI
-  typecheck.mjs            Contrôle de types, avec l'exception documentée
   csp-hashes.mjs           Relève les empreintes CSP des scripts en ligne
   generate-icons.mjs       Produit le jeu d'icônes depuis le logo
   trace-logo.mjs           Vectorise le logo (favicon.svg, mask-icon.svg)
   install-hooks.mjs        Installe le crochet de pré-envoi
+  check-photos.mjs         Vérifie le cahier de tournage photo
+  images-domaines.mjs, images-references.mjs   Prépare les visuels de la galerie
 tests/
   unit/                    Vitest — validation, dépôt, limiteur, IP, admin, images,
                            couleurs de branche
@@ -393,7 +406,8 @@ shared/
   utils/siteData.ts        Contenu de présentation statique (process, formules, stats)
   utils/analytics.ts       Noms d'événements — une seule source
   utils/adminQuotes.ts, branchColors.ts    Libellés de statut et couleurs de branche
-public/images/             33 photos de la maquette + le logo
+public/images/             34 photos de la maquette + le logo, et les
+                           visuels de domaines et de références
 docs/reportage-photo.md    Cahier de tournage — remplacer les images de banque
 design/                    Maquette source + plaquettes commerciales (documentation)
 ```
@@ -411,8 +425,8 @@ design/                    Maquette source + plaquettes commerciales (documentat
 | `content/conseils/` | Les sept articles de la rubrique Conseils, en Markdown |
 | `tests/` | `unit/` (Vitest) et `e2e/` (Playwright) — voir [Qualité](#qualité) |
 | `scripts/` | Outillage hors build — vérification locale, empreintes CSP, icônes, crochets |
-| `docs/` | Notes de travail destinées à TBS — aujourd'hui le cahier de tournage photo |
-| `public/images/` | Les 33 photographies extraites de la maquette, et le logo |
+| `docs/` | Notes de travail destinées à TBS — cahier de tournage photo, crédits d'images, captures, audit |
+| `public/images/` | Les 34 photographies extraites de la maquette, le logo, et les visuels de domaines et de références |
 | `design/` | Maquette d’origine et plaquettes commerciales TBS — voir [design/README.md](design/README.md) |
 
 Le dossier `design/` documente la provenance : d’où viennent les couleurs, les
@@ -502,7 +516,7 @@ performance.
 - **Vraies pages plutôt qu'un state React.** La maquette affichait six écrans
   dans un composant unique piloté par `this.state.page`. Chaque page a
   désormais son URL : liens partageables, indexables, bouton « précédent »
-  fonctionnel, et vingt-trois pages pré-rendues au build.
+  fonctionnel, et cinquante-sept pages pré-rendues au build.
 - **Filtres et onglets dans l'URL.** `?branche=events`, `?filtre=mariage` —
   on peut envoyer un lien pointant directement sur une branche ou une
   catégorie.
@@ -574,7 +588,7 @@ performance.
   CSS : plus d'images invisibles chargées ni de pièges au clavier.
 - Contenu chargé une seule fois et partagé entre les pages
   (`useAsyncData` + `getCachedData`), réponse API mise en cache 10 min (SWR).
-- Neuf pages pré-rendues, assets compressés en gzip et brotli.
+- Cinquante-sept pages pré-rendues, assets compressés en gzip et brotli.
 - **Cache des images** : `routeRules` pose `immutable` un an sur `/_ipx/**`
   — ces URL portent format, qualité et dimensions, elles sont adressées par
   leur contenu — et trente jours sur `/images/**`.
@@ -647,11 +661,12 @@ LinkedIn et WhatsApp doivent télécharger l'image pour les deviner — d'où le
 lien nu au premier partage. Une image d'un autre gabarit ferait mentir ces
 deux nombres : passer par le script.
 
-**Ce qui manque encore** : `favicon.svg` et `mask-icon`. Les deux demandent le
-logo en vectoriel, et le dépôt n'a que le PNG de 400 × 200. Emballer ce PNG
-dans un `<svg>` n'apporterait rien — mêmes pixels, aucune mise à l'échelle
-gagnée. Le jour où le fichier vectoriel arrive (AI, EPS ou SVG), les deux
-lignes sont à ajouter dans `nuxt.config.ts`.
+`favicon.svg` et `mask-icon.svg` **existent désormais** : faute du logo en
+vectoriel, `npm run icons:trace` vectorise le PNG par contours (potrace). Les
+deux fichiers sont versionnés, déclarés dans `nuxt.config.ts` et servis
+(vérifié). Le jour où le vrai fichier vectoriel arrive (AI, EPS ou SVG), il
+suffit de remplacer les deux fichiers — aucune ligne de configuration à
+toucher.
 
 ## Intégration continue
 
@@ -664,9 +679,10 @@ lignes sont à ajouter dans `nuxt.config.ts`.
 > The job was not started because your account is locked due to a billing issue.
 > ```
 >
-> Le workflow `CI` n'a **jamais abouti une seule fois** : 83 échecs, aucun
-> succès. Les travaux passent à `failure` en trois à quatre secondes sans
-> enregistrer une seule étape, pas même « Set up job » — ils ne démarrent pas.
+> Le workflow `CI` n'a **jamais abouti une seule fois** : 107 exécutions,
+> 107 échecs, aucun succès (relevé du 2 octobre 2026). Les travaux passent à
+> `failure` en trois à huit secondes sans enregistrer une seule étape, pas
+> même « Set up job » — ils ne démarrent pas.
 >
 > Le détail qui confirme tout : **un seul workflow réussit**, et c'est
 > `Dependabot Updates`, 15 fois sur 15. Il est le seul à ne pas demander de
@@ -783,6 +799,12 @@ les exécutions repartiront.
 | `npm run test:e2e` | Parcours de bout en bout (Playwright) |
 | `npm run photos:check` | Noms, orientations et proportions de `public/images` — cf. `docs/reportage-photo.md` |
 
+> ⚠ `npm run lint` et `npm run typecheck` **ne s'exécutent plus** depuis le
+> passage de `typescript` en `^7.0.2` : ni `vue-tsc` 3.x ni
+> `@typescript-eslint` ne supportent encore cette version. Les deux repartent
+> en redescendant la dépendance à `^5.9.0` — voir
+> [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md), §2.2 à §2.4.
+
 ### Lint
 
 `@nuxt/eslint` fournit la base accordée à l'arborescence du projet ; s'y
@@ -800,9 +822,14 @@ Deux règles de mise en forme des gabarits sont désactivées, avec le motif
 
 ### Tests unitaires
 
-`tests/unit/`, en environnement Node — les trois suites portent sur des
-modules purs, monter un environnement Nuxt complet coûterait une minute par
-exécution sans rien apprendre de neuf.
+`tests/unit/`, en environnement Node — **15 suites, 141 tests, 1,7 s**. Elles
+portent sur des modules purs ; monter un environnement Nuxt complet coûterait
+une minute par exécution sans rien apprendre de neuf.
+
+Les cinq suites ci-dessous sont celles qui gardent le plus ; les dix autres
+couvrent la session d'administration, le rapport d'erreur, les rapports CSP,
+les couleurs et libellés de branche, les compteurs, les titres de domaine et
+les coordonnées de l'entrepôt.
 
 | Suite | Ce qu'elle garde |
 | --- | --- |
@@ -818,10 +845,13 @@ exécution sans rien apprendre de neuf.
 Nitro) et non sur le serveur de développement : le pré-rendu, l'hydratation et
 les en-têtes y sont ceux du site livré.
 
-Cinq parcours : envoi d'une demande de devis, rotation du hero d'accueil
-(ordre des diapositives, cadence, arrêt), filtrage de la galerie et
-visionneuse, changement de branche sur `/services` avec synchronisation de
-l'URL, tiroir mobile au clavier. Aucune base n'est requise — la dégradation
+**16 fichiers, 81 parcours**, répartis en deux projets : `bureau` (Desktop
+Chrome) et `mobile` (Pixel 7). Ils couvrent l'envoi d'une demande de devis et
+sa variante par branche, la rotation du hero d'accueil (ordre, cadence,
+arrêt), la galerie et sa visionneuse, les dix-sept pages de domaine, le
+panneau des domaines, les redirections 301 des anciennes adresses de branche,
+les en-têtes de sécurité, la version anglaise, et la navigation tactile
+(tiroir, secteurs, grilles). Aucune base n'est requise — la dégradation
 gracieuse fait partie de ce qui est vérifié.
 
 Première exécution :
@@ -1181,6 +1211,11 @@ Les en-têtes doivent alors être posés par l'hébergeur — fichier `_headers`
 
 ## Points à finaliser avec le client
 
+Les anomalies techniques relevées le 2 octobre 2026 sont dans
+[`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md), avec leur correctif.
+Ce qui suit ne dépend pas du code mais d'informations ou de décisions
+attendues de TBS.
+
 1. **Carte de contact** — `app/pages/contact.vue` intègre une carte
    OpenStreetMap centrée sur Lomé. Remplacer les coordonnées du `bbox` par
    celles relevées à l'entrepôt d'Agôè-Démakpoè.
@@ -1193,8 +1228,12 @@ Les en-têtes doivent alors être posés par l'hébergeur — fichier `_headers`
    fichiers de `public/images/` décrivent leur usage.
 4. **Logo sur fond sombre** — le logo bichrome est posé sur une pastille
    blanche dans le footer. Une version monochrome claire serait plus élégante.
-5. **Mentions légales** — les liens du bas de page sont présents mais les
-   pages restent à rédiger.
+5. **Mentions légales** — les trois pages existent, sont pré-rendues et
+   affichent un marqueur « À compléter » visible là où l'information manque.
+   Restent **seize champs** à obtenir de TBS, tous dans
+   `shared/utils/legalData.ts` : capital social, RCCM, NIF, gérant,
+   hébergeur et ses coordonnées, et les sept conditions de location (acompte,
+   caution, annulations, casse et manquants, zone de livraison).
 6. **Notification de devis** — l'envoi est en place (voir « Notification des
    demandes de devis »). Reste à ouvrir le compte Resend ou Brevo, vérifier le
    domaine d'envoi et renseigner `NUXT_MAIL_API_KEY` en production.
@@ -1253,8 +1292,28 @@ plutôt que publiées vides.
 ```bash
 npm run typecheck
 npm run build
-npm audit           # doit rester à 0 vulnérabilité
+npm audit --omit=dev
 ```
+
+> ### ⚠ Trois de ces vérifications ne s'exécutent plus
+>
+> Relevé le 2 octobre 2026, détail dans
+> [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md) :
+>
+> | Commande | État | Cause |
+> | --- | --- | --- |
+> | `npm ci` | ✖ | verrou désynchronisé — **corrigé**, le verrou a été régénéré |
+> | `npm run lint` | ✖ | `ts-api-utils` lit une API interne que TypeScript 7 ne publie plus |
+> | `npm run typecheck` | ✖ | `vue-tsc` charge `typescript/lib/tsc`, retiré en TypeScript 7 |
+> | `npm audit` | ✖ | 19 avis, dont 13 « high » |
+> | `npm test` | ✔ | 141 tests, 15 suites |
+> | `npm run build` | ✔ | 2 165 routes pré-rendues |
+> | `npm run test:e2e` | ✔ | 81 parcours, bureau et mobile |
+>
+> Lint et typecheck tiennent à **une seule ligne** de `package.json` :
+> `typescript` est déclaré en `^7.0.2`, que ni `vue-tsc` 3.x ni
+> `@typescript-eslint` ne supportent encore. Redescendre à `^5.9.0` les rend
+> tous les deux. L'audit détaille le reste.
 
 En-têtes de sécurité, sur le build de production :
 
@@ -1277,11 +1336,9 @@ de tsconfig ne couvraient le cas.
 
 Cette dérogation a été écrite pour se périmer d'elle-même : le script échouait
 sur toute autre erreur, **et** le jour où l'erreur tolérée disparaissait. Elle
-a tenu parole. `@nuxt/image` 2.1 corrige la signature, le script l'a signalé
-au premier passage, et il a été supprimé avec elle.
-
-> ✖ L'exception tolérée par scripts/typecheck.mjs n'apparaît plus.
->   Supprimez l'exception et rendez `typecheck` à `nuxt typecheck`.
+a tenu parole. `@nuxt/image` 2.1 a corrigé la signature, le script l'a signalé
+au premier passage, et il a été supprimé avec elle — `scripts/typecheck.mjs`
+n'existe plus.
 
 C'est la seule forme d'exception qui vaille : une exception muette survit à son
 motif et finit par masquer de vraies erreurs.
@@ -1295,3 +1352,27 @@ Code, contenus éditoriaux et éléments d’identité : tous droits réservés.
 Les photographies issues de la maquette proviennent d’une banque d’images et
 sont destinées à être remplacées par les clichés des réalisations TBS —
 le cahier de tournage est dans [`docs/reportage-photo.md`](docs/reportage-photo.md).
+
+---
+
+## Réalisation
+
+**Samuel by Novagraphik Visu** — conception, design et développement.
+
+| | |
+| --- | --- |
+| **Auteur** | Samuel |
+| **Studio** | Novagraphik Visu |
+| **Métiers** | Identité visuelle · Design d’interface · Développement web |
+| **Courriel** | [novagraphiksat@gmail.com](mailto:novagraphiksat@gmail.com) |
+| **Dépôt** | [github.com/Nova2026-graphik](https://github.com/Nova2026-graphik) |
+| **Lieu** | Lomé — Togo |
+
+Maquette, intégration Nuxt, architecture, accessibilité, référencement,
+sécurité et mise en production : **Samuel by Novagraphik Visu**.
+
+La signature figure aussi dans le code — en tête de `nuxt.config.ts`,
+`app/app.vue` et `app/assets/css/main.css`, et dans le champ `author` de
+`package.json`.
+
+<sub>© 2026 Novagraphik Visu — pour TBS Distribution S.A.R.L. Tous droits réservés.</sub>

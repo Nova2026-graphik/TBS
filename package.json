@@ -8,6 +8,7 @@
     "node": "24.x"
   },
   "description": "Site vitrine TBS Distribution S.A.R.L — Lomé, Togo",
+  "author": "Samuel by Novagraphik Visu <novagraphiksat@gmail.com>",
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",
