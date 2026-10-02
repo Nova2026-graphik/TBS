@@ -50,9 +50,8 @@ const lienDevis = computed(() => {
     branche: versUrl('events'),
     invites: String(invitesValides.value),
     message: messageDevis(options.value, lignes.value),
-  })
-  return `/contact?${query}`
-})
+  },
+}))
 
 const CHAMP
   = 'w-full border-0 border-b border-ink/20 bg-transparent pb-3 pt-2 text-[0.9375rem] text-ink transition-colors duration-400 outline-none focus:border-gold'
