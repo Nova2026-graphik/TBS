@@ -73,8 +73,23 @@ export function buildAnonymiseQuery(db: Database, cutoff: Date) {
     })
     .where(
       and(
-        // Le dernier échange, pas la seule date de création.
-        lt(sql`coalesce(${q.handledAt}, ${q.createdAt})`, cutoff),
+        /**
+         * Le dernier échange, pas la seule date de création.
+         *
+         * La borne part en `::timestamptz` explicite, et non en `Date` nue.
+         * Drizzle ne convertit une `Date` que lorsqu'il peut rattacher la
+         * comparaison à une colonne typée ; ici la gauche est un fragment
+         * `coalesce(…)`, dont il ignore le type, et l'objet `Date` arrivait
+         * tel quel au pilote — qui ne sait pas l'encoder et refuse la
+         * requête. La panne ne se voyait pas : la tâche avale ses erreurs
+         * pour ne pas faire tomber le serveur, et `.toSQL()` rend le même
+         * texte dans les deux cas. La purge n'aurait tout simplement jamais
+         * eu lieu, pendant que la politique de confidentialité l'annonçait.
+         */
+        lt(
+          sql`coalesce(${q.handledAt}, ${q.createdAt})`,
+          sql`${cutoff.toISOString()}::timestamptz`,
+        ),
         // Idempotence : on ne repasse pas sur ce qui est déjà anonymisé.
         ne(q.name, ANONYMISED_MARKER),
       ),

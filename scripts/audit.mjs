@@ -45,6 +45,22 @@ const DEROGATIONS = [
       + 'reste visée. À retirer dès qu\'une version corrigée paraît, ou que '
       + '`listhen` cesse d\'en dépendre.',
   },
+  {
+    avis: 'GHSA-vfj7-8cjw-p6xm',
+    paquet: 'braces',
+    motif: 'Atteint par @nuxt/content → micromatch → braces, appelé par '
+      + '`module.mjs` — donc **à la construction seulement**, pour répartir '
+      + 'les fichiers de `content/` entre les collections. Vérifié : ni '
+      + '`braces` ni `micromatch` ne figurent dans `.output`. Les motifs '
+      + 'confiés à micromatch viennent de `content.config.ts`, pas d\'une '
+      + 'requête : il n\'y a pas d\'entrée par où pousser le motif imbriqué '
+      + 'que l\'avis décrit.',
+    leve: 'Aucun correctif amont : l\'avis vise toutes les versions (`range: '
+      + '*`) et npm ne propose qu\'une rétrogradation de @nuxt/content en '
+      + '2.13.4 — un retour à la version majeure précédente du moteur de '
+      + 'contenu, pour un paquet que la production n\'exécute pas. À retirer '
+      + 'dès qu\'une version corrigée de `braces` paraît.',
+  },
 ]
 
 const resultat = spawnSync('npm', ['audit', '--omit=dev', '--json'], {
