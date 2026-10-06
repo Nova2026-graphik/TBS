@@ -12,6 +12,8 @@
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",
+    "//postbuild": "Annonce les pages aux moteurs IndexNow (Bing, Yandex…) après une compilation de production — cf. en-tête de scripts/indexnow.mjs. Hors production, ou si le moteur ne répond pas, il ne fait rien et n'échoue jamais.",
+    "postbuild": "node scripts/indexnow.mjs",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",

@@ -22,8 +22,8 @@ Quatre branches : **TBS Équipements**, **TBS Events**,
 > [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md). **Tous les
 > correctifs de code qu'il recense sont appliqués** ; l'audit garde les
 > constats d'origine et porte l'état courant de chacun. La chaîne de
-> vérification passe de bout en bout — installation, lint, types, 1 049 tests
-> (965 unitaires, 84 parcours), build, audit. Ne restent ouverts que des avis
+> vérification passe de bout en bout — installation, lint, types, 1 071 tests
+> (983 unitaires, 88 parcours), build, audit. Ne restent ouverts que des avis
 > de sécurité sans correctif amont, dérogés et motivés, les douze informations
 > légales attendues de TBS, et les deux secrets de mise en service —
 > `DATABASE_URL` et la clé d'envoi — sans lesquels le formulaire de devis
@@ -889,12 +889,12 @@ Deux règles de mise en forme des gabarits sont désactivées, avec le motif
 
 ### Tests unitaires
 
-`tests/unit/`, en environnement Node — **23 suites, 965 tests, 2,5 s**. Elles
+`tests/unit/`, en environnement Node — **25 suites, 983 tests, 2,5 s**. Elles
 portent sur des modules purs ; monter un environnement Nuxt complet coûterait
 une minute par exécution sans rien apprendre de neuf.
 
 Le chiffre est gonflé par `i18nParite.spec.ts`, qui engendre une assertion par
-clé de traduction : 740 des 965. C'est voulu — un rapport qui nomme la clé
+clé de traduction : 740 des 983. C'est voulu — un rapport qui nomme la clé
 fautive vaut mieux qu'un `toEqual` sur deux objets de six cents entrées.
 
 Les sept suites ci-dessous sont celles qui gardent le plus ; les autres
@@ -922,7 +922,7 @@ coordonnées de l'entrepôt.
 Nitro) et non sur le serveur de développement : le pré-rendu, l'hydratation et
 les en-têtes y sont ceux du site livré.
 
-**16 fichiers, 84 parcours**, répartis en deux projets : `bureau` (Desktop
+**17 fichiers, 88 parcours**, répartis en deux projets : `bureau` (Desktop
 Chrome) et `mobile` (Pixel 7). Ils couvrent l'envoi d'une demande de devis et
 sa variante par branche, la rotation du hero d'accueil (ordre, cadence,
 arrêt), la galerie et sa visionneuse, les dix-sept pages de domaine, le
@@ -1191,7 +1191,7 @@ demandes de devis changent de sort — elles sont enregistrées.
 NUXT_MAIL_PROVIDER=brevo
 NUXT_MAIL_API_KEY=xkeysib-…
 NUXT_MAIL_FROM=TBS Distribution <devis@tbstogo.com>
-NUXT_NOTIFY_EMAIL=tbstogo228@gmail.com
+NUXT_NOTIFY_EMAIL=tbstogo228@gmail.com,contact@tbstogo.com   # plusieurs boîtes : virgule
 ```
 
 **Vérifier le domaine chez le prestataire avant la première demande** : sans
@@ -1438,6 +1438,50 @@ attendues de TBS.
    sans `DATABASE_URL`, la liste répond 503 et le dit en clair. Le changer
    déconnecte toutes les sessions — c'est la façon de révoquer un accès.
 
+## Référencement
+
+Un navigateur ne référence rien : il interroge un moteur. Chrome, Firefox,
+Safari et Opera passent par **Google** ; Edge par **Bing**, qui alimente aussi
+Yahoo, DuckDuckGo, Ecosia et Qwant. Être trouvé « sur tous les navigateurs »,
+c'est donc être indexé par ces deux moteurs-là.
+
+### Ce que le site fait déjà seul
+
+- **Indexable en production** — `index, follow`, canonique sur
+  `https://www.tbstogo.com`, `robots.txt` qui donne le sitemap. Une
+  prévisualisation, elle, ne l'est pas.
+- **Sitemap bilingue** — 68 pages, `hreflang` réciproques.
+- **Données structurées** — `LocalBusiness` (adresse, téléphones, horaires,
+  zone servie, offres), `WebSite` (le nom que Google affiche au-dessus des
+  résultats), `FAQPage`, fils d'Ariane. Les noms alternatifs — « TBS Togo »,
+  « TBS Distribution » — y sont déclarés : « TBS » seul est disputé par des
+  chaînes de télévision, et ce sont ces variantes qui ramènent le site.
+- **IndexNow** — à chaque compilation de production, `scripts/indexnow.mjs`
+  annonce les 68 pages à Bing et aux autres moteurs du protocole. La clé est
+  publiée à `/609734aabef594d912a5b1d0d076827a.txt`, comme le protocole
+  l'exige ; elle n'a rien de secret. `vercel.json` fixe la commande de build à
+  `npm run build` pour que le script parte à coup sûr.
+
+### Ce qui ne peut se faire que depuis les comptes de TBS
+
+Google ne participe pas à IndexNow, et aucun moteur ne se laisse revendiquer
+sans preuve de propriété. Dans l'ordre d'efficacité :
+
+1. **Google Search Console** — propriété de type **Domaine** `tbstogo.com`,
+   vérifiée par un enregistrement TXT chez Hostinger (où sont les DNS), puis
+   soumission de `https://www.tbstogo.com/sitemap_index.xml`.
+2. **Bing Webmaster Tools** — « Importer depuis Google Search Console » : la
+   vérification et le sitemap suivent en un clic.
+3. **Fiche d'établissement Google** — c'est elle qui fait apparaître TBS dans
+   le bloc cartographique ; cf. ci-dessous.
+4. **Le domaine nu** — `tbstogo.com`, sans `www`, n'a aucun enregistrement A :
+   le visiteur qui le tape tombe sur une erreur, et les liens qui l'emploient
+   ne mènent nulle part. La valeur à poser chez Hostinger est donnée par
+   Vercel (Settings → Domains), avec une redirection vers `www.tbstogo.com`.
+
+Compter quelques jours à quelques semaines entre la soumission et l'apparition
+dans les résultats.
+
 ## Référencement local
 
 Une recherche « location chaises Lomé » ou « fournisseur matériel bureau Agôè »
@@ -1503,9 +1547,9 @@ npm run audit
 | `npm ci` | ✔ | le verrou, désynchronisé, a été régénéré |
 | `npm run lint` | ✔ | 0 erreur |
 | `npm run typecheck` | ✔ | 0 erreur |
-| `npm test` | ✔ | 965 tests, 23 suites |
+| `npm test` | ✔ | 983 tests, 25 suites |
 | `npm run build` | ✔ | 2 165 routes pré-rendues |
-| `npm run test:e2e` | ✔ | 84 parcours, bureau et mobile |
+| `npm run test:e2e` | ✔ | 88 parcours, bureau et mobile |
 | `npm run audit` | ✔ | 6 dérogations motivées sur 3 paquets, aucun présent dans `.output` — cf. « Audit des dépendances » |
 
 > **Pourquoi `typescript` reste en `^5.9`.** La dépendance avait été montée en

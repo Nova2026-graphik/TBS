@@ -78,6 +78,9 @@ export function usePageSeo(options: PageSeoOptions) {
 }
 
 /** JSON-LD LocalBusiness — à poser une seule fois, dans le layout. */
+/** Noms sous lesquels l'entreprise est cherchée — cf. `alternateName`. */
+const NOMS_ALTERNATIFS = ['TBS Togo', 'TBS Distribution', 'TBS Distribution Togo', 'TBS'] as const
+
 export function useOrganizationSchema() {
   const { public: cfg } = useRuntimeConfig()
   const { tm, rt } = useI18n()
@@ -100,7 +103,13 @@ export function useOrganizationSchema() {
     '@type': 'LocalBusiness',
     '@id': `${cfg.siteUrl}/#organization`,
     'name': cfg.siteName,
-    'alternateName': 'TBS',
+    /**
+     * Les noms sous lesquels on cherche l'entreprise. « TBS » seul est disputé
+     * — chaînes de télévision américaine et japonaise —, si bien que c'est
+     * « TBS Togo » ou « TBS Distribution » qui ramènent le site : les déclarer
+     * aide le moteur à rattacher ces requêtes à cette entité-ci.
+     */
+    'alternateName': [...NOMS_ALTERNATIFS],
     'description':
       'Fourniture de matériels et d\'équipements, location de matériel de réception, études et conseils, agriculture et agro-industrie. Lomé, Togo.',
     'url': cfg.siteUrl,
@@ -160,9 +169,26 @@ export function useOrganizationSchema() {
       .map(name => ({ '@type': 'Offer', 'itemOffered': { '@type': 'Service', name } })),
   }
 
+  /**
+   * Le site lui-même. C'est là que Google lit le **nom de site** qu'il affiche
+   * au-dessus de chaque résultat ; sans lui, il le devine à partir du titre ou
+   * du domaine, et « tbstogo.com » n'est pas un nom d'entreprise.
+   */
+  const site = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${cfg.siteUrl}/#website`,
+    'name': 'TBS Distribution',
+    'alternateName': [...NOMS_ALTERNATIFS],
+    'url': `${cfg.siteUrl}/`,
+    'inLanguage': ['fr-TG', 'en'],
+    'publisher': { '@id': `${cfg.siteUrl}/#organization` },
+  }
+
   useHead({
     script: [
       { type: 'application/ld+json', innerHTML: serialiserJsonLd(schema), tagPriority: 'low' },
+      { type: 'application/ld+json', innerHTML: serialiserJsonLd(site), tagPriority: 'low' },
     ],
   })
 }

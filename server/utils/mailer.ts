@@ -20,6 +20,10 @@ export interface MailTransport {
 }
 
 export interface EmailMessage {
+  /**
+   * Un destinataire, ou plusieurs séparés par une virgule —
+   * `NUXT_NOTIFY_EMAIL` peut nommer plusieurs boîtes de l'équipe.
+   */
   to: string
   subject: string
   text: string
@@ -43,6 +47,30 @@ export function parseAddress(address: string): { name: string, email: string } {
   return { name: (match[1] ?? '').replace(/^"|"$/g, ''), email: (match[2] ?? '').trim() }
 }
 
+/**
+ * « a@x.tg, b@y.tg » → `['a@x.tg', 'b@y.tg']`.
+ *
+ * La notification d'un devis doit pouvoir partir vers plusieurs boîtes — la
+ * boîte de travail et l'adresse publique de l'entreprise — sans multiplier les
+ * variables d'environnement. La virgule est le séparateur attendu ; le point-
+ * virgule, que certains clients de messagerie mettent à sa place, est accepté
+ * aussi. Les doublons sautent sans tenir compte de la casse : deux fois la même
+ * boîte, c'est deux fois le même message pour la même personne.
+ */
+export function parseRecipients(value: string): string[] {
+  const vues = new Set<string>()
+  const adresses: string[] = []
+
+  for (const morceau of value.split(/[,;]/)) {
+    const adresse = morceau.trim()
+    if (!adresse || vues.has(adresse.toLowerCase())) continue
+    vues.add(adresse.toLowerCase())
+    adresses.push(adresse)
+  }
+
+  return adresses
+}
+
 /** Le transport tel qu'il sort de `runtimeConfig` : chaînes libres, non validées. */
 export interface MailTransportInput {
   provider?: string
@@ -61,7 +89,10 @@ export function isMailTransportReady(
   )
 }
 
-function requestFor(message: EmailMessage, transport: MailTransport): RequestInit {
+/** Requête HTTP propre au prestataire. Exportée pour être relue sans rien envoyer. */
+export function buildMailRequest(message: EmailMessage, transport: MailTransport): RequestInit {
+  const recipients = parseRecipients(message.to)
+
   if (transport.provider === 'brevo') {
     const sender = parseAddress(transport.from)
     return {
@@ -69,7 +100,7 @@ function requestFor(message: EmailMessage, transport: MailTransport): RequestIni
       headers: { 'api-key': transport.apiKey, 'content-type': 'application/json' },
       body: JSON.stringify({
         sender: sender.name ? sender : { email: sender.email },
-        to: [{ email: message.to }],
+        to: recipients.map(email => ({ email })),
         subject: message.subject,
         htmlContent: message.html,
         textContent: message.text,
@@ -83,7 +114,7 @@ function requestFor(message: EmailMessage, transport: MailTransport): RequestIni
     headers: { 'authorization': `Bearer ${transport.apiKey}`, 'content-type': 'application/json' },
     body: JSON.stringify({
       from: transport.from,
-      to: [message.to],
+      to: recipients,
       subject: message.subject,
       html: message.html,
       text: message.text,
@@ -97,8 +128,14 @@ function requestFor(message: EmailMessage, transport: MailTransport): RequestIni
  * ici, une demande de devis n'est jamais perdue pour un e-mail manqué.
  */
 export async function sendEmail(message: EmailMessage, transport: MailTransport): Promise<void> {
+  // Une liste vide partirait chez le prestataire, qui la refuserait avec un
+  // message moins clair que celui-ci.
+  if (parseRecipients(message.to).length === 0) {
+    throw new Error('Aucun destinataire : l\'adresse est vide')
+  }
+
   const response = await fetch(ENDPOINTS[transport.provider], {
-    ...requestFor(message, transport),
+    ...buildMailRequest(message, transport),
     signal: AbortSignal.timeout(SEND_TIMEOUT_MS),
   })
 
