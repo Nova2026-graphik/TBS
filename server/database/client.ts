@@ -7,6 +7,7 @@
  */
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
+import { preparerUrlConnexion } from './connectionString'
 import * as schema from './schema'
 
 export type Database = ReturnType<typeof drizzle<typeof schema>>
@@ -33,8 +34,9 @@ export function useDb(): Database | null {
   if (_attempted) return null
   _attempted = true
 
-  const connectionString = resolveConnectionString()
-  if (!connectionString) return null
+  const brute = resolveConnectionString()
+  if (!brute) return null
+  const connectionString = preparerUrlConnexion(brute)
 
   try {
     _sql = postgres(connectionString, {

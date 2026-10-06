@@ -86,6 +86,11 @@ const enTetesStatiques = buildEnTetesStatiques()
  *
  * La conséquence utile : le jour où le domaine est rattaché au projet Vercel,
  * la variable de la plate-forme le nomme, et le site se corrige tout seul.
+ *
+ * C'est fait : le projet Vercel sert `www.tbstogo.com`, et le dernier recours
+ * a suivi. Il reste un recours, pas une valeur de travail — `NUXT_PUBLIC_SITE_URL`
+ * est renseigné en production, précisément pour ne pas dépendre d'une variable
+ * de plate-forme pour une canonique.
  */
 function resoudreOrigine(): string {
   const explicite = process.env.NUXT_PUBLIC_SITE_URL || process.env.NUXT_SITE_URL
@@ -94,7 +99,7 @@ function resoudreOrigine(): string {
   const production = process.env.VERCEL_PROJECT_PRODUCTION_URL
   if (production) return `https://${production.replace(/\/+$/, '')}`
 
-  return 'https://www.tbs-distribution.tg'
+  return 'https://www.tbstogo.com'
 }
 
 const ORIGINE = resoudreOrigine()
@@ -171,7 +176,7 @@ export default defineNuxtConfig({
     mail: {
       provider: 'resend',
       apiKey: '',
-      from: 'TBS Distribution <devis@tbs-distribution.tg>',
+      from: 'TBS Distribution <devis@tbstogo.com>',
     },
     quoteRateLimitPerHour: '10',
     /**

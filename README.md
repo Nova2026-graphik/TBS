@@ -22,10 +22,12 @@ Quatre branches : **TBS Équipements**, **TBS Events**,
 > [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md). **Tous les
 > correctifs de code qu'il recense sont appliqués** ; l'audit garde les
 > constats d'origine et porte l'état courant de chacun. La chaîne de
-> vérification passe de bout en bout — installation, lint, types, 1 015 tests
-> (931 unitaires, 84 parcours), build, audit. Ne restent ouverts qu'un avis
-> de sécurité sans correctif amont, dérogé et motivé, et les douze
-> informations légales attendues de TBS.
+> vérification passe de bout en bout — installation, lint, types, 1 049 tests
+> (965 unitaires, 84 parcours), build, audit. Ne restent ouverts que des avis
+> de sécurité sans correctif amont, dérogés et motivés, les douze informations
+> légales attendues de TBS, et les deux secrets de mise en service —
+> `DATABASE_URL` et la clé d'envoi — sans lesquels le formulaire de devis
+> répond « merci » sans rien enregistrer ni prévenir personne.
 
 ---
 
@@ -842,13 +844,19 @@ npm run audit     # → scripts/audit.mjs
 ```
 
 `npm audit --audit-level=high --omit=dev` est le bon contrôle, mais il n'a
-aucun moyen d'écarter un avis précis. Or il en reste un que **rien ne peut
-corriger** : `node-forge` est en 1.4.0, la dernière version publiée, et l'avis
-la vise toujours. Il est atteint par `nuxt → @nuxt/cli → listhen`, le serveur
-de développement — le certificat auto-signé de `nuxt dev --https`. Absent de
-`.output`, jamais exécuté en production. Le remède que propose npm,
-`nuxt@3.15.1`, serait une rétrogradation majeure du cadriciel pour un paquet
-que la production n'exécute pas.
+aucun moyen d'écarter un avis précis. Or certains avis, **rien ne peut les
+corriger sans casser le reste** — au 6 octobre 2026, trois paquets :
+
+| Paquet | Atteint par | Pourquoi pas de correctif |
+| --- | --- | --- |
+| `node-forge` | `@nuxt/cli → listhen` — certificat de `nuxt dev --https` | 1.4.0 est la dernière version publiée, et reste visée |
+| `braces` | `@nuxt/content → micromatch` — tri des fichiers de `content/` à la construction | L'avis vise toutes les versions |
+| `simple-git` | `@nuxt/devtools` — panneau de `nuxt dev` | Corrigé en 4.x, mais `@nuxt/devtools` exige la 3.x |
+
+Point commun, **vérifié sur la sortie de construction** : aucun ne figure dans
+`.output`, aucun ne s'exécute en production. Et chaque fois, le seul remède
+que propose npm est une rétrogradation majeure — de Nuxt ou du moteur de
+contenu — pour un paquet que la production n'exécute pas.
 
 Sans dérogation, l'étape échoue à chaque exécution, et une étape qui échoue
 toujours finit par se lire en diagonale — c'est ainsi qu'un vrai avis passe
@@ -881,12 +889,12 @@ Deux règles de mise en forme des gabarits sont désactivées, avec le motif
 
 ### Tests unitaires
 
-`tests/unit/`, en environnement Node — **20 suites, 931 tests, 1,7 s**. Elles
+`tests/unit/`, en environnement Node — **23 suites, 965 tests, 2,5 s**. Elles
 portent sur des modules purs ; monter un environnement Nuxt complet coûterait
 une minute par exécution sans rien apprendre de neuf.
 
 Le chiffre est gonflé par `i18nParite.spec.ts`, qui engendre une assertion par
-clé de traduction : 740 des 931. C'est voulu — un rapport qui nomme la clé
+clé de traduction : 740 des 965. C'est voulu — un rapport qui nomme la clé
 fautive vaut mieux qu'un `toEqual` sur deux objets de six cents entrées.
 
 Les sept suites ci-dessous sont celles qui gardent le plus ; les autres
@@ -905,6 +913,8 @@ coordonnées de l'entrepôt.
 | `jsonLd.spec.ts` | L'échappement du JSON-LD : un `</script>` venu de la base ne peut pas fermer la balise — cf. « Données structurées » |
 | `i18nParite.spec.ts` | Les deux fichiers de langue se répondent : mêmes clés, mêmes variables (`{email}` perdu en anglais rend une phrase sans adresse), mêmes cibles de liens, mêmes formes plurielles |
 | `texteEnrichi.spec.ts` | La notation des pages légales : gras et liens isolés sans jamais perdre un caractère, marque mal fermée affichée telle quelle plutôt qu'interprétée |
+| `quoteRetention.spec.ts` | La purge nocturne, dont le fait qu'elle ne lie **que des valeurs encodables** — une `Date` nue passait au pilote, la requête était rejetée, et la tâche avalait l'erreur en silence |
+| `cronAuth.spec.ts` | La garde du déclencheur de purge : secret absent, schéma `Bearer` de toute casse, secret tronqué ou rallongé |
 
 ### Tests de bout en bout
 
@@ -1127,9 +1137,8 @@ node .output/server/index.mjs
 Avec une base configurée, `npm run db:migrate` précède la mise en service —
 cf. [Migrations](#migrations).
 
-**Vercel / Netlify** : connecter le dépôt, définir `DATABASE_URL` dans les
-variables d'environnement, et ajouter `npm run db:migrate` à la commande de
-build ; aucune autre configuration nécessaire.
+**Vercel / Netlify** : connecter le dépôt et renseigner les variables —
+cf. [Mise en service](#mise-en-service) pour l'ordre des opérations.
 
 **Hébergement Node classique** : servir `.output/` derrière Nginx.
 
@@ -1143,6 +1152,83 @@ npm run generate
 
 Voir `.env.example`. Aucune n'est obligatoire pour faire tourner le site ;
 seule `DATABASE_URL` change le comportement (base au lieu de contenu statique).
+
+### Mise en service
+
+Le site tourne sans rien : sans base il sert son contenu statique, sans clé
+d'envoi il journalise au lieu de notifier. C'est une qualité en recette, et un
+piège en production — **un formulaire qui répond « merci » sans rien
+enregistrer ni prévenir personne ne se signale pas**. Les trois branchements
+ci-dessous sont indépendants, et chacun se vérifie seul.
+
+#### 1. La base
+
+L'URL doit être celle du **pool de connexions**, pas la connexion directe : en
+serverless, chaque requête réveille une fonction qui ouvre sa propre
+connexion, et une base directe épuise ses places avant d'avoir servi grand
+monde. Chez Neon, c'est l'interrupteur « Pooled connection », reconnaissable
+au segment `-pooler` dans l'hôte.
+
+```bash
+DATABASE_URL='postgresql://…-pooler.…neon.tech/…?sslmode=require' npm run db:migrate
+curl -s https://www.tbstogo.com/api/health     # {"database":"ok"}
+```
+
+Si la machine qui tient le dépôt n'a pas d'accès réseau vers la base — c'est
+le cas des conteneurs de développement cloisonnés —, `node
+scripts/schema-sql.mjs` produit un fichier SQL à coller dans l'éditeur de
+l'hébergeur. Il pose le schéma **et le journal des migrations**, pour que
+`db:migrate` voie ensuite une base à jour plutôt qu'une base vierge.
+
+Poser la base ne change rien à ce qui s'affiche : les tables de contenu
+éditorial restent vides, et `withFallback` sert le contenu statique tant
+qu'elles le sont (`source: "static"` dans les réponses d'API). Seules les
+demandes de devis changent de sort — elles sont enregistrées.
+
+#### 2. L'envoi des notifications
+
+```
+NUXT_MAIL_PROVIDER=brevo
+NUXT_MAIL_API_KEY=xkeysib-…
+NUXT_MAIL_FROM=TBS Distribution <devis@tbstogo.com>
+NUXT_NOTIFY_EMAIL=tbstogo228@gmail.com
+```
+
+**Vérifier le domaine chez le prestataire avant la première demande** : sans
+SPF ni DKIM sur `tbstogo.com`, les messages partent en indésirables ou sont
+refusés, et l'échec est silencieux côté visiteur — la demande est bien
+enregistrée, personne n'est prévenu. La réponse de `POST /api/quotes` porte
+`notified: true|false` : c'est là que ça se lit.
+
+#### 3. Le cron d'anonymisation
+
+`nitro.scheduledTasks` suppose un **processus qui dure**. Le préréglage Node
+en a un ; Vercel n'en a pas. Sans déclencheur extérieur, `quotes:anonymise` ne
+part jamais — et la politique de confidentialité promet pourtant une
+anonymisation automatique, chaque nuit. Connecter la base sans brancher le
+cron, c'est donc rendre cette page fausse.
+
+`vercel.json` déclare le cron, qui appelle `GET /api/tasks/anonymise` à 3 h.
+La route est fermée par `CRON_SECRET`, que Vercel joint à ses propres appels
+en `Authorization: Bearer`. **Sans la variable, la route répond 404** et la
+purge ne part pas : le silence est la panne.
+
+```bash
+curl -H "authorization: Bearer $CRON_SECRET" https://www.tbstogo.com/api/tasks/anonymise
+# {"count":0,"cutoff":"…","tentatives":0}
+```
+
+#### 4. L'espace de suivi
+
+`NUXT_ADMIN_PASSWORD`, douze caractères au moins. Sans lui, `/admin` et
+`/api/admin/*` répondent 404 : un déploiement qui oublie la variable n'ouvre
+pas un accès libre aux demandes. Avec lui, l'espace liste les demandes, ouvre
+leur détail et en change le statut ; il ne renvoie jamais l'empreinte d'IP.
+
+Dix échecs par heure et par adresse, puis 429 — **y compris pour le bon mot
+de passe** : un verrou qui céderait au bon mot de passe dirait à l'attaquant
+qu'il l'a trouvé. Les échecs sont comptés en base, donc partagés entre toutes
+les fonctions, et purgés avec le cron d'anonymisation.
 
 ### Dépendances surchargées
 
@@ -1332,15 +1418,25 @@ attendues de TBS.
    fichiers de `public/images/` décrivent leur usage.
 4. **Logo sur fond sombre** — le logo bichrome est posé sur une pastille
    blanche dans le footer. Une version monochrome claire serait plus élégante.
-5. **Mentions légales** — les trois pages existent, sont pré-rendues et
-   affichent un marqueur « À compléter » visible là où l'information manque.
-   Restent **seize champs** à obtenir de TBS, tous dans
-   `shared/utils/legalData.ts` : capital social, RCCM, NIF, gérant,
-   hébergeur et ses coordonnées, et les sept conditions de location (acompte,
+5. **Mentions légales** — les trois pages existent, sont pré-rendues,
+   traduites, et affichent un marqueur « à compléter » visible là où
+   l'information manque. Restent **douze champs** à obtenir de TBS, tous dans
+   `shared/utils/legalData.ts` : capital social, RCCM, NIF, gérant, les deux
+   lignes de l'hébergeur, et les six conditions de location (acompte,
    caution, annulations, casse et manquants, zone de livraison).
-6. **Notification de devis** — l'envoi est en place (voir « Notification des
-   demandes de devis »). Reste à ouvrir le compte Resend ou Brevo, vérifier le
-   domaine d'envoi et renseigner `NUXT_MAIL_API_KEY` en production.
+6. **`DATABASE_URL`** — la seule variable qui manque pour que le formulaire
+   de devis enregistre quoi que ce soit. L'URL **groupée** d'un Postgres
+   infogéré, puis le schéma : cf. [Mise en service](#mise-en-service). Tant
+   qu'elle est vide, le formulaire répond « merci » et n'enregistre rien.
+7. **`NUXT_MAIL_API_KEY`** — compte Brevo ouvert, domaine `tbstogo.com`
+   vérifié (SPF + DKIM), clé `xkeysib-…` posée en production. Les trois
+   autres variables d'envoi sont déjà en place. Sans la clé, la demande est
+   enregistrée et journalisée, mais personne n'est prévenu.
+8. **Espace de suivi des devis** — ouvert : `NUXT_ADMIN_PASSWORD` est posé en
+   production, chiffré mais relisible par l'équipe dans le tableau de bord
+   Vercel (Settings → Environment Variables). Il ne sert qu'avec la base :
+   sans `DATABASE_URL`, la liste répond 503 et le dit en clair. Le changer
+   déconnecte toutes les sessions — c'est la façon de révoquer un accès.
 
 ## Référencement local
 
@@ -1407,10 +1503,10 @@ npm run audit
 | `npm ci` | ✔ | le verrou, désynchronisé, a été régénéré |
 | `npm run lint` | ✔ | 0 erreur |
 | `npm run typecheck` | ✔ | 0 erreur |
-| `npm test` | ✔ | 931 tests, 20 suites |
+| `npm test` | ✔ | 965 tests, 23 suites |
 | `npm run build` | ✔ | 2 165 routes pré-rendues |
 | `npm run test:e2e` | ✔ | 84 parcours, bureau et mobile |
-| `npm run audit` | ✔ | 1 dérogation motivée, sans correctif amont — voir l'audit, §2.5 |
+| `npm run audit` | ✔ | 6 dérogations motivées sur 3 paquets, aucun présent dans `.output` — cf. « Audit des dépendances » |
 
 > **Pourquoi `typescript` reste en `^5.9`.** La dépendance avait été montée en
 > `^7.0.2`, que ni `vue-tsc` 3.x ni `@typescript-eslint` ne supportent encore :
