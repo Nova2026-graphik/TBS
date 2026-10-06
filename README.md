@@ -22,9 +22,9 @@ Quatre branches : **TBS Équipements**, **TBS Events**,
 > [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md). **Tous les
 > correctifs de code qu'il recense sont appliqués** ; l'audit garde les
 > constats d'origine et porte l'état courant de chacun. La chaîne de
-> vérification passe de bout en bout — installation, lint, types, 1 042 tests
-> (958 unitaires, 84 parcours), build, audit. Ne restent ouverts qu'un avis
-> de sécurité sans correctif amont, dérogé et motivé, les douze informations
+> vérification passe de bout en bout — installation, lint, types, 1 049 tests
+> (965 unitaires, 84 parcours), build, audit. Ne restent ouverts que des avis
+> de sécurité sans correctif amont, dérogés et motivés, les douze informations
 > légales attendues de TBS, et les deux secrets de mise en service —
 > `DATABASE_URL` et la clé d'envoi — sans lesquels le formulaire de devis
 > répond « merci » sans rien enregistrer ni prévenir personne.
@@ -844,13 +844,19 @@ npm run audit     # → scripts/audit.mjs
 ```
 
 `npm audit --audit-level=high --omit=dev` est le bon contrôle, mais il n'a
-aucun moyen d'écarter un avis précis. Or il en reste un que **rien ne peut
-corriger** : `node-forge` est en 1.4.0, la dernière version publiée, et l'avis
-la vise toujours. Il est atteint par `nuxt → @nuxt/cli → listhen`, le serveur
-de développement — le certificat auto-signé de `nuxt dev --https`. Absent de
-`.output`, jamais exécuté en production. Le remède que propose npm,
-`nuxt@3.15.1`, serait une rétrogradation majeure du cadriciel pour un paquet
-que la production n'exécute pas.
+aucun moyen d'écarter un avis précis. Or certains avis, **rien ne peut les
+corriger sans casser le reste** — au 6 octobre 2026, trois paquets :
+
+| Paquet | Atteint par | Pourquoi pas de correctif |
+| --- | --- | --- |
+| `node-forge` | `@nuxt/cli → listhen` — certificat de `nuxt dev --https` | 1.4.0 est la dernière version publiée, et reste visée |
+| `braces` | `@nuxt/content → micromatch` — tri des fichiers de `content/` à la construction | L'avis vise toutes les versions |
+| `simple-git` | `@nuxt/devtools` — panneau de `nuxt dev` | Corrigé en 4.x, mais `@nuxt/devtools` exige la 3.x |
+
+Point commun, **vérifié sur la sortie de construction** : aucun ne figure dans
+`.output`, aucun ne s'exécute en production. Et chaque fois, le seul remède
+que propose npm est une rétrogradation majeure — de Nuxt ou du moteur de
+contenu — pour un paquet que la production n'exécute pas.
 
 Sans dérogation, l'étape échoue à chaque exécution, et une étape qui échoue
 toujours finit par se lire en diagonale — c'est ainsi qu'un vrai avis passe
@@ -883,12 +889,12 @@ Deux règles de mise en forme des gabarits sont désactivées, avec le motif
 
 ### Tests unitaires
 
-`tests/unit/`, en environnement Node — **22 suites, 958 tests, 2,1 s**. Elles
+`tests/unit/`, en environnement Node — **23 suites, 965 tests, 2,5 s**. Elles
 portent sur des modules purs ; monter un environnement Nuxt complet coûterait
 une minute par exécution sans rien apprendre de neuf.
 
 Le chiffre est gonflé par `i18nParite.spec.ts`, qui engendre une assertion par
-clé de traduction : 740 des 958. C'est voulu — un rapport qui nomme la clé
+clé de traduction : 740 des 965. C'est voulu — un rapport qui nomme la clé
 fautive vaut mieux qu'un `toEqual` sur deux objets de six cents entrées.
 
 Les sept suites ci-dessous sont celles qui gardent le plus ; les autres
@@ -1497,10 +1503,10 @@ npm run audit
 | `npm ci` | ✔ | le verrou, désynchronisé, a été régénéré |
 | `npm run lint` | ✔ | 0 erreur |
 | `npm run typecheck` | ✔ | 0 erreur |
-| `npm test` | ✔ | 958 tests, 22 suites |
+| `npm test` | ✔ | 965 tests, 23 suites |
 | `npm run build` | ✔ | 2 165 routes pré-rendues |
 | `npm run test:e2e` | ✔ | 84 parcours, bureau et mobile |
-| `npm run audit` | ✔ | 1 dérogation motivée, sans correctif amont — voir l'audit, §2.5 |
+| `npm run audit` | ✔ | 6 dérogations motivées sur 3 paquets, aucun présent dans `.output` — cf. « Audit des dépendances » |
 
 > **Pourquoi `typescript` reste en `^5.9`.** La dépendance avait été montée en
 > `^7.0.2`, que ni `vue-tsc` 3.x ni `@typescript-eslint` ne supportent encore :

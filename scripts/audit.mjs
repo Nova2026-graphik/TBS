@@ -61,6 +61,26 @@ const DEROGATIONS = [
       + 'contenu, pour un paquet que la production n\'exécute pas. À retirer '
       + 'dès qu\'une version corrigée de `braces` paraît.',
   },
+  ...[
+    ['GHSA-x6jw-m9v5-85vh', 'simple-git'],
+    ['GHSA-g4wm-2vf7-vfgr', 'simple-git'],
+    ['GHSA-858h-whjf-mvg5', 'simple-git'],
+    ['GHSA-v5rq-49vh-5v5c', '@simple-git/argv-parser'],
+  ].map(([avis, paquet]) => ({
+    avis,
+    paquet,
+    motif: 'Atteint par nuxt → @nuxt/devtools → simple-git, qui sert le '
+      + 'panneau d\'outils de `nuxt dev` (historique git du projet). Vérifié '
+      + 'le 6 octobre 2026 : ni `simple-git` ni `@nuxt/devtools` ne figurent '
+      + 'dans `.output` — les deux mentions qu\'on y trouve sont '
+      + '`simple-git-hooks`, un autre paquet. Jamais exécuté en production, et '
+      + 'les commandes git que l\'avis permet de détourner ne reçoivent '
+      + 'aucune entrée venue d\'un visiteur.',
+    leve: 'Corrigé en simple-git 4.0.2 et @simple-git/argv-parser 2.0.1, mais '
+      + '@nuxt/devtools 3.4 exige simple-git ^3 ; npm ne propose qu\'une '
+      + 'rétrogradation de Nuxt en 3.7.4. À retirer dès que @nuxt/devtools '
+      + 'passe à simple-git 4.',
+  })),
 ]
 
 const resultat = spawnSync('npm', ['audit', '--omit=dev', '--json'], {
