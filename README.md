@@ -1212,6 +1212,18 @@ curl -H "authorization: Bearer $CRON_SECRET" https://www.tbstogo.com/api/tasks/a
 # {"count":0,"cutoff":"…","tentatives":0}
 ```
 
+#### 4. L'espace de suivi
+
+`NUXT_ADMIN_PASSWORD`, douze caractères au moins. Sans lui, `/admin` et
+`/api/admin/*` répondent 404 : un déploiement qui oublie la variable n'ouvre
+pas un accès libre aux demandes. Avec lui, l'espace liste les demandes, ouvre
+leur détail et en change le statut ; il ne renvoie jamais l'empreinte d'IP.
+
+Dix échecs par heure et par adresse, puis 429 — **y compris pour le bon mot
+de passe** : un verrou qui céderait au bon mot de passe dirait à l'attaquant
+qu'il l'a trouvé. Les échecs sont comptés en base, donc partagés entre toutes
+les fonctions, et purgés avec le cron d'anonymisation.
+
 ### Dépendances surchargées
 
 `package.json` force deux paquets transitifs, faute de correctif amont — le
@@ -1414,11 +1426,11 @@ attendues de TBS.
    vérifié (SPF + DKIM), clé `xkeysib-…` posée en production. Les trois
    autres variables d'envoi sont déjà en place. Sans la clé, la demande est
    enregistrée et journalisée, mais personne n'est prévenu.
-8. **Espace de suivi des devis** — `/admin` répond 404 tant que
-   `NUXT_ADMIN_PASSWORD` n'est pas renseigné, par choix : un déploiement qui
-   oublie la variable n'ouvre pas un accès libre aux demandes. Le revers est
-   qu'une fois la base branchée, les demandes s'accumulent sans être lisibles
-   depuis le site.
+8. **Espace de suivi des devis** — ouvert : `NUXT_ADMIN_PASSWORD` est posé en
+   production, chiffré mais relisible par l'équipe dans le tableau de bord
+   Vercel (Settings → Environment Variables). Il ne sert qu'avec la base :
+   sans `DATABASE_URL`, la liste répond 503 et le dit en clair. Le changer
+   déconnecte toutes les sessions — c'est la façon de révoquer un accès.
 
 ## Référencement local
 
