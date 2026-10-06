@@ -398,7 +398,8 @@
       "phone": "Invalid phone number.",
       "email": "Invalid email address.",
       "message": "Please describe what you need.",
-      "server": "Sending is not possible right now. Call us on (+228) 90 10 85 10."
+      "server": "Sending is not possible right now. Call us on (+228) 90 10 85 10.",
+      "timeout": "The server is taking too long to respond. Your request may have been received: try again in a moment — sending it twice will not create a duplicate — or call us on (+228) 90 10 85 10."
     },
     "branches": [
       "TBS Equipment — supply of materials & equipment",
@@ -1030,5 +1031,20 @@
         "[Rental terms](/conditions-de-location)"
       ]
     }
+  },
+  "error": {
+    "eyebrow": "Error {code}",
+    "notFoundTitle": "This page",
+    "notFoundAccent": "does not exist",
+    "notFoundLead": "The link may be out of date. Start again from the home page, or tell us what you are looking for — an adviser replies within the day.",
+    "forbiddenTitle": "This address",
+    "forbiddenAccent": "is not available",
+    "forbiddenLead": "It requires an authorisation this visit does not have. Start again from the home page, or call us if you think this is a mistake.",
+    "serverTitle": "Something",
+    "serverAccent": "went wrong",
+    "serverLead": "The technical team has been notified. Try again in a moment or call us directly on (+228) 90 10 85 10.",
+    "titleNotFound": "Page not found",
+    "titleOther": "An error occurred",
+    "home": "Back to home"
   }
 }

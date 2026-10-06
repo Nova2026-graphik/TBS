@@ -398,7 +398,8 @@
       "phone": "Numéro de téléphone invalide.",
       "email": "Adresse e-mail invalide.",
       "message": "Décrivez brièvement votre besoin.",
-      "server": "Envoi impossible pour l'instant. Appelez-nous au (+228) 90 10 85 10."
+      "server": "Envoi impossible pour l'instant. Appelez-nous au (+228) 90 10 85 10.",
+      "timeout": "Le serveur met trop de temps à répondre. Votre demande a peut-être été reçue : réessayez dans un instant — un second envoi ne fera pas de doublon — ou appelez-nous au (+228) 90 10 85 10."
     },
     "branches": [
       "TBS Équipements — fourniture de matériels & équipements",
@@ -1030,5 +1031,20 @@
         "[Conditions de location](/conditions-de-location)"
       ]
     }
+  },
+  "error": {
+    "eyebrow": "Erreur {code}",
+    "notFoundTitle": "Cette page",
+    "notFoundAccent": "n'existe pas",
+    "notFoundLead": "Le lien est peut-être obsolète. Reprenez depuis l'accueil, ou dites-nous ce que vous cherchez — un conseiller répond dans la journée.",
+    "forbiddenTitle": "Cette adresse",
+    "forbiddenAccent": "n'est pas accessible",
+    "forbiddenLead": "Elle demande une autorisation que cette visite n'a pas. Reprenez depuis l'accueil, ou appelez-nous si vous pensez qu'il s'agit d'une erreur.",
+    "serverTitle": "Quelque chose",
+    "serverAccent": "s'est mal passé",
+    "serverLead": "L'équipe technique est prévenue. Réessayez dans un instant ou appelez-nous directement au (+228) 90 10 85 10.",
+    "titleNotFound": "Page introuvable",
+    "titleOther": "Une erreur est survenue",
+    "home": "Retour à l'accueil"
   }
 }

@@ -18,16 +18,23 @@ L'espace de suivi des devis, `/admin`, reste hors index et hors pré-rendu.
 Quatre branches : **TBS Équipements**, **TBS Events**,
 **TBS Études & Conseils**, **TBS Agro**.
 
-> **État du projet** — audit complet du 2 octobre 2026 :
-> [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md). **Tous les
-> correctifs de code qu'il recense sont appliqués** ; l'audit garde les
-> constats d'origine et porte l'état courant de chacun. La chaîne de
-> vérification passe de bout en bout — installation, lint, types, 1 071 tests
-> (983 unitaires, 88 parcours), build, audit. Ne restent ouverts que des avis
-> de sécurité sans correctif amont, dérogés et motivés, les douze informations
-> légales attendues de TBS, et les deux secrets de mise en service —
-> `DATABASE_URL` et la clé d'envoi — sans lesquels le formulaire de devis
-> répond « merci » sans rien enregistrer ni prévenir personne.
+> **État du projet — en production sur [www.tbstogo.com](https://www.tbstogo.com).**
+> Base Neon, envoi Brevo, espace de suivi, purge nocturne et référencement
+> sont en service et vérifiés.
+>
+> - **Dernier audit, 6 octobre 2026** :
+>   [`docs/audit-2026-10-06.md`](docs/audit-2026-10-06.md) — mise en
+>   service, vingt points de robustesse avec la décision prise pour chacun,
+>   sécurité.
+> - Audit initial, 2 octobre 2026 :
+>   [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md) — tous ses
+>   correctifs de code sont appliqués.
+>
+> Vérifications : lint, types, 1 091 tests (1 002 unitaires, 89 parcours),
+> build, audit. Restent ouverts, hors code : changer les secrets passés par
+> la conversation de développement, durcir DMARC, rétablir GitHub Actions,
+> mettre en place une sonde de disponibilité, et les douze informations
+> légales attendues de TBS — détail dans l'audit du 6 octobre.
 
 ---
 
@@ -153,8 +160,10 @@ sont journalisées côté serveur pour ne pas être perdues.
 
 Une demande enregistrée qui n'alerte personne ne vaut rien : le site promet une
 réponse sous 24 h. À réception, `server/api/quotes.post.ts` envoie donc deux
-messages — une alerte à l'équipe (`NUXT_NOTIFY_EMAIL`) et un accusé de
-réception au demandeur s'il a laissé une adresse.
+messages — une alerte à l'équipe (`NUXT_NOTIFY_EMAIL`, plusieurs boîtes
+séparées par une virgule : en production, `tbstogo228@gmail.com` et
+`contact@tbstogo.com`) et un accusé de réception au demandeur s'il a laissé
+une adresse.
 
 ### Mise en route
 
@@ -165,9 +174,9 @@ réception au demandeur s'il a laissé une adresse.
 3. Renseigner trois variables :
 
 ```
-NUXT_MAIL_PROVIDER=resend        # ou brevo
-NUXT_MAIL_API_KEY=re_…
-NUXT_MAIL_FROM=TBS Distribution <devis@tbs-distribution.tg>
+NUXT_MAIL_PROVIDER=brevo         # ou resend
+NUXT_MAIL_API_KEY=xkeysib-…
+NUXT_MAIL_FROM=TBS Distribution <devis@tbstogo.com>
 ```
 
 Le prestataire se change par configuration, sans toucher au code : les deux
@@ -187,6 +196,15 @@ ni port SMTP — le même code tourne derrière Node, Vercel ou Cloudflare.
   demandeur : répondre depuis la boîte de l'équipe écrit directement au client.
 - Sans base de données, l'alerte porte un avertissement visible — elle est
   alors la seule trace de la demande.
+- **Un envoi répété n'écrit rien deux fois.** Même IP, même téléphone, même
+  message dans les dix minutes : la demande existante est rendue
+  (`duplicate: true`), sans seconde ligne ni second e-mail. Le formulaire peut
+  donc inviter à réessayer après un délai dépassé.
+- **L'accusé de réception est plafonné** : 3 par adresse et 100 en tout par
+  24 heures (`server/utils/quoteGuards.ts`). Il part vers une adresse saisie
+  par le visiteur, depuis le domaine de TBS ; sans plafond, le formulaire
+  servirait à écrire à n'importe qui, et épuiserait le quota d'envoi gratuit.
+  L'alerte à l'équipe, elle, n'est jamais plafonnée.
 
 Les gabarits vivent dans `server/utils/quoteNotification.ts` et n'importent
 rien de Nitro : ils se rendent hors serveur, ce qui permet de les relire sans
@@ -889,12 +907,12 @@ Deux règles de mise en forme des gabarits sont désactivées, avec le motif
 
 ### Tests unitaires
 
-`tests/unit/`, en environnement Node — **25 suites, 983 tests, 2,5 s**. Elles
+`tests/unit/`, en environnement Node — **26 suites, 1 002 tests, 2,5 s**. Elles
 portent sur des modules purs ; monter un environnement Nuxt complet coûterait
 une minute par exécution sans rien apprendre de neuf.
 
 Le chiffre est gonflé par `i18nParite.spec.ts`, qui engendre une assertion par
-clé de traduction : 740 des 983. C'est voulu — un rapport qui nomme la clé
+clé de traduction : 754 des 1 002. C'est voulu — un rapport qui nomme la clé
 fautive vaut mieux qu'un `toEqual` sur deux objets de six cents entrées.
 
 Les sept suites ci-dessous sont celles qui gardent le plus ; les autres
@@ -922,7 +940,7 @@ coordonnées de l'entrepôt.
 Nitro) et non sur le serveur de développement : le pré-rendu, l'hydratation et
 les en-têtes y sont ceux du site livré.
 
-**17 fichiers, 88 parcours**, répartis en deux projets : `bureau` (Desktop
+**17 fichiers, 89 parcours**, répartis en deux projets : `bureau` (Desktop
 Chrome) et `mobile` (Pixel 7). Ils couvrent l'envoi d'une demande de devis et
 sa variante par branche, la rotation du hero d'accueil (ordre, cadence,
 arrêt), la galerie et sa visionneuse, les dix-sept pages de domaine, le
@@ -1547,9 +1565,9 @@ npm run audit
 | `npm ci` | ✔ | le verrou, désynchronisé, a été régénéré |
 | `npm run lint` | ✔ | 0 erreur |
 | `npm run typecheck` | ✔ | 0 erreur |
-| `npm test` | ✔ | 983 tests, 25 suites |
+| `npm test` | ✔ | 1 002 tests, 26 suites |
 | `npm run build` | ✔ | 2 165 routes pré-rendues |
-| `npm run test:e2e` | ✔ | 88 parcours, bureau et mobile |
+| `npm run test:e2e` | ✔ | 89 parcours, bureau et mobile |
 | `npm run audit` | ✔ | 6 dérogations motivées sur 3 paquets, aucun présent dans `.output` — cf. « Audit des dépendances » |
 
 > **Pourquoi `typescript` reste en `^5.9`.** La dépendance avait été montée en
