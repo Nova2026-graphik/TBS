@@ -309,7 +309,7 @@ const sizesThird = SIZES_THIRD
             :to="{
               path: '/contact',
               query: {
-                branche: branche.slug,
+                branche: versUrl(branche.slug),
                 message: $t('gallery.equipmentQuoteIntro', { domain: domaine.title }),
               },
             }"

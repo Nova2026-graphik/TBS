@@ -13,16 +13,16 @@ import { ANCIENS_SLUGS } from '../../shared/utils/branchSlugs'
  *  - le paramètre `?branche=events` sur `/galerie`, `/services` et `/contact` ;
  *  - le segment `/galerie/events/<domaine>`, qui date des pages domaine.
  *
- * Le hook `request` plutôt qu'un middleware, pour la raison établie dans
- * `domaines-herites.ts` : ces pages sont pré-rendues, et Nitro sert un
- * fichier statique avant d'atteindre le moindre middleware du projet.
+ * Un gestionnaire en tête de pile plutôt qu'un middleware, pour la raison
+ * établie dans `domaines-herites.ts` et dans `server/utils/enTeteDePile.ts` :
+ * ces pages sont pré-rendues, et Nitro sert un fichier statique avant
+ * d'atteindre le moindre middleware du projet.
  *
- * Ce module s'exécute **avant** `domaines-herites`, l'ordre des greffons
- * suivant l'ordre alphabétique des fichiers — `branches-` précède
- * `domaines-`. Une ancienne adresse complète comme
+ * `domaines-herites` ne connaît que les noms publics : `?branche=events`
+ * ne lui dit rien, et il laisse passer. Une ancienne adresse complète comme
  * `/galerie?branche=events&domaine=location-reception` est donc d'abord
- * traduite en `?branche=evenementiel`, puis transformée en
- * `/galerie/evenementiel/location-reception` par le second. Deux sauts au
+ * traduite ici en `?branche=evenementiel`, puis transformée en
+ * `/galerie/evenementiel/location-reception` par l'autre. Deux sauts au
  * lieu d'un : c'est le prix d'un renommage qui croise une route déjà
  * réécrite, et les deux sauts sont des 301.
  */
@@ -34,7 +34,7 @@ const SEGMENT = /^(\/(?:en\/)?galerie)\/([a-z0-9-]+)(\/[a-z0-9-]+)$/
 const AVEC_PARAMETRE = /^\/(?:en\/)?(?:galerie|services|contact)\/?$/
 
 export default defineNitroPlugin((nitroApp) => {
-  nitroApp.hooks.hook('request', async (event) => {
+  placerEnTeteDePile(nitroApp, defineEventHandler(async (event) => {
     const url = getRequestURL(event)
 
     // ── le segment de route ────────────────────────────────────────────────
@@ -59,5 +59,5 @@ export default defineNitroPlugin((nitroApp) => {
 
     url.searchParams.set('branche', nouveau)
     await sendRedirect(event, `${url.pathname}?${url.searchParams.toString()}`, 301)
-  })
+  }))
 })

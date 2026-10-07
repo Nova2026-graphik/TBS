@@ -86,7 +86,7 @@ function onScroll() {
           <p class="font-display text-[clamp(1.375rem,2.6vw,2rem)] leading-[1.4] text-cream">
             «&nbsp;{{ item.quote }}&nbsp;»
           </p>
-          <footer class="mt-8 flex items-center gap-3.5 text-[0.6875rem] uppercase tracking-[0.18em] text-white/50">
+          <footer class="mt-8 flex items-center gap-3.5 text-[0.6875rem] uppercase tracking-[0.18em] text-white/60">
             <span class="h-px w-8 bg-white/35" aria-hidden="true" />
             <span>{{ item.author }} — {{ item.context }}</span>
           </footer>

@@ -115,7 +115,7 @@ function sousTitre(slug: BranchSlug) {
             :href="info.whatsappUrl"
             target="_blank"
             rel="noopener"
-            class="inline-flex min-h-11 items-center bg-[#25d366] px-5 py-3 text-[0.6875rem] uppercase tracking-[0.18em] text-white transition-opacity hover:opacity-90"
+            class="inline-flex min-h-11 items-center bg-[#25d366] px-5 py-3 text-[0.6875rem] uppercase tracking-[0.18em] text-ink transition-opacity hover:opacity-90"
           >
             {{ $t('common.whatsapp') }}
           </a>

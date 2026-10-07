@@ -216,7 +216,7 @@ useBreadcrumbSchema([{ name: t('advice.eyebrow'), path: '/conseils' }])
             :href="info.whatsappUrl"
             target="_blank"
             rel="noopener"
-            class="inline-flex min-h-11 items-center gap-2.5 bg-[#25d366] px-[1.375rem] py-3.5 text-[0.6875rem] uppercase tracking-[0.18em] text-white transition-opacity duration-400 hover:opacity-90"
+            class="inline-flex min-h-11 items-center gap-2.5 bg-[#25d366] px-[1.375rem] py-3.5 text-[0.6875rem] uppercase tracking-[0.18em] text-ink transition-opacity duration-400 hover:opacity-90"
           >
             {{ $t('common.whatsapp') }}
           </a>
