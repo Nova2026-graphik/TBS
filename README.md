@@ -35,9 +35,10 @@ Quatre branches : **TBS Équipements**, **TBS Events**,
 >   correctifs de code sont appliqués.
 >
 > Vérifications : lint, types, 1 097 tests (1 006 unitaires, 91 parcours),
-> build, audit. Restent ouverts, hors code : rétablir GitHub Actions, choisir
-> la branche que vise Dependabot, et les douze informations légales et les
-> photos attendues de TBS — détail dans l'audit du 7 octobre.
+> build, audit, Lighthouse. Restent ouverts : les douze informations légales
+> et les photos attendues de TBS ; hors code, rétablir GitHub Actions
+> (compte GitHub bloqué pour facturation) ; vérifier en production les
+> anciennes adresses à paramètres — détail dans l'audit du 7 octobre.
 
 ---
 
@@ -1263,8 +1264,10 @@ motif de chacun est écrit dans la clé `//overrides`, juste au-dessus :
 
 Ces deux lignes disparaîtront quand l'amont rattrapera : surveiller la sortie
 stable d'`ipx@4` (`@nuxt/image@2`) et l'abandon de `@esbuild-kit` par
-`drizzle-kit`. Dependabot (`.github/dependabot.yml`) signale les mises à jour
-chaque lundi.
+`drizzle-kit`. Dependabot (`.github/dependabot.yml`) propose les mises à jour
+chaque lundi, en pull request sur `main` : les correctifs et versions mineures
+regroupés en une seule, chaque version majeure à part. Aucune ne se fusionne
+seule — `npm run ci` d'abord, comme pour toute PR.
 
 ---
 
@@ -1560,18 +1563,18 @@ npm run build
 npm run audit
 ```
 
-État relevé le 2 octobre 2026, détail dans
-[`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md) :
+État relevé le 7 octobre 2026, détail dans
+[`docs/audit-2026-10-07.md`](docs/audit-2026-10-07.md) :
 
 | Commande | État | Note |
 | --- | --- | --- |
-| `npm ci` | ✔ | le verrou, désynchronisé, a été régénéré |
 | `npm run lint` | ✔ | 0 erreur |
 | `npm run typecheck` | ✔ | 0 erreur |
-| `npm test` | ✔ | 1 002 tests, 26 suites |
-| `npm run build` | ✔ | 2 165 routes pré-rendues |
-| `npm run test:e2e` | ✔ | 89 parcours, bureau et mobile |
+| `npm test` | ✔ | 1 006 tests, 27 suites |
+| `npm run build` | ✔ | 2 185 routes pré-rendues |
+| `npm run test:e2e` | ✔ | 91 parcours, bureau et mobile ; aucune erreur 500 au journal du serveur |
 | `npm run audit` | ✔ | 6 dérogations motivées sur 3 paquets, aucun présent dans `.output` — cf. « Audit des dépendances » |
+| Lighthouse (`lighthouserc.json`) | ✔ | performance 99–100, accessibilité 100, SEO 100 sur les quatre pages du budget |
 
 > **Pourquoi `typescript` reste en `^5.9`.** La dépendance avait été montée en
 > `^7.0.2`, que ni `vue-tsc` 3.x ni `@typescript-eslint` ne supportent encore :
