@@ -43,14 +43,14 @@ export default defineEventHandler(async (event) => {
   if ((await isAdminRateLimited(db, key, MAX_ATTEMPTS_PER_HOUR)).limited) {
     throw createError({
       statusCode: 429,
-      statusMessage: 'Trop de tentatives. Réessayez dans une heure.',
+      message: 'Trop de tentatives. Réessayez dans une heure.',
     })
   }
 
   const parsed = schema.safeParse(await readBody(event))
   if (!parsed.success || !isPasswordValid(parsed.data.password, password)) {
     await recordAdminFailure(db, key)
-    throw createError({ statusCode: 401, statusMessage: 'Mot de passe incorrect' })
+    throw createError({ statusCode: 401, message: 'Mot de passe incorrect' })
   }
 
   const expiresAt = Date.now() + SESSION_TTL_MS

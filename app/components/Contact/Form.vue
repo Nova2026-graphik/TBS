@@ -357,7 +357,7 @@ async function submit() {
     const err = error as {
       name?: string
       cause?: { name?: string }
-      data?: { data?: { errors?: Record<string, string> }, statusMessage?: string }
+      data?: { data?: { errors?: Record<string, string> } }
     }
 
     // Délai dépassé : la demande a pu arriver. Le serveur reconnaît un envoi
@@ -375,7 +375,7 @@ async function submit() {
       await focusErrorSummary()
       return
     }
-    serverError.value = err.data?.statusMessage ?? t('form.errors.server')
+    serverError.value = messageErreurServeur(error) ?? t('form.errors.server')
     status.value = 'error'
   }
 }

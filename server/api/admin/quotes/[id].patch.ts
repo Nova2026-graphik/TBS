@@ -24,14 +24,14 @@ export default defineEventHandler(async (event) => {
   requireAdmin(event)
 
   const id = z.string().uuid().safeParse(getRouterParam(event, 'id'))
-  if (!id.success) throw createError({ statusCode: 404, statusMessage: 'Demande introuvable' })
+  if (!id.success) throw createError({ statusCode: 404, message: 'Demande introuvable' })
 
   const parsed = bodySchema.safeParse(await readBody(event))
-  if (!parsed.success) throw createError({ statusCode: 422, statusMessage: 'Modification invalide' })
+  if (!parsed.success) throw createError({ statusCode: 422, message: 'Modification invalide' })
 
   const db = useDb()
   if (!db) {
-    throw createError({ statusCode: 503, statusMessage: 'Aucune base de données configurée.' })
+    throw createError({ statusCode: 503, message: 'Aucune base de données configurée.' })
   }
 
   const q = schema.quoteRequests
@@ -51,6 +51,6 @@ export default defineEventHandler(async (event) => {
     .where(eq(q.id, id.data))
     .returning({ id: q.id, status: q.status, handledAt: q.handledAt, internalNote: q.internalNote })
 
-  if (!row) throw createError({ statusCode: 404, statusMessage: 'Demande introuvable' })
+  if (!row) throw createError({ statusCode: 404, message: 'Demande introuvable' })
   return row
 })

@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
   if (!parsed.success) {
     throw createError({
       statusCode: 422,
-      statusMessage: 'Formulaire invalide',
+      message: 'Formulaire invalide',
       // Format compact { champ: message } directement exploitable par le front.
       data: { errors: formatIssues(parsed.error) },
     })
@@ -81,7 +81,7 @@ export default defineEventHandler(async (event) => {
     if (rate.limited) {
       throw createError({
         statusCode: 429,
-        statusMessage: 'Trop de demandes. Réessayez dans une heure ou appelez-nous.',
+        message: 'Trop de demandes. Réessayez dans une heure ou appelez-nous.',
       })
     }
   }
@@ -132,7 +132,7 @@ export default defineEventHandler(async (event) => {
       console.error('[devis] écriture impossible :', error)
       throw createError({
         statusCode: 500,
-        statusMessage: 'Envoi impossible pour l\'instant. Appelez-nous au (+228) 90 10 85 10.',
+        message: 'Envoi impossible pour l\'instant. Appelez-nous au (+228) 90 10 85 10.',
       })
     }
   }
