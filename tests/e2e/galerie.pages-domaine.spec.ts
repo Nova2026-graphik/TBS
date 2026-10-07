@@ -73,6 +73,22 @@ test.describe('page domaine', () => {
     }
   })
 
+  /**
+   * Le bouton de devis passait l'identifiant interne (`events`, `agro`) : la
+   * page de contact le comprenait, mais seulement au bout d'une redirection
+   * 301 — un aller-retour réseau de plus à chaque clic, sur mobile au Togo.
+   */
+  test('le bouton de devis nomme la branche par son adresse publique', async ({ page }) => {
+    for (const [url, attendu] of [
+      ['/galerie/evenementiel/organisation', 'evenementiel'],
+      ['/galerie/agro-business/agro-industrie', 'agro-business'],
+    ] as const) {
+      await page.goto(url)
+      const href = await page.locator('main a[href^="/contact"]').last().getAttribute('href')
+      expect(new URL(href!, 'http://x').searchParams.get('branche'), url).toBe(attendu)
+    }
+  })
+
   test('les références d’exemple sont signalées', async ({ page }) => {
     await page.goto('/galerie/agro/agro-industrie')
     await pageInteractive(page)
@@ -103,6 +119,24 @@ test.describe('anciennes adresses de domaine', () => {
     const chaine = requete?.redirectedFrom()
     expect(chaine, 'aucune redirection HTTP').toBeTruthy()
     expect((await chaine!.response())?.status()).toBe(301)
+  })
+
+  /**
+   * La redirection partait d'un hook qui ne pouvait pas arrêter la suite :
+   * les en-têtes de sécurité, posés après, tombaient sur une réponse déjà
+   * envoyée — 301 sans HSTS, et deux erreurs 500 au journal à chaque visite.
+   */
+  test('portent les en-têtes de sécurité, comme toute réponse', async ({ request }) => {
+    for (const url of [
+      '/galerie?branche=equipements&domaine=mobilier-bureau',
+      '/galerie/events/location-reception',
+      '/services?branche=agro',
+    ]) {
+      const reponse = await request.get(url, { maxRedirects: 0 })
+      expect(reponse.status(), url).toBe(301)
+      expect(reponse.headers()['x-content-type-options'], url).toBe('nosniff')
+      expect(reponse.headers()['x-frame-options'], url).toBe('DENY')
+    }
   })
 
   test('gardent les autres paramètres', async ({ page }) => {

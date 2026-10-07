@@ -323,7 +323,7 @@ function meta(collection: Collection): string {
               <span class="block truncate text-[clamp(1rem,2vw,1.375rem)] leading-tight text-ink">
                 {{ courante.label }}
               </span>
-              <span class="mt-1 block truncate text-[0.6875rem] uppercase tracking-[0.16em] text-ink-mute max-lg:text-xs max-lg:tracking-[0.14em]">
+              <span class="mt-1 block truncate text-[0.6875rem] uppercase tracking-[0.16em] text-ink-soft max-lg:text-xs max-lg:tracking-[0.14em]">
                 {{ meta(courante) }}
               </span>
             </span>

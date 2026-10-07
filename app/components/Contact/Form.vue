@@ -495,7 +495,7 @@ const LABEL = 'text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute max-lg
             />
           </span>
           <span class="min-w-0">
-            <span class="block text-[0.5625rem] uppercase tracking-[0.18em] max-lg:text-xs max-lg:tracking-[0.14em]" :style="{ color: brandColor(tuile.color) }">
+            <span class="block text-[0.5625rem] uppercase tracking-[0.18em] max-lg:text-xs max-lg:tracking-[0.14em]" :style="{ color: brandTextColor(tuile.color) }">
               {{ $t('about.branchLabel', { index: String(tuile.index).padStart(2, '0') }) }}
             </span>
             <span class="block text-[0.84375rem] leading-[1.2] text-ink">{{ tuile.label }}</span>

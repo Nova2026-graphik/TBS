@@ -74,7 +74,7 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
             :href="info.whatsappUrl"
             target="_blank"
             rel="noopener noreferrer"
-            class="mt-5 inline-flex min-h-12 items-center gap-3 bg-[#25d366] px-6 py-3.5 text-[0.6875rem] uppercase tracking-[0.18em] text-white transition-opacity duration-400 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+            class="mt-5 inline-flex min-h-12 items-center gap-3 bg-[#25d366] px-6 py-3.5 text-[0.6875rem] uppercase tracking-[0.18em] text-ink transition-opacity duration-400 hover:opacity-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
           >
             {{ $t('common.whatsapp') }} <span aria-hidden="true">·</span> {{ info.phoneDisplay }}
           </a>
@@ -145,7 +145,7 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
                 Itinéraire
               </UiButton>
             </div>
-            <p class="max-w-[34ch] text-xs leading-[1.6] text-ink-mute">
+            <p class="max-w-[34ch] text-xs leading-[1.6] text-ink-soft">
               {{ $t('contact.map.notice') }}
               <a
                 :href="mapLink"

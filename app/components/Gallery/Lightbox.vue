@@ -91,7 +91,7 @@ const sizesLightbox = SIZES_LIGHTBOX
               <p class="font-display text-[clamp(1.25rem,2.4vw,1.75rem)] text-cream">
                 {{ current.title }}
               </p>
-              <p v-if="current.location" class="mt-1.5 text-[0.6875rem] uppercase tracking-[0.2em] text-white/45">
+              <p v-if="current.location" class="mt-1.5 text-[0.6875rem] uppercase tracking-[0.2em] text-white/60">
                 {{ current.location }}
               </p>
             </figcaption>

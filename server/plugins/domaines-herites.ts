@@ -19,8 +19,11 @@
  *    `Last-Modified` sans avoir croisé le nôtre. Vérifié dans la sortie
  *    compilée : trois middleware, les fichiers publics en tête.
  *
- * Le hook `request` s'exécute dans `onRequest` de l'application h3, avant le
- * premier gestionnaire. C'est le seul point d'où la redirection part vraiment.
+ * Le hook `request` passait bien avant, mais ne peut pas arrêter la suite :
+ * la redirection partait, puis la règle d'en-têtes `'/**'` écrivait sur une
+ * réponse déjà envoyée — deux erreurs 500 journalisées à chaque fois. D'où un
+ * gestionnaire placé **en tête de la pile** h3, avant la règle et avant les
+ * fichiers publics : voir `server/utils/enTeteDePile.ts`.
  *
  * `routeRules` ne convenait pas davantage : ses motifs portent sur le chemin,
  * et la distinction se joue ici sur la chaîne de requête.
@@ -58,7 +61,7 @@ const COUPLES = new Set(domains.map(d => `${versUrl(d.branch)}/${d.slug}`))
 const GALERIE = /^\/(?:en\/)?galerie\/?$/
 
 export default defineNitroPlugin((nitroApp) => {
-  nitroApp.hooks.hook('request', async (event) => {
+  placerEnTeteDePile(nitroApp, defineEventHandler(async (event) => {
     const url = getRequestURL(event)
     if (!GALERIE.test(url.pathname)) return
 
@@ -76,5 +79,5 @@ export default defineNitroPlugin((nitroApp) => {
       `${prefixe}/galerie/${branche}/${domaine}${reste ? `?${reste}` : ''}`,
       301,
     )
-  })
+  }))
 })

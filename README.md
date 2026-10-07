@@ -22,19 +22,22 @@ Quatre branches : **TBS Équipements**, **TBS Events**,
 > Base Neon, envoi Brevo, espace de suivi, purge nocturne et référencement
 > sont en service et vérifiés.
 >
-> - **Dernier audit, 6 octobre 2026** :
+> - **Dernier audit, 7 octobre 2026** :
+>   [`docs/audit-2026-10-07.md`](docs/audit-2026-10-07.md) — audit complet
+>   du site compilé : Lighthouse (100 en accessibilité, 99 à 100 en
+>   performance), parcours de tous les liens, tentatives d'abus, journal du
+>   serveur.
+> - Audit du 6 octobre 2026 :
 >   [`docs/audit-2026-10-06.md`](docs/audit-2026-10-06.md) — mise en
->   service, vingt points de robustesse avec la décision prise pour chacun,
->   sécurité.
+>   service, vingt points de robustesse avec la décision prise pour chacun.
 > - Audit initial, 2 octobre 2026 :
 >   [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md) — tous ses
 >   correctifs de code sont appliqués.
 >
-> Vérifications : lint, types, 1 091 tests (1 002 unitaires, 89 parcours),
-> build, audit. Restent ouverts, hors code : changer les secrets passés par
-> la conversation de développement, durcir DMARC, rétablir GitHub Actions,
-> mettre en place une sonde de disponibilité, et les douze informations
-> légales attendues de TBS — détail dans l'audit du 6 octobre.
+> Vérifications : lint, types, 1 097 tests (1 006 unitaires, 91 parcours),
+> build, audit. Restent ouverts, hors code : rétablir GitHub Actions, choisir
+> la branche que vise Dependabot, et les douze informations légales et les
+> photos attendues de TBS — détail dans l'audit du 7 octobre.
 
 ---
 
@@ -907,12 +910,12 @@ Deux règles de mise en forme des gabarits sont désactivées, avec le motif
 
 ### Tests unitaires
 
-`tests/unit/`, en environnement Node — **26 suites, 1 002 tests, 2,5 s**. Elles
+`tests/unit/`, en environnement Node — **27 suites, 1 006 tests, 2,5 s**. Elles
 portent sur des modules purs ; monter un environnement Nuxt complet coûterait
 une minute par exécution sans rien apprendre de neuf.
 
 Le chiffre est gonflé par `i18nParite.spec.ts`, qui engendre une assertion par
-clé de traduction : 754 des 1 002. C'est voulu — un rapport qui nomme la clé
+clé de traduction : 754 des 1 006. C'est voulu — un rapport qui nomme la clé
 fautive vaut mieux qu'un `toEqual` sur deux objets de six cents entrées.
 
 Les sept suites ci-dessous sont celles qui gardent le plus ; les autres
@@ -940,7 +943,7 @@ coordonnées de l'entrepôt.
 Nitro) et non sur le serveur de développement : le pré-rendu, l'hydratation et
 les en-têtes y sont ceux du site livré.
 
-**17 fichiers, 89 parcours**, répartis en deux projets : `bureau` (Desktop
+**17 fichiers, 91 parcours**, répartis en deux projets : `bureau` (Desktop
 Chrome) et `mobile` (Pixel 7). Ils couvrent l'envoi d'une demande de devis et
 sa variante par branche, la rotation du hero d'accueil (ordre, cadence,
 arrêt), la galerie et sa visionneuse, les dix-sept pages de domaine, le
