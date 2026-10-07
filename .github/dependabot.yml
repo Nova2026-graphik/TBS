@@ -11,10 +11,13 @@ version: 2
 updates:
   - package-ecosystem: npm
     directory: /
-    # Les pull requests visent `develop`, jamais `main` : `main` reste l'état
-    # livré au client et n'avance que par une fusion décidée. Sans cette ligne,
-    # Dependabot ouvre sur la branche par défaut du dépôt.
-    target-branch: develop
+    # Les pull requests visent `main`, la seule branche que Vercel déploie.
+    # Elles visaient `develop` : la branche a été abandonnée en cours de
+    # route (45 commits de retard sur `main` au 7 octobre 2026, aucun
+    # d'avance), et ses PR ne pouvaient plus atteindre la production. `main`
+    # n'avance pas pour autant tout seul : une PR de Dependabot se fusionne à
+    # la main, comme les autres, après `npm run ci`.
+    target-branch: main
     schedule:
       interval: weekly
       day: monday
@@ -41,7 +44,7 @@ updates:
   # signalerait.
   - package-ecosystem: github-actions
     directory: /
-    target-branch: develop
+    target-branch: main
     schedule:
       interval: weekly
       day: monday
