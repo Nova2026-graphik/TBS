@@ -36,6 +36,14 @@ onMounted(syncThemeFromDocument)
 </script>
 
 <template>
+  <!--
+    Barre de progression pendant le passage d'une page à l'autre. Les pages
+    sont pré-rendues, mais la navigation charge quand même leurs données et
+    leur code : sur un réseau mobile lent, sans signe de vie, un clic semble
+    ne rien faire, et l'on clique encore. Couleur d'accent de la charte, qui
+    suit le thème choisi.
+  -->
+  <NuxtLoadingIndicator color="var(--color-gold)" :height="2" />
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>

@@ -89,6 +89,21 @@ test.describe('version anglaise', () => {
       .toHaveAttribute('href', '/en/confidentialite')
   })
 
+  /**
+   * La page d'erreur était écrite en dur en français, et disait « Nos équipes
+   * sont prévenues » pour n'importe quelle erreur — y compris celles qui
+   * n'alertent personne.
+   */
+  test('la page introuvable parle la langue de la page', async ({ page }) => {
+    const anglais = await page.goto('/en/page-qui-n-existe-pas')
+    expect(anglais?.status()).toBe(404)
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/This page\s+does not exist/)
+
+    await page.goto('/page-qui-n-existe-pas')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Cette page\s+n'existe pas/)
+    await expect(page.getByText(/sont prévenues/)).toHaveCount(0)
+  })
+
   test('le site français reste en français', async ({ page }) => {
     await page.goto('/')
 

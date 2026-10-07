@@ -290,6 +290,18 @@ export default defineNuxtConfig({
     compressPublicAssets: { gzip: true, brotli: true },
 
     /**
+     * Durée maximale d'une fonction sur Vercel : 30 s.
+     *
+     * Le pire cas légitime est l'envoi d'un devis — base qui se réveille
+     * (10 s de délai de connexion au plus), puis les e-mails, plafonnés à 8 s
+     * chacun et partis en parallèle : une vingtaine de secondes. Sans plafond,
+     * une requête bloquée tiendrait jusqu'à la limite de la plate-forme,
+     * facturée à la durée, et le visiteur attendrait d'autant. Le formulaire,
+     * lui, rend la main à 30 s.
+     */
+    vercel: { functions: { maxDuration: 30 } },
+
+    /**
      * Anonymisation des demandes de devis expirées, chaque nuit à 3 h.
      * Le planificateur est fourni par le préréglage Node ; sur une plate-forme
      * sans cron intégré, déclencher `quotes:anonymise` depuis le cron maison.

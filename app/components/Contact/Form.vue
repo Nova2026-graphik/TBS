@@ -310,7 +310,19 @@ function goToField(field: string) {
   document.getElementById(`field-${field}`)?.focus()
 }
 
+/**
+ * Au-delà, le formulaire rend la main au visiteur plutôt que de rester figé
+ * sur « Envoi… ». Le serveur, lui, peut mettre jusqu'à une vingtaine de
+ * secondes dans le pire cas — base qui se réveille, deux envois d'e-mail —
+ * d'où la marge.
+ */
+const SUBMIT_TIMEOUT_MS = 30_000
+
 async function submit() {
+  // Le bouton est désactivé pendant l'envoi, mais une seconde soumission peut
+  // encore partir du clavier ou d'un script : on ne l'accepte pas.
+  if (status.value === 'pending') return
+
   if (!validate()) {
     await focusErrorSummary()
     return
@@ -322,6 +334,7 @@ async function submit() {
   try {
     await $fetch('/api/quotes', {
       method: 'POST',
+      timeout: SUBMIT_TIMEOUT_MS,
       body: {
         name: form.name,
         phone: form.phone,
@@ -341,7 +354,21 @@ async function submit() {
     track(ANALYTICS_EVENTS.devisEnvoye, { branche: form.branch.split('—')[0]!.trim() })
   }
   catch (error: unknown) {
-    const err = error as { data?: { data?: { errors?: Record<string, string> }, statusMessage?: string } }
+    const err = error as {
+      name?: string
+      cause?: { name?: string }
+      data?: { data?: { errors?: Record<string, string> }, statusMessage?: string }
+    }
+
+    // Délai dépassé : la demande a pu arriver. Le serveur reconnaît un envoi
+    // répété, si bien qu'un nouvel essai ne crée pas de doublon — le message
+    // le dit, pour que le visiteur ose réessayer.
+    if (err.name === 'TimeoutError' || err.cause?.name === 'TimeoutError') {
+      serverError.value = t('form.errors.timeout')
+      status.value = 'error'
+      return
+    }
+
     if (err.data?.data?.errors) {
       errors.value = err.data.data.errors
       status.value = 'idle'

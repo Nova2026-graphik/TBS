@@ -223,6 +223,11 @@ export interface NotifyQuoteOptions {
   notifyEmail: string
   transport: MailTransportInput
   contact: QuoteContact
+  /**
+   * `false` quand un plafond d'accusés est atteint — cf. `quoteGuards.ts`.
+   * L'équipe est prévenue dans tous les cas.
+   */
+  acknowledge?: boolean
 }
 
 export interface NotifyQuoteResult {
@@ -254,7 +259,7 @@ export async function notifyQuote(options: NotifyQuoteOptions): Promise<NotifyQu
 
   const messages: [string, EmailMessage][] = [['equipe', buildTeamEmail(notice, notifyEmail)]]
 
-  const acknowledgement = buildAcknowledgementEmail(notice, contact)
+  const acknowledgement = options.acknowledge === false ? null : buildAcknowledgementEmail(notice, contact)
   if (acknowledgement) messages.push(['demandeur', acknowledgement])
 
   const results = await Promise.allSettled(

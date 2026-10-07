@@ -8,7 +8,9 @@
  *  - limitation de débit par IP hachée, comptée en base sur une fenêtre
  *    glissante d'une heure — cf. `utils/rateLimit.ts` — et sur une IP qui
  *    n'est lue dans un en-tête que derrière un proxy déclaré de confiance,
- *    cf. `utils/clientIp.ts`.
+ *    cf. `utils/clientIp.ts` ;
+ *  - envoi répété reconnu et rendu sans seconde écriture, accusés de
+ *    réception plafonnés par adresse et par jour — cf. `utils/quoteGuards.ts`.
  *
  * Sans base de données, la demande est journalisée côté serveur et la
  * réponse reste un succès : le formulaire ne casse jamais en production.
@@ -21,6 +23,7 @@ import { createHash } from 'node:crypto'
 import { useDb } from '../database/client'
 import * as schema from '../database/schema'
 import { getClientIp, parseTrustedProxy } from '../utils/clientIp'
+import { countAcknowledgements, findDuplicateQuote, shouldAcknowledge } from '../utils/quoteGuards'
 import { notifyQuote } from '../utils/quoteNotification'
 import { isQuoteRateLimited } from '../utils/rateLimit'
 import { formatIssues, looksAutomated, quoteSchema } from '../utils/quoteValidation'
@@ -97,6 +100,21 @@ export default defineEventHandler(async (event) => {
     userAgent: getRequestHeader(event, 'user-agent')?.slice(0, 400) ?? null,
   }
 
+  /**
+   * Envoi répété — double clic, nouvel essai après une connexion coupée : la
+   * demande est déjà là, on la rend sans l'écrire ni la notifier une seconde
+   * fois. Une erreur de lecture laisse passer : au pire, un doublon.
+   */
+  if (db && ipHash) {
+    try {
+      const existante = await findDuplicateQuote(db, { ipHash, phone: record.phone, message: record.message })
+      if (existante) return { ok: true, id: existante, persisted: true, notified: false, duplicate: true }
+    }
+    catch (error) {
+      console.error('[devis] recherche de doublon impossible :', error)
+    }
+  }
+
   let id: string | null = null
   let persisted = false
 
@@ -127,6 +145,24 @@ export default defineEventHandler(async (event) => {
     })
   }
 
+  /**
+   * L'accusé ne part que sous les plafonds de `quoteGuards.ts`. Sans base,
+   * rien ne permet de compter : on garde le comportement d'avant. Une erreur
+   * de comptage, elle, retient l'accusé — c'est une politesse, pas le service,
+   * et c'est lui qu'un abus viserait.
+   */
+  let acknowledge = Boolean(record.email)
+  if (db && record.email) {
+    try {
+      acknowledge = shouldAcknowledge(await countAcknowledgements(db, record.email))
+      if (!acknowledge) console.warn('[devis] plafond d\'accusés atteint : accusé non envoyé')
+    }
+    catch (error) {
+      acknowledge = false
+      console.error('[devis] comptage des accusés impossible, accusé retenu :', error)
+    }
+  }
+
   // L'envoi est attendu — chaque message est plafonné à 8 s — pour que la
   // réponse dise la vérité sur la notification. Il ne lève jamais : la demande
   // est acquise, elle ne doit pas être perdue pour un prestataire mal luné.
@@ -146,6 +182,7 @@ export default defineEventHandler(async (event) => {
     },
     notifyEmail: config.notifyEmail,
     transport: config.mail,
+    acknowledge,
     contact: {
       phonePrimary: config.public.phonePrimary,
       phoneSecondary: config.public.phoneSecondary,
