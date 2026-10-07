@@ -9,11 +9,11 @@ export default defineEventHandler(async (event) => {
   requireAdmin(event)
 
   const id = z.string().uuid().safeParse(getRouterParam(event, 'id'))
-  if (!id.success) throw createError({ statusCode: 404, statusMessage: 'Demande introuvable' })
+  if (!id.success) throw createError({ statusCode: 404, message: 'Demande introuvable' })
 
   const db = useDb()
   if (!db) {
-    throw createError({ statusCode: 503, statusMessage: 'Aucune base de données configurée.' })
+    throw createError({ statusCode: 503, message: 'Aucune base de données configurée.' })
   }
 
   const q = schema.quoteRequests
@@ -40,6 +40,6 @@ export default defineEventHandler(async (event) => {
     .where(eq(q.id, id.data))
     .limit(1)
 
-  if (!row) throw createError({ statusCode: 404, statusMessage: 'Demande introuvable' })
+  if (!row) throw createError({ statusCode: 404, message: 'Demande introuvable' })
   return row
 })

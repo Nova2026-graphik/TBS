@@ -25,13 +25,13 @@ export default defineEventHandler(async (event) => {
   if (!db) {
     throw createError({
       statusCode: 503,
-      statusMessage: 'Aucune base de données configurée : les demandes ne sont pas enregistrées.',
+      message: 'Aucune base de données configurée : les demandes ne sont pas enregistrées.',
     })
   }
 
   const parsed = querySchema.safeParse(getQuery(event))
   if (!parsed.success) {
-    throw createError({ statusCode: 422, statusMessage: 'Filtre invalide' })
+    throw createError({ statusCode: 422, message: 'Filtre invalide' })
   }
 
   const { statut, page } = parsed.data

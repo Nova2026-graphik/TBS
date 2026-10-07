@@ -27,7 +27,7 @@ export function adminPassword(): string | null {
 export function requireAdminEnabled(): string {
   const password = adminPassword()
   if (!password) {
-    throw createError({ statusCode: 404, statusMessage: 'Page introuvable' })
+    throw createError({ statusCode: 404, message: 'Page introuvable' })
   }
 
   // Un mot de passe court sur une page publique n'est pas une protection.
@@ -45,6 +45,6 @@ export function requireAdmin(event: H3Event): void {
   const password = requireAdminEnabled()
 
   if (!verifySessionToken(getCookie(event, SESSION_COOKIE), password)) {
-    throw createError({ statusCode: 401, statusMessage: 'Session expirée' })
+    throw createError({ statusCode: 401, message: 'Session expirée' })
   }
 }

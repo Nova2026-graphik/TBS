@@ -26,11 +26,11 @@ export default defineEventHandler(async (event) => {
   // Pas de secret, pas de route : annoncer une 401 révélerait qu'il existe
   // ici une porte dont la clé est ailleurs.
   if (!isCronEnabled(secret)) {
-    throw createError({ statusCode: 404, statusMessage: 'Page introuvable' })
+    throw createError({ statusCode: 404, message: 'Page introuvable' })
   }
 
   if (!isAuthorizedCron(getHeader(event, 'authorization'), secret)) {
-    throw createError({ statusCode: 401, statusMessage: 'Non autorisé' })
+    throw createError({ statusCode: 401, message: 'Non autorisé' })
   }
 
   const { result } = await runTask<ResultatAnonymisation>('quotes:anonymise')
@@ -39,7 +39,7 @@ export default defineEventHandler(async (event) => {
   // le cron, lui, doit les voir, sans quoi une purge en panne passe pour un
   // succès dans le tableau de bord de la plate-forme.
   if (result?.error) {
-    throw createError({ statusCode: 500, statusMessage: 'Anonymisation impossible' })
+    throw createError({ statusCode: 500, message: 'Anonymisation impossible' })
   }
 
   return result

@@ -15,5 +15,5 @@ export default defineEventHandler((event) => {
   if (path !== '/admin' && !path.startsWith('/admin/')) return
   if (adminPassword()) return
 
-  throw createError({ statusCode: 404, statusMessage: 'Page introuvable' })
+  throw createError({ statusCode: 404, message: 'Page introuvable' })
 })

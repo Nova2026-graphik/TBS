@@ -58,8 +58,7 @@ async function save(changes: { status?: QuoteStatus, internalNote?: string | nul
     saved.value = true
   }
   catch (err) {
-    const e = err as { data?: { statusMessage?: string } }
-    saveError.value = e.data?.statusMessage ?? 'Enregistrement impossible.'
+    saveError.value = messageErreurServeur(err) ?? 'Enregistrement impossible.'
   }
   finally {
     saving.value = false

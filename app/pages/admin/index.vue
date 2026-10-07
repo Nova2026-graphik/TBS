@@ -59,8 +59,7 @@ async function signIn() {
     await refresh()
   }
   catch (err) {
-    const e = err as { data?: { statusMessage?: string } }
-    loginError.value = e.data?.statusMessage ?? 'Connexion impossible.'
+    loginError.value = messageErreurServeur(err) ?? 'Connexion impossible.'
   }
   finally {
     signingIn.value = false
