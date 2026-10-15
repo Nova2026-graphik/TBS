@@ -10,6 +10,7 @@ import {
   buildSecurityHeaders,
   contentSecurityPolicyHeaderName,
 } from './server/utils/securityHeaders'
+import { ROUTES_ANCIENNES_ADRESSES } from './server/utils/routesVercel'
 
 /**
  * En-têtes de sécurité des réponses **statiques**.
@@ -299,7 +300,12 @@ export default defineNuxtConfig({
      * facturée à la durée, et le visiteur attendrait d'autant. Le formulaire,
      * lui, rend la main à 30 s.
      */
-    vercel: { functions: { maxDuration: 30 } },
+    vercel: {
+      functions: { maxDuration: 30 },
+      // Anciennes adresses : vers la fonction, avant le CDN — cf. l'en-tête
+      // de `server/utils/routesVercel.ts`.
+      config: { routes: ROUTES_ANCIENNES_ADRESSES },
+    },
 
     /**
      * Anonymisation des demandes de devis expirées, chaque nuit à 3 h.
