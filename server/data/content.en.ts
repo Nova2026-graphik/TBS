@@ -198,7 +198,7 @@ export const domains: Domain[] = traduire(fr.domains, [
       'Tents & structures',
     ],
     exampleNote:
-      'Sample references, taken from a typical hire catalogue — to be checked against your actual stock before going live',
+      'Furniture, tableware, lighting, LED dance floor and air coolers: photos of TBS’s own stock. The other items are still sample references, taken from a typical hire catalogue — to be checked against your actual stock before going live',
   },
   {
     title: 'Event management & coordination',
@@ -1048,63 +1048,210 @@ export const equipment: Equipment[] = traduire(fr.equipment, [
   },
   // ── location-reception ────────────────────────────────────────
   {
+    name: 'White and gold throne chair',
+    description:
+      'Ceremonial armchair in white button-tufted upholstery with a carved gold frame: the couple’s seat at the top table.',
+    specs: ['White tufted', 'Carved gold frame'],
     family: 'Furniture',
   },
   {
+    name: 'Ivory throne chairs',
+    description:
+      'High-backed armchairs in ivory button-tufted upholstery with a gold frame, for the couple or guests of honour.',
+    specs: ['Ivory tufted', 'High back'],
     family: 'Furniture',
   },
   {
+    name: 'High-back chair of honour',
+    description:
+      'White chair with a tall back and gold trim, for a top table more understated than a throne.',
+    specs: ['White & gold', 'High back'],
     family: 'Furniture',
   },
   {
+    name: 'White Chiavari chair',
+    description:
+      'The classic spindle-back reception chair, with a seat cushion: weddings, dinners and ceremonies.',
+    specs: ['White', 'Seat cushion'],
     family: 'Furniture',
   },
   {
+    name: 'White Phoenix chair',
+    description: 'Interlaced-ring back and white cushion, for a more contemporary room.',
+    specs: ['White', 'Seat cushion'],
     family: 'Furniture',
   },
   {
+    name: 'Silver Phoenix chair, fabric seat',
+    description:
+      'The same ring back in a silver finish, with a seat upholstered in patterned fabric.',
+    specs: ['Silver', 'Fabric seat'],
     family: 'Furniture',
   },
   {
+    name: 'Clear medallion chair',
+    description: 'Clear chair with an oval back and white cushion: it blends into any setting.',
+    specs: ['Clear', 'Seat cushion'],
     family: 'Furniture',
   },
   {
+    name: 'Clear Napoleon chair',
+    description: 'Napoleon III-style chair in a clear finish, with a white cushion.',
+    specs: ['Clear', 'Seat cushion'],
     family: 'Furniture',
   },
   {
+    name: 'Gold banquet chair',
+    description:
+      'Gold-framed chair with an upholstered back and seat: seminars, galas and banquets.',
+    specs: ['Gold frame', 'Upholstered'],
     family: 'Furniture',
   },
   {
+    name: 'Marble-effect cocktail table',
+    description:
+      'High table with a round marble-effect top and an open gold base, for cocktails and receptions.',
+    specs: ['Marble-effect top', 'Gold base'],
     family: 'Furniture',
   },
   {
+    name: 'Light-up cocktail table',
+    description: 'High table lit from inside, in several colours: parties, launches, lounge areas.',
+    specs: ['LED', 'Several colours'],
     family: 'Furniture',
   },
   {
+    name: 'Serpentine table',
+    description:
+      'S-shaped tables with a white top and gold legs, joined into one long winding line for a buffet or top table.',
+    specs: ['White top', 'Gold legs'],
     family: 'Furniture',
   },
   {
+    name: 'Rectangular folding table',
+    description: 'Folding table with a white top, for a buffet, welcome desk or service table.',
+    specs: ['Folding'],
+    family: 'Furniture',
+  },
+  {
+    name: 'White modular bar',
+    description: 'Counter made of moulded-panel modules, for a bar, buffet or welcome desk.',
+    specs: ['Modular', 'White'],
+    family: 'Furniture',
+  },
+  {
+    name: 'White dinner plates',
+    description: 'Plain white service for seated meals, from lunch to a gala dinner.',
+    specs: [],
     family: 'Tableware',
   },
   {
+    name: 'Beaded-rim plates',
+    description: 'White plates with a beaded relief, in three sizes to build each place setting.',
+    specs: ['Three sizes'],
     family: 'Tableware',
   },
   {
+    name: 'Gold charger plate',
+    description: 'Gold sunburst charger that sets the tone for a prestige table.',
+    specs: ['Gold'],
     family: 'Tableware',
   },
   {
+    name: 'Glass charger plate, gold rim',
+    description: 'Glass charger with a glittering gold rim.',
+    specs: ['Glass', 'Gold rim'],
     family: 'Tableware',
   },
   {
+    name: 'Scalloped charger plate',
+    description: 'Hammered-glass charger with a wavy gold rim.',
+    specs: ['Glass', 'Gold rim'],
     family: 'Tableware',
   },
   {
+    name: 'Smoked glass charger plate',
+    description: 'Smoked-glass charger with a spiral pattern, for a darker, more graphic table.',
+    specs: ['Smoked glass'],
     family: 'Tableware',
   },
   {
+    name: 'Red charger plate',
+    description: 'Red charger with a beaded rim, for colourful tables.',
+    specs: ['Red'],
     family: 'Tableware',
   },
   {
+    name: 'Woven charger plate',
+    description: 'Woven-fibre charger, for a natural or rustic table.',
+    specs: ['Woven fibre'],
+    family: 'Tableware',
+  },
+  {
+    name: 'Wine glass',
+    description: 'Clear stemmed glass with a slender stem, for wine or water at the table.',
+    specs: [],
+    family: 'Tableware',
+  },
+  {
+    name: 'Amber stemmed glass',
+    description: 'Amber-tinted stemmed glass, for a table with golden highlights.',
+    specs: ['Amber tint'],
+    family: 'Tableware',
+  },
+  {
+    name: 'Champagne flute',
+    description: 'Tall clear glass flute with a slender stem, for toasts and cocktails.',
+    specs: ['200 ml'],
+    family: 'Tableware',
+  },
+  {
+    name: 'Green faceted flute',
+    description: 'Flute in faceted moulded green glass, vintage style.',
+    specs: ['Green glass'],
+    family: 'Tableware',
+  },
+  {
+    name: 'Glass drink dispensers',
+    description: 'Glass jars with a tap, on a metal stand: juice, infused water, cocktails.',
+    specs: ['Glass', 'Tap'],
+    family: 'Tableware',
+  },
+  {
+    name: 'Drink dispensers',
+    description: 'Clear dispensers with a green lid and base, for a cold-drinks buffet.',
+    specs: [],
+    family: 'Tableware',
+  },
+  {
+    name: 'Gold chafing dishes',
+    description: 'Gold food warmers with a glass lid: buffet dishes stay hot throughout service.',
+    specs: ['Gold', 'Glass lid'],
+    family: 'Tableware',
+  },
+  {
+    name: 'Tiered stands',
+    description:
+      'Two-tier stands with marble-effect bowls and a gold base, for desserts and fruit.',
+    specs: ['Two tiers'],
+    family: 'Tableware',
+  },
+  {
+    name: 'Flower bowl stand',
+    description: 'Silver stem-shaped stand with flower-shaped bowls: sweets, fruit, petits fours.',
+    specs: ['Silver'],
+    family: 'Tableware',
+  },
+  {
+    name: 'Wedding cake stand',
+    description: 'Gold cake stand hung with drops, to show off the wedding cake.',
+    specs: ['Gold', 'Hanging drops'],
+    family: 'Tableware',
+  },
+  {
+    name: 'Three-tier stand',
+    description: 'Three cut-pattern clear trays on a central rod, for petits fours and sweets.',
+    specs: ['Three tiers'],
     family: 'Tableware',
   },
   {
@@ -1123,6 +1270,41 @@ export const equipment: Equipment[] = traduire(fr.equipment, [
     family: 'Linen',
   },
   {
+    name: 'Floor candelabra',
+    description:
+      'Gold candelabra with tiered branches and flame bulbs: to frame an entrance or a stage.',
+    specs: ['Gold', 'Electric'],
+    family: 'Décor',
+  },
+  {
+    name: 'Crystal candle holder on marble base',
+    description: 'Tall candle holder with faceted balls on a marble-effect base, for centrepieces.',
+    specs: ['Marble-effect base'],
+    family: 'Décor',
+  },
+  {
+    name: 'Pedestal hurricane lamp',
+    description: 'Fluted-cylinder candle holder on a gold stand, for centrepieces.',
+    specs: ['Gold stand'],
+    family: 'Décor',
+  },
+  {
+    name: 'Gold openwork candle holders',
+    description: 'Gold openwork metal candle holders in three heights.',
+    specs: ['Three heights'],
+    family: 'Décor',
+  },
+  {
+    name: 'Gold globe candle holder',
+    description: 'Round gold openwork candle holder: the flame casts its pattern across the table.',
+    specs: ['Gold'],
+    family: 'Décor',
+  },
+  {
+    name: 'Gold and silver lanterns',
+    description:
+      'Glazed lanterns with a metal frame, in several sizes, for aisles, entrances or tables.',
+    specs: ['Gold or silver'],
     family: 'Décor',
   },
   {
@@ -1150,9 +1332,10 @@ export const equipment: Equipment[] = traduire(fr.equipment, [
     family: 'Décor',
   },
   {
-    family: 'Décor',
-  },
-  {
+    name: 'LED dance floor',
+    description:
+      'Light-up panels with a depth effect, laid on a raised platform: the heart of the party.',
+    specs: ['LED panels'],
     family: 'Sound & lighting',
   },
   {
@@ -1172,6 +1355,18 @@ export const equipment: Equipment[] = traduire(fr.equipment, [
   },
   {
     family: 'Sound & lighting',
+  },
+  {
+    name: 'Air cooler on wheels',
+    description: 'Air cooler with a water tank, mobile, for halls and marquees.',
+    specs: ['On wheels'],
+    family: 'Tents & structures',
+  },
+  {
+    name: 'Round air cooler',
+    description: 'Air cooler with a large fan and water tank, for halls and marquees.',
+    specs: ['On wheels'],
+    family: 'Tents & structures',
   },
   {
     family: 'Tents & structures',

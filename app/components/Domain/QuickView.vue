@@ -117,7 +117,7 @@ const sizesQuickView = SIZES_HALF_LG
           <!-- Le visuel suit la même règle que la carte dont il vient. -->
           <div
             class="flex shrink-0 items-center justify-center p-8 sm:w-2/5"
-            :class="courante.kind === 'photo' ? 'bg-shell' : 'bg-white'"
+            :class="courante.kind === 'photo' || courante.kind === 'parc' ? 'bg-shell' : 'bg-white'"
           >
             <div
               v-if="courante.kind === 'med' && courante.image"
