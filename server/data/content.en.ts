@@ -198,7 +198,7 @@ export const domains: Domain[] = traduire(fr.domains, [
       'Tents & structures',
     ],
     exampleNote:
-      'Furniture, tableware, lighting, LED dance floor and air coolers: photos of TBS’s own stock. The other items are still sample references, taken from a typical hire catalogue — to be checked against your actual stock before going live',
+      'Photos of TBS’s own stock. Items marked “Visual to come” are still sample references, taken from a typical hire catalogue — to be checked against your actual stock before going live',
   },
   {
     title: 'Event management & coordination',
@@ -1264,12 +1264,6 @@ export const equipment: Equipment[] = traduire(fr.equipment, [
     family: 'Linen',
   },
   {
-    family: 'Linen',
-  },
-  {
-    family: 'Linen',
-  },
-  {
     name: 'Floor candelabra',
     description:
       'Gold candelabra with tiered branches and flame bulbs: to frame an entrance or a stage.',
@@ -1308,46 +1302,10 @@ export const equipment: Equipment[] = traduire(fr.equipment, [
     family: 'Décor',
   },
   {
-    family: 'Décor',
-  },
-  {
-    family: 'Décor',
-  },
-  {
-    family: 'Décor',
-  },
-  {
-    family: 'Décor',
-  },
-  {
-    family: 'Décor',
-  },
-  {
-    family: 'Décor',
-  },
-  {
-    family: 'Décor',
-  },
-  {
-    family: 'Décor',
-  },
-  {
     name: 'LED dance floor',
     description:
       'Light-up panels with a depth effect, laid on a raised platform: the heart of the party.',
     specs: ['LED panels'],
-    family: 'Sound & lighting',
-  },
-  {
-    family: 'Sound & lighting',
-  },
-  {
-    family: 'Sound & lighting',
-  },
-  {
-    family: 'Sound & lighting',
-  },
-  {
     family: 'Sound & lighting',
   },
   {
@@ -1366,15 +1324,6 @@ export const equipment: Equipment[] = traduire(fr.equipment, [
     name: 'Round air cooler',
     description: 'Air cooler with a large fan and water tank, for halls and marquees.',
     specs: ['On wheels'],
-    family: 'Tents & structures',
-  },
-  {
-    family: 'Tents & structures',
-  },
-  {
-    family: 'Tents & structures',
-  },
-  {
     family: 'Tents & structures',
   },
   {
