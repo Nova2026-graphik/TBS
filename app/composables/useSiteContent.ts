@@ -39,7 +39,7 @@ export function useSiteContent() {
    */
   return useAsyncData<SiteContent>(
     () => `site-content-${locale.value}`,
-    () => $fetch('/api/site-content', { query: { locale: locale.value } }),
+    () => $fetch<SiteContent>('/api/site-content', { query: { locale: locale.value } }),
     {
     // Le contenu éditorial ne dépend pas de la route : on le garde en cache.
       getCachedData: (key, nuxtApp) =>
