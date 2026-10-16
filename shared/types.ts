@@ -200,6 +200,9 @@ export interface Domain {
  *  - `cut`   objet détouré du catalogue STEA, posé sur le blanc ;
  *  - `png`   objet détouré PurePNG, même traitement ;
  *  - `photo` photographie non détourée, sur fond `shell` et signalée comme telle ;
+ *  - `parc`  photographie d'un article du parc TBS, gardée entière — même fond,
+ *            sans le signalement : un verre, un luminaire allumé ou un objet
+ *            tenu en main perdraient au détourage ce qui les fait reconnaître ;
  *  - `med`   médaillon rond (Agro) ;
  *  - `ghost` visuel encore absent : filigrane de la vignette du domaine.
  *
@@ -207,7 +210,7 @@ export interface Domain {
  * encore de visuel, et une carte vide qui le dit vaut mieux qu'une image
  * empruntée qui ment.
  */
-export type ReferenceKind = 'cut' | 'png' | 'photo' | 'med' | 'ghost'
+export type ReferenceKind = 'cut' | 'png' | 'photo' | 'parc' | 'med' | 'ghost'
 
 /**
  * Une référence du catalogue, rattachée à un domaine.
