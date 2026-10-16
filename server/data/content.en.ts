@@ -46,7 +46,7 @@ export const branches: Branch[] = traduire(fr.branches, [
     tagline: 'Reception equipment rental & event management',
     description:
       'Furniture, tableware, décor, sound and lighting: we equip, install and collect for weddings, ceremonies, private receptions and corporate events, from 20 to 2,000 guests.',
-    imageAlt: 'Reception hall set up by TBS Events',
+    imageAlt: 'Open-air reception set up by TBS Events: cocktail tables, round tables and string lights',
     tags: ['Weddings', 'Ceremonies', 'Corporate', 'Turnkey'],
   },
   {

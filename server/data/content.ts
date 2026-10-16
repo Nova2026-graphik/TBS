@@ -53,7 +53,8 @@ export const branches: Branch[] = [
       'Mobilier, art de la table, décoration, son et lumière : nous équipons, installons et reprenons mariages, cérémonies, réceptions privées et événements d\'entreprise, de 20 à 2 000 invités.',
     color: BRANCH_COLORS.events!,
     image: '/images/branche-events.jpg',
-    imageAlt: 'Salle de réception dressée par TBS Événementiel',
+    imageAlt:
+      'Réception en plein air dressée par TBS Événementiel : mange-debout, tables rondes et guirlandes lumineuses',
     tags: ['Mariages', 'Cérémonies', 'Entreprise', 'Clé en main'],
   },
   {
