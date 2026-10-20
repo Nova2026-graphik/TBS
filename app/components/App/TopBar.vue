@@ -109,7 +109,16 @@ const branchDots = computed(() => [
         >
           {{ info.email }}
         </a>
-        <span class="text-white/60">{{ $t('common.addressShort') }}</span>
+        <!--
+          L'adresse n'apparaît qu'à partir de 1440 px. En dessous, le bandeau
+          frôlait la largeur où il passe sur deux lignes : à 1280 px, la police
+          de secours le faisait déborder, Jost le ramenait sur une ligne en
+          arrivant, et toute la page remontait de 25 px — un décalage de mise
+          en page de 0,4 mesuré par Lighthouse. Sans l'adresse, le seuil
+          descend vers 1100 px, loin des largeurs d'écran courantes ; elle reste
+          au pied de page et sur /contact, et ce n'est pas un lien.
+        -->
+        <span class="hidden text-white/60 min-[1440px]:inline">{{ $t('common.addressShort') }}</span>
       </div>
     </div>
   </div>
