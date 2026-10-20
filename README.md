@@ -1336,7 +1336,7 @@ l'iframe des Nuxt DevTools et le rechargement à chaud de Vite.
 
 ### Content-Security-Policy : report-only puis bloquante
 
-Tout est auto-hébergé (polices `/_fonts`, images `/_ipx`, scripts `/_nuxt`), la
+Tout est auto-hébergé (polices `/_nuxt/fonts`, images `/_ipx`, scripts `/_nuxt`), la
 politique tient donc en `'self'` — seule exception, `frame-src` pour la carte
 OpenStreetMap de la page contact.
 
