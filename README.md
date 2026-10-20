@@ -1277,6 +1277,16 @@ chaque lundi, en pull request sur `main` : les correctifs et versions mineures
 regroupés en une seule, chaque version majeure à part. Aucune ne se fusionne
 seule — `npm run ci` d'abord, comme pour toute PR.
 
+Deux précautions, apprises sur ces PR :
+
+- **Vérifier sous Node 24**, la version de `.nvmrc` et de Vercel. Dependabot
+  produit ses verrous avec npm 11 ; npm 10 (Node 22) en refuse certains — « Missing:
+  unplugin@3.4.0 from lock file » — alors qu'ils sont valides.
+- **`@nuxtjs/robots` et `@nuxtjs/sitemap` montent ensemble.** Ils partagent
+  `nuxt-site-config` : sitemap 9 exige robots 7, et robots 7 seul ne se
+  construit pas à côté de sitemap 8. Dependabot les propose séparément ; les
+  fusionner l'un après l'autre casserait `main` entre les deux.
+
 ---
 
 ## Sécurité
