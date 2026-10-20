@@ -50,7 +50,9 @@ Coordonnées confirmées par ces documents et reprises dans
 `nuxt.config.ts` (`runtimeConfig.public`) :
 
 - **(+228) 90 10 85 10** et **(+228) 97 80 08 80**
-- **tbstogo228@gmail.com**
+- **tbstogo228@gmail.com**, et depuis octobre 2026 l'adresse professionnelle
+  **contact@tbstogo.com**, communiquée par TBS — c'est elle que le site
+  affiche en premier
 - **Agôè - Démakpoè**, Lomé — Togo
 
 > À noter : la plaquette la plus ancienne imprime « DISTRIBUTIOIN » (coquille).

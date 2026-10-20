@@ -93,8 +93,9 @@ useBreadcrumbSchema([{ name: 'Contact', path: '/contact' }])
             </div>
             <div>
               <dt class="text-[0.6875rem] uppercase tracking-[0.18em] text-ink-mute">{{ $t('common.email') }}</dt>
-              <dd class="mt-1.5">
+              <dd class="mt-1.5 flex flex-col">
                 <a :href="`mailto:${info.email}`" class="inline-flex min-h-11 items-center break-all text-[0.9375rem] text-ink transition-colors hover:text-gold">{{ info.email }}</a>
+                <a v-if="info.emailSecondary" :href="`mailto:${info.emailSecondary}`" class="inline-flex min-h-11 items-center break-all text-[0.9375rem] text-ink transition-colors hover:text-gold">{{ info.emailSecondary }}</a>
               </dd>
             </div>
             <div>

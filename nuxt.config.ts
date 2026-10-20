@@ -220,7 +220,13 @@ export default defineNuxtConfig({
       phonePrimary: '+22890108510',
       phoneSecondary: '+22897800880',
       whatsapp: '22890108510',
-      email: 'tbstogo228@gmail.com',
+      /**
+       * Adresse professionnelle, sur le domaine du site : c'est elle que le
+       * bandeau, le menu, les pages légales et le JSON-LD annoncent. L'adresse
+       * Gmail reste joignable, en seconde ligne, comme le second téléphone.
+       */
+      email: 'contact@tbstogo.com',
+      emailSecondary: 'tbstogo228@gmail.com',
       address: 'Agôè - Démakpoè, Lomé, Togo',
       /**
        * Mesure d'audience — cf. `shared/utils/analytics.ts`.

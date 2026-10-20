@@ -143,6 +143,11 @@ const legalLinks = computed(() => [
               {{ info.email }}
             </a>
           </li>
+          <li v-if="info.emailSecondary">
+            <a :href="`mailto:${info.emailSecondary}`" class="inline-block break-all py-1 transition-colors hover:text-white">
+              {{ info.emailSecondary }}
+            </a>
+          </li>
           <li class="text-white/60">{{ $t('common.addressShort') }}</li>
           <li v-for="slot in info.hours" :key="slot.days" class="text-white/60">
             {{ slot.days }} : {{ slot.time }}
