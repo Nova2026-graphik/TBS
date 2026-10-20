@@ -59,6 +59,7 @@ const IMAGE_MAISON = '/images/hero-reception.jpg'
 const COULEUR_MAISON = 'var(--color-cream)'
 
 const sizesFull = SIZES_FULL
+const prechargeLcp = PRECHARGE_LCP
 const densitiesFull = DENSITIES_FULL
 
 const section = ref<HTMLElement | null>(null)
@@ -243,7 +244,7 @@ function estRendue(index: number) {
             :src="diapo.image"
             :alt="i === actif ? diapo.imageAlt : ''"
             preset="hero"
-            :preload="i === 0"
+            :preload="i === 0 ? prechargeLcp : false"
             :fetchpriority="i === 0 ? 'high' : 'low'"
             :sizes="sizesFull"
             :densities="densitiesFull"

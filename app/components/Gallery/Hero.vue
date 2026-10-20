@@ -192,6 +192,7 @@ function estRendue(index: number) {
 }
 
 const sizesFull = SIZES_FULL
+const prechargeLcp = PRECHARGE_LCP
 const densitiesFull = DENSITIES_FULL
 
 /** Vignette de la carte : 64 px de côté, quel que soit l'écran. */
@@ -269,7 +270,7 @@ function meta(collection: Collection): string {
               :src="collection.image"
               alt=""
               preset="hero"
-              :preload="i === 0"
+              :preload="i === 0 ? prechargeLcp : false"
               :fetchpriority="i === 0 ? 'high' : 'low'"
               :sizes="sizesFull"
               :densities="densitiesFull"

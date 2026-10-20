@@ -53,6 +53,7 @@ const VOILE = [
 ].join(', ')
 
 const sizesFull = SIZES_FULL
+const prechargeLcp = PRECHARGE_LCP
 const densitiesFull = DENSITIES_FULL
 </script>
 
@@ -67,7 +68,7 @@ const densitiesFull = DENSITIES_FULL
       alt=""
       aria-hidden="true"
       preset="hero"
-      preload
+      :preload="prechargeLcp"
       fetchpriority="high"
       :sizes="sizesFull"
       :densities="densitiesFull"

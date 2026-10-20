@@ -22,11 +22,16 @@ Quatre branches : **TBS Équipements**, **TBS Events**,
 > Base Neon, envoi Brevo, espace de suivi, purge nocturne et référencement
 > sont en service et vérifiés.
 >
-> - **Dernier audit, 7 octobre 2026** :
+> - **Dernier audit, 20 octobre 2026** :
+>   [`docs/audit-2026-10-20.md`](docs/audit-2026-10-20.md) — la production
+>   mesurée : Lighthouse mobile et bureau sur six pages, parcours des 68 pages
+>   et de leurs 663 liens et ressources, sécurité, DNS. Deux défauts de
+>   chargement corrigés : la photo d'en-tête préchargée trop bas, et un saut
+>   de page à 1 280 px à l'arrivée de la police.
+> - Audit du 7 octobre 2026 :
 >   [`docs/audit-2026-10-07.md`](docs/audit-2026-10-07.md) — audit complet
->   du site compilé : Lighthouse (100 en accessibilité, 99 à 100 en
->   performance), parcours de tous les liens, tentatives d'abus, journal du
->   serveur.
+>   du site compilé : Lighthouse, parcours de tous les liens, tentatives
+>   d'abus, journal du serveur.
 > - Audit du 6 octobre 2026 :
 >   [`docs/audit-2026-10-06.md`](docs/audit-2026-10-06.md) — mise en
 >   service, vingt points de robustesse avec la décision prise pour chacun.
@@ -37,8 +42,8 @@ Quatre branches : **TBS Équipements**, **TBS Events**,
 > Vérifications : lint, types, 1 105 tests (1 014 unitaires, 91 parcours),
 > build, audit, Lighthouse. Restent ouverts : les douze informations légales
 > et les photos attendues de TBS ; hors code, rétablir GitHub Actions
-> (compte GitHub bloqué pour facturation) — détail dans l'audit du
-> 7 octobre.
+> (compte GitHub bloqué pour facturation) — détail et plan d'action dans
+> l'audit du 20 octobre.
 
 ---
 
@@ -1336,7 +1341,7 @@ l'iframe des Nuxt DevTools et le rechargement à chaud de Vite.
 
 ### Content-Security-Policy : report-only puis bloquante
 
-Tout est auto-hébergé (polices `/_fonts`, images `/_ipx`, scripts `/_nuxt`), la
+Tout est auto-hébergé (polices `/_nuxt/fonts`, images `/_ipx`, scripts `/_nuxt`), la
 politique tient donc en `'self'` — seule exception, `frame-src` pour la carte
 OpenStreetMap de la page contact.
 
