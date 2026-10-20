@@ -34,7 +34,7 @@ Quatre branches : **TBS Équipements**, **TBS Events**,
 >   [`docs/audit-2026-10-02.md`](docs/audit-2026-10-02.md) — tous ses
 >   correctifs de code sont appliqués.
 >
-> Vérifications : lint, types, 1 101 tests (1 010 unitaires, 91 parcours),
+> Vérifications : lint, types, 1 105 tests (1 014 unitaires, 91 parcours),
 > build, audit, Lighthouse. Restent ouverts : les douze informations légales
 > et les photos attendues de TBS ; hors code, rétablir GitHub Actions
 > (compte GitHub bloqué pour facturation) — détail dans l'audit du
@@ -911,12 +911,12 @@ Deux règles de mise en forme des gabarits sont désactivées, avec le motif
 
 ### Tests unitaires
 
-`tests/unit/`, en environnement Node — **28 suites, 1 010 tests, 2,5 s**. Elles
+`tests/unit/`, en environnement Node — **29 suites, 1 014 tests, 2,5 s**. Elles
 portent sur des modules purs ; monter un environnement Nuxt complet coûterait
 une minute par exécution sans rien apprendre de neuf.
 
 Le chiffre est gonflé par `i18nParite.spec.ts`, qui engendre une assertion par
-clé de traduction : 754 des 1 010. C'est voulu — un rapport qui nomme la clé
+clé de traduction : 754 des 1 014. C'est voulu — un rapport qui nomme la clé
 fautive vaut mieux qu'un `toEqual` sur deux objets de six cents entrées.
 
 Les sept suites ci-dessous sont celles qui gardent le plus ; les autres
@@ -1578,7 +1578,7 @@ npm run audit
 | --- | --- | --- |
 | `npm run lint` | ✔ | 0 erreur |
 | `npm run typecheck` | ✔ | 0 erreur |
-| `npm test` | ✔ | 1 010 tests, 28 suites |
+| `npm test` | ✔ | 1 014 tests, 29 suites |
 | `npm run build` | ✔ | 2 185 routes pré-rendues |
 | `npm run test:e2e` | ✔ | 91 parcours, bureau et mobile ; aucune erreur 500 au journal du serveur |
 | `npm run audit` | ✔ | 6 dérogations motivées sur 3 paquets, aucun présent dans `.output` — cf. « Audit des dépendances » |

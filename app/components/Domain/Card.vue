@@ -9,7 +9,7 @@ import type { Equipment } from '#shared/types'
  * aurait rendu la grille à un tableau de fiches ; la maquette s'en passe, et
  * l'alignement est tenu par une boîte 4:5 invisible plutôt que par un trait.
  *
- * Cinq rendus selon `kind`, et le cas le plus instructif est `ghost` : treize
+ * Six rendus selon `kind`, et le cas le plus instructif est `ghost` : treize
  * références n'ont pas encore de visuel. Elles gardent leur carte, avec le
  * filigrane du domaine et « Visuel à venir » — dire qu'il manque une image
  * vaut mieux que combler avec une image empruntée, et mieux qu'un trou dans
@@ -119,8 +119,11 @@ const sizesCard = SIZES_QUARTER
         </div>
       </template>
 
-      <!-- Photographie non détourée : sur fond `shell`, et signalée telle. -->
-      <template v-else-if="reference.kind === 'photo'">
+      <!--
+        Photographie non détourée : sur fond `shell`. Signalée « à détourer »
+        quand c'est une étape ; une photo du parc, elle, est gardée telle quelle.
+      -->
+      <template v-else-if="reference.kind === 'photo' || reference.kind === 'parc'">
         <div class="absolute inset-0 bg-shell">
           <NuxtImg
             v-if="reference.image"
@@ -135,6 +138,7 @@ const sizesCard = SIZES_QUARTER
           />
         </div>
         <span
+          v-if="reference.kind === 'photo'"
           class="absolute left-0 top-0 bg-ink/80 px-2 py-1 text-[0.5625rem] uppercase tracking-[0.14em] text-cream"
         >
           {{ $t('domain.card.toCutOut') }}
