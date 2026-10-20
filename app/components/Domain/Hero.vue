@@ -25,6 +25,7 @@ const props = defineProps<{
 const lignes = computed(() => splitDomainTitle(props.domain.title))
 
 const sizesFull = SIZES_FULL
+const prechargeLcp = PRECHARGE_LCP
 const sizesObjet = SIZES_DOMAIN_OBJECT
 const densitesFull = DENSITIES_FULL
 </script>
@@ -36,7 +37,8 @@ const densitesFull = DENSITIES_FULL
       :src="domain.image"
       :alt="domain.imageAlt ?? ''"
       preset="hero"
-      preload
+      :preload="prechargeLcp"
+      fetchpriority="high"
       :sizes="sizesFull"
       :densities="densitesFull"
       width="1400"

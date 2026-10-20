@@ -36,6 +36,7 @@ const suite = computed(() =>
 )
 
 const sizesFull = SIZES_FULL
+const prechargeLcp = PRECHARGE_LCP
 const sizesHalf = SIZES_HALF_MD
 
 usePageSeo({
@@ -89,7 +90,8 @@ useHead({
         :src="article.image"
         :alt="article.imageAlt"
         preset="hero"
-        preload
+        :preload="prechargeLcp"
+        fetchpriority="high"
         :sizes="sizesFull"
         width="1400"
         height="933"

@@ -91,3 +91,15 @@ export const SIZES_LIGHTBOX = buildSizes('100vw', { lg: '80vw' })
  * ~500 px et la densité 2 reste indispensable.
  */
 export const DENSITIES_FULL = '1'
+
+/**
+ * Préchargement de l'image LCP — la photo d'en-tête de chaque page.
+ *
+ * `preload` seul pose un `<link rel="preload" as="image">` **sans priorité** :
+ * le navigateur le lance tôt, mais au rang « basse », à égalité avec le logo,
+ * et ne le relève qu'une fois la mise en page faite. Le `fetchpriority="high"`
+ * de l'`<img>` n'y change rien : c'est le préchargement qui part le premier.
+ * Mesuré sur la production le 20 octobre (Lighthouse mobile) : 70 % du LCP de
+ * l'accueil était de l'attente avant le début du téléchargement.
+ */
+export const PRECHARGE_LCP = { fetchPriority: 'high' } as const
