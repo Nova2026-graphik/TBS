@@ -37,7 +37,7 @@ const OPENSTREETMAP_ORIGIN = 'https://www.openstreetmap.org'
 const CSP_REPORT_PATH = '/api/csp-report'
 
 /**
- * Directives CSP. `'self'` partout : polices (`/_fonts`), images (`/_ipx`),
+ * Directives CSP. `'self'` partout : polices (`/_nuxt/fonts`), images (`/_ipx`),
  * scripts et styles sont tous auto-hébergés, aucun CDN n'est sollicité.
  */
 const CSP_DIRECTIVES = {
@@ -181,7 +181,7 @@ export function contentSecurityPolicyHeaderName(
  * Ressources auto-générées ou statiques : elles héritent des en-têtes de base
  * mais pas de la CSP, qui ne s'applique qu'aux documents.
  */
-const STATIC_ASSET_PATH = /^\/(?:_nuxt|_fonts|_ipx|images)\/|^\/(?:favicon\.ico|robots\.txt|sitemap[\w-]*\.xml)$/
+const STATIC_ASSET_PATH = /^\/(?:_nuxt|_ipx|images)\/|^\/(?:favicon\.ico|robots\.txt|sitemap[\w-]*\.xml)$/
 
 /** `true` si la réponse mérite un en-tête CSP (documents et routes API). */
 export function shouldSendContentSecurityPolicy(path: string): boolean {

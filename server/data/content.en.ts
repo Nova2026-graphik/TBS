@@ -354,7 +354,7 @@ export const galleryItems: GalleryItem[] = traduire(fr.galleryItems, [
   { title: 'Drinks reception — Baguida', imageAlt: 'Cocktail reception' },
   { title: 'Launch party — LED floor', imageAlt: 'Evening party — LED dance floor' },
   { title: 'Stage design — draped backdrop', imageAlt: 'Stage design with draped backdrop' },
-  { title: 'Linen — table runners', imageAlt: 'Tablecloths and runners' },
+  { title: 'Linen — table runners', imageAlt: 'Place setting seen from above: white plate, napkin, cutlery and glass' },
   { title: 'Analysis laboratory — equipment delivered', imageAlt: 'Laboratory equipment in place' },
   { title: 'Service fleet — 6 vehicles', imageAlt: 'Service vehicles lined up' },
   { title: 'Farming project — small equipment', imageAlt: 'Small farming equipment' },
