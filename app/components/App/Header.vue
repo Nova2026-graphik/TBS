@@ -156,16 +156,7 @@ onClickOutside(drawerRef, () => {
           {{ $t('common.quote') }}
         </UiButton>
 
-        <!-- Le bandeau supérieur, qui porte le sélecteur de charte sur
-             bureau, est masqué sous 768px : le tiroir le reprend. -->
-        <div class="mt-6 flex items-center justify-between gap-4">
-          <span class="text-[0.6875rem] uppercase tracking-[0.18em] text-white/55">
-            {{ $t('theme.label') }}
-          </span>
-          <UiThemeSwitch />
-        </div>
-
-        <div class="mt-5 flex flex-col gap-1.5 text-[0.6875rem] tracking-[0.12em] text-white/55">
+        <div class="mt-6 flex flex-col gap-1.5 text-[0.6875rem] tracking-[0.12em] text-white/55">
           <a :href="`tel:${info.phonePrimary}`">{{ info.phoneDisplay }}</a>
           <a :href="`mailto:${info.email}`">{{ info.email }}</a>
         </div>

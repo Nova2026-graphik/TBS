@@ -38,11 +38,11 @@ const autresLangues = computed(() =>
 )
 
 /**
- * Pastilles des quatre branches. Les couleurs passent par les jetons de thème
- * plutôt que par leur valeur hexadécimale : le bandeau suit ainsi le thème
- * choisi. Études & Conseils prend la crème et non l'encre — la branche est
- * couleur d'encre dans la charte, et une pastille encre sur un fond d'encre
- * ne se verrait pas.
+ * Pastilles des quatre branches. Les couleurs passent par les jetons de la
+ * charte plutôt que par une valeur hexadécimale : une teinte se change dans
+ * `main.css`, une fois pour tout le site. Études & Conseils prend la crème et
+ * non l'encre — la branche est couleur d'encre dans la charte, et une pastille
+ * encre sur un fond d'encre ne se verrait pas.
  */
 const branchDots = computed(() => [
   { key: 'equipements', color: 'var(--color-gold)' },
@@ -70,13 +70,6 @@ const branchDots = computed(() => [
       </ul>
 
       <div class="flex flex-wrap items-center gap-x-6 gap-y-1 text-[0.6875rem] tracking-[0.12em]">
-        <!--
-          Sélecteur de charte. Il a sa place ici, aux côtés de la langue :
-          l'un et l'autre sont des préférences d'affichage, valables pour tout
-          le site et non pour la page en cours.
-        -->
-        <UiThemeSwitch />
-
         <!--
           Sélecteur de langue. Deux langues seulement : un lien vaut mieux
           qu'une liste déroulante — une cible, un clic, et l'état courant se

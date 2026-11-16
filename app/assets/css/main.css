@@ -4,115 +4,70 @@
    TBS Distribution — design tokens
    Conception et développement : Samuel by Novagraphik Visu
    ==========================================================================
-   Le site porte deux thèmes, et un seul jeu de composants.
+   Une seule charte : « Bleu & Rouge », tirée du logotype — le bleu #3376ba et
+   le rouge #d83934, relevés au pixel sur `public/images/logo-tbs.png`.
 
-   1. « Sable & Or » (défaut) — la charte historique héritée du template :
-      brun-olive profond, or, pêche, crème, olive.
-   2. « Bleu & Rouge » — la charte tirée du logotype : le bleu #3376ba et le
-      rouge #d83934, relevés au pixel sur `public/images/logo-tbs.png`.
+   Le site en a porté deux. La charte historique « Sable & Or » (brun-olive,
+   or, pêche, crème) a été retirée en novembre 2026, à la demande de TBS : le
+   bleu, qui ne servait que sur option, devient la seule couleur du site, et
+   le sélecteur de charte disparaît avec lui.
 
-   Le mécanisme tient en deux étages :
+   Le mécanisme à deux étages est conservé, parce qu'il ne coûte rien et
+   qu'il évite de toucher aux gabarits :
 
-   - les valeurs brutes vivent dans `--tbs-*` sur `:root`, et sont réécrites
-     par `:root[data-theme='logo']` ;
-   - les jetons `@theme` de Tailwind ne portent plus de couleur, seulement une
-     référence `var(--tbs-*)`.
+   - les valeurs brutes vivent dans `--tbs-*` sur `:root` ;
+   - les jetons `@theme` de Tailwind n'en sont que des renvois `var(--tbs-*)`.
 
-   Conséquence : `bg-gold`, `text-ink/70`, `border-cream` — toutes les classes
-   déjà écrites — changent de couleur sans qu'une seule ligne de gabarit ne
-   bouge, et le basculement se fait par un attribut sur <html>, sans recharger
-   la page ni servir une seconde feuille de style.
+   Les noms de jetons, eux, datent de la première charte : `gold` est l'accent
+   bleu, `peach` le rouge de la branche Events, `olive` le bleu clair de
+   l'Agro, `cream` et `sand` les blancs bleutés. Les renommer aurait touché
+   chaque gabarit du site pour un gain nul ; le nom dit le rôle, la valeur
+   dit la couleur.
 
-   Une contrainte a présidé au second thème : reprendre les contrastes du
-   premier. Chaque valeur est annotée de son rapport sur blanc, mesuré selon
-   WCAG 2.1 — les 4,5:1 de 1.4.3 (AA) sont tenus partout où la couleur devient
-   du texte.
+   Chaque valeur est annotée de son rapport sur blanc, mesuré selon WCAG 2.1 —
+   les 4,5:1 de 1.4.3 (AA) sont tenus partout où la couleur devient du texte.
    ========================================================================== */
 
 :root {
-  /* -- Thème 1 : Sable & Or (principal) ------------------------------------ */
-  --tbs-ink: #3e3524; /* 12,07:1 — texte fort, fonds sombres */
-  --tbs-ink-soft: #6b5f45; /* 6,27:1 — texte courant */
-  --tbs-ink-mute: #756a55; /* 5,32:1 — texte tertiaire */
-  --tbs-accent: #827148; /* 4,77:1 — accent principal / branche Équipements */
-  --tbs-accent-deep: #6d5e3a; /* 6,34:1 */
-  --tbs-branch-events: #e8a07c; /* pêche — décoratif uniquement */
-  --tbs-branch-agro: #a5af79; /* olive — décoratif uniquement */
+  --tbs-ink: #16304d; /* 13,43:1 — texte fort, fonds sombres (marine) */
+  --tbs-ink-soft: #4b6480; /* 6,12:1 — texte courant */
+  --tbs-ink-mute: #5a7188; /* 5,06:1 — texte tertiaire */
+  --tbs-accent: #3376ba; /* 4,73:1 — bleu du logo, valeur exacte ; branche Équipements */
+  --tbs-accent-deep: #2a5f95; /* 6,63:1 */
+  --tbs-branch-events: #d83934; /* rouge du logo, valeur exacte — décoratif */
+  --tbs-branch-agro: #7fb2dd; /* 2,25:1 — bleu clair, décoratif uniquement */
 
-  /* Variantes texte des couleurs de branche. Pêche et olive sont des teintes
-     claires : lisibles en pastille ou en filet, elles tombent à 2,15:1 et
-     2,33:1 dès qu'on en fait du texte, très loin des 4,5:1 exigés par WCAG
-     1.4.3. Même teinte, luminance abaissée — l'identité est préservée. */
-  --tbs-branch-events-text: #a85c33; /* 4,95:1 sur blanc · 4,69:1 sur sable */
-  --tbs-branch-agro-text: #5f6a3a; /* 5,82:1 sur blanc · 5,51:1 sur sable */
+  /* Variantes texte des couleurs de branche. Le rouge de marque plafonne à
+     4,61:1, sous le seuil dès qu'il passe sur fond sable ; le bleu clair de
+     l'Agro est à 2,25:1. Lisibles en pastille ou en filet, ils ne le sont plus
+     en texte (WCAG 1.4.3). Même teinte, luminance abaissée. */
+  --tbs-branch-events-text: #c0342c; /* 5,57:1 sur blanc · 5,36:1 sur sable */
+  --tbs-branch-agro-text: #2f6c9f; /* 5,58:1 sur blanc · 5,36:1 sur sable */
 
-  --tbs-cream: #ffeed6; /* crème claire (titres sur sombre) */
-  --tbs-sand: #fff8ec; /* fond de section alterné */
-  --tbs-shell: #f6e7cf; /* placeholder image */
-  --tbs-bone: #e8e5df; /* fond hors-cadre */
+  --tbs-cream: #e4f0fb; /* blanc bleuté (titres sur fond sombre) */
+  --tbs-sand: #f7fbfe; /* fond de section alterné */
+  --tbs-shell: #dbe9f6; /* fond d'attente des images */
+  --tbs-bone: #e6ebf0; /* fond hors-cadre */
 
   /* Composantes du voile posé sur les photos et des ombres portées. Séparées
      de `--tbs-ink` parce qu'elles s'emploient en `rgb(… / α)` : une couleur
      hexadécimale ne se compose pas avec une opacité dans cette notation. */
-  --tbs-scrim: 62 53 36;
+  --tbs-scrim: 22 48 77;
 
   /* Avertissement — information encore attendue de TBS, ou clause à faire
      valider. Volontairement hors charte : une mention légale incomplète doit
-     se remarquer, pas se fondre dans le texte. */
-  --tbs-warn-surface: #fbeae5;
-  --tbs-warn-border: #c4633f;
-  --tbs-warn-text: #8a2b12; /* 8,17:1 sur sa surface */
-
-  /* Couleur de la barre de navigateur sur mobile — lue par `useTheme`, qui
-     met à jour <meta name="theme-color"> au basculement. */
-  --tbs-browser-theme: #3e3524;
-}
-
-/* -- Thème 2 : Bleu & Rouge (logotype) -------------------------------------
-   Le bleu et le rouge du logo sont repris tels quels partout où ils servent
-   d'aplat ou d'accent : ce sont eux qu'on vient reconnaître. Autour d'eux, la
-   charte est reconstruite dans la même famille — les bruns deviennent des
-   marines, le sable un blanc bleuté, l'olive de l'Agro un bleu clair — pour
-   que la substitution reste une substitution, et non un second site.
-
-   Deux valeurs seulement s'écartent du logo, et pour la raison déjà donnée
-   plus haut : `--tbs-branch-events-text` et `--tbs-branch-agro-text`. Le rouge
-   de marque plafonne à 4,61:1, sous le seuil dès qu'il passe sur fond sable ;
-   le bleu clair de l'Agro est à 2,25:1. Seule la luminance baisse.
-   ------------------------------------------------------------------------- */
-:root[data-theme='logo'] {
-  --tbs-ink: #16304d; /* 13,43:1 */
-  --tbs-ink-soft: #4b6480; /* 6,12:1 */
-  --tbs-ink-mute: #5a7188; /* 5,06:1 */
-  --tbs-accent: #3376ba; /* 4,73:1 — bleu du logo, valeur exacte */
-  --tbs-accent-deep: #2a5f95; /* 6,63:1 */
-  --tbs-branch-events: #d83934; /* rouge du logo, valeur exacte */
-  --tbs-branch-agro: #7fb2dd; /* 2,25:1 — décoratif, comme l'olive */
-
-  --tbs-branch-events-text: #c0342c; /* 5,57:1 sur blanc · 5,36:1 sur sable */
-  --tbs-branch-agro-text: #2f6c9f; /* 5,58:1 sur blanc · 5,36:1 sur sable */
-
-  --tbs-cream: #e4f0fb;
-  --tbs-sand: #f7fbfe;
-  --tbs-shell: #dbe9f6;
-  --tbs-bone: #e6ebf0;
-
-  --tbs-scrim: 22 48 77;
-
-  /* Le rouge de marque occupe déjà le registre de l'alerte : l'avertissement
-     bascule sur l'ambre, sans quoi il se confondrait avec la branche Events. */
+     se remarquer. Le rouge de marque occupe déjà le registre de l'alerte :
+     l'avertissement prend l'ambre, sans quoi il se confondrait avec la
+     branche Events. */
   --tbs-warn-surface: #fdf3e2;
   --tbs-warn-border: #c07b1e;
   --tbs-warn-text: #8a5205; /* 5,80:1 sur sa surface */
-
-  --tbs-browser-theme: #16304d;
 }
 
 @theme {
   /* -- Couleurs de marque --------------------------------------------------
      Aucune valeur ici : uniquement des renvois vers les jetons `--tbs-*`
-     ci-dessus. C'est ce qui rend le thème commutable à chaud — le navigateur
-     recalcule les `var()` au changement d'attribut, sans nouvelle feuille. */
+     ci-dessus, seul endroit où une couleur s'écrit. */
   --color-ink: var(--tbs-ink);
   --color-ink-soft: var(--tbs-ink-soft);
   --color-ink-mute: var(--tbs-ink-mute);
@@ -451,8 +406,7 @@
      reste lisible quelle que soit l'image. Trois arrêts, réglés ici une fois
      pour toutes : les couvertures de l'accueil, d'À propos, des articles et
      de la bannière d'appel recopiaient jusqu'ici le même dégradé à la main,
-     avec les composantes du brun écrites en clair — le thème n'aurait pas pu
-     les atteindre. */
+     avec les composantes de la teinte écrites en clair. */
   .u-scrim-portrait {
     background: linear-gradient(
       180deg,

@@ -6,8 +6,8 @@
  * Photographie sous un voile **dégradé horizontal** : opaque à gauche, où se
  * pose le texte, ouvert à droite pour laisser respirer l'image. Le voile
  * uniforme d'avant éteignait la photo ; celui-ci la montre. `color-mix` sur
- * l'encre de la charte plutôt qu'une couleur écrite : brun en « Sable & Or »,
- * bleu nuit en « Bleu & Rouge », et le dégradé suit.
+ * l'encre de la charte (bleu nuit) plutôt qu'une couleur écrite : la teinte se
+ * change dans `main.css`, et le dégradé suit.
  *
  * Deux choses ont disparu par rapport à la version précédente, et c'est
  * voulu :

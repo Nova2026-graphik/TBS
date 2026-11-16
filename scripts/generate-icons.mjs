@@ -22,8 +22,9 @@ const image = name => resolve(root, 'public/images', name)
 /** Blanc plutôt que transparent : une icône d'onglet se pose sur des fonds
  *  imprévisibles, et le logo est bicolore sur fond clair. */
 const WHITE = { r: 255, g: 255, b: 255, alpha: 1 }
-const INK = '#3e3524'
-const CREAM = '#ffeed6'
+/** Marine et blanc bleuté de la charte « Bleu & Rouge » (`--tbs-ink`, `--tbs-cream`). */
+const INK = '#16304d'
+const CREAM = '#e4f0fb'
 
 /**
  * Logo détouré de ses marges, ramené à `ratio` de la largeur du carré et
@@ -131,7 +132,7 @@ async function socialImage({ photo, eyebrow, title, tagline, footer, crop = 'cen
       width: 190 + pad * 2,
       height: logoH + pad * 2,
       channels: 4,
-      background: { r: 255, g: 248, b: 236, alpha: 0.96 },
+      background: { r: 247, g: 251, b: 254, alpha: 0.96 }, // `--tbs-sand`
     },
   })
     .composite([{ input: logo, gravity: 'centre' }])
