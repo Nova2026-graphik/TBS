@@ -48,12 +48,6 @@
     "language": "Langue",
     "switchTo": "Version anglaise"
   },
-  "theme": {
-    "label": "Charte",
-    "select": "Charte {name}",
-    "principal": "Sable & Or",
-    "logo": "Bleu & Rouge"
-  },
   "hero": {
     "eyebrow": "Lomé — Togo",
     "titleLine1": "Équiper vos réceptions,",
@@ -90,20 +84,26 @@
     },
     "showBranch": "Afficher {branch}",
     "pause": "Mettre en pause le défilement",
-    "resume": "Reprendre le défilement"
+    "resume": "Reprendre le défilement",
+    "onScreen": "À l'écran"
   },
   "home": {
     "branches": {
       "eyebrow": "Une maison, quatre branches",
       "title": "Quatre métiers,",
       "accent": "un seul interlocuteur",
-      "lead": "TBS Distribution S.A.R.L structure son activité en quatre branches complémentaires. Chacune a ses équipes et ses fournisseurs ; toutes partagent la même logistique et la même exigence de délai."
+      "lead": "TBS Distribution S.A.R.L structure son activité en quatre branches complémentaires. Chacune a ses équipes et ses fournisseurs ; toutes partagent la même logistique et la même exigence de délai.",
+      "number": "Branche {n}",
+      "see": "Voir la branche"
     },
     "categories": {
       "eyebrow": "TBS Événementiel — nos catégories",
       "title": "Six univers,",
       "accent": "une seule livraison",
-      "refCount": "{count} réf."
+      "refCount": "{count} réf.",
+      "catalogue": "Voir le catalogue",
+      "previous": "Catégories précédentes",
+      "next": "Catégories suivantes"
     },
     "domains": {
       "eyebrow": "Nos domaines d'intervention",
@@ -117,8 +117,6 @@
       "accent": "signées TBS"
     },
     "testimonials": {
-      "previous": "Témoignage précédent",
-      "next": "Témoignage suivant",
       "goTo": "Témoignage {n}",
       "eyebrow": "Ils nous ont confié leur date"
     }

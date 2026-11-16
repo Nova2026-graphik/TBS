@@ -52,6 +52,19 @@ export const SIZES_THIRD_MD = buildSizes('100vw', { md: '33vw' })
  */
 export const SIZES_QUARTER = buildSizes('50vw', { md: '33vw', lg: '25vw' })
 
+/**
+ * Tuiles de branche de la mosaïque d'accueil : deux par rangée sous `lg`, puis
+ * deux colonnes sur près des quatre dixièmes droits de l'écran — une tuile ne
+ * dépasse pas le quart de la largeur.
+ */
+export const SIZES_HERO_TILE = buildSizes('50vw', { lg: '25vw' })
+
+/**
+ * Bandeau défilant des catégories, à l'accueil : une vignette prend les trois
+ * quarts de l'écran sur mobile, un gros cinquième sur bureau.
+ */
+export const SIZES_STRIP = buildSizes('75vw', { sm: '33vw', lg: '22vw' })
+
 /** Vignette de domaine dans la barre latérale : 42 px, quelle que soit la largeur. */
 export const SIZES_THUMBNAIL = buildSizes('42px')
 

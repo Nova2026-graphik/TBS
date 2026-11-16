@@ -53,9 +53,8 @@ const props = defineProps<{
  * pose le texte, ouvert à droite pour laisser respirer la photographie. Le
  * voile vertical d'avant couvrait toute la largeur et éteignait l'image.
  *
- * `color-mix` sur `--color-ink` plutôt qu'une couleur écrite : l'encre change
- * d'une charte à l'autre — brun en « Sable & Or », bleu nuit en « Bleu &
- * Rouge » — et le dégradé doit suivre.
+ * `color-mix` sur `--color-ink` plutôt qu'une couleur écrite : l'encre de la
+ * charte (bleu nuit) se change dans `main.css`, et le dégradé suit.
  */
 const VOILE_OUVERT = [
   'linear-gradient(90deg',

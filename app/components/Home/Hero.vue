@@ -15,6 +15,14 @@ import type { Branch } from '#shared/types'
  * description, la couleur d'accent et la destination du premier appel à
  * l'action. Chaque diapositive annonce ce qu'elle fait.
  *
+ * **Mosaïque.** Le diaporama occupe la grande tuile de gauche ; les quatre
+ * branches sont posées à droite en tuiles photo, deux par deux, et mènent
+ * chacune à sa page. Le visiteur voit d'emblée les quatre métiers, sans
+ * attendre la rotation ni faire défiler — c'est ce qui a fait choisir cette
+ * mise en page (proposition « Mosaïque », validée par TBS en novembre 2026).
+ * La tuile de la branche affichée dans le diaporama s'allume : filet à sa
+ * couleur et mention « À l'écran ».
+ *
  * Le `<h1>` reste unique dans le plan du document — c'est son contenu qui
  * change, pas son rang. La diapositive de tête porte la formule générale,
  * celle que les moteurs indexent puisqu'elle sort du rendu serveur.
@@ -58,9 +66,10 @@ const PAS_MS = 100
 const IMAGE_MAISON = '/images/hero-reception.jpg'
 const COULEUR_MAISON = 'var(--color-cream)'
 
-const sizesFull = SIZES_FULL
-const prechargeLcp = PRECHARGE_LCP
+/** La grande tuile prend toute la largeur sous `lg`, à peine la moitié au-delà. */
+const sizesSlide = SIZES_HALF_LG
 const densitiesFull = DENSITIES_FULL
+const sizesTile = SIZES_HERO_TILE
 
 const section = ref<HTMLElement | null>(null)
 
@@ -99,7 +108,7 @@ const diapositives = computed<Diapositive[]>(() => [
       name: branche.name,
       tagline: branche.tagline,
       description: accroche(branche.slug, branche.description),
-      color: brandColor(branche.color),
+      color: couleurSurFonce(branche.color),
       image: branche.image,
       imageAlt: branche.imageAlt,
       to: `/services?branche=${versUrl(branche.slug)}`,
@@ -108,6 +117,19 @@ const diapositives = computed<Diapositive[]>(() => [
 
 const actif = ref(0)
 const courante = computed(() => diapositives.value[actif.value])
+
+/**
+ * Couleur de branche posée sur une photo sous voile sombre. Études & Conseils
+ * est couleur d'encre dans la charte : en filet ou en pastille sur l'encre du
+ * voile, elle disparaîtrait. Elle prend la crème, comme dans le bandeau
+ * supérieur (`AppTopBar`).
+ */
+function couleurSurFonce(color: string): string {
+  return color.toLowerCase() === '#3e3524' ? 'var(--color-cream)' : brandColor(color)
+}
+
+/** Les quatre tuiles de branche, dans l'ordre d'affichage. */
+const tuiles = computed(() => [...props.branches].sort((a, b) => a.index - b.index))
 
 /**
  * Accroche de la diapositive, avec repli sur la description de la branche.
@@ -220,167 +242,220 @@ function estRendue(index: number) {
 </script>
 
 <template>
+  <!--
+    Mosaïque : grande tuile du diaporama à gauche, quatre tuiles de branche à
+    droite. Sous `lg`, la grande tuile passe en tête sur toute la largeur et
+    les branches se rangent dessous, deux par deux.
+  -->
   <section
-    ref="section"
-    class="relative min-h-[31.25rem] overflow-hidden bg-ink"
-    style="height: min(88svh, 58.75rem)"
-    @focusin="focusDedans = true"
-    @focusout="focusDedans = false"
+    class="grid grid-cols-2 gap-1.5 bg-bone p-1.5 sm:gap-2.5 sm:p-2.5 lg:h-[min(calc(100svh-9.5rem),48rem)] lg:min-h-[36rem] lg:grid-cols-[1.75fr_1fr_1fr] lg:grid-rows-2"
   >
-    <!--
-      Les images sont empilées et se croisent en fondu : l'image sortante reste
-      sous l'entrante, aucun aplat de fond n'apparaît entre deux clichés. Le
-      zoom lent repart à chaque diapositive, par la seule bascule de classe.
-    -->
-    <div class="pointer-events-none absolute inset-0">
-      <template v-for="(diapo, i) in diapositives" :key="diapo.key">
-        <div
-          v-if="estRendue(i)"
-          class="hero-cliche absolute inset-0"
-          :class="i === actif ? 'is-active' : ''"
-          aria-hidden="true"
-        >
-          <NuxtImg
-            :src="diapo.image"
-            :alt="i === actif ? diapo.imageAlt : ''"
-            preset="hero"
-            :preload="i === 0 ? prechargeLcp : false"
-            :fetchpriority="i === 0 ? 'high' : 'low'"
-            :sizes="sizesFull"
-            :densities="densitiesFull"
-            width="1920"
-            height="1280"
-            class="size-full object-cover"
-          />
-        </div>
-      </template>
-    </div>
-
-    <!-- Dégradé : contraste garanti sur le texte, quel que soit le cliché. -->
-    <div class="u-scrim-portrait pointer-events-none absolute inset-0" />
-
-    <div class="u-gutter pointer-events-none absolute inset-0 flex flex-col justify-end gap-[clamp(1.125rem,2.6vw,2.125rem)] pb-[clamp(2.125rem,5vw,4.5rem)] pt-[clamp(2.25rem,6vw,5.75rem)]">
+    <div
+      ref="section"
+      class="relative col-span-2 min-h-[33rem] overflow-hidden bg-ink sm:min-h-[36rem] lg:col-span-1 lg:row-span-2 lg:min-h-0"
+      @focusin="focusDedans = true"
+      @focusout="focusDedans = false"
+    >
       <!--
-        `aria-live="off"` : le bloc change tout seul, il ne doit pas être
-        réannoncé en cours de lecture. Les puces, elles, nomment leur cible.
+        Les images sont empilées et se croisent en fondu : l'image sortante reste
+        sous l'entrante, aucun aplat de fond n'apparaît entre deux clichés. Le
+        zoom lent repart à chaque diapositive, par la seule bascule de classe.
       -->
-      <div class="flex items-center gap-3.5 text-white/80" aria-live="off">
-        <span
-          class="h-px w-8 shrink-0 transition-colors duration-700"
-          :style="{ background: courante?.color ?? 'currentColor' }"
-        />
-        <Transition name="hero-texte" mode="out-in">
-          <span :key="courante?.key ?? 'defaut'" class="text-[0.6875rem] uppercase tracking-[0.28em]">
-            {{ courante ? `${courante.name} — ${courante.tagline}` : $t('hero.eyebrow') }}
-          </span>
-        </Transition>
-      </div>
-
-      <!--
-        Les cinq titres sont empilés invisibles dans la même cellule : la
-        rangée prend la hauteur du plus haut, et le bloc ne bouge plus d'une
-        diapositive à l'autre. Réserver d'après la plus longue chaîne ne
-        suffisait pas — à 1280 px, « Équiper vos réceptions, du montage à la
-        reprise » se replie sur une ligne de plus que le couple le plus long
-        pris ligne à ligne, et débordait de 86 px.
-
-        Ce sont des `<p>`, pas des `<h1>` : la page doit garder exactement un
-        titre de premier rang.
-      -->
-      <!--
-        `max-w-[17em]` appartient aux éléments en `text-display`, pas à la
-        grille : `em` se rapporte à la taille de police de l'élément qui le
-        porte. Sur la grille, en corps de texte, la mesure valait 272 px au
-        lieu de 1458 — le titre se repliait sur cinq lignes et débordait.
-      -->
-      <div class="grid" aria-live="off">
-        <p
-          v-for="diapo in diapositives"
-          :key="`gabarit-${diapo.key}`"
-          class="invisible col-start-1 row-start-1 max-w-[17em] text-display"
-          aria-hidden="true"
-        >
-          {{ titre(diapo.key, 1) }}<br>
-          <span class="italic">{{ titre(diapo.key, 2) }}</span>
-        </p>
-        <Transition name="hero-texte" mode="out-in">
-          <h1
-            :key="courante?.key ?? 'defaut'"
-            class="col-start-1 row-start-1 max-w-[17em] text-display text-white"
+      <div class="pointer-events-none absolute inset-0">
+        <template v-for="(diapo, i) in diapositives" :key="diapo.key">
+          <div
+            v-if="estRendue(i)"
+            class="hero-cliche absolute inset-0"
+            :class="i === actif ? 'is-active' : ''"
+            aria-hidden="true"
           >
-            {{ titre(courante?.key, 1) }}<br>
-            <span class="italic text-cream">{{ titre(courante?.key, 2) }}</span>
-          </h1>
-        </Transition>
-      </div>
-
-      <!-- La grille superpose gabarit et texte : la hauteur ne bouge plus. -->
-      <div class="grid max-w-[48ch]" aria-live="off">
-        <p
-          class="invisible col-start-1 row-start-1 text-[clamp(0.9375rem,1.45vw,1.125rem)] leading-[1.75]"
-          aria-hidden="true"
-        >
-          {{ gabarit }}
-        </p>
-        <Transition name="hero-texte" mode="out-in">
-          <p
-            :key="courante?.key ?? 'defaut'"
-            class="col-start-1 row-start-1 text-[clamp(0.9375rem,1.45vw,1.125rem)] leading-[1.75] text-white/85"
-          >
-            {{ courante?.description ?? $t('hero.lead') }}
-          </p>
-        </Transition>
-      </div>
-
-      <div class="pointer-events-auto flex flex-wrap gap-3">
-        <UiButton :to="courante?.to ?? '/services'" variant="light" size="lg">
-          {{ $t('common.discoverServices') }}
-        </UiButton>
-        <UiButton to="/contact" variant="outline" size="lg">{{ $t('common.quote') }}</UiButton>
-      </div>
-
-      <!--
-        Cinq segments : celui de la diapositive affichée se remplit sur les
-        cinq secondes, et cesse de se remplir dès que la rotation est en
-        pause — ce qui rend l'état visible sans avoir à l'écrire.
-      -->
-      <div v-if="diapositives.length > 1" class="pointer-events-auto flex items-center gap-3">
-        <button
-          v-for="(diapo, i) in diapositives"
-          :key="diapo.key"
-          type="button"
-          class="group flex h-11 w-14 items-center"
-          :aria-label="$t('hero.showBranch', { branch: diapo.name })"
-          :aria-current="i === actif ? 'true' : undefined"
-          @click="aller(i)"
-        >
-          <span class="relative block h-0.5 w-full overflow-hidden bg-white/30 transition-colors duration-500 group-hover:bg-white/50">
-            <span
-              class="absolute inset-y-0 left-0 transition-[width] duration-100 ease-linear"
-              :style="{
-                width: i === actif ? `${progression * 100}%` : '0%',
-                background: diapo.color,
-              }"
+            <NuxtImg
+              :src="diapo.image"
+              :alt="i === actif ? diapo.imageAlt : ''"
+              preset="hero"
+              :preload="i === 0"
+              :fetchpriority="i === 0 ? 'high' : 'low'"
+              :sizes="sizesSlide"
+              :densities="densitiesFull"
+              width="1920"
+              height="1280"
+              class="size-full object-cover"
             />
-          </span>
-        </button>
+          </div>
+        </template>
+      </div>
 
-        <!-- WCAG 2.2.2 : l'arrêt doit être explicite, pas seulement au survol. -->
-        <button
-          v-if="rotationAutomatique"
-          type="button"
-          class="flex size-11 items-center justify-center text-white/70 transition-colors duration-500 hover:text-white"
-          :aria-label="enPauseManuelle ? $t('hero.resume') : $t('hero.pause')"
-          :aria-pressed="enPauseManuelle"
-          @click="enPauseManuelle = !enPauseManuelle"
-        >
-          <svg viewBox="0 0 24 24" class="size-4" fill="currentColor" aria-hidden="true">
-            <path v-if="enPauseManuelle" d="M8 5v14l11-7z" />
-            <path v-else d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" />
-          </svg>
-        </button>
+      <!-- Dégradé : contraste garanti sur le texte, quel que soit le cliché. -->
+      <div class="u-scrim-portrait pointer-events-none absolute inset-0" />
+
+      <div class="pointer-events-none absolute inset-0 flex flex-col justify-end gap-[clamp(1rem,1.8vw,1.5rem)] px-[clamp(1.25rem,3.4vw,3.25rem)] pb-[clamp(1rem,2.4vw,2rem)] pt-[clamp(1.5rem,3vw,2.5rem)]">
+        <!--
+          `aria-live="off"` : le bloc change tout seul, il ne doit pas être
+          réannoncé en cours de lecture. Les puces, elles, nomment leur cible.
+        -->
+        <div class="flex items-center gap-3.5 text-white/80" aria-live="off">
+          <span
+            class="h-px w-8 shrink-0 transition-colors duration-700"
+            :style="{ background: courante?.color ?? 'currentColor' }"
+          />
+          <Transition name="hero-texte" mode="out-in">
+            <span :key="courante?.key ?? 'defaut'" class="text-[0.6875rem] uppercase tracking-[0.28em] max-lg:text-xs max-lg:tracking-[0.14em]">
+              {{ courante ? `${courante.name} — ${courante.tagline}` : $t('hero.eyebrow') }}
+            </span>
+          </Transition>
+        </div>
+
+        <!--
+          Les cinq titres sont empilés invisibles dans la même cellule : la
+          rangée prend la hauteur du plus haut, et le bloc ne bouge plus d'une
+          diapositive à l'autre. Réserver d'après la plus longue chaîne ne
+          suffisait pas — un titre plus court en caractères peut se replier
+          sur une ligne de plus, selon la largeur des mots.
+
+          Ce sont des `<p>`, pas des `<h1>` : la page doit garder exactement un
+          titre de premier rang. Le corps est plus petit que dans le hero
+          pleine largeur d'avant : la tuile fait un peu moins de la moitié de
+          l'écran, et « Fournir vos équipements, » doit y tenir sur une ligne.
+        -->
+        <div class="grid" aria-live="off">
+          <p
+            v-for="diapo in diapositives"
+            :key="`gabarit-${diapo.key}`"
+            class="hero-titre invisible col-start-1 row-start-1"
+            aria-hidden="true"
+          >
+            {{ titre(diapo.key, 1) }}<br>
+            <span class="italic">{{ titre(diapo.key, 2) }}</span>
+          </p>
+          <Transition name="hero-texte" mode="out-in">
+            <h1
+              :key="courante?.key ?? 'defaut'"
+              class="hero-titre col-start-1 row-start-1 text-white"
+            >
+              {{ titre(courante?.key, 1) }}<br>
+              <span class="italic text-cream">{{ titre(courante?.key, 2) }}</span>
+            </h1>
+          </Transition>
+        </div>
+
+        <!-- La grille superpose gabarit et texte : la hauteur ne bouge plus. -->
+        <div class="grid max-w-[48ch]" aria-live="off">
+          <p
+            class="invisible col-start-1 row-start-1 text-[clamp(0.9375rem,1.3vw,1.0625rem)] leading-[1.75]"
+            aria-hidden="true"
+          >
+            {{ gabarit }}
+          </p>
+          <Transition name="hero-texte" mode="out-in">
+            <p
+              :key="courante?.key ?? 'defaut'"
+              class="col-start-1 row-start-1 text-[clamp(0.9375rem,1.3vw,1.0625rem)] leading-[1.75] text-white/85"
+            >
+              {{ courante?.description ?? $t('hero.lead') }}
+            </p>
+          </Transition>
+        </div>
+
+        <div class="pointer-events-auto flex flex-wrap gap-3 max-sm:[&>*]:w-full">
+          <UiButton :to="courante?.to ?? '/services'" variant="light" size="lg">
+            {{ $t('common.discoverServices') }}
+          </UiButton>
+          <UiButton to="/contact" variant="outline" size="lg">{{ $t('common.quote') }}</UiButton>
+        </div>
+
+        <!--
+          Cinq segments : celui de la diapositive affichée se remplit sur les
+          cinq secondes, et cesse de se remplir dès que la rotation est en
+          pause — ce qui rend l'état visible sans avoir à l'écrire.
+        -->
+        <div v-if="diapositives.length > 1" class="pointer-events-auto flex items-center gap-2 sm:gap-3">
+          <button
+            v-for="(diapo, i) in diapositives"
+            :key="diapo.key"
+            type="button"
+            class="group flex h-11 w-12 items-center sm:w-14"
+            :aria-label="$t('hero.showBranch', { branch: diapo.name })"
+            :aria-current="i === actif ? 'true' : undefined"
+            @click="aller(i)"
+          >
+            <span class="relative block h-0.5 w-full overflow-hidden bg-white/30 transition-colors duration-500 group-hover:bg-white/50">
+              <span
+                class="absolute inset-y-0 left-0 transition-[width] duration-100 ease-linear"
+                :style="{
+                  width: i === actif ? `${progression * 100}%` : '0%',
+                  background: diapo.color,
+                }"
+              />
+            </span>
+          </button>
+
+          <!-- WCAG 2.2.2 : l'arrêt doit être explicite, pas seulement au survol. -->
+          <button
+            v-if="rotationAutomatique"
+            type="button"
+            class="flex size-11 items-center justify-center text-white/70 transition-colors duration-500 hover:text-white"
+            :aria-label="enPauseManuelle ? $t('hero.resume') : $t('hero.pause')"
+            :aria-pressed="enPauseManuelle"
+            @click="enPauseManuelle = !enPauseManuelle"
+          >
+            <svg viewBox="0 0 24 24" class="size-4" fill="currentColor" aria-hidden="true">
+              <path v-if="enPauseManuelle" d="M8 5v14l11-7z" />
+              <path v-else d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" />
+            </svg>
+          </button>
+        </div>
       </div>
     </div>
+
+    <!--
+      Les quatre branches. Chaque tuile mène à sa page ; celle de la branche
+      affichée dans le diaporama porte un filet à sa couleur et la mention
+      « À l'écran ». Les photos sont celles des diapositives, à la taille de
+      la tuile : `fetchpriority="low"`, pour ne rien disputer à l'image LCP.
+    -->
+    <NuxtLinkLocale
+      v-for="branche in tuiles"
+      :key="branche.slug"
+      :to="{ path: '/services', query: { branche: versUrl(branche.slug) } }"
+      class="hero-tuile group relative isolate block min-h-[10.5rem] overflow-hidden bg-ink sm:min-h-[13rem] lg:min-h-0"
+      :class="courante?.key === branche.slug ? 'is-active' : ''"
+      :style="{ '--tuile': couleurSurFonce(branche.color) }"
+    >
+      <NuxtImg
+        :src="branche.image"
+        alt=""
+        preset="card"
+        fetchpriority="low"
+        :sizes="sizesTile"
+        width="900"
+        height="900"
+        class="absolute inset-0 size-full object-cover object-[center_70%] transition-transform duration-[1.1s] ease-[var(--ease-out-expo)] group-hover:scale-[1.05]"
+      />
+      <span class="u-scrim-portrait absolute inset-0" aria-hidden="true" />
+
+      <span class="absolute inset-0 flex flex-col justify-between p-3.5 text-white sm:p-5">
+        <span class="flex items-center justify-between gap-2">
+          <span class="flex items-center gap-2 text-[0.625rem] uppercase tracking-[0.22em] text-white/90 max-sm:text-[0.5625rem] max-sm:tracking-[0.14em]">
+            <span class="size-[7px] shrink-0 rounded-full" :style="{ background: couleurSurFonce(branche.color) }" />
+            {{ $t('home.branches.number', { n: String(branche.index).padStart(2, '0') }) }}
+          </span>
+          <span class="hero-tuile-badge border border-white/50 px-2 py-1 text-[0.5625rem] uppercase tracking-[0.2em] max-sm:hidden">
+            {{ $t('hero.onScreen') }}
+          </span>
+        </span>
+
+        <span class="flex items-end justify-between gap-3">
+          <span>
+            <span class="block font-display text-[clamp(1.1875rem,1.9vw,1.875rem)] leading-[1.1]">{{ branche.name }}</span>
+            <span class="mt-1.5 block text-[0.625rem] uppercase leading-normal tracking-[0.14em] text-cream/90 max-sm:hidden">{{ branche.tagline }}</span>
+          </span>
+          <span
+            class="flex size-10 shrink-0 items-center justify-center border border-white/45 transition-colors duration-400 group-hover:bg-white group-hover:text-ink max-sm:hidden"
+            aria-hidden="true"
+          >&#8594;</span>
+        </span>
+      </span>
+    </NuxtLinkLocale>
   </section>
 </template>
 
@@ -407,6 +482,40 @@ function estRendue(index: number) {
 .hero-cliche.is-active {
   opacity: 1;
   transform: scale(1.025);
+}
+
+/* Corps du titre : la tuile fait un peu moins de la moitié de l'écran sur
+   bureau, toute la largeur sur mobile. */
+.hero-titre {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(2.125rem, 0.6rem + 3vw, 3.875rem);
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+}
+
+/* Tuile de la branche affichée : filet à sa couleur, mention « À l'écran ».
+   Le filet est un contour intérieur, il ne décale rien. */
+.hero-tuile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 2px solid transparent;
+  pointer-events: none;
+  transition: border-color 0.5s var(--ease-out-expo);
+}
+
+.hero-tuile.is-active::after {
+  border-color: var(--tuile);
+}
+
+.hero-tuile-badge {
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-out-expo);
+}
+
+.hero-tuile.is-active .hero-tuile-badge {
+  opacity: 1;
 }
 
 /* Le texte suit l'image avec un léger décalage, dans l'esprit de la

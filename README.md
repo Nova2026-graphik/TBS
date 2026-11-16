@@ -363,7 +363,7 @@ npm run db:migrate      # applique 0001_large_boom_boom.sql
 
 ```
 app/
-  assets/css/main.css      Les deux chartes + design tokens (@theme Tailwind v4)
+  assets/css/main.css      Charte « Bleu & Rouge » + design tokens (@theme Tailwind v4)
                            + base + utilitaires
   components/
     App/                   TopBar, Header, Footer, ContactDock
@@ -382,10 +382,7 @@ app/
     Admin/                 StatusBadge — espace de suivi des devis
     Shared/                ProcessSteps, CtaBanner
     content/               CalculateurMateriel — composant appelé depuis un article
-  components/
-    Ui/ThemeSwitch.vue     Sélecteur de charte — bandeau supérieur et tiroir mobile
   composables/
-    useTheme.ts            Les deux chartes, et le basculement de l'une à l'autre
     useSiteContent.ts      Chargement dédupliqué du contenu + coordonnées
     useSiteData.ts         Blocs de présentation, assemblés depuis la langue active
     useSeo.ts              Meta par page, JSON-LD LocalBusiness / FAQPage / Breadcrumb
@@ -469,66 +466,69 @@ textes et les photos. Il n’est pas compilé par Nuxt.
 
 ---
 
-## Les deux chartes
+## La charte de couleurs
 
-Le site porte deux palettes, et un seul jeu de composants. Le visiteur passe de
-l'une à l'autre depuis le sélecteur du bandeau supérieur — repris dans le
-tiroir mobile, où le bandeau est masqué.
+Le site n'a qu'une palette : **« Bleu & Rouge »**, tirée du logotype — bleu
+`#3376ba` et rouge `#d83934`, relevés au pixel sur `public/images/logo-tbs.png`.
+Autour d'eux, la charte est bâtie dans la même famille : marine pour le texte et
+les fonds sombres, blancs bleutés pour les fonds clairs, bleu clair pour la
+branche Agro.
 
-| | Charte | Ancrage |
-| --- | --- | --- |
-| **Principale** (défaut) | Sable & Or | La charte historique héritée du template : brun-olive profond, or, pêche, crème, olive |
-| **Secondaire** | Bleu & Rouge | Le logotype : bleu `#3376ba` et rouge `#d83934`, relevés au pixel sur `public/images/logo-tbs.png` |
+Le site en a porté deux. La charte historique « Sable & Or » (brun-olive, or,
+pêche, crème), héritée du template, a été retirée en novembre 2026 à la
+demande de TBS, avec le sélecteur qui permettait de passer de l'une à l'autre.
+Avec eux sont partis le composable `useTheme`, le composant `UiThemeSwitch` et
+le script en ligne d'`app/app.vue` qui posait le thème retenu avant le premier
+rendu : il n'y a plus d'empreinte à relever pour lui dans la CSP.
 
 ### Comment ça marche
 
-Le mécanisme tient dans `app/assets/css/main.css`, en deux étages :
+Le mécanisme tient dans `app/assets/css/main.css`, en deux étages, conservés
+parce qu'ils ne coûtent rien :
 
-1. les valeurs brutes vivent dans des variables `--tbs-*` posées sur `:root`,
-   que le sélecteur `:root[data-theme='logo']` réécrit ;
-2. les jetons `@theme` de Tailwind ne portent plus aucune couleur, seulement
-   une référence — `--color-gold: var(--tbs-accent)`.
+1. les valeurs brutes vivent dans des variables `--tbs-*` posées sur `:root` ;
+2. les jetons `@theme` de Tailwind ne portent aucune couleur, seulement une
+   référence — `--color-gold: var(--tbs-accent)`.
 
-Toutes les classes déjà écrites — `bg-gold`, `text-ink/70`, `border-cream` —
-changent donc de couleur sans qu'une ligne de gabarit ne bouge. Le basculement
-se réduit à un attribut sur `<html>` : pas de rechargement, pas de seconde
-feuille de style, pas de composant qui ait à connaître le thème courant.
+Les noms de jetons datent de la première charte : `gold` est l'accent bleu,
+`peach` le rouge de la branche Events, `olive` le bleu clair de l'Agro,
+`cream` et `sand` les blancs bleutés. Les renommer aurait touché chaque
+gabarit pour un gain nul : le nom dit le rôle, la valeur dit la couleur.
 
-Les pages étant pré-rendues, leur HTML est identique pour tout le monde : le
-serveur ne peut pas y écrire le thème retenu. L'attribut est donc posé par un
-script en ligne minuscule, en tête de `<head>` (`app/app.vue`), avant le
-premier rendu — sans quoi la page s'afficherait un instant en sable avant de
-virer au bleu. Le choix est mémorisé dans `localStorage` : une préférence
-d'affichage strictement locale, rien n'est envoyé au serveur, et la politique
-de confidentialité n'a pas à en parler.
+### Les contrastes
 
-### Les contrastes, dans les deux thèmes
+Chaque jeton de `main.css` porte en commentaire son rapport sur blanc, mesuré
+selon WCAG 2.1. Le bleu et le rouge du logo sont repris tels quels partout où
+ils servent d'aplat ou d'accent — ce sont eux qu'on vient reconnaître.
 
-La charte secondaire n'est pas une teinture : elle reprend les rapports de
-contraste de la première, valeur par valeur, et chaque jeton de `main.css`
-porte le sien en commentaire. Le bleu et le rouge du logo sont repris tels
-quels partout où ils servent d'aplat ou d'accent — ce sont eux qu'on vient
-reconnaître.
+Deux valeurs seulement s'en écartent : le rouge de marque plafonne à 4,61:1,
+sous le seuil dès qu'il passe sur fond sable, et le bleu clair de l'Agro est à
+2,25:1. Ils ont donc une variante texte de même teinte à luminance abaissée
+(`--color-peach-text`, `--color-olive-text`). Le rouge de marque occupant par
+ailleurs le registre de l'alerte, l'encadré d'avertissement des pages légales
+est en ambre — sans quoi il se confondrait avec la branche Events.
 
-Deux valeurs seulement s'en écartent, et pour la raison qui vaut déjà dans la
-charte principale : le rouge de marque plafonne à 4,61:1, sous le seuil dès
-qu'il passe sur fond sable, et le bleu clair de l'Agro est à 2,25:1. Comme la
-pêche et l'olive, ils ont une variante texte de même teinte à luminance
-abaissée. Le rouge de marque occupant par ailleurs le registre de l'alerte,
-l'encadré d'avertissement des pages légales bascule sur l'ambre dans ce
-thème — sans quoi il se confondrait avec la branche Events.
+Hors du site, la même palette est reprise en dur là où aucune feuille de
+style n'est chargée : le courriel de notification des devis
+(`server/utils/quoteNotification.ts`), les pastilles de statut de l'espace de
+suivi (`shared/utils/adminQuotes.ts`), les images de partage
+(`scripts/generate-icons.mjs`), `site.webmanifest` et la `meta theme-color`
+de `nuxt.config.ts`.
 
 ### Ajouter ou changer une couleur
 
 Trois règles, et une épreuve qui les tient :
 
 - **jamais de couleur en dur dans un gabarit.** Une valeur hexadécimale écrite
-  dans une classe ou un attribut `style` échappe au basculement : la pastille
-  resterait pêche sur une page devenue bleue. Passer par un jeton ;
+  dans une classe ou un attribut `style` échappe à la charte : le jour où une
+  teinte change dans `main.css`, elle resterait à l'ancienne. Passer par un
+  jeton ;
 - **une couleur ajoutée dans les données** (`shared/utils/siteData.ts`,
   `server/data/content.ts`, base) reste hexadécimale — c'est ce que lisent le
   semis, l'espace de suivi et les courriels, où aucune feuille de style n'est
-  chargée. Elle doit être reportée dans les deux tables de
+  chargée. Les quatre valeurs actuelles sont celles de l'ancienne charte, que
+  la base en production contient : elles ne servent plus que d'identifiants.
+  Une couleur ajoutée doit être reportée dans les deux tables de
   `shared/utils/branchColors.ts`, qui la traduisent en jeton au rendu ;
 - **toute couleur de texte passe par `brandTextColor()`**, jamais par
   `brandColor()` : c'est elle qui garantit les 4,5:1 de WCAG 1.4.3.
@@ -595,13 +595,13 @@ performance.
   vérifie qu'aucune n'expose de rôle `img`.
 - `prefers-reduced-motion` respecté : le contenu reste visible, les
   animations sont neutralisées.
-- **Contrastes conformes AA** (WCAG 1.4.3), dans les deux chartes. Les
-  couleurs de branche pêche et olive sont décoratives : lisibles en pastille,
-  elles tombent à 2,15:1 et 2,33:1 dès qu'on en fait du texte.
+- **Contrastes conformes AA** (WCAG 1.4.3). Le rouge de la branche Events et
+  le bleu clair de l'Agro sont décoratifs : lisibles en pastille, ils tombent
+  sous le seuil (4,61:1 sur fond sable, 2,25:1) dès qu'on en fait du texte.
   `brandTextColor()` (`shared/utils/branchColors.ts`) donne la variante
   texte — même teinte, luminance abaissée. **Toute nouvelle couleur de texte
   doit passer par elle** ; `brandColor()` fait le même travail pour les
-  aplats. Voir « Les deux chartes ».
+  aplats. Voir « La charte de couleurs ».
 - **Cibles tactiles à 24 px** (WCAG 2.5.8), y compris les puces du carrousel :
   le trait reste fin, la zone cliquable fait 44 px de haut.
 - **Rotation du hero arrêtable** (WCAG 2.2.2) : pause au survol, au focus
@@ -677,14 +677,23 @@ useHead({ script: [{ type: 'application/ld+json', innerHTML: serialiserJsonLd(sc
   les quatre branches, cinq secondes chacune. La maquette montrait une image
   fixe ; la maison, elle, n'était nommée nulle part au-dessus de la ligne de
   flottaison.
+- **Accueil « Mosaïque »** (novembre 2026, choisi par TBS parmi cinq
+  propositions) : le diaporama occupe la grande tuile, les quatre branches
+  sont posées à côté en tuiles photo, visibles dès l'arrivée — celle qui est à
+  l'écran s'allume. Suivent les chiffres sur fond encre, les branches en
+  fiches, les catégories en bandeau défilant, les domaines rangés par branche
+  (chacun mène à sa page), les étapes en cartes, les témoignages en colonnes
+  et un appel final propre à l'accueil, coordonnées comprises
+  (`HomeCta`). Les autres pages gardent le bandeau commun.
 - **Visionneuse de galerie** : les vignettes n'étaient pas cliquables.
 - **Accordéon des secteurs**, au bas de la galerie : les quatre branches et
   les huit domaines, dépliés au survol comme au clavier. La maquette montrait
   des photos sans jamais dire de quel métier elles relevaient ; chaque panneau
   mène désormais aux prestations de son secteur.
-- **Carrousel de témoignages** reconstruit sur `scroll-snap` natif : glissement
-  au doigt, molette horizontale, et plus d'arithmétique de pourcentages à
-  maintenir si le nombre de témoignages change.
+- **Témoignages** : les trois en colonnes sur bureau ; sur mobile, une rangée
+  en `scroll-snap` natif — glissement au doigt, indicateurs cliquables, et
+  plus d'arithmétique de pourcentages à maintenir si le nombre de
+  témoignages change.
 - **Page 404** aux couleurs du site.
 - **Icônes et cartes sociales** : jeu complet (ICO 16/32/48, PNG 96 et 180,
   192 et 512 pour Android dont une masquable, manifeste d'application) et une
@@ -872,18 +881,23 @@ npm run audit     # → scripts/audit.mjs
 
 `npm audit --audit-level=high --omit=dev` est le bon contrôle, mais il n'a
 aucun moyen d'écarter un avis précis. Or certains avis, **rien ne peut les
-corriger sans casser le reste** — au 6 octobre 2026, trois paquets :
+corriger sans casser le reste** — au 16 novembre 2026, un seul paquet :
 
 | Paquet | Atteint par | Pourquoi pas de correctif |
 | --- | --- | --- |
-| `node-forge` | `@nuxt/cli → listhen` — certificat de `nuxt dev --https` | 1.4.0 est la dernière version publiée, et reste visée |
-| `braces` | `@nuxt/content → micromatch` — tri des fichiers de `content/` à la construction | L'avis vise toutes les versions |
-| `simple-git` | `@nuxt/devtools` — panneau de `nuxt dev` | Corrigé en 4.x, mais `@nuxt/devtools` exige la 3.x |
+| `zod` 3 | `@nuxt/content` — traduction des schémas de `content.config.ts`, à la construction | L'avis vise tout ce qui précède zod 4.6.6, et la dernière version du moteur de contenu exige zod 3 |
 
-Point commun, **vérifié sur la sortie de construction** : aucun ne figure dans
-`.output`, aucun ne s'exécute en production. Et chaque fois, le seul remède
-que propose npm est une rétrogradation majeure — de Nuxt ou du moteur de
-contenu — pour un paquet que la production n'exécute pas.
+**Vérifié sur la sortie de construction** : le seul zod de `.output` est le
+4.6.7 des dépendances directes, hors de la plage visée ; le zod 3 du moteur de
+contenu ne s'exécute pas en production. Le seul remède que propose npm est
+une rétrogradation majeure du moteur de contenu, pour un paquet que la
+production n'exécute pas.
+
+Les trois dérogations précédentes — `node-forge`, `braces`, `simple-git` —
+ont été retirées le même jour : `npm audit fix` a monté Nuxt en 4.6.4,
+`@nuxt/devtools` en 3.4.4 et `node-forge` en 1.4.3, et leurs avis ont
+disparu. C'est exactement ce que le script prévoit : une dérogation dont
+l'avis a disparu fait échouer l'étape, et demande sa propre suppression.
 
 Sans dérogation, l'étape échoue à chaque exécution, et une étape qui échoue
 toujours finit par se lire en diagonale — c'est ainsi qu'un vrai avis passe
@@ -1346,9 +1360,10 @@ politique tient donc en `'self'` — seule exception, `frame-src` pour la carte
 OpenStreetMap de la page contact.
 
 Reste le cas des scripts en ligne : les deux que Nuxt sérialise dans chaque
-page pré-rendue (carte d'imports et `window.__NUXT__.config`), et celui qui
-pose le thème de couleurs avant le premier rendu (voir « Les deux chartes »).
-Une CSP bloquante sans leur empreinte coupe l'hydratation, ou fait clignoter la
+page pré-rendue (carte d'imports et `window.__NUXT__.config`). Un troisième
+posait le thème de couleurs avant le premier rendu ; il est parti avec la
+seconde charte (voir « La charte de couleurs »). Une CSP bloquante sans leur
+empreinte coupe l'hydratation, ou fait clignoter la
 page : le HTML s'affiche, plus rien ne réagit. D'où le défaut prudent — `Content-Security-Policy-Report-Only` — et la bascule en deux
 temps :
 

@@ -16,14 +16,19 @@ export const QUOTE_STATUSES = [
 
 export type QuoteStatus = (typeof QUOTE_STATUSES)[number]
 
-/** Intitulés affichés, et couleur d'accent de la pastille. */
+/**
+ * Intitulés affichés, et couleur d'accent de la pastille — dans la charte
+ * « Bleu & Rouge ». L'ambre marque ce qui est en cours, comme l'avertissement
+ * du site ; le vert du gain reste hors charte, parce qu'il doit se lire d'un
+ * coup d'œil dans une liste.
+ */
 export const QUOTE_STATUS_LABELS: { value: QuoteStatus, label: string, tone: string }[] = [
-  { value: 'nouveau', label: 'Nouveau', tone: '#827148' },
-  { value: 'en_cours', label: 'En cours', tone: '#A85C33' },
-  { value: 'devis_envoye', label: 'Devis envoyé', tone: '#5F6A3A' },
+  { value: 'nouveau', label: 'Nouveau', tone: '#3376BA' },
+  { value: 'en_cours', label: 'En cours', tone: '#C07B1E' },
+  { value: 'devis_envoye', label: 'Devis envoyé', tone: '#2F6C9F' },
   { value: 'gagne', label: 'Gagné', tone: '#1F7A3D' },
-  { value: 'perdu', label: 'Perdu', tone: '#8B8069' },
-  { value: 'spam', label: 'Spam', tone: '#8A2B12' },
+  { value: 'perdu', label: 'Perdu', tone: '#5A7188' },
+  { value: 'spam', label: 'Spam', tone: '#C0342C' },
 ]
 
 export function quoteStatusLabel(status: QuoteStatus): string {
@@ -31,7 +36,7 @@ export function quoteStatusLabel(status: QuoteStatus): string {
 }
 
 export function quoteStatusTone(status: QuoteStatus): string {
-  return QUOTE_STATUS_LABELS.find(s => s.value === status)?.tone ?? '#8B8069'
+  return QUOTE_STATUS_LABELS.find(s => s.value === status)?.tone ?? '#5A7188'
 }
 
 /** « TBS Événementiel — location de matériel » → « TBS Événementiel ». */

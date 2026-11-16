@@ -75,8 +75,8 @@ const sizesThumbnail = SIZES_THUMBNAIL
   >
     <!--
       Le carré clair sert de fond aux objets détourés : posés sur le voile
-      sombre du panneau, ils disparaîtraient. `bg-cream` suit la charte
-      active — sable en « Sable & Or », bleu pâle en « Bleu & Rouge ».
+      sombre du panneau, ils disparaîtraient. `bg-cream` : le bleu pâle de
+      la charte.
     -->
     <span class="grid size-[3.25rem] flex-none place-items-center bg-cream">
       <NuxtImg

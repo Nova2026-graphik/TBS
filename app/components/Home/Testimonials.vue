@@ -2,13 +2,14 @@
 import type { Testimonial } from '#shared/types'
 
 /**
- * Carrousel de témoignages.
+ * Témoignages.
  *
- * Réécrit par rapport à la maquette : au lieu d'un `translateX` calculé à la
- * main sur une largeur fixe de trois éléments, on utilise le scroll natif
- * avec `scroll-snap`. Résultat : glissement au doigt sur mobile, molette
- * horizontale au trackpad, navigation clavier — et aucune arithmétique de
- * pourcentages à maintenir si le nombre de témoignages change.
+ * Accueil « Mosaïque » (novembre 2026) : sur bureau, les trois témoignages
+ * sont visibles d'un coup, en colonnes — il n'y en a que trois, et un
+ * carrousel en cachait deux sur trois derrière des flèches. Sur mobile, la
+ * même liste devient une rangée qui glisse au doigt (scroll natif avec
+ * `scroll-snap`), et les indicateurs disent où l'on en est et combien il en
+ * reste.
  */
 const props = defineProps<{ testimonials: Testimonial[] }>()
 
@@ -46,58 +47,44 @@ function onScroll() {
 
 <template>
   <section class="u-gutter u-section bg-ink text-white">
-    <div v-reveal class="mb-[clamp(1.875rem,4vw,3.25rem)] flex flex-wrap items-end justify-between gap-6">
+    <div v-reveal class="mb-[clamp(1.875rem,4vw,3.25rem)]">
       <span class="u-eyebrow text-cream/70">
         <span class="u-rule" />
         {{ $t('home.testimonials.eyebrow') }}
       </span>
-
-      <div class="flex gap-2">
-        <button
-          type="button"
-          class="flex size-11 items-center justify-center border border-white/25 text-white transition-colors duration-400 hover:border-white hover:bg-white hover:text-ink"
-          :aria-label="$t('home.testimonials.previous')"
-          @click="scrollTo(active - 1)"
-        >
-          <span aria-hidden="true">&#8592;</span>
-        </button>
-        <button
-          type="button"
-          class="flex size-11 items-center justify-center border border-white/25 text-white transition-colors duration-400 hover:border-white hover:bg-white hover:text-ink"
-          :aria-label="$t('home.testimonials.next')"
-          @click="scrollTo(active + 1)"
-        >
-          <span aria-hidden="true">&#8594;</span>
-        </button>
-      </div>
     </div>
 
+    <!--
+      Une seule liste pour les deux formats : grille de trois colonnes à
+      partir de `md`, rangée défilante en dessous.
+    -->
     <ul
       ref="track"
-      class="-mx-[var(--spacing-gutter)] flex snap-x snap-mandatory gap-6 overflow-x-auto px-[var(--spacing-gutter)] pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      class="max-md:-mr-[var(--spacing-gutter)] max-md:flex max-md:snap-x max-md:snap-mandatory max-md:gap-5 max-md:overflow-x-auto max-md:pr-[var(--spacing-gutter)] max-md:[scrollbar-width:none] max-md:[&::-webkit-scrollbar]:hidden md:grid md:grid-cols-3 md:gap-[clamp(1.5rem,3vw,3rem)]"
       @scroll.passive="onScroll"
     >
       <li
         v-for="(item, i) in testimonials"
         :key="i"
-        class="w-[min(100%,42rem)] shrink-0 snap-start"
+        v-reveal="i * 90"
+        class="max-md:w-[86%] max-md:shrink-0 max-md:snap-start"
       >
-        <blockquote class="flex h-full flex-col justify-between border-t border-white/15 pt-8">
-          <p class="font-display text-[clamp(1.375rem,2.6vw,2rem)] leading-[1.4] text-cream">
+        <blockquote class="flex h-full flex-col justify-between gap-8 border-t border-white/15 pt-8">
+          <p class="font-display text-[clamp(1.375rem,1.9vw,1.75rem)] leading-[1.4] text-cream">
             «&nbsp;{{ item.quote }}&nbsp;»
           </p>
-          <footer class="mt-8 flex items-center gap-3.5 text-[0.6875rem] uppercase tracking-[0.18em] text-white/60">
-            <span class="h-px w-8 bg-white/35" aria-hidden="true" />
+          <footer class="flex items-center gap-3.5 text-[0.6875rem] uppercase tracking-[0.18em] text-white/60">
+            <span class="h-px w-8 shrink-0 bg-white/35" aria-hidden="true" />
             <span>{{ item.author }} — {{ item.context }}</span>
           </footer>
         </blockquote>
       </li>
     </ul>
 
-    <!-- Indicateurs cliquables : ils disent aussi combien il en reste.
-         Le trait reste fin, mais la cible fait 44 px de haut : à 2 px, elle
-         était impossible à viser au doigt (WCAG 2.5.8 en demande 24). -->
-    <div class="mt-5 flex gap-1">
+    <!-- Indicateurs cliquables, sur mobile seulement : ils disent aussi
+         combien il en reste. Le trait reste fin, mais la cible fait 44 px de
+         haut (WCAG 2.5.8 en demande 24). -->
+    <div class="mt-5 flex gap-1 md:hidden">
       <button
         v-for="(item, i) in testimonials"
         :key="`dot-${i}`"

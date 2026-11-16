@@ -48,12 +48,6 @@
     "language": "Language",
     "switchTo": "Version française"
   },
-  "theme": {
-    "label": "Palette",
-    "select": "{name} palette",
-    "principal": "Sand & Gold",
-    "logo": "Blue & Red"
-  },
   "hero": {
     "eyebrow": "Lomé — Togo",
     "titleLine1": "Equipping your events,",
@@ -90,20 +84,26 @@
     },
     "showBranch": "Show {branch}",
     "pause": "Pause the slideshow",
-    "resume": "Resume the slideshow"
+    "resume": "Resume the slideshow",
+    "onScreen": "On screen"
   },
   "home": {
     "branches": {
       "eyebrow": "One company, four divisions",
       "title": "Four trades,",
       "accent": "one point of contact",
-      "lead": "TBS Distribution S.A.R.L is organised into four complementary divisions. Each has its own teams and suppliers; all share the same logistics and the same standard on deadlines."
+      "lead": "TBS Distribution S.A.R.L is organised into four complementary divisions. Each has its own teams and suppliers; all share the same logistics and the same standard on deadlines.",
+      "number": "Division {n}",
+      "see": "View the division"
     },
     "categories": {
       "eyebrow": "TBS Events — our categories",
       "title": "Six ranges,",
       "accent": "a single delivery",
-      "refCount": "{count} items"
+      "refCount": "{count} items",
+      "catalogue": "View the catalogue",
+      "previous": "Previous categories",
+      "next": "Next categories"
     },
     "domains": {
       "eyebrow": "Where we operate",
@@ -117,8 +117,6 @@
       "accent": "staged by TBS"
     },
     "testimonials": {
-      "previous": "Previous testimonial",
-      "next": "Next testimonial",
       "goTo": "Testimonial {n}",
       "eyebrow": "They trusted us with their date"
     }
