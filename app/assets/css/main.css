@@ -431,6 +431,15 @@
       rgb(var(--tbs-scrim) / 0.92) 100%
     );
   }
+  /* Voile du bas seul : la photo reste claire en haut, le texte se pose en
+     pied de carte (inspirations de l'accueil). */
+  .u-scrim-bottom {
+    background: linear-gradient(
+      180deg,
+      rgb(var(--tbs-scrim) / 0) 35%,
+      rgb(var(--tbs-scrim) / 0.85) 100%
+    );
+  }
   .u-scrim-banner {
     background: linear-gradient(
       90deg,

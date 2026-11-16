@@ -672,14 +672,23 @@ useHead({ script: [{ type: 'application/ld+json', innerHTML: serialiserJsonLd(sc
   les quatre branches, cinq secondes chacune. La maquette montrait une image
   fixe ; la maison, elle, n'était nommée nulle part au-dessus de la ligne de
   flottaison.
+- **Accueil « Mosaïque »** (novembre 2026, choisi par TBS parmi cinq
+  propositions) : le diaporama occupe la grande tuile, les quatre branches
+  sont posées à côté en tuiles photo, visibles dès l'arrivée — celle qui est à
+  l'écran s'allume. Suivent les chiffres sur fond encre, les branches en
+  fiches, les catégories en bandeau défilant, les domaines rangés par branche
+  (chacun mène à sa page), les étapes en cartes, les témoignages en colonnes
+  et un appel final propre à l'accueil, coordonnées comprises
+  (`HomeCta`). Les autres pages gardent le bandeau commun.
 - **Visionneuse de galerie** : les vignettes n'étaient pas cliquables.
 - **Accordéon des secteurs**, au bas de la galerie : les quatre branches et
   les huit domaines, dépliés au survol comme au clavier. La maquette montrait
   des photos sans jamais dire de quel métier elles relevaient ; chaque panneau
   mène désormais aux prestations de son secteur.
-- **Carrousel de témoignages** reconstruit sur `scroll-snap` natif : glissement
-  au doigt, molette horizontale, et plus d'arithmétique de pourcentages à
-  maintenir si le nombre de témoignages change.
+- **Témoignages** : les trois en colonnes sur bureau ; sur mobile, une rangée
+  en `scroll-snap` natif — glissement au doigt, indicateurs cliquables, et
+  plus d'arithmétique de pourcentages à maintenir si le nombre de
+  témoignages change.
 - **Page 404** aux couleurs du site.
 - **Icônes et cartes sociales** : jeu complet (ICO 16/32/48, PNG 96 et 180,
   192 et 512 pour Android dont une masquable, manifeste d'application) et une

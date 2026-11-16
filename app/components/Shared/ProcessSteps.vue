@@ -6,6 +6,10 @@ import type { ProcessStep } from '#shared/types'
  * Étapes numérotées, partagées entre l'accueil et chaque branche de
  * /services. La ligne de liaison entre les numéros n'apparaît qu'en
  * desktop, où les cartes sont réellement alignées.
+ *
+ * `variant="cards"` : l'accueil « Mosaïque » (novembre 2026) pose chaque
+ * étape sur une carte blanche ombrée, numéro cerclé, et relie les cartes par
+ * une flèche. /services garde la frise d'origine.
  */
 defineProps<{
   eyebrow: string
@@ -20,6 +24,7 @@ defineProps<{
    */
   footnoteCta?: { label: string, to: RouteLocationRaw }
   tone?: 'light' | 'sand'
+  variant?: 'line' | 'cards'
 }>()
 </script>
 
@@ -33,7 +38,30 @@ defineProps<{
       align="start"
     />
 
-    <ol class="relative grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+    <ol v-if="variant === 'cards'" class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
+      <li
+        v-for="(step, i) in steps"
+        :key="step.step"
+        v-reveal="i * 90"
+        class="relative bg-white px-7 py-8 shadow-lift transition-transform duration-600 ease-[var(--ease-out-expo)] hover:-translate-y-1.5"
+      >
+        <span class="flex size-12 items-center justify-center rounded-full border border-gold font-display text-[1.375rem] text-gold">
+          {{ step.step }}
+        </span>
+        <h3 class="mt-6 font-sans text-base font-normal tracking-wide text-ink">{{ step.title }}</h3>
+        <p class="mt-2.5 text-sm leading-[1.72]">{{ step.description }}</p>
+
+        <!-- Flèche de liaison vers la carte suivante, sur une seule rangée. -->
+        <span
+          v-if="i < steps.length - 1"
+          class="absolute -right-3.5 top-11 z-1 hidden size-7 items-center justify-center text-sm text-gold lg:flex"
+          :class="tone === 'sand' ? 'bg-sand' : 'bg-white'"
+          aria-hidden="true"
+        >&#8594;</span>
+      </li>
+    </ol>
+
+    <ol v-else class="relative grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
       <!-- Filet de progression, purement décoratif. -->
       <span
         class="pointer-events-none absolute left-0 right-0 top-[0.6875rem] hidden h-px bg-ink/12 lg:block"
