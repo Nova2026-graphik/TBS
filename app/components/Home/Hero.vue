@@ -68,6 +68,8 @@ const COULEUR_MAISON = 'var(--color-cream)'
 
 /** La grande tuile prend toute la largeur sous `lg`, à peine la moitié au-delà. */
 const sizesSlide = SIZES_HALF_LG
+/** Préchargement en priorité haute — cf. `PRECHARGE_LCP`, `app/utils/imageSizes.ts`. */
+const prechargeLcp = PRECHARGE_LCP
 const densitiesFull = DENSITIES_FULL
 const sizesTile = SIZES_HERO_TILE
 
@@ -273,7 +275,7 @@ function estRendue(index: number) {
               :src="diapo.image"
               :alt="i === actif ? diapo.imageAlt : ''"
               preset="hero"
-              :preload="i === 0"
+              :preload="i === 0 ? prechargeLcp : false"
               :fetchpriority="i === 0 ? 'high' : 'low'"
               :sizes="sizesSlide"
               :densities="densitiesFull"
