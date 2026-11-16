@@ -876,18 +876,23 @@ npm run audit     # → scripts/audit.mjs
 
 `npm audit --audit-level=high --omit=dev` est le bon contrôle, mais il n'a
 aucun moyen d'écarter un avis précis. Or certains avis, **rien ne peut les
-corriger sans casser le reste** — au 6 octobre 2026, trois paquets :
+corriger sans casser le reste** — au 16 novembre 2026, un seul paquet :
 
 | Paquet | Atteint par | Pourquoi pas de correctif |
 | --- | --- | --- |
-| `node-forge` | `@nuxt/cli → listhen` — certificat de `nuxt dev --https` | 1.4.0 est la dernière version publiée, et reste visée |
-| `braces` | `@nuxt/content → micromatch` — tri des fichiers de `content/` à la construction | L'avis vise toutes les versions |
-| `simple-git` | `@nuxt/devtools` — panneau de `nuxt dev` | Corrigé en 4.x, mais `@nuxt/devtools` exige la 3.x |
+| `zod` 3 | `@nuxt/content` — traduction des schémas de `content.config.ts`, à la construction | L'avis vise tout ce qui précède zod 4.6.6, et la dernière version du moteur de contenu exige zod 3 |
 
-Point commun, **vérifié sur la sortie de construction** : aucun ne figure dans
-`.output`, aucun ne s'exécute en production. Et chaque fois, le seul remède
-que propose npm est une rétrogradation majeure — de Nuxt ou du moteur de
-contenu — pour un paquet que la production n'exécute pas.
+**Vérifié sur la sortie de construction** : le seul zod de `.output` est le
+4.6.7 des dépendances directes, hors de la plage visée ; le zod 3 du moteur de
+contenu ne s'exécute pas en production. Le seul remède que propose npm est
+une rétrogradation majeure du moteur de contenu, pour un paquet que la
+production n'exécute pas.
+
+Les trois dérogations précédentes — `node-forge`, `braces`, `simple-git` —
+ont été retirées le même jour : `npm audit fix` a monté Nuxt en 4.6.4,
+`@nuxt/devtools` en 3.4.4 et `node-forge` en 1.4.3, et leurs avis ont
+disparu. C'est exactement ce que le script prévoit : une dérogation dont
+l'avis a disparu fait échouer l'étape, et demande sa propre suppression.
 
 Sans dérogation, l'étape échoue à chaque exécution, et une étape qui échoue
 toujours finit par se lire en diagonale — c'est ainsi qu'un vrai avis passe
