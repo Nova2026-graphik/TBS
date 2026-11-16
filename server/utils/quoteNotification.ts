@@ -37,7 +37,11 @@ export interface QuoteContact {
   siteUrl: string
 }
 
-const BRAND = '#3E3524'
+/**
+ * Couleurs du courriel, reprises de la charte « Bleu & Rouge » — en dur, car
+ * un client de messagerie ne charge aucune feuille de style.
+ */
+const BRAND = '#16304D'
 const TIME_ZONE = 'Africa/Lome'
 
 const receivedAtFormat = new Intl.DateTimeFormat('fr-FR', {
@@ -102,8 +106,8 @@ function htmlRows(rows: Row[]): string {
   return rows
     .map(
       ([label, value]) => `<tr>
-      <th align="left" style="padding:6px 16px 6px 0;font-weight:400;color:#6B6353;white-space:nowrap;vertical-align:top">${escapeHtml(label)}</th>
-      <td style="padding:6px 0;color:#26221A">${escapeHtml(value)}</td>
+      <th align="left" style="padding:6px 16px 6px 0;font-weight:400;color:#4B6480;white-space:nowrap;vertical-align:top">${escapeHtml(label)}</th>
+      <td style="padding:6px 0;color:#16304D">${escapeHtml(value)}</td>
     </tr>`,
     )
     .join('\n')
@@ -112,7 +116,7 @@ function htmlRows(rows: Row[]): string {
 function htmlDocument(title: string, body: string): string {
   return `<!doctype html>
 <html lang="fr">
-<body style="margin:0;padding:24px;background:#F5F2EC;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#26221A">
+<body style="margin:0;padding:24px;background:#EEF3F8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.6;color:#16304D">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;margin:0 auto;background:#FFFFFF">
     <tr>
       <td style="background:${BRAND};padding:20px 28px;color:#FFFFFF;font-size:13px;letter-spacing:0.18em;text-transform:uppercase">
@@ -148,9 +152,9 @@ export function buildTeamEmail(notice: QuoteNotice, to: string): EmailMessage {
 
   const html = htmlDocument(
     'Nouvelle demande de devis',
-    `${warning ? `<p style="margin:0 0 20px;padding:12px 16px;background:#FBEAE5;color:#8A2B12">${escapeHtml(warning)}</p>` : ''}
+    `${warning ? `<p style="margin:0 0 20px;padding:12px 16px;background:#FDF3E2;color:#8A5205">${escapeHtml(warning)}</p>` : ''}
      <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;font-size:15px">${htmlRows(rows)}</table>
-     <p style="margin:24px 0 6px;color:#6B6353;font-size:13px;letter-spacing:0.12em;text-transform:uppercase">Besoin exprimé</p>
+     <p style="margin:24px 0 6px;color:#4B6480;font-size:13px;letter-spacing:0.12em;text-transform:uppercase">Besoin exprimé</p>
      <p style="margin:0;white-space:pre-wrap">${escapeHtml(notice.message)}</p>
      <p style="margin:28px 0 0">
        <a href="tel:${escapeHtml(notice.phone.replace(/[^\d+]/g, ''))}" style="display:inline-block;padding:12px 22px;background:${BRAND};color:#FFFFFF;text-decoration:none">Appeler ${escapeHtml(notice.name)}</a>
@@ -201,16 +205,16 @@ export function buildAcknowledgementEmail(
     `<p style="margin:0 0 16px">Bonjour ${escapeHtml(notice.name)},</p>
      <p style="margin:0 0 24px">Nous avons bien reçu votre demande. Un conseiller TBS vous rappelle
      <strong>sous 24 h ouvrées</strong> avec une proposition chiffrée.</p>
-     <p style="margin:0 0 6px;color:#6B6353;font-size:13px;letter-spacing:0.12em;text-transform:uppercase">Récapitulatif</p>
+     <p style="margin:0 0 6px;color:#4B6480;font-size:13px;letter-spacing:0.12em;text-transform:uppercase">Récapitulatif</p>
      <table role="presentation" cellpadding="0" cellspacing="0" style="width:100%;font-size:15px">${htmlRows(rows)}</table>
-     <p style="margin:24px 0 6px;color:#6B6353;font-size:13px;letter-spacing:0.12em;text-transform:uppercase">Besoin exprimé</p>
+     <p style="margin:24px 0 6px;color:#4B6480;font-size:13px;letter-spacing:0.12em;text-transform:uppercase">Besoin exprimé</p>
      <p style="margin:0;white-space:pre-wrap">${escapeHtml(notice.message)}</p>
      <p style="margin:28px 0 0">Une précision à apporter ? Répondez à cet e-mail, appelez le
      ${escapeHtml(phones)} ou écrivez-nous sur
      <a href="https://wa.me/${escapeHtml(contact.whatsapp)}" style="color:${BRAND}">WhatsApp</a>.</p>
-     <p style="margin:24px 0 0;color:#6B6353;font-size:13px">
+     <p style="margin:24px 0 0;color:#4B6480;font-size:13px">
        TBS Distribution S.A.R.L — Agôè-Démakpoè, Lomé, Togo<br>
-       <a href="${escapeHtml(contact.siteUrl)}" style="color:#6B6353">${escapeHtml(contact.siteUrl)}</a>
+       <a href="${escapeHtml(contact.siteUrl)}" style="color:#4B6480">${escapeHtml(contact.siteUrl)}</a>
      </p>`,
   )
 

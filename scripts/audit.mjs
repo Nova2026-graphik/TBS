@@ -3,10 +3,11 @@
  *
  * `npm audit --audit-level=high --omit=dev` est le bon contrôle, mais il n'a
  * aucun moyen d'écarter un avis précis. Or il en reste un que **rien ne peut
- * corriger** : `node-forge` est en 1.4.0, la dernière version publiée, et
- * l'avis la vise toujours. `npm audit` propose `nuxt@3.15.1` — une
- * rétrogradation majeure du cadriciel pour un paquet que la production
- * n'exécute pas. Le remède serait pire que le mal.
+ * corriger** : le `zod` 3 que `@nuxt/content` emploie à la construction. La
+ * dernière version du moteur de contenu exige toujours zod 3, et l'avis vise
+ * toute cette lignée ; `npm audit` propose `@nuxt/content@2.13.4` — une
+ * rétrogradation majeure pour un paquet que la production n'exécute pas. Le
+ * remède serait pire que le mal.
  *
  * Sans dérogation, l'étape échoue à chaque exécution et on prend l'habitude
  * de la lire en diagonale ; c'est ainsi qu'un vrai avis passe inaperçu. Avec
@@ -36,51 +37,21 @@ const BLOQUANTES = new Set(['high', 'critical'])
  */
 const DEROGATIONS = [
   {
-    avis: 'GHSA-86w9-cpqp-85rv',
-    paquet: 'node-forge',
-    motif: 'Atteint par nuxt → @nuxt/cli → listhen, qui ne sert qu\'au serveur '
-      + 'de développement (certificat auto-signé de `nuxt dev --https`). Absent '
-      + 'de `.output`, donc jamais exécuté en production.',
-    leve: 'Aucun correctif amont : 1.4.0 est la dernière version publiée et '
-      + 'reste visée. À retirer dès qu\'une version corrigée paraît, ou que '
-      + '`listhen` cesse d\'en dépendre.',
+    avis: 'GHSA-mrhx-c7xc-m3w5',
+    paquet: 'zod',
+    motif: 'Atteint par @nuxt/content → zod 3.25, appelé par `module.mjs` — '
+      + 'donc **à la construction seulement**, pour traduire les schémas de '
+      + '`content.config.ts`. Vérifié le 16 novembre 2026 : le seul zod de '
+      + '`.output` est le 4.6.7 des dépendances directes, qui valide les '
+      + 'formulaires et se trouve hors de la plage visée (< 4.6.6). Les '
+      + 'schémas confiés à zod 3 viennent du dépôt, pas d\'une requête : il '
+      + 'n\'y a pas d\'entrée par où pousser la collection surdimensionnée que '
+      + 'l\'avis décrit.',
+    leve: 'Aucun correctif dans la lignée 3 : l\'avis vise tout ce qui précède '
+      + 'zod 4.6.6, et @nuxt/content 3.16.2, la dernière version, exige '
+      + 'zod ^3.25.76 ; npm ne propose qu\'une rétrogradation en 2.13.4. À '
+      + 'retirer dès que @nuxt/content passe à zod 4.',
   },
-  {
-    avis: 'GHSA-vfj7-8cjw-p6xm',
-    paquet: 'braces',
-    motif: 'Atteint par @nuxt/content → micromatch → braces, appelé par '
-      + '`module.mjs` — donc **à la construction seulement**, pour répartir '
-      + 'les fichiers de `content/` entre les collections. Vérifié : ni '
-      + '`braces` ni `micromatch` ne figurent dans `.output`. Les motifs '
-      + 'confiés à micromatch viennent de `content.config.ts`, pas d\'une '
-      + 'requête : il n\'y a pas d\'entrée par où pousser le motif imbriqué '
-      + 'que l\'avis décrit.',
-    leve: 'Aucun correctif amont : l\'avis vise toutes les versions (`range: '
-      + '*`) et npm ne propose qu\'une rétrogradation de @nuxt/content en '
-      + '2.13.4 — un retour à la version majeure précédente du moteur de '
-      + 'contenu, pour un paquet que la production n\'exécute pas. À retirer '
-      + 'dès qu\'une version corrigée de `braces` paraît.',
-  },
-  ...[
-    ['GHSA-x6jw-m9v5-85vh', 'simple-git'],
-    ['GHSA-g4wm-2vf7-vfgr', 'simple-git'],
-    ['GHSA-858h-whjf-mvg5', 'simple-git'],
-    ['GHSA-v5rq-49vh-5v5c', '@simple-git/argv-parser'],
-  ].map(([avis, paquet]) => ({
-    avis,
-    paquet,
-    motif: 'Atteint par nuxt → @nuxt/devtools → simple-git, qui sert le '
-      + 'panneau d\'outils de `nuxt dev` (historique git du projet). Vérifié '
-      + 'le 6 octobre 2026 : ni `simple-git` ni `@nuxt/devtools` ne figurent '
-      + 'dans `.output` — les deux mentions qu\'on y trouve sont '
-      + '`simple-git-hooks`, un autre paquet. Jamais exécuté en production, et '
-      + 'les commandes git que l\'avis permet de détourner ne reçoivent '
-      + 'aucune entrée venue d\'un visiteur.',
-    leve: 'Corrigé en simple-git 4.0.2 et @simple-git/argv-parser 2.0.1, mais '
-      + '@nuxt/devtools 3.4 exige simple-git ^3 ; npm ne propose qu\'une '
-      + 'rétrogradation de Nuxt en 3.7.4. À retirer dès que @nuxt/devtools '
-      + 'passe à simple-git 4.',
-  })),
 ]
 
 const resultat = spawnSync('npm', ['audit', '--omit=dev', '--json'], {

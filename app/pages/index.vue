@@ -15,11 +15,18 @@ usePageSeo({
 })
 </script>
 
+<!--
+  Accueil « Mosaïque », validé par TBS en novembre 2026 : mosaïque d'entrée
+  (diaporama + quatre tuiles de branche), chiffres clés sur fond encre,
+  branches en fiches, catégories en bandeau défilant, domaines rangés par
+  branche, étapes en cartes, ambiances, témoignages en colonnes, et un appel
+  final propre à l'accueil — coordonnées comprises.
+-->
 <template>
   <div>
     <HomeHero :branches="data.branches" />
 
-    <UiStatRow :items="stats" />
+    <UiStatRow :items="stats" tone="dark" />
 
     <HomeBranches :branches="data.branches" />
 
@@ -34,12 +41,13 @@ usePageSeo({
       :accent="eventsProcess.titleAccent"
       :steps="eventsProcess.steps"
       tone="sand"
+      variant="cards"
     />
 
     <HomeInspirations :inspirations="inspirations" />
 
     <HomeTestimonials :testimonials="data.testimonials" />
 
-    <SharedCtaBanner />
+    <HomeCta />
   </div>
 </template>

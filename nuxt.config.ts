@@ -145,7 +145,8 @@ export default defineNuxtConfig({
         { rel: 'canonical', href: ORIGINE },
       ],
       meta: [
-        { name: 'theme-color', content: '#3e3524' },
+        // Marine de la charte (`--tbs-ink`) : barre du navigateur sur mobile.
+        { name: 'theme-color', content: '#16304d' },
         { name: 'apple-mobile-web-app-title', content: 'TBS' },
         { name: 'format-detection', content: 'telephone=no' },
       ],
