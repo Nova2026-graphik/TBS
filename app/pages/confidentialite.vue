@@ -112,11 +112,12 @@ useBreadcrumbSchema([{ name: t('footer.legal.privacy'), path: '/confidentialite'
         <LegalTexte
           v-if="analytics"
           :texte="$t('legal.privacy.cookiesAnalytics', {
-            provider: analytics.provider === 'umami' ? 'Umami' : 'Plausible',
-            host: analytics.host,
+            provider: analyticsProviderName(analytics.provider),
+            host: analyticsDestination(analytics),
           })"
         />
-        <LegalTexte v-else :texte="$t('legal.privacy.cookiesNoAnalytics')" />
+        <LegalTexte v-if="analytics?.provider === 'vercel'" :texte="$t('legal.privacy.cookiesSpeedInsights')" />
+        <LegalTexte v-if="!analytics" :texte="$t('legal.privacy.cookiesNoAnalytics')" />
 
         <h2>{{ $t('legal.privacy.thirdParties') }}</h2>
         <LegalTexte :texte="$t('legal.privacy.thirdPartiesMap')" />

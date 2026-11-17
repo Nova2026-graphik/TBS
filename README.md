@@ -262,14 +262,38 @@ journalisées — c'est-à-dire l'état antérieur, mais structuré.
 
 ### Audience, sans bandeau de consentement
 
-`NUXT_PUBLIC_ANALYTICS_*` branche **Plausible** ou **Umami** (auto-hébergeable).
-Tous deux fonctionnent sans cookie et sans identifiant persistant : aucune
-bannière n'est requise. Vide, rien n'est chargé.
+**Vercel Web Analytics est en place depuis le 17 novembre 2026.** Construit sur
+Vercel, le site charge `/_vercel/insights/script.js` sans rien configurer : la
+plateforme pose `VERCEL=1`, et `runtimeConfig.public.analytics.provider` en
+déduit `vercel`. En local, en CI et dans les parcours Playwright, rien ne
+s'allume.
 
-L'origine renseignée alimente aussi la CSP (`script-src`, `connect-src`) —
-sans quoi le script serait bloqué et la page resterait muette sans erreur
-visible. La politique de confidentialité s'ajuste elle aussi : elle nomme le
-prestataire quand il y en a un, et affirme l'absence de mesure sinon.
+- **Où lire les chiffres :** Vercel → projet `tbs-distribution` → onglet
+  **Analytics** — visiteurs, pages vues, pages les plus vues, provenance, pays,
+  appareils, navigateurs.
+- **À faire une fois dans le tableau de bord :** Analytics → **Enable**. Tant
+  que la mesure n'y est pas activée, le script répond 404 et rien n'est
+  compté — sans erreur visible pour le visiteur.
+- **Événements personnalisés** (tableau ci-dessous) : envoyés à Vercel, mais
+  enregistrés par lui à partir de l'offre Pro seulement. Les pages vues, elles,
+  sont comptées dans toutes les offres.
+- **Speed Insights** est chargé avec (`/_vercel/speed-insights/script.js`) : la
+  vitesse d'affichage réellement vécue par les visiteurs (LCP, CLS, INP), page
+  par page, dans l'onglet **Speed Insights** du projet. Il était déjà activé
+  côté Vercel le 17 novembre 2026, mais aucun script ne l'alimentait.
+
+Script et collecte sont servis sous le domaine du site : rien à ouvrir dans la
+CSP, et aucun sous-traitant de plus que l'hébergeur déjà déclaré. Sans cookie,
+le visiteur n'est reconnu que par une empreinte de la requête, que Vercel
+efface au bout de 24 heures : aucune bannière n'est requise.
+
+`NUXT_PUBLIC_ANALYTICS_*` permet de choisir **Plausible** ou **Umami**
+(auto-hébergeable) à la place ; la variable l'emporte toujours sur le défaut
+Vercel. Tous deux fonctionnent aussi sans cookie. Leur origine alimente la CSP
+(`script-src`, `connect-src`) — sans quoi le script serait bloqué et la page
+resterait muette sans erreur visible. La politique de confidentialité s'ajuste
+dans tous les cas : elle nomme le prestataire quand il y en a un, et affirme
+l'absence de mesure sinon.
 
 Six événements, définis dans `shared/utils/analytics.ts` :
 

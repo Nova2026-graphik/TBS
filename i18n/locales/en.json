@@ -1017,6 +1017,7 @@
       "cookies": "Cookies and trackers",
       "cookiesBody": "The site sets **no cookies** and uses neither local storage nor advertising pixels. No consent banner is needed: there is nothing to consent to.",
       "cookiesAnalytics": "Analytics are provided by **{provider}** ({host}), chosen precisely because it works without cookies and without a persistent identifier. What is counted is the page viewed, the country, the device type and the referrer — never anything that could identify you. A few actions useful for commercial follow-up are also counted: opening the quote form, submitting it, and clicks on the phone numbers and on WhatsApp.",
+      "cookiesSpeedInsights": "The same host also measures, with **Vercel Speed Insights**, how fast pages display for visitors: loading time, layout stability, responsiveness. These measurements concern the page and the device type, without cookies and without anything that could identify you.",
       "cookiesNoAnalytics": "No analytics tool is in place.",
       "thirdParties": "Third-party services",
       "thirdPartiesMap": "The [contact](/contact) page offers a map supplied by **OpenStreetMap**. **It does not load on its own**: nothing is requested from OpenStreetMap until you click “Show the map”. If you do, its servers then receive your IP address and your browser characteristics.",

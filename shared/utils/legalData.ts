@@ -149,7 +149,7 @@ export const QUOTE_RETENTION_MONTHS = 24
  * Date de dernière révision des trois pages légales, au format ISO.
  * À remonter à chaque modification de leur contenu.
  */
-export const LEGAL_UPDATED_AT = '2026-09-06'
+export const LEGAL_UPDATED_AT = '2026-11-17'
 
 /**
  * « 2026-09-06 » → « 6 septembre 2026 », ou « 6 September 2026 » selon la
