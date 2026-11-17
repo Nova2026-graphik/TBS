@@ -277,6 +277,10 @@ s'allume.
 - **Événements personnalisés** (tableau ci-dessous) : envoyés à Vercel, mais
   enregistrés par lui à partir de l'offre Pro seulement. Les pages vues, elles,
   sont comptées dans toutes les offres.
+- **Speed Insights** est chargé avec (`/_vercel/speed-insights/script.js`) : la
+  vitesse d'affichage réellement vécue par les visiteurs (LCP, CLS, INP), page
+  par page, dans l'onglet **Speed Insights** du projet. Il était déjà activé
+  côté Vercel le 17 novembre 2026, mais aucun script ne l'alimentait.
 
 Script et collecte sont servis sous le domaine du site : rien à ouvrir dans la
 CSP, et aucun sous-traitant de plus que l'hébergeur déjà déclaré. Sans cookie,

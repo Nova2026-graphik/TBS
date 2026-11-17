@@ -1017,6 +1017,7 @@
       "cookies": "Cookies et traceurs",
       "cookiesBody": "Le site ne dépose **aucun cookie** et n'utilise ni stockage local, ni pixel publicitaire. Aucune bannière de consentement n'est nécessaire : il n'y a rien à consentir.",
       "cookiesAnalytics": "La mesure d'audience est assurée par **{provider}** ({host}), choisi précisément parce qu'il fonctionne sans cookie et sans identifiant persistant. Sont comptés la page consultée, le pays, le type d'appareil et la provenance — jamais de quoi vous reconnaître. Sont également comptés quelques gestes utiles au suivi commercial : ouverture du formulaire de devis, envoi, clics sur les numéros et sur WhatsApp.",
+      "cookiesSpeedInsights": "Le même hébergeur mesure aussi, avec **Vercel Speed Insights**, la vitesse d'affichage des pages telle que les visiteurs la vivent : temps de chargement, stabilité de la mise en page, réactivité. Ces mesures portent sur la page et le type d'appareil, sans cookie et sans rien qui permette de vous reconnaître.",
       "cookiesNoAnalytics": "Aucun outil de mesure d'audience n'est en place.",
       "thirdParties": "Services tiers",
       "thirdPartiesMap": "La page [contact](/contact) propose une carte fournie par **OpenStreetMap**. **Elle ne se charge pas toute seule** : rien n'est demandé à OpenStreetMap tant que vous n'avez pas cliqué sur « Afficher la carte ». Si vous le faites, ses serveurs reçoivent alors votre adresse IP et les caractéristiques de votre navigateur.",

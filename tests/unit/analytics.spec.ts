@@ -6,6 +6,7 @@ import {
   analyticsScriptUrl,
   isAnalyticsEnabled,
   VERCEL_ANALYTICS_SCRIPT,
+  VERCEL_SPEED_INSIGHTS_SCRIPT,
 } from '../../shared/utils/analytics'
 
 describe('activation de la mesure d’audience', () => {
@@ -46,6 +47,7 @@ describe('URL du script', () => {
 
   it('charge Vercel depuis le domaine du site, quel que soit l’hôte renseigné', () => {
     expect(VERCEL_ANALYTICS_SCRIPT).toBe('/_vercel/insights/script.js')
+    expect(VERCEL_SPEED_INSIGHTS_SCRIPT).toBe('/_vercel/speed-insights/script.js')
     expect(analyticsScriptUrl({ provider: 'vercel', host: '', siteId: '' })).toBe(VERCEL_ANALYTICS_SCRIPT)
     expect(
       analyticsScriptUrl({ provider: 'vercel', host: 'https://plausible.io', siteId: 'x' }),

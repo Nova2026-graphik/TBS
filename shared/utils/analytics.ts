@@ -55,6 +55,14 @@ const PROVIDERS = new Set<string>(['plausible', 'umami', 'vercel'] satisfies Ana
 /** Script de Vercel Web Analytics, servi par la plateforme sous le domaine du site. */
 export const VERCEL_ANALYTICS_SCRIPT = '/_vercel/insights/script.js'
 
+/**
+ * Script de Vercel Speed Insights : la vitesse d'affichage réellement vécue
+ * par les visiteurs (LCP, CLS, INP…), page par page, dans l'onglet « Speed
+ * Insights » du projet. Chargé avec Web Analytics, sous le même domaine, sans
+ * cookie ni donnée personnelle.
+ */
+export const VERCEL_SPEED_INSIGHTS_SCRIPT = '/_vercel/speed-insights/script.js'
+
 /** `true` si la mesure d'audience est complètement configurée. */
 export function isAnalyticsEnabled(
   config: AnalyticsConfig | undefined,

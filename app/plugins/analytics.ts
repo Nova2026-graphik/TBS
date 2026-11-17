@@ -12,7 +12,12 @@
  *
  * Rien n'est chargé ni écouté sans prestataire configuré.
  */
-import { ANALYTICS_EVENTS, analyticsScriptUrl, isAnalyticsEnabled } from '#shared/utils/analytics'
+import {
+  ANALYTICS_EVENTS,
+  analyticsScriptUrl,
+  isAnalyticsEnabled,
+  VERCEL_SPEED_INSIGHTS_SCRIPT,
+} from '#shared/utils/analytics'
 
 export default defineNuxtPlugin(() => {
   const { public: cfg } = useRuntimeConfig()
@@ -20,23 +25,21 @@ export default defineNuxtPlugin(() => {
 
   const provider = cfg.analytics.provider
 
+  const script = analyticsScriptUrl(cfg.analytics)
+
   useHead({
-    script: [
-      provider === 'vercel'
-        // Vercel : le script suit seul les changements de page de l'application.
-        ? { src: analyticsScriptUrl(cfg.analytics), defer: true }
-        : provider === 'umami'
-          ? {
-              'src': analyticsScriptUrl(cfg.analytics),
-              'defer': true,
-              'data-website-id': cfg.analytics.siteId,
-            }
-          : {
-              'src': analyticsScriptUrl(cfg.analytics),
-              'defer': true,
-              'data-domain': cfg.analytics.siteId,
-            },
-    ],
+    script: provider === 'vercel'
+      // Vercel : Web Analytics (visites) et Speed Insights (vitesse vécue).
+      // Les deux suivent seuls les changements de page de l'application.
+      ? [
+          { src: script, defer: true },
+          { src: VERCEL_SPEED_INSIGHTS_SCRIPT, defer: true },
+        ]
+      : [
+          provider === 'umami'
+            ? { 'src': script, 'defer': true, 'data-website-id': cfg.analytics.siteId }
+            : { 'src': script, 'defer': true, 'data-domain': cfg.analytics.siteId },
+        ],
   })
 
   // La délégation n'a de sens que dans un navigateur.
