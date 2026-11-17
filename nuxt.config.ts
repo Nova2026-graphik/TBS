@@ -117,6 +117,7 @@ export default defineNuxtConfig({
     '@vueuse/nuxt',
     '@nuxtjs/sitemap',
     '@nuxtjs/robots',
+    '@vercel/analytics',
   ],
   devtools: { enabled: true },
 
