@@ -231,13 +231,19 @@ export default defineNuxtConfig({
       address: 'Agôè - Démakpoè, Lomé, Togo',
       /**
        * Mesure d'audience — cf. `shared/utils/analytics.ts`.
-       * `provider` : `plausible` ou `umami`, tous deux sans cookie, donc sans
-       * bandeau de consentement. Vide : rien n'est chargé, aucune requête ne
-       * part, et la politique de confidentialité l'annonce en conséquence.
-       * `host` alimente aussi la CSP.
+       * `provider` : `plausible`, `umami` ou `vercel`, tous sans cookie, donc
+       * sans bandeau de consentement. Vide : rien n'est chargé, aucune requête
+       * ne part, et la politique de confidentialité l'annonce en conséquence.
+       * `host` alimente aussi la CSP (inutile pour `vercel`, servi par le site).
+       *
+       * Construit sur Vercel (`VERCEL=1`, posé par la plateforme), le site
+       * mesure son audience avec Vercel Web Analytics sans rien configurer :
+       * les pages vues se lisent dans l'onglet « Analytics » du projet. En
+       * local, en CI et dans les parcours Playwright, rien ne s'allume.
+       * `NUXT_PUBLIC_ANALYTICS_PROVIDER` l'emporte toujours.
        */
       analytics: {
-        provider: '',
+        provider: process.env.VERCEL ? 'vercel' : '',
         host: '',
         siteId: '',
       },

@@ -12,6 +12,10 @@ declare global {
   interface Window {
     plausible?: (event: string, options?: { props?: Record<string, string> }) => void
     umami?: { track: (event: string, data?: Record<string, string>) => void }
+    /** Vercel Web Analytics — `va('event', { name, data })`. */
+    va?: (...args: unknown[]) => void
+    /** File d'attente de Vercel, vidée par le script à son chargement. */
+    vaq?: unknown[][]
   }
 }
 
@@ -27,7 +31,8 @@ export function useAnalytics() {
     if (!enabled || import.meta.server) return
 
     try {
-      if (cfg.analytics.provider === 'umami') window.umami?.track(event, props)
+      if (cfg.analytics.provider === 'vercel') window.va?.('event', { name: event, data: props })
+      else if (cfg.analytics.provider === 'umami') window.umami?.track(event, props)
       else window.plausible?.(event, props ? { props } : undefined)
     }
     catch {

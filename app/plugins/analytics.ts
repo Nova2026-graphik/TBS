@@ -18,24 +18,39 @@ export default defineNuxtPlugin(() => {
   const { public: cfg } = useRuntimeConfig()
   if (!isAnalyticsEnabled(cfg.analytics)) return
 
+  const provider = cfg.analytics.provider
+
   useHead({
     script: [
-      cfg.analytics.provider === 'umami'
-        ? {
-            'src': analyticsScriptUrl(cfg.analytics),
-            'defer': true,
-            'data-website-id': cfg.analytics.siteId,
-          }
-        : {
-            'src': analyticsScriptUrl(cfg.analytics),
-            'defer': true,
-            'data-domain': cfg.analytics.siteId,
-          },
+      provider === 'vercel'
+        // Vercel : le script suit seul les changements de page de l'application.
+        ? { src: analyticsScriptUrl(cfg.analytics), defer: true }
+        : provider === 'umami'
+          ? {
+              'src': analyticsScriptUrl(cfg.analytics),
+              'defer': true,
+              'data-website-id': cfg.analytics.siteId,
+            }
+          : {
+              'src': analyticsScriptUrl(cfg.analytics),
+              'defer': true,
+              'data-domain': cfg.analytics.siteId,
+            },
     ],
   })
 
   // La délégation n'a de sens que dans un navigateur.
   if (import.meta.server) return
+
+  // File d'attente de Vercel : un événement envoyé avant l'arrivée du script
+  // y patiente, et le script la vide en se chargeant. C'est l'amorce que
+  // fournit Vercel, posée ici plutôt qu'en script en ligne — un script en
+  // ligne de plus demanderait son empreinte dans la CSP.
+  if (provider === 'vercel') {
+    window.va ??= (...args) => {
+      (window.vaq ??= []).push(args)
+    }
+  }
 
   const { track } = useAnalytics()
 
