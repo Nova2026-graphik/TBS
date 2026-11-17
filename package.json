@@ -53,6 +53,7 @@
     "@nuxtjs/i18n": "^10.6.0",
     "@nuxtjs/robots": "^7.0.2",
     "@nuxtjs/sitemap": "^9.1.0",
+    "@vercel/analytics": "^2.0.1",
     "@vueuse/nuxt": "^14.4.0",
     "better-sqlite3": "^13.1.1",
     "drizzle-orm": "^0.45.4",
